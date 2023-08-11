@@ -37,7 +37,7 @@ async def main():
 
     # - Send message
 
-    await telegram_client.send_message(entity="marklidenberg", message="Hello, world!")
+    await telegram_client.send_message(entity="marklidenberg", message="\u2614")
 
 
 if __name__ == "__main__":

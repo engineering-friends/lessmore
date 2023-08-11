@@ -36,6 +36,7 @@
 !**/*.js
 !**/*.cfg
 !**/*.gpg
+!**/*.txt
 
 # - Dot files
 
