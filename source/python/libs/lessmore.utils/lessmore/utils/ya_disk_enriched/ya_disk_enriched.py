@@ -13,7 +13,7 @@ from lessmore.utils.ya_disk_enriched.unit_tests.test_force_upload import test_fo
 
 class YaDiskEnriched(yadisk.YaDisk):
     @tested(tests=[test_ensure_directory_exists])
-    def ensure_directory_exists(self, path):
+    def ensure_directory_exists(self, path: str) -> None:
         # - Prepare paths to create (from root to path: /a/b/c -> /a, /a/b, /a/b/c)
 
         path = path.removesuffix("/").removeprefix("/")  # "/a/b/c/" -> "a/b/c"
@@ -29,7 +29,7 @@ class YaDiskEnriched(yadisk.YaDisk):
                 pass
 
     @tested(tests=[test_force_upload])
-    def force_upload(self, filename, remote_filename):
+    def force_upload(self, filename: str, remote_filename: str) -> None:
         """Upload even if directory not exists or file exists."""
 
         # - Create directories if not exists
@@ -45,7 +45,7 @@ class YaDiskEnriched(yadisk.YaDisk):
         self.upload(filename, remote_filename)
 
     @tested(tests=[test_ensure_path_is_deleted])
-    def ensure_path_is_deleted(self, path):
+    def ensure_path_is_deleted(self, path: str) -> None:
         if not self.exists(path):
             return
         else:

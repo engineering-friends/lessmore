@@ -40,5 +40,6 @@ async def test_session():
     print((await client.get_me()).stringify())
 
 
-asyncio.run(init_and_print_session())
-asyncio.run(test_session())
+if __name__ == "__main__":
+    asyncio.run(init_and_print_session())
+    asyncio.run(test_session())

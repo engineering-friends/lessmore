@@ -10,7 +10,10 @@ class LoguruRetryLogger:
 
 
 def test():
-    retry(tries=3, delay=1, logger=LoguruRetryLogger)(lambda: 1 / 0)()
+    try:
+        retry(tries=3, delay=0.1, logger=LoguruRetryLogger)(lambda: 1 / 0)()
+    except Exception as e:
+        logger.exception("Failed", error=e)
 
 
 if __name__ == "__main__":

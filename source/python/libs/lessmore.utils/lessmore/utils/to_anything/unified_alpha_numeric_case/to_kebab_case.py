@@ -1,8 +1,5 @@
 from typing import Optional
 
-from inline_snapshot import snapshot
-
-from lessmore.utils.run_inline_snapshot_tests.run_inline_snapshot_tests import run_inline_snapshot_tests
 from lessmore.utils.to_anything.unified_alpha_numeric_case.to_snake_case import to_snake_case
 
 
@@ -22,4 +19,3 @@ def test():
 
 if __name__ == "__main__":
     test()
-    # run_inline_snapshot_tests()

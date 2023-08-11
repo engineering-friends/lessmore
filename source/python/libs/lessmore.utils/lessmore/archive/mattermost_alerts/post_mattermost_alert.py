@@ -2,9 +2,11 @@ import copy
 
 from typing import Optional
 
+import pytest
+
 from airflow_etl.lib.mattermostdriver_client import MattermostDriverClient
 
-from lessmore.utils.alerter.alert import Alert
+from lessmore.archive.mattermost_alerts.alert import Alert
 
 
 def post_mattermost_alert(
@@ -99,6 +101,7 @@ def post_mattermost_alert(
     return new_message
 
 
+@pytest.marks.skip
 def test_post_alert():
     # - Init connections
 

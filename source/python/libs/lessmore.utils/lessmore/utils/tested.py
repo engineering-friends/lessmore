@@ -2,7 +2,10 @@ import functools
 
 from typing import Callable, Union
 
+import pytest
 
+
+@pytest.mark.skip
 def tested(tests: list[Union[str, Callable]]):
     """Decorator to mark a function as tested.
 

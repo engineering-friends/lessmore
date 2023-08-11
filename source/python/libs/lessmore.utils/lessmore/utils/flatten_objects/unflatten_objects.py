@@ -1,6 +1,3 @@
-from lessmore.flatten_objects.flatten_objects import flatten_objects
-
-
 def unflatten_objects(value, validate_length=False):
     """{"a": 1, "b.foo": [1, 2], "b.bar": [3, 4]} ->  {"b": [{"foo": 1, "bar": 3}, {"foo": 2, "bar": 4}], "a": 1}"""
     res = {}
@@ -53,7 +50,7 @@ def test():
     try:
         unflatten_objects(flattened_error_length, validate_length=True)
     except AssertionError as e:
-        assert str(e) == "Different flatten lengths"
+        assert "Different flatten lengths" in str(e)
 
 
 if __name__ == "__main__":

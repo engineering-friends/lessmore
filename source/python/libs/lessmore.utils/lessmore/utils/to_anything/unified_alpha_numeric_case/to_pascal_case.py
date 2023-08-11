@@ -1,9 +1,6 @@
 from typing import Optional
 
 from deeplay.utils.unified import to_camel_case
-from inline_snapshot import snapshot
-
-from lessmore.utils.run_inline_snapshot_tests.run_inline_snapshot_tests import run_inline_snapshot_tests
 
 
 def to_pascal_case(string: str, upper_case_words: Optional[list] = None) -> str:
@@ -22,4 +19,4 @@ def test():
 
 
 if __name__ == "__main__":
-    run_inline_snapshot_tests(mode="failing")
+    test()

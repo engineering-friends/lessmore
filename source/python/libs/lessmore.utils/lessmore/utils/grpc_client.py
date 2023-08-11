@@ -3,6 +3,7 @@ import os
 from typing import Any, Optional, Union
 
 import grpc
+import pytest
 
 
 def _read_file_or_encode(value: Optional[Union[str, bytes]]):
@@ -91,6 +92,7 @@ class GRPCClient:
         return getattr(stub_class(self._get_channel()), method)(request=request, timeout=timeout, **kwargs)
 
 
+@pytest.mark.skip
 def test():
     # todo: make independent test from colluder-gun
 

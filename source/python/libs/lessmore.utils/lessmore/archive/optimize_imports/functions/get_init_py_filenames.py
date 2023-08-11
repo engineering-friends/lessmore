@@ -11,7 +11,7 @@ def get_init_py_filenames(root_dir):
     # - Get dirs and python_files
 
     dirs = [root for root, _, _ in os.walk(root_dir)]
-    python_filenames = list_files(path=root_dir, filter="*.py")
+    python_filenames = list_files(path=root_dir, filter_pattern="*.py")
 
     # - Filter non-system directories
 

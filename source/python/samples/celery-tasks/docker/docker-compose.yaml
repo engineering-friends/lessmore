@@ -1,9 +1,0 @@
-version: '3.3'
-
-services:
-  server:
-    image: marklidenberg/celery-tasks:latest
-    build:
-      context: $DEEPLAY_MONOREPO_PATH
-      dockerfile: $DEEPLAY_MONOREPO_PATH/source/python/samples/celery-tasks/docker/Dockerfile
-    command: /bin/bash scripts/run_worker.sh

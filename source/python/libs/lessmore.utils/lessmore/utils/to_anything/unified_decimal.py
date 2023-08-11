@@ -5,7 +5,7 @@ from typing import Union
 
 from loguru import logger
 
-from lessmore.utils.numeric.numeric import decimal_round
+from lessmore.utils.round.decimal_round.decimal_round import round_decimal
 
 
 DecimalLike = Union[str, int, float]
@@ -21,7 +21,7 @@ class UnifiedDecimal:
         return re.search(r"^[+-]*(\d+(?:\.\d+)?)$", value)
 
     @staticmethod
-    def to_decimal(value, is_stripped=True, max_precision=16):
+    def to_decimal(value, max_precision=16):
         if isinstance(value, str):
             # - Validate
 
@@ -33,12 +33,12 @@ class UnifiedDecimal:
 
             # - Return
 
-            return unified_decimal.to_decimal(value, max_precision=max_precision, is_stripped=is_stripped)
+            return unified_decimal.to_decimal(value, max_precision=max_precision)
 
         elif isinstance(value, int):
             return Decimal(value)
         elif isinstance(value, float):
-            return decimal_round(value, Decimal("1.0"), precision=max_precision, is_stripped=is_stripped)
+            return round_decimal(a=value, b=Decimal("1.0"), precision=max_precision, strip=True)
         else:
             raise Exception(f"Unknown decimal format: {type(value)}")
 
@@ -61,8 +61,8 @@ class UnifiedDecimal:
 unified_decimal = UnifiedDecimal()
 
 
-def to_decimal(value, is_stripped=True, max_precision=16):
-    return unified_decimal.to_decimal(value, is_stripped=is_stripped, max_precision=max_precision)
+def to_decimal(value, max_precision=16):
+    return unified_decimal.to_decimal(value, max_precision=max_precision)
 
 
 def to_decimal_str(value):

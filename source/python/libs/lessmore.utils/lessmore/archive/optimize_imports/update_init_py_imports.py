@@ -63,7 +63,9 @@ def test():
 
     # - Remove __init__.py files
 
-    for init_py_path in list_files(os.path.join(os.path.dirname(__file__), "../test/my_module"), filter="*__init__.py"):
+    for init_py_path in list_files(
+        os.path.join(os.path.dirname(__file__), "../test/my_module"), filter_pattern="*__init__.py"
+    ):
         logger.info("Removing for test", path=init_py_path)
         os.remove(init_py_path)
 

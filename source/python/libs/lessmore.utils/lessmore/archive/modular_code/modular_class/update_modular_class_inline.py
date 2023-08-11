@@ -33,7 +33,7 @@ def update_modular_class_inline() -> None:
 
     # - Iterate over files in the directory and collect all functions
 
-    python_filenames = list_files(path=caller_dirname, filter="*.py")
+    python_filenames = list_files(path=caller_dirname, filter_pattern="*.py")
 
     # filter caller_filename
     python_filenames = [

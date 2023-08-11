@@ -13,7 +13,7 @@ from typing import Union
 
 import numpy as np
 
-from lessmore.utils.round.decimal_round.decimal_round import decimal_round
+from lessmore.utils.round.decimal_round.decimal_round import round_decimal
 
 
 def relative_round(
@@ -37,7 +37,7 @@ def relative_round(
     # - Calculate round(a / b)
 
     n = a / b * (10**precision)
-    n = int(decimal_round(a=n, b=1, rounding=rounding))
+    n = int(round_decimal(a=n, b=1, rounding=rounding))
 
     # - Return
     return n * b / (10**precision)

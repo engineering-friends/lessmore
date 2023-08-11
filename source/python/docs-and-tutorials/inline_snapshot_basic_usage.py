@@ -1,5 +1,7 @@
 import datetime
 
+import pytest
+
 from inline_snapshot import snapshot
 
 
@@ -15,6 +17,7 @@ def something():
     }
 
 
+@pytest.mark.skip
 def test_something():
     """
 

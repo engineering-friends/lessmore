@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 import pandas as pd
+import pytest
 
 
 @dataclass
@@ -122,6 +123,7 @@ class StopWatch:
 clock = StopWatch()
 
 
+@pytest.mark.slow
 def test():
     # Usage 1
     clock = StopWatch()

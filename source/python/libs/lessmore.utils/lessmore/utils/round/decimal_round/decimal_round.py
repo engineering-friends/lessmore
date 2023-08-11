@@ -14,9 +14,9 @@ from typing import Literal, Union
 from lessmore.utils.round.decimal_round.strip_zeros import strip_zeros
 
 
-def decimal_round(
-    a: Union[float, int, str],
-    b: Union[float, int, str],
+def round_decimal(
+    a: Union[float, int, str, D],
+    b: Union[float, int, str, D],
     rounding: str = ROUND_HALF_EVEN,
     precision: int = 0,
     strip: bool = False,
@@ -84,68 +84,68 @@ def decimal_round(
 
 
 def test():
-    assert decimal_round(a=1.1, b=1, rounding=ROUND_CEILING) == 2
-    assert decimal_round(a=1.5, b=1, rounding=ROUND_CEILING) == 2
-    assert decimal_round(a=1.9, b=1, rounding=ROUND_CEILING) == 2
-    assert decimal_round(a=-1.1, b=1, rounding=ROUND_CEILING) == -1
-    assert decimal_round(a=-1.5, b=1, rounding=ROUND_CEILING) == -1
-    assert decimal_round(a=-1.9, b=1, rounding=ROUND_CEILING) == -1
+    assert round_decimal(a=1.1, b=1, rounding=ROUND_CEILING) == 2
+    assert round_decimal(a=1.5, b=1, rounding=ROUND_CEILING) == 2
+    assert round_decimal(a=1.9, b=1, rounding=ROUND_CEILING) == 2
+    assert round_decimal(a=-1.1, b=1, rounding=ROUND_CEILING) == -1
+    assert round_decimal(a=-1.5, b=1, rounding=ROUND_CEILING) == -1
+    assert round_decimal(a=-1.9, b=1, rounding=ROUND_CEILING) == -1
 
-    assert decimal_round(a=1.1, b=1, rounding=ROUND_FLOOR) == 1
-    assert decimal_round(a=1.5, b=1, rounding=ROUND_FLOOR) == 1
-    assert decimal_round(a=1.9, b=1, rounding=ROUND_FLOOR) == 1
-    assert decimal_round(a=-1.1, b=1, rounding=ROUND_FLOOR) == -2
-    assert decimal_round(a=-1.5, b=1, rounding=ROUND_FLOOR) == -2
-    assert decimal_round(a=-1.9, b=1, rounding=ROUND_FLOOR) == -2
+    assert round_decimal(a=1.1, b=1, rounding=ROUND_FLOOR) == 1
+    assert round_decimal(a=1.5, b=1, rounding=ROUND_FLOOR) == 1
+    assert round_decimal(a=1.9, b=1, rounding=ROUND_FLOOR) == 1
+    assert round_decimal(a=-1.1, b=1, rounding=ROUND_FLOOR) == -2
+    assert round_decimal(a=-1.5, b=1, rounding=ROUND_FLOOR) == -2
+    assert round_decimal(a=-1.9, b=1, rounding=ROUND_FLOOR) == -2
 
-    assert decimal_round(a=1.1, b=1, rounding=ROUND_UP) == 2
-    assert decimal_round(a=1.5, b=1, rounding=ROUND_UP) == 2
-    assert decimal_round(a=1.9, b=1, rounding=ROUND_UP) == 2
-    assert decimal_round(a=-1.1, b=1, rounding=ROUND_UP) == -2
-    assert decimal_round(a=-1.5, b=1, rounding=ROUND_UP) == -2
-    assert decimal_round(a=-1.9, b=1, rounding=ROUND_UP) == -2
+    assert round_decimal(a=1.1, b=1, rounding=ROUND_UP) == 2
+    assert round_decimal(a=1.5, b=1, rounding=ROUND_UP) == 2
+    assert round_decimal(a=1.9, b=1, rounding=ROUND_UP) == 2
+    assert round_decimal(a=-1.1, b=1, rounding=ROUND_UP) == -2
+    assert round_decimal(a=-1.5, b=1, rounding=ROUND_UP) == -2
+    assert round_decimal(a=-1.9, b=1, rounding=ROUND_UP) == -2
 
-    assert decimal_round(a=1.1, b=1, rounding=ROUND_DOWN) == 1
-    assert decimal_round(a=1.5, b=1, rounding=ROUND_DOWN) == 1
-    assert decimal_round(a=1.9, b=1, rounding=ROUND_DOWN) == 1
-    assert decimal_round(a=-1.1, b=1, rounding=ROUND_DOWN) == -1
-    assert decimal_round(a=-1.5, b=1, rounding=ROUND_DOWN) == -1
-    assert decimal_round(a=-1.9, b=1, rounding=ROUND_DOWN) == -1
+    assert round_decimal(a=1.1, b=1, rounding=ROUND_DOWN) == 1
+    assert round_decimal(a=1.5, b=1, rounding=ROUND_DOWN) == 1
+    assert round_decimal(a=1.9, b=1, rounding=ROUND_DOWN) == 1
+    assert round_decimal(a=-1.1, b=1, rounding=ROUND_DOWN) == -1
+    assert round_decimal(a=-1.5, b=1, rounding=ROUND_DOWN) == -1
+    assert round_decimal(a=-1.9, b=1, rounding=ROUND_DOWN) == -1
 
-    assert decimal_round(a=1.1, b=1, rounding=ROUND_HALF_DOWN) == 1
-    assert decimal_round(a=1.5, b=1, rounding=ROUND_HALF_DOWN) == 1
-    assert decimal_round(a=1.9, b=1, rounding=ROUND_HALF_DOWN) == 2
-    assert decimal_round(a=-1.1, b=1, rounding=ROUND_HALF_DOWN) == -1
-    assert decimal_round(a=-1.5, b=1, rounding=ROUND_HALF_DOWN) == -1
-    assert decimal_round(a=-1.9, b=1, rounding=ROUND_HALF_DOWN) == -2
+    assert round_decimal(a=1.1, b=1, rounding=ROUND_HALF_DOWN) == 1
+    assert round_decimal(a=1.5, b=1, rounding=ROUND_HALF_DOWN) == 1
+    assert round_decimal(a=1.9, b=1, rounding=ROUND_HALF_DOWN) == 2
+    assert round_decimal(a=-1.1, b=1, rounding=ROUND_HALF_DOWN) == -1
+    assert round_decimal(a=-1.5, b=1, rounding=ROUND_HALF_DOWN) == -1
+    assert round_decimal(a=-1.9, b=1, rounding=ROUND_HALF_DOWN) == -2
 
-    assert decimal_round(a=1.1, b=1, rounding=ROUND_HALF_EVEN) == 1
-    assert decimal_round(a=1.5, b=1, rounding=ROUND_HALF_EVEN) == 2
-    assert decimal_round(a=1.9, b=1, rounding=ROUND_HALF_EVEN) == 2
-    assert decimal_round(a=-1.1, b=1, rounding=ROUND_HALF_EVEN) == -1
-    assert decimal_round(a=-1.5, b=1, rounding=ROUND_HALF_EVEN) == -2
-    assert decimal_round(a=-1.9, b=1, rounding=ROUND_HALF_EVEN) == -2
+    assert round_decimal(a=1.1, b=1, rounding=ROUND_HALF_EVEN) == 1
+    assert round_decimal(a=1.5, b=1, rounding=ROUND_HALF_EVEN) == 2
+    assert round_decimal(a=1.9, b=1, rounding=ROUND_HALF_EVEN) == 2
+    assert round_decimal(a=-1.1, b=1, rounding=ROUND_HALF_EVEN) == -1
+    assert round_decimal(a=-1.5, b=1, rounding=ROUND_HALF_EVEN) == -2
+    assert round_decimal(a=-1.9, b=1, rounding=ROUND_HALF_EVEN) == -2
 
-    assert decimal_round(a=1.1, b=1, rounding=ROUND_HALF_UP) == 1
-    assert decimal_round(a=1.5, b=1, rounding=ROUND_HALF_UP) == 2
-    assert decimal_round(a=1.9, b=1, rounding=ROUND_HALF_UP) == 2
-    assert decimal_round(a=-1.1, b=1, rounding=ROUND_HALF_UP) == -1
-    assert decimal_round(a=-1.5, b=1, rounding=ROUND_HALF_UP) == -2
-    assert decimal_round(a=-1.9, b=1, rounding=ROUND_HALF_UP) == -2
+    assert round_decimal(a=1.1, b=1, rounding=ROUND_HALF_UP) == 1
+    assert round_decimal(a=1.5, b=1, rounding=ROUND_HALF_UP) == 2
+    assert round_decimal(a=1.9, b=1, rounding=ROUND_HALF_UP) == 2
+    assert round_decimal(a=-1.1, b=1, rounding=ROUND_HALF_UP) == -1
+    assert round_decimal(a=-1.5, b=1, rounding=ROUND_HALF_UP) == -2
+    assert round_decimal(a=-1.9, b=1, rounding=ROUND_HALF_UP) == -2
 
-    assert decimal_round(a=1.1, b=1, rounding=ROUND_05UP) == 1  # DOWN
-    assert decimal_round(a=1.5, b=1, rounding=ROUND_05UP) == 1
-    assert decimal_round(a=1.9, b=1, rounding=ROUND_05UP) == 1
-    assert decimal_round(a=-1.1, b=1, rounding=ROUND_05UP) == -1
-    assert decimal_round(a=-1.5, b=1, rounding=ROUND_05UP) == -1
-    assert decimal_round(a=-1.9, b=1, rounding=ROUND_05UP) == -1
+    assert round_decimal(a=1.1, b=1, rounding=ROUND_05UP) == 1  # DOWN
+    assert round_decimal(a=1.5, b=1, rounding=ROUND_05UP) == 1
+    assert round_decimal(a=1.9, b=1, rounding=ROUND_05UP) == 1
+    assert round_decimal(a=-1.1, b=1, rounding=ROUND_05UP) == -1
+    assert round_decimal(a=-1.5, b=1, rounding=ROUND_05UP) == -1
+    assert round_decimal(a=-1.9, b=1, rounding=ROUND_05UP) == -1
 
-    assert decimal_round(a=5.1, b=1, rounding=ROUND_05UP) == 6  # UP for 0 and 5
-    assert decimal_round(a=5.5, b=1, rounding=ROUND_05UP) == 6
-    assert decimal_round(a=5.9, b=1, rounding=ROUND_05UP) == 6
-    assert decimal_round(a=-5.1, b=1, rounding=ROUND_05UP) == -6
-    assert decimal_round(a=-5.5, b=1, rounding=ROUND_05UP) == -6
-    assert decimal_round(a=-5.9, b=1, rounding=ROUND_05UP) == -6
+    assert round_decimal(a=5.1, b=1, rounding=ROUND_05UP) == 6  # UP for 0 and 5
+    assert round_decimal(a=5.5, b=1, rounding=ROUND_05UP) == 6
+    assert round_decimal(a=5.9, b=1, rounding=ROUND_05UP) == 6
+    assert round_decimal(a=-5.1, b=1, rounding=ROUND_05UP) == -6
+    assert round_decimal(a=-5.5, b=1, rounding=ROUND_05UP) == -6
+    assert round_decimal(a=-5.9, b=1, rounding=ROUND_05UP) == -6
 
 
 if __name__ == "__main__":

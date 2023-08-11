@@ -7,7 +7,7 @@ from typing import Callable, Union
 
 def list_files(
     path,
-    filter: Union[None, str, Callable[[str], bool]] = "*",
+    filter_pattern: Union[None, str, Callable[[str], bool]] = "*",
     recursive=True,
 ):
     # - Get list of files
@@ -26,13 +26,13 @@ def list_files(
 
     # - Set filter for string pattern
 
-    if isinstance(filter, str):
-        filter = partial(fnmatch.fnmatch, pat=filter)
+    if isinstance(filter_pattern, str):
+        filter_pattern = partial(fnmatch.fnmatch, pat=filter_pattern)
 
     # - Filter
 
-    if filter:
-        filenames = [filename for filename in filenames if filter(filename)]
+    if filter_pattern:
+        filenames = [filename for filename in filenames if filter_pattern(filename)]
     return filenames
 
 
@@ -40,7 +40,7 @@ def test():
     print(
         list_files(
             ".",
-            filter="*",
+            filter_pattern="*",
             recursive=True,
         )
     )

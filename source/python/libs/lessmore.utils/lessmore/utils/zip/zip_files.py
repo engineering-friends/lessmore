@@ -1,6 +1,8 @@
 import os
 import zipfile
 
+from lessmore.utils.path_helpers.get_current_dir import get_current_dir
+
 
 def zip_files(filenames, output_filename):
     with zipfile.ZipFile(output_filename, mode="w", compression=zipfile.ZIP_DEFLATED) as archive:
@@ -9,7 +11,9 @@ def zip_files(filenames, output_filename):
 
 
 def test():
-    zip_files(["zip_file.py", "zip_files.py"], output_filename="test.zip")
+    zip_files(
+        [str(get_current_dir() / "zip_path.py"), str(get_current_dir() / "zip_files.py")], output_filename="test.zip"
+    )
     assert os.path.exists("test.zip")
     os.remove("test.zip")
 

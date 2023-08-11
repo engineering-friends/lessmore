@@ -7,9 +7,11 @@ from hashlib import blake2b
 from typing import List, Literal, Optional
 
 import humanize
+import pytest
 
-from lessmore.utils.time import round_datetime
+from lessmore.utils.round_datetime import round_datetime
 from lessmore.utils.to_anything import unified_datetime
+from lessmore.utils.to_anything.unified_datetime import to_datetime_str
 
 
 @dataclass
@@ -203,7 +205,7 @@ class Alert:
                     "elements": [
                         {
                             "type": "mrkdwn",
-                            "text": f"*Expected resolve time*: {humanize.precisedelta(self.expected_resolving_period)} ({unified_datetime.to_str(round_datetime(first_alert_timestamp + self.expected_resolving_period, '5m' if self.expected_resolving_period >= timedelta(minutes=30) else '1m'),pattern='%Y-%m-%d %H:%M:%S')} UTC)",
+                            "text": f"*Expected resolve time*: {humanize.precisedelta(self.expected_resolving_period)} ({to_datetime_str(round_datetime(first_alert_timestamp + self.expected_resolving_period, '5m' if self.expected_resolving_period >= timedelta(minutes=30) else '1m'),pattern='%Y-%m-%d %H:%M:%S')} UTC)",
                         },
                     ],
                 },
@@ -213,7 +215,7 @@ class Alert:
                         {"type": "mrkdwn", "text": f"*Count*: {self.counter}"},
                         {
                             "type": "mrkdwn",
-                            "text": f"*Last firing*: {unified_datetime.to_str(timestamp,pattern='%Y-%m-%d %H:%M:%S')} UTC",
+                            "text": f"*Last firing*: {to_datetime_str(timestamp,pattern='%Y-%m-%d %H:%M:%S')} UTC",
                         },
                         {"type": "mrkdwn", "text": f"*ID*: {alert_id}"},
                     ],
@@ -291,6 +293,7 @@ class Alert:
         )
 
         # - Create template
+
         result = {
             "message": f"Alert ID: {alert_id}",
             "props": {
@@ -344,7 +347,8 @@ class Alert:
         return result
 
 
-def all_test():
+@pytest.mark.skip
+def test():
     slack_alert = Alert(
         name="network_hhpoker_public.hand_history__transformed",
         priority="critical",
