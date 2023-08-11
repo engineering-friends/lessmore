@@ -1,6 +1,9 @@
+import pytest
+
 from loguru import logger
 from retry import retry
-from utils_ak.loguru import configure_loguru
+
+from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
 
 
 class LoguruRetryLogger:
@@ -9,6 +12,7 @@ class LoguruRetryLogger:
         logger.warning("Retrying", error=error, delay=delay)
 
 
+@pytest.mark.slow
 def test():
     try:
         retry(tries=3, delay=0.1, logger=LoguruRetryLogger)(lambda: 1 / 0)()
