@@ -4,20 +4,16 @@ from pathlib import Path
 
 import pytest
 
+from lessmore.utils.ya_disk_enriched.tests.client import client  # pytest fixture
+
 
 @pytest.mark.slow
-def test_ensure_directory_exists():
+def test_ensure_directory_exists(client):
     # - Make imports (important to make imports here to avoid circular imports)
-
-    from lessmore.utils.ya_disk_enriched.ya_disk_enriched import YaDiskEnriched
 
     # - Init test path
 
     remote_dir = Path("/test-ya-disk-enriched/test_ensure_directory_exists")
-
-    # - Create client
-
-    client = YaDiskEnriched(token=os.environ["YANDEX_DISK_TOKEN"])
 
     # - Run mkdir_safe
 
@@ -33,4 +29,4 @@ def test_ensure_directory_exists():
 
 
 if __name__ == "__main__":
-    test_ensure_directory_exists()
+    pytest.main([__file__])

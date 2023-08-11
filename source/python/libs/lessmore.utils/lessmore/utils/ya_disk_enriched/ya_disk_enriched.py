@@ -6,9 +6,9 @@ import yadisk
 from yadisk.exceptions import DirectoryExistsError
 
 from lessmore.utils.tested import tested
-from lessmore.utils.ya_disk_enriched.unit_tests.test_ensure_directory_exists import test_ensure_directory_exists
-from lessmore.utils.ya_disk_enriched.unit_tests.test_ensure_path_is_deleted import test_ensure_path_is_deleted
-from lessmore.utils.ya_disk_enriched.unit_tests.test_force_upload import test_force_upload
+from lessmore.utils.ya_disk_enriched.tests.test_ensure_directory_exists import test_ensure_directory_exists
+from lessmore.utils.ya_disk_enriched.tests.test_ensure_path_is_deleted import test_ensure_path_is_deleted
+from lessmore.utils.ya_disk_enriched.tests.test_force_upload import test_force_upload
 
 
 class YaDiskEnriched(yadisk.YaDisk):

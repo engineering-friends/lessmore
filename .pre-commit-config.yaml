@@ -36,3 +36,13 @@ repos:
     hooks:
       - id: black
         args: [ '--line-length', '120' ]
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+    -   id: detect-secrets
+        name: Detect secrets
+        language: python
+        entry: detect-secrets-hook
+        args: ["--baseline", ".secrets.baseline"]
+        exclude: '\.gitsecret.+'

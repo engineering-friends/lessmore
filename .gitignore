@@ -36,6 +36,7 @@
 !**/*.js
 !**/*.cfg
 !**/*.gpg
+!**/*.txt
 
 # - Dot files
 
@@ -74,9 +75,14 @@
 # - Custom
 # ...
 
-# - Git secret
+!source/python/environments/local_pythons
+!source/python/environments/local_pythons/**/*
 
+# - Git secret
 !.gitsecret/**/*
-.gitsecret/keys/random_seed
 !*.secret
-test_git_secret
+.gitsecret/keys/random_seed
+
+!git_secret
+!git_secret/**/*
+git_secret/test_git_secret

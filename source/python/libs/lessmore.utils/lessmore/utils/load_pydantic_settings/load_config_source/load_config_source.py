@@ -1,22 +1,23 @@
 import os.path
 
 from functools import reduce
-from typing import Any, Dict, List, Mapping, Optional, Union
+from typing import Optional
 
 import requests
 
-from lessmore.utils.coder import decode_yaml
-from lessmore.utils.config.read_config_file import read_config_file
-from lessmore.utils.dictionary import merge_dicts
+from inline_snapshot import snapshot
+
+from lessmore.utils.backlog.run_inline_snapshot_tests import run_inline_snapshot_tests
+from lessmore.utils.dictionary.merge_dicts import merge_dicts
+from lessmore.utils.encoding.decode_from_yaml import decode_from_yaml
+from lessmore.utils.load_pydantic_settings.config_source_like import ConfigSourceLike
+from lessmore.utils.load_pydantic_settings.load_config_source.read_config_file import read_config_file
 
 
-SUPPORTED_EXTENSIONS = [".env", ".json", ".yaml"]
+SUPPORTED_EXTENSIONS = [".json", ".yaml"]
 
 
-ConfigSourceLike = Union[str, Dict, List]
-
-
-def read_config(
+def load_config_source(
     config_source: ConfigSourceLike,
     context: Optional[dict] = None,
 ) -> dict:
@@ -42,7 +43,9 @@ def read_config(
         # - Read sub configs. Context is a cumulative config
 
         result = reduce(
-            lambda config, sub_config_source: merge_dicts([config, read_config(sub_config_source, context=config)]),
+            lambda config, sub_config_source: merge_dicts(
+                [config, load_config_source(sub_config_source, context=config)]
+            ),
             [context] + config_source,
         )
 
@@ -73,7 +76,7 @@ def read_config(
         elif config_source["type"] == "environment_variables":
             result = dict(os.environ)
         elif config_source["type"] == "url":
-            result = decode_yaml(requests.get(config_source["value"]).text)
+            result = decode_from_yaml(requests.get(config_source["value"]).text)
 
         # - Fix None type if needed
 
@@ -112,23 +115,33 @@ def test():
     with open("/tmp/test.yaml", "w") as file:
         file.write("a: 1\nb: 2")
 
-    assert read_config([{"type": "dictionary", "value": {"a": 1, "b": 2}}]) == {"a": 1, "b": 2}
-    assert read_config([{"type": "file", "value": "/tmp/test.yaml"}]) == {"a": 1, "b": 2}
-    assert read_config([{"type": "file", "value": "/tmp/non_existent.yaml", "is_required": False}]) == {}
+    assert load_config_source([{"type": "dictionary", "value": {"a": 1, "b": 2}}]) == {"a": 1, "b": 2}
+    assert load_config_source([{"type": "file", "value": "/tmp/test.yaml"}]) == {"a": 1, "b": 2}
+    assert load_config_source([{"type": "file", "value": "/tmp/non_existent.yaml", "is_required": False}]) == {}
 
-    print(
-        "Url config",
-        read_config(
-            {
-                "type": "url",
-                "value": "https://raw.githubusercontent.com/codefresh-io/yaml-examples/master/codefresh-build-1.yml",
-            }
-        ),
+    assert load_config_source(
+        {
+            "type": "url",
+            "value": "https://raw.githubusercontent.com/codefresh-io/yaml-examples/master/codefresh-build-1.yml",
+        }
+    ) == snapshot(
+        {
+            "version": "1.0",
+            "steps": {
+                "build-example": {
+                    "type": "build",
+                    "description": "yaml example",
+                    "image-name": "codefresh-io/image",
+                    "dockerfile": "Dockerfile",
+                    "tag": "latest",
+                }
+            },
+        }
     )
 
     # list config
 
-    assert read_config(
+    assert load_config_source(
         [
             {"type": "dictionary", "value": {"a": 1, "b": 2}},
             {"type": "dictionary", "value": {"b": 3, "c": 4}},
@@ -137,4 +150,4 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    run_inline_snapshot_tests()

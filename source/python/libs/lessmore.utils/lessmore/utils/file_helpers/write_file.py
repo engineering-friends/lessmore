@@ -3,7 +3,14 @@ import os
 from typing import Literal, Union
 
 
-def write_file(filename: str, content: Union[str, bytes], mode: Literal["w", "wb", "a", "ab"] = "w") -> None:
+def write_file(content: Union[str, bytes], filename: str, mode: Literal["w", "a"] = "w") -> None:
+    # - Add bytes mode if needed
+
+    if isinstance(content, bytes):
+        mode += "b"
+
+    # - Write file
+
     with open(filename, mode=mode) as file:
         file.write(content)
 

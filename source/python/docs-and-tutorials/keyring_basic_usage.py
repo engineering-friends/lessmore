@@ -6,7 +6,7 @@ import keyring
 # - Single secret per service-username pair
 
 keyring.set_password(service_name="my-service", username="username", password="secret")  # pragma: allowlist secret
-print(keyring.get_password(service_name="my-service", username="secret"))
+print(keyring.get_password(service_name="discord", username="marklidenberg-bot"))
 
 # - Multiple secrets per service-username pair
 
