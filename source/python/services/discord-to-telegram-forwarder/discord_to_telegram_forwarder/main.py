@@ -31,7 +31,7 @@ client = Client(intents=intents)
 # - Init client
 
 telegram_client = TelegramClient(
-    session=str(get_current_dir() / "../data/dynamic/telegram.session"),
+    session=str(get_current_dir() / "telegram.session"),
     api_id=int(config.telegram_api_id),
     api_hash=config.telegram_api_hash,
 )
