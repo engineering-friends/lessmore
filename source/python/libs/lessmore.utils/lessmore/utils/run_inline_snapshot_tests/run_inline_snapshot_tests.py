@@ -7,9 +7,6 @@ from inline_snapshot import snapshot
 from lessmore.utils.file_helpers.read_file import read_file
 from lessmore.utils.file_helpers.write_file import write_file
 from lessmore.utils.run_inline_snapshot_tests.get_caller_filename import get_caller_filename
-from lessmore.utils.run_inline_snapshot_tests.remove_snapshot_wrapper.remove_snapshot_wrapper import (
-    remove_snapshot_wrapper,
-)
 
 
 class SnapshotUpdateOptions:
@@ -19,7 +16,7 @@ class SnapshotUpdateOptions:
     NONE = "none"
 
 
-def run_inline_snapshot_tests(mode: str = SnapshotUpdateOptions.NEW, remove_wrapper: bool = False) -> None:
+def run_inline_snapshot_tests(mode: str = SnapshotUpdateOptions.NEW) -> None:
     """
     Parameters
     ----------
@@ -32,20 +29,12 @@ def run_inline_snapshot_tests(mode: str = SnapshotUpdateOptions.NEW, remove_wrap
         - 'failing': update failing snapshots
         - 'none': do not update snapshots
 
-    remove_wrapper : bool, optional
-        Whether to remove the snapshot wrappers from the file, by default False
-
     Default usage:
     run_inline_snapshot_tests(SnapshotUpdateOptions.NEW)
     # run_inline_snapshot_tests(SnapshotUpdateOptions.ALL)
 
     """
     pytest.main(args=[get_caller_filename(), f"--update-snapshots={mode}"])
-
-    if remove_wrapper:
-        code = read_file(get_caller_filename())
-        code = remove_snapshot_wrapper(code)
-        write_file(get_caller_filename(), code)
 
 
 # test
@@ -56,7 +45,7 @@ def test_something():
 def run_test():
     # - Run test
 
-    run_inline_snapshot_tests(SnapshotUpdateOptions.NEW, remove_wrapper=True)
+    run_inline_snapshot_tests(SnapshotUpdateOptions.NEW)
 
     # - Assert it worked
 
