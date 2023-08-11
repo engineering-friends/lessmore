@@ -2,19 +2,22 @@ import asyncio
 import random
 
 import discord
-import keyring
 import openai
 
 from discord import Client
+from discord_to_telegram_forwarder.config.config import config
 from loguru import logger
 from pymaybe import maybe
 from telethon import TelegramClient
 
 from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
-from lessmore.utils.encoding.decode_from_json import decode_from_json
 from lessmore.utils.file_helpers.read_file import read_file
 from lessmore.utils.path_helpers.get_current_dir import get_current_dir
 
+
+# - Configure openai api key
+
+openai.api_key = config.openai_api_key
 
 # - Init discord client
 
@@ -29,10 +32,8 @@ client = Client(intents=intents)
 
 telegram_client = TelegramClient(
     session=str(get_current_dir() / "../data/dynamic/telegram.session"),
-    api_id=decode_from_json(keyring.get_password(service_name="telegram", username="channeled-sharing-bot"))["api_id"],
-    api_hash=decode_from_json(keyring.get_password(service_name="telegram", username="channeled-sharing-bot"))[
-        "api_hash"
-    ],
+    api_id=int(config.telegram_api_id),
+    api_hash=config.telegram_api_hash,
 )
 
 
@@ -108,16 +109,12 @@ async def on_message(message):
 async def main():
     # - Start telegram client
 
-    await telegram_client.start(
-        bot_token=decode_from_json(keyring.get_password(service_name="telegram", username="channeled-sharing-bot"))[
-            "bot_token"
-        ]
-    )
+    await telegram_client.start(bot_token=config.telegram_bot_token)
 
     # - Start discord client
 
     async with client:
-        await client.start(token=keyring.get_password(service_name="discord", username="marklidenberg-bot"))
+        await client.start(token=config.discord_token)
 
 
 if __name__ == "__main__":

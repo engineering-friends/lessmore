@@ -13,10 +13,15 @@ class Config(BaseSettings):
     telegram_api_hash: str
     telegram_bot_name: str
     telegram_bot_token: str
+    channel_name: str
 
     # - Discord
 
     discord_token: str
+
+    # - OpenAI
+
+    openai_api_key: str
 
 
 # - Inflate config to environment variables
@@ -24,11 +29,6 @@ class Config(BaseSettings):
 config: Config = load_pydantic_settings(
     pydantic_class=Config,
     config_source=[
-        {
-            "type": "file",
-            "is_required": False,
-            "value": "{root}/config.yaml",
-        },
         {
             "type": "file",
             "is_required": False,
