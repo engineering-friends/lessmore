@@ -3,6 +3,7 @@ import os
 from pydantic import BaseSettings
 
 from lessmore.utils.load_pydantic_settings.load_pydantic_settings import load_pydantic_settings
+from lessmore.utils.path_helpers.get_current_dir import get_current_dir
 
 
 class Config(BaseSettings):
@@ -13,46 +14,33 @@ class Config(BaseSettings):
     telegram_bot_name: str
     telegram_bot_token: str
 
+    # - Discord
+
+    discord_token: str
+
 
 # - Inflate config to environment variables
 
-config = load_pydantic_settings(
+config: Config = load_pydantic_settings(
     pydantic_class=Config,
     config_source=[
         {
             "type": "file",
             "is_required": False,
-            "value": "{root}/common.yaml",
+            "value": "{root}/config.yaml",
         },
         {
             "type": "file",
             "is_required": False,
-            "value": "{root}/common.secrets.yaml",
-        },
-        {
-            "type": "file",
-            "is_required": False,
-            "value": "{root}/common.local.yaml",
-        },
-        {
-            "type": "file",
-            "is_required": True,
-            "value": "{root}/environments/{environment}.yaml",
-        },
-        {
-            "type": "file",
-            "is_required": False,
-            "value": "{root}/environments/{environment}.local.yaml",
+            "value": "{root}/config.secrets.yaml",
         },
         "environment_variables",
     ],
     context={
-        "root": os.path.dirname(__file__),
-        "environment": os.environ.get("telegram_poweruser_environment", "prod"),
+        "root": str(get_current_dir()),
     },
 )
 
 if __name__ == "__main__":
     print(config.telegram_bot_name)
     print(config.telegram_api_id)
-    print(config.runtime_mode)

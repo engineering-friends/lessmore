@@ -44,5 +44,5 @@ repos:
         name: Detect secrets
         language: python
         entry: detect-secrets-hook
-        args: ["--baseline", ".secrets.baseline", "--exclude-lines", ".+sample_hands.+"]
-        exclude: '\.json$'
+        args: ["--baseline", ".secrets.baseline"]
+        exclude: '\.gitsecret.+'

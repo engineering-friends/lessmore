@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Optional, Type
 
 from pydantic import BaseSettings
 
@@ -8,10 +8,10 @@ from lessmore.utils.load_pydantic_settings.load_config_source.load_config_source
 
 
 def load_pydantic_settings(
-    pydantic_class: type[BaseSettings],
+    pydantic_class: Any,
     config_source: ConfigSourceLike,
     context: Optional[dict] = None,
-) -> BaseSettings:
+) -> Any:
     """Load pydantic settings from config_source."""
 
     # todo later: make more elegant solution without using environment variables. For example, use temprorary .env file [@marklidenberg]
