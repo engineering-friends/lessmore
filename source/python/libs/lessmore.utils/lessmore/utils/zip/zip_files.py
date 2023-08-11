@@ -1,0 +1,18 @@
+import os
+import zipfile
+
+
+def zip_files(filenames, output_filename):
+    with zipfile.ZipFile(output_filename, mode="w", compression=zipfile.ZIP_DEFLATED) as archive:
+        for filename in filenames:
+            archive.write(filename, arcname=os.path.basename(filename))
+
+
+def test():
+    zip_files(["zip_file.py", "zip_files.py"], output_filename="test.zip")
+    assert os.path.exists("test.zip")
+    os.remove("test.zip")
+
+
+if __name__ == "__main__":
+    test()

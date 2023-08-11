@@ -1,0 +1,70 @@
+# - Ignore all files
+
+**/*.*
+
+# allow subdirectories with a dot
+!**/*.*/
+
+# - Allow some
+
+!**/*.py
+!**/*.pyi
+!**/*.pyx
+!**/*.yaml
+!**/*.env
+!**/*.yml
+!**/*.toml
+!**/*.json
+!**/*.lock
+!**/*.md
+!**/*.sh
+!**/*.kts
+!**/*.bat
+!**/*.properties
+!**/*.java
+!**/*.proto
+!**/*.cpp
+!**/*.c
+!**/*.h
+!**/*.template
+!**/*.sql
+!**/*.css
+!**/*.tsx
+!**/*.ts
+!**/*.jsx
+!**/*.js
+
+# - Dot files
+
+!**/.baseline
+!**/.dockerignore
+!**/.gitattributes
+!**/.gitignore
+!**/*.airflowignore
+
+
+# - Allow templates
+!*.template
+
+# - Allow requirements.txt
+!**/*requirements*.txt
+
+# - Forbid keywords
+**/*local*
+**/*secrets*
+
+# allow templates
+!**/*.template
+
+# allow secrets baseline
+!**/*secrets.baseline*
+
+# allow static assets
+
+!**/data/static/**/*
+
+# - Git LFS
+# ...
+
+# - Custom
+# ...

@@ -1,0 +1,27 @@
+{
+  "title": "CAPS_LOCK to Hyper (F18) or F17 if alone",
+  "rules": [
+    {
+      "description": "CAPS_LOCK to Hyper (F18) or F17 if alone",
+      "manipulators": [
+        {
+          "from": {
+            "key_code": "caps_lock",
+            "modifiers": {}
+          },
+          "to": [
+            {
+              "key_code": "f18"
+            }
+          ],
+          "to_if_alone": [
+            {
+              "key_code": "f17"
+            }
+          ],
+          "type": "basic"
+        }
+        ]
+    }
+  ]
+}

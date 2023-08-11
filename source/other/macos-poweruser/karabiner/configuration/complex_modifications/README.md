@@ -1,0 +1,1 @@
+add to ~/.config/karabiner/custom_modifications and then enable from the app settings

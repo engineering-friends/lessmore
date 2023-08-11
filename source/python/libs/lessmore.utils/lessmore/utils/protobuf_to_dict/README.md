@@ -1,0 +1,1 @@
+Fork from https://github.com/wearefair/protobuf-to-dict/commit/233f6d2c6b76d4ada47a14dc4b1190fc5776f396
