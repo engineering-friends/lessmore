@@ -2,7 +2,6 @@ from more_itertools import adjacent as mark_neighbors, intersperse as interspers
 
 
 def test():
-
     # - Augmenting
 
     # -- Intersperse: fill inbetween
@@ -36,7 +35,7 @@ def test():
 
     # -- Adjacent: mark neighbors
 
-    assert list((lambda x: x == 3, range(6))) == [
+    assert list(mark_neighbors(lambda x: x == 3, range(6))) == [
         (False, 0),
         (False, 1),
         (True, 2),

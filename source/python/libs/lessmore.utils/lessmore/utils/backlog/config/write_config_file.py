@@ -3,7 +3,7 @@ import os.path
 from datetime import timedelta
 
 from lessmore.utils.apply_recursively import apply_recursively
-from lessmore.utils.unified import to_frequency
+from lessmore.utils.to_anything import to_frequency
 
 
 SUPPORTED_EXTENSIONS = [".env", ".json", ".yaml"]
@@ -17,7 +17,6 @@ from lessmore.utils.coder import (  # NOTE: do not delete, used in globals() met
 
 
 def write_config_file(config: dict, filename: str, is_stringified: bool = True) -> None:
-
     # - Stringify if needed
 
     if is_stringified:

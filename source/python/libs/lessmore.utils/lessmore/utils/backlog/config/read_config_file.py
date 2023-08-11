@@ -12,7 +12,6 @@ SUPPORTED_EXTENSIONS = [".env", ".json", ".yaml"]
 
 
 def read_config_file(filename: str) -> dict:
-
     # - Get extension
 
     extension = os.path.splitext(filename)[-1]

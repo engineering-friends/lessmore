@@ -21,7 +21,7 @@ def test():
     print(get_complex_attribute(np, "random"))
     print(get_complex_attribute(np, "random.choice"))
     print(get_complex_attribute(np, "random.choice"))
-    print(get_complex_attribute(np, "rand.choice", "Default"))
+    print(get_complex_attribute(np, "rand.choice", default="Default"))
 
     try:
         print(get_complex_attribute(np, "rand.choice"))

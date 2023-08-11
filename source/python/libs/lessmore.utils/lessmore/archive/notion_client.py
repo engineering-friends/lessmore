@@ -106,7 +106,6 @@ class NotionSimpleClient:
             return [self.enrich_notion_object(value, page_id_to_page=page_id_to_page) for value in notion_object]
 
         elif isinstance(notion_object, dict):
-
             # - Извлекаем страницу
 
             is_page = notion_object.get("object") == "page" or list(notion_object.keys()) == [
@@ -114,7 +113,6 @@ class NotionSimpleClient:
             ]  # {"object": "page", ...} or {"id": ...}
 
             if not is_page:
-
                 # - Применяем рекурсию
 
                 return {
@@ -128,7 +126,6 @@ class NotionSimpleClient:
                 # - Возвращяем страницу если она уже имеется в сохраненных
 
                 if page_id in page_id_to_page.keys():
-
                     return page_id_to_page[page_id]
 
                 logger.info(f"Retrieving page {page_id}", page_id=page_id)
@@ -166,15 +163,12 @@ class NotionSimpleClient:
         if isinstance(notion_object, list):
             return [self.simplify_notion_object(value) for value in notion_object]
         elif isinstance(notion_object, dict):
-
             # - Page
 
             if "__id" in notion_object:
-
                 # Возвращаем объект если он уже обработан
                 return notion_object
             elif "properties" in notion_object:
-
                 # - Удаляем лишние ключи в объекте
 
                 for key in set(notion_object.keys()) - {"created_time", "last_edited_time", "id", "url", "properties"}:
@@ -222,7 +216,6 @@ class NotionSimpleClient:
 
 
 def test_all():
-
     # - Init connection data
 
     database_id = "fb7f9118-ad67-4148-bf22-946b03ec5a30"  # DB only for tests

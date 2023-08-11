@@ -2,12 +2,11 @@ from typing import Union
 
 import bcrypt
 
-from lessmore.utils.unified import unified_bytes
+from lessmore.utils.to_anything import unified_bytes
 
 
 class BCryptHasher:
     def hash(self, secret: Union[str, bytes]):
-
         # - Convert secret to bytes
 
         secret = unified_bytes.to_bytes(secret)
@@ -17,7 +16,6 @@ class BCryptHasher:
         return bcrypt.hashpw(secret, bcrypt.gensalt()).decode("ascii")
 
     def verify(self, hash, secret):
-
         # - Convert secret and hash to bytes
 
         secret = unified_bytes.to_bytes(secret)

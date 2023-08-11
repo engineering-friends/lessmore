@@ -3,12 +3,11 @@ from typing import Optional, Union
 from argon2 import PasswordHasher
 from argon2.low_level import hash_secret
 
-from lessmore.utils.unified import unified_bytes
+from lessmore.utils.to_anything import unified_bytes
 
 
 class Argon2Hasher(PasswordHasher):
     def hash(self, secret: Union[str, bytes], salt: Optional[Union[str, bytes]] = None):
-
         # - Convert secret and salt to bytes
 
         secret = unified_bytes.to_bytes(secret, encoding=self.encoding)

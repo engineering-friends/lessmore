@@ -18,6 +18,7 @@ def is_float_like(value: Any):
 
 def test():
     import numpy as np
+
     assert is_float_like(1.0)
     assert is_float_like(np.float64(1))
     assert is_float_like("1.0")
@@ -26,5 +27,5 @@ def test():
     assert not is_float_like("1.2;;")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

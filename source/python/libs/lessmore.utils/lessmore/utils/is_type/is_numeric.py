@@ -8,6 +8,7 @@ def is_numeric(obj):
 
 def test():
     import numpy as np
+
     assert is_numeric(1.0)
     assert is_numeric(np.float64(1))
     assert is_numeric(1)
@@ -17,5 +18,6 @@ def test():
     assert not is_numeric("1.2")
     assert not is_numeric("1.2;;")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test()

@@ -7,7 +7,6 @@ from lessmore.utils.encryption.hash_argon import hash_with_argon
 
 
 def encrypt_with_argon(value: bytes, secret: str):
-
     # - Generate password hash for fernet
 
     password_hash = hash_with_argon(secret=secret, salt="*" * 16)  # using default salt

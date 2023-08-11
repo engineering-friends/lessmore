@@ -2,7 +2,7 @@ from typing import *
 
 from more_itertools import repeatfunc as _repeatfunc, take as head
 
-from lessmore.utils.reflexion.kwargs_to_args import kwargs_to_args
+from lessmore.utils.kwargs_to_args import kwargs_to_args
 
 
 # todo later: better naming? [@marklidenberg]

@@ -1,7 +1,7 @@
 import os
 import zipfile
 
-from lessmore.utils.zip import zip_path
+from lessmore.utils.zip.zip_path import zip_path
 
 
 def unzip_path(path, output_path="."):
@@ -10,7 +10,6 @@ def unzip_path(path, output_path="."):
 
 
 def test():
-
     # - Create sample file
 
     with open("test.txt", "w") as f:
@@ -18,7 +17,7 @@ def test():
 
     # - Zip file
 
-    zip_path("test.txt", "test.zip")
+    zip_path("test.txt")
 
     # - Remove original file
 
@@ -26,7 +25,7 @@ def test():
 
     # - Unzip file
 
-    unzip_path("test.zip")
+    unzip_path("test.txt.zip")
 
     # - Check if unzipped file exists
 
@@ -35,7 +34,7 @@ def test():
     # - Remove unzipped file
 
     os.remove("test.txt")
-    os.remove("test.zip")
+    os.remove("test.txt.zip")
 
 
 if __name__ == "__main__":

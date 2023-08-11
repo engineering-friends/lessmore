@@ -45,7 +45,6 @@ class GRPCAsyncioClient:
     def _get_channel(self) -> grpc.Channel:
         if self._channel is None:
             if self.ssl:
-
                 # - Prepare credentials
 
                 credentials_list = [
@@ -81,7 +80,6 @@ class GRPCAsyncioClient:
         method: str,
         timeout: int = 5,  # seconds
     ) -> Any:
-
         # - Prepare kwargs
 
         kwargs = {}
@@ -97,7 +95,6 @@ async def test():
     # todo later: make independent test from colluder-gun [@marklidenberg]
 
     from deeplay.schemas.proto.build.deeplay.ultron.replay_urls.v1 import replay_urls_pb2, replay_urls_pb2_grpc
-
     from pyflink_etl.pipelines.colluder_gun.config.colluder_gun_config import colluder_gun_config
 
     grpc_client = GRPCAsyncioClient(

@@ -3,6 +3,7 @@ import os
 from typing import Any, Optional, Union
 
 import grpc
+import pytest
 
 
 def _read_file_or_encode(value: Optional[Union[str, bytes]]):
@@ -45,7 +46,6 @@ class GRPCClient:
     def _get_channel(self) -> grpc.Channel:
         if self._channel is None:
             if self.ssl:
-
                 # - Prepare credentials
 
                 credentials_list = [
@@ -81,7 +81,6 @@ class GRPCClient:
         method: str,
         timeout: int = 5,  # seconds
     ) -> Any:
-
         # - Prepare kwargs
 
         kwargs = {}
@@ -93,11 +92,11 @@ class GRPCClient:
         return getattr(stub_class(self._get_channel()), method)(request=request, timeout=timeout, **kwargs)
 
 
+@pytest.mark.skip
 def test():
     # todo: make independent test from colluder-gun
 
     from deeplay.schemas.proto.build.deeplay.ultron.replay_urls.v1 import replay_urls_pb2, replay_urls_pb2_grpc
-
     from pyflink_etl.pipelines.colluder_gun.config.colluder_gun_config import colluder_gun_config
 
     grpc_client = GRPCClient(

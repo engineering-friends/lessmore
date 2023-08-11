@@ -5,7 +5,7 @@ import pytest
 
 from google.protobuf.descriptor import FieldDescriptor
 
-from lessmore.utils.protobuf_to_dict import (
+from lessmore.utils.protobuf_to_dict.protobuf_to_dict import (
     FieldsMissing,
     datetime_to_timestamp,
     dict_to_protobuf,
@@ -194,7 +194,6 @@ class TestProtoConvertor:
         assert m2.nestedMap["123"].req == ""
 
     def test_type_callable_map_used_for_maps(self):
-
         # we give a string key and value and ensure they get run through int()
         d = {}
         d["intMap"] = {}

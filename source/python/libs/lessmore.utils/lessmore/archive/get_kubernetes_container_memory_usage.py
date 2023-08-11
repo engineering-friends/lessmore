@@ -7,7 +7,6 @@ from lessmore.utils.system import execute_system_command
 
 def get_kubernetes_container_memory_usage():
     if os.path.exists("/sys/fs/cgroup/memory.current"):
-
         # working from kubernetes pod or alike
         return int(execute_system_command("cat /sys/fs/cgroup/memory.current"))
     else:

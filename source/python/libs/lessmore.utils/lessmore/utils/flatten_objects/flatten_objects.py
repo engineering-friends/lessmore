@@ -6,7 +6,6 @@ def flatten_objects(value):
     res = {}
     for k, v in value.items():
         if isinstance(v, list) and len(v) > 0 and isinstance(v[0], dict):
-
             # - Collect all keys for objects (["foo", "bar"])
 
             objects = v
@@ -19,24 +18,20 @@ def flatten_objects(value):
             # - Set flattened values
 
             if len(v) == 1 and sample_object.get("stub"):
-
                 # 'c'
                 for object_key in keys_set:
                     if object_key == "stub":
                         continue
                     res[k + "." + object_key] = []
             else:
-
                 # 'b'
                 for object_key in keys_set:
                     res[k + "." + object_key] = [object.get(object_key) for object in objects]
         else:
-
             # 'a'
             res[k] = v
 
     return res
-
 
 
 def test():

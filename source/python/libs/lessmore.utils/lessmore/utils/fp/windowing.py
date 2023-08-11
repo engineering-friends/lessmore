@@ -6,6 +6,7 @@ from more_itertools import stagger, windowed as _windowed
 
 # todo: split to separate files
 
+
 # a slightly more useful windowed implementation with prefix and suffix
 def windowed(
     iterable: Iterable,
@@ -16,7 +17,6 @@ def windowed(
     add_prefix: bool = False,
     add_suffix: bool = False,
 ):
-
     # - Validate arguments
 
     assert n is not None or offsets is not None

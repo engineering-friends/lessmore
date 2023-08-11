@@ -3,9 +3,9 @@ def strip_zeros(s):
 
 
 def test():
-
     assert strip_zeros("0.000") == "0"
     assert strip_zeros("0.001") == "0.001"
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test()
