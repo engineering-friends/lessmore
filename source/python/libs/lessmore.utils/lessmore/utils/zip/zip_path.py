@@ -15,7 +15,6 @@ def zip_path(path, output_filename=None):
         elif os.path.isdir(path):
             for foldername, subfolders, filenames in os.walk(path):
                 for filename in filenames:
-
                     # - Create complete filepath of file in directory
 
                     file_path = os.path.join(foldername, filename)

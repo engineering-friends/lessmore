@@ -3,7 +3,6 @@ import pandas as pd
 
 
 def is_none_like(obj):
-
     # - Try None
 
     if obj is None:

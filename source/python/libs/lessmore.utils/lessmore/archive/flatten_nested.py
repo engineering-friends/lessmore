@@ -67,7 +67,6 @@ def flatten_nested(value: Any, separator: str = ".") -> Any:
             iter_v_flattened = _to_iterable(v_flattened)
 
             if iter_v_flattened is not None:
-
                 for k1, v1 in iter_v_flattened:
                     result[separator.join([str(k), str(k1)])] = v1
 

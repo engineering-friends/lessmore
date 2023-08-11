@@ -5,7 +5,6 @@ from lessmore.utils.dictionary import flatten_nested
 
 
 def _inflate_envs(envs_by_name: dict, separator: str = "__", to_upper_case: bool = True) -> None:
-
     # - Flatten nested
 
     envs_by_name = flatten_nested(envs_by_name, separator=separator)

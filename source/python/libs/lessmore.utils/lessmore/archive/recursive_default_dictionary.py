@@ -22,7 +22,6 @@ class recursive_defaultdict(defaultdict):
             return value
 
     def set_dotted(self, key, value):
-
         # - Init current value
 
         current_value = self
