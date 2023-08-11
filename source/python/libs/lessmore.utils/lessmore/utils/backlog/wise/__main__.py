@@ -4,8 +4,8 @@ import fire
 
 from loguru import logger
 
-from lessmore.utils.config import read_config
 from lessmore.utils.list_files import list_files
+from lessmore.utils.load_pydantic_settings import load_config_source
 from lessmore.utils.loguru_utils import configure_loguru
 from lessmore.utils.system import execute_system_command
 

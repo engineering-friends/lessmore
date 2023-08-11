@@ -2,8 +2,9 @@ from typing import Optional
 
 from pydantic import BaseSettings
 
-from lessmore.utils.config.load_pydantic_settings._inflate_envs import _inflate_envs
-from lessmore.utils.config.read_config import ConfigSourceLike, read_config
+from lessmore.utils.load_pydantic_settings.config_source_like import ConfigSourceLike
+from lessmore.utils.load_pydantic_settings.inflate_envs import inflate_envs
+from lessmore.utils.load_pydantic_settings.load_config_source.load_config_source import load_config_source
 
 
 def load_pydantic_settings(
@@ -17,11 +18,11 @@ def load_pydantic_settings(
 
     # - Read config
 
-    config = read_config(config_source=config_source, context=context)
+    config = load_config_source(config_source=config_source, context=context)
 
     # - Inflate environment variables
 
-    _inflate_envs(config)
+    inflate_envs(envs_by_name=config)
 
     # - Load config
 
@@ -39,18 +40,16 @@ def test():
         a: int
         b: str
 
-    print(
-        load_pydantic_settings(
-            pydantic_class=Config,
-            config_source={
-                "type": "dictionary",
-                "value": {
-                    "a": 1,
-                    "b": "foo",
-                },
+    assert load_pydantic_settings(
+        pydantic_class=Config,
+        config_source={
+            "type": "dictionary",
+            "value": {
+                "a": 1,
+                "b": "foo",
             },
-        )
-    )
+        },
+    ) == {"a": 1, "b": "foo"}
 
 
 if __name__ == "__main__":

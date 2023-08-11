@@ -1,6 +1,6 @@
 import os
 
-from lessmore.utils.config import read_config
+from lessmore.utils.load_pydantic_settings import load_config_source
 
 
 config = read_config(
