@@ -2,13 +2,15 @@ import os
 
 from pathlib import Path
 
+import keyring
 import pytest
 
 from lessmore.utils.path_helpers.get_current_dir import get_current_dir
+from lessmore.utils.ya_disk_enriched.tests.client import client  # pytest fixture
 
 
 @pytest.mark.slow
-def test_ensure_path_is_deleted():
+def test_ensure_path_is_deleted(client):
     # - Make imports (important to make imports here to avoid circular imports)
 
     from lessmore.utils.ya_disk_enriched.ya_disk_enriched import YaDiskEnriched
@@ -16,10 +18,6 @@ def test_ensure_path_is_deleted():
     # - Init test path
 
     remote_dir = Path("/test-ya-disk-enriched/test_ensure_path_is_deleted")
-
-    # - Create client
-
-    client = YaDiskEnriched(token=os.environ["YANDEX_DISK_TOKEN"])
 
     # - Upload file
 
@@ -42,4 +40,4 @@ def test_ensure_path_is_deleted():
 
 
 if __name__ == "__main__":
-    test_ensure_path_is_deleted()
+    pytest.main([__file__])
