@@ -4,10 +4,9 @@ import discord
 import keyring
 
 from loguru import logger
+from pymaybe import maybe
 
 from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
-from lessmore.utils.encoding.encode_to_pickle import encode_to_pickle
-from lessmore.utils.file_helpers.write_file import write_file
 
 
 class MyClient(discord.Client):
@@ -18,8 +17,6 @@ class MyClient(discord.Client):
         # don't respond to ourselves
         if message.author == self.user:
             return
-
-        write_file(content=encode_to_pickle(message, library="dill"), filename="message.pkl")
 
         logger.info(
             "Received message",
@@ -32,12 +29,13 @@ class MyClient(discord.Client):
                 author_global_name=message.author.global_name,
                 author_display_name=message.author.display_name,
                 author_id=message.author.id,
-                channel_name=message.channel.name,
-                parent_channel_name=message.channel.parent.name,
-                guild_name=message.guild.name,
+                channel_name=maybe(message).channel.name.or_else(None),
+                parent_channel_name=maybe(message).channel.parent.name.or_else(None),
+                guild_name=maybe(message).guild.name.or_else(None),
                 created_at=message.created_at,
             ),
         )
+        # sample: {"ts":"2023-08-11 17:32:20.496","module":"listen_to_discord","message":{"id":1139612279776751756,"jump_url":"https://discord.com/channels/1106702799938519211/1139612279776751756/1139612279776751756","content":"pongpong","type":["default",0],"author_name":"marklidenberg","author_global_name":"Mark Lidenberg","author_display_name":"Mark Lidenberg","author_id":913095424225706005,"channel_name":"ping","parent_channel_name":"marklidenberg-and-his-bot-discussions","guild_name":"Engineering Friends","created_at":"2023-08-11 17:32:20.471000+00:00"}}
 
 
 if __name__ == "__main__":
