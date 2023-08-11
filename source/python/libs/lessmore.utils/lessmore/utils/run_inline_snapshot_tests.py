@@ -1,12 +1,10 @@
-import re
-
 import pytest
 
 from inline_snapshot import snapshot
 
 from lessmore.utils.file_helpers.read_file import read_file
 from lessmore.utils.file_helpers.write_file import write_file
-from lessmore.utils.run_inline_snapshot_tests.get_caller_filename import get_caller_filename
+from lessmore.utils.path_helpers.get_caller_filename import get_caller_path
 
 
 class SnapshotUpdateOptions:
@@ -34,7 +32,7 @@ def run_inline_snapshot_tests(mode: str = SnapshotUpdateOptions.NEW) -> None:
     # run_inline_snapshot_tests(SnapshotUpdateOptions.ALL)
 
     """
-    pytest.main(args=[get_caller_filename(), f"--update-snapshots={mode}"])
+    pytest.main(args=[str(get_caller_path()), f"--update-snapshots={mode}"])
 
 
 # test

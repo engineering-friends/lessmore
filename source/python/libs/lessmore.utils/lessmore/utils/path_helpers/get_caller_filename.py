@@ -1,7 +1,9 @@
 import inspect
 
+from pathlib import Path
 
-def get_caller_filename():
+
+def get_caller_path() -> Path:
     # - Get the current frame
 
     current_frame = inspect.currentframe()
@@ -12,13 +14,13 @@ def get_caller_filename():
 
     # - Extract the file name from the frame
 
-    return caller_frame[1]
+    return Path(caller_frame[1])
 
 
 def test():
     def calling_function():
         print("This function is the caller!")
-        print("Caller's file:", get_caller_filename())
+        print("Caller's file:", get_caller_path())
 
     calling_function()
 
