@@ -1,4 +1,4 @@
-# snapshot of notion page: https://www.notion.so/marklidenberg/git-secret-install-and-basic-usage-993f9d9684bb49e6bcb1a2fead5421d5?pvs=4
+# snapshot of [notion page](https://www.notion.so/marklidenberg/git-secret-install-and-basic-usage-993f9d9684bb49e6bcb1a2fead5421d5?pvs=4) from 2023-08-11
 
 - Create gpg keys
     - `gpg --full-generate-key`
@@ -40,3 +40,5 @@
 - How to import keys
     - `gpg --import /path/to/your_public_key.asc`
     - `gpg --import /path/to/your_private_key.gpg`
+- How to move secret file?
+    - You need to remove it and then add it again. Not great, not terrible
