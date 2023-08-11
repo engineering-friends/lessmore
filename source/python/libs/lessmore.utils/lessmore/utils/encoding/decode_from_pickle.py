@@ -1,9 +1,9 @@
 import pickle
 
-from typing import Any
+from typing import Any, Literal
 
 
-def decode_from_pickle(value: bytes) -> Any:
+def decode_from_pickle(value: bytes, library: Literal["pickle", "dill"] = "pickle") -> Any:
     """Convert value from pickle.
 
     Parameters
@@ -11,12 +11,21 @@ def decode_from_pickle(value: bytes) -> Any:
     value: bytes
         Value to convert
 
+    library: Literal['pickle', 'dill']
+        Library to use
+
     Returns
     -------
     Any
         Unpickled value
     """
-    return pickle.loads(value)
+
+    if library == "pickle":
+        return pickle.loads(value)
+    elif library == "dill":
+        import dill
+
+        return dill.loads(value)
 
 
 def test():

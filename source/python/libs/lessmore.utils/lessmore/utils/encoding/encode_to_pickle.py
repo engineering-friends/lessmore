@@ -1,9 +1,7 @@
-import pickle
-
-from typing import Any
+from typing import Any, Literal
 
 
-def encode_to_pickle(value: Any, *args, **kwargs) -> bytes:
+def encode_to_pickle(value: Any, library: Literal["pickle", "dill"] = "pickle", **kwargs) -> bytes:
     """Convert value to pickle.
 
     Parameters
@@ -11,16 +9,28 @@ def encode_to_pickle(value: Any, *args, **kwargs) -> bytes:
     value: Any
         Value to convert
 
+    library: Literal['pickle', 'dill']
+        Library to use
+
     Returns
     -------
     bytes
         Pickled value
     """
-    return pickle.dumps(value, *args, **kwargs)
+
+    if library == "pickle":
+        import pickle
+
+        return pickle.dumps(value, **kwargs)
+    elif library == "dill":
+        import dill
+
+        return dill.dumps(value, **kwargs)
 
 
 def test():
-    print(encode_to_pickle(1))
+    print(encode_to_pickle(1, library="pickle"))
+    print(encode_to_pickle(1, library="dill"))
 
 
 if __name__ == "__main__":

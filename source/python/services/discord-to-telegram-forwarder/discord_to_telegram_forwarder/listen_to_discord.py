@@ -1,9 +1,13 @@
-import discord
+import os
 
-from deeplay.utils.print_json import print_json
+import discord
+import keyring
+
 from loguru import logger
 
 from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
+from lessmore.utils.encoding.encode_to_pickle import encode_to_pickle
+from lessmore.utils.file_helpers.write_file import write_file
 
 
 class MyClient(discord.Client):
@@ -14,6 +18,8 @@ class MyClient(discord.Client):
         # don't respond to ourselves
         if message.author == self.user:
             return
+
+        write_file(content=encode_to_pickle(message, library="dill"), filename="message.pkl")
 
         logger.info(
             "Received message",
@@ -39,4 +45,4 @@ if __name__ == "__main__":
     intents = discord.Intents.default()
     intents.message_content = True
     client = MyClient(intents=intents)
-    client.run("MTEzOTU4MTU5OTkyNzc3MTE1OQ.GflQyh.bGexEDHu7w83vjARd0tcLWn8_f84qZjWRFa8nM")
+    client.run(keyring.get_password(service_name="discord", username="marklidenberg-bot"))
