@@ -44,7 +44,6 @@ class YandexDiskTransactionManager(TransactionManager):
         return self.get_path(id) is not None
 
     def submit(self, id: str, status: str, body: str = ""):
-
         # - Remove transaction if already submitted
 
         if self.is_submitted(id):

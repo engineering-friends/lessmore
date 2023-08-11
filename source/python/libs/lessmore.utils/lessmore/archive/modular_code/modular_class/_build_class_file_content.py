@@ -20,7 +20,6 @@ def _build_class_file_content(
     # - Add function imports
 
     for function, filename in function_to_its_filename.items():
-
         # get full module path
         function_filename = os.path.abspath(
             filename

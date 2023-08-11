@@ -41,7 +41,6 @@ def test():
     import random
 
     async def f():
-
         # - Init sleeping period
 
         random_sleep_period = random.randint(1, 5)

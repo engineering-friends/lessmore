@@ -22,7 +22,6 @@ class UnifiedTimedelta:
         if isinstance(value, timedelta):
             return value
         elif isinstance(value, str):
-
             # frequency like "5m"
             value = value.replace(" ", "")
             for keys in [
@@ -92,7 +91,6 @@ class UnifiedTimedelta:
 
     @staticmethod
     def to_dateoffset(value):
-
         # https://pandas.pydata.org/pandas-docs/stable/timeseries.html
         return UnifiedTimedelta.to_frequency(value, keys=["D", "H", "T", "S"])
 

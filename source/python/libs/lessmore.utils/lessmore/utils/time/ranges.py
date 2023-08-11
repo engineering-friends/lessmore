@@ -43,7 +43,6 @@ def iter_quarters(beg, end):
             cur_beg = _end
 
         if _end == end and cur_beg != _end:
-
             # last value
             yield _beg.year, _get_quarter_by_month(_beg.month), cur_beg, _end
 

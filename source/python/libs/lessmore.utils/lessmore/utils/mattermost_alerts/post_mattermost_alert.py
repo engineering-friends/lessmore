@@ -2,9 +2,9 @@ import copy
 
 from typing import Optional
 
-from lessmore.utils.alerter.alert import Alert
-
 from airflow_etl.lib.mattermostdriver_client import MattermostDriverClient
+
+from lessmore.utils.alerter.alert import Alert
 
 
 def post_mattermost_alert(

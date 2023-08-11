@@ -11,7 +11,6 @@ def chunked(
     mode: Literal["incomplete", "fill", "even", "ignore", "strict"] = "incomplete",
     fillvalue=None,
 ):
-
     # - Get output
 
     if iterable_chunks:
@@ -21,7 +20,6 @@ def chunked(
         assert mode in ["incomplete", "strict"]
         return sliced(seq=iterable, n=n, strict=mode == "strict")
     else:
-
         # - Process even
 
         if mode == "even":
@@ -38,7 +36,6 @@ def chunked(
             return grouper(iterable=iterable, n=n, incomplete="fill", fillvalue=fillvalue)
 
         elif mode in ["incomplete", "strict"]:
-
             # same as batched(...)
             return chunked_from_more_itertools(iterable=iterable, n=n, strict=mode == "strict")
         else:

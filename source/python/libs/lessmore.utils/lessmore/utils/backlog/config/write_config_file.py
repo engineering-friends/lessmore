@@ -17,7 +17,6 @@ from lessmore.utils.coder import (  # NOTE: do not delete, used in globals() met
 
 
 def write_config_file(config: dict, filename: str, is_stringified: bool = True) -> None:
-
     # - Stringify if needed
 
     if is_stringified:

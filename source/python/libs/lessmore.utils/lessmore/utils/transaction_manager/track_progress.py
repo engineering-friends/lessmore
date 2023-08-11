@@ -8,7 +8,6 @@ from lessmore.utils.unified import unified_timedelta
 
 
 def start_tracking_progress(transaction_manager, total=None, period="60s"):
-
     started_at = datetime.now()
 
     while True:

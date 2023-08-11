@@ -8,7 +8,6 @@ from lessmore.utils.unified import unified_bytes
 
 class Argon2Hasher(PasswordHasher):
     def hash(self, secret: Union[str, bytes], salt: Optional[Union[str, bytes]] = None):
-
         # - Convert secret and salt to bytes
 
         secret = unified_bytes.to_bytes(secret, encoding=self.encoding)

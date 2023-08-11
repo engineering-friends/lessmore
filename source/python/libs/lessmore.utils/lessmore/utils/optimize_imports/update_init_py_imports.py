@@ -11,7 +11,6 @@ def update_init_py_imports(dir):
     for init_py_path in sorted(
         get_init_py_filenames(dir), key=len, reverse=True
     ):  # go from deepest to shallowest so that all __init__.py would be initialized in and filled later to parent __init__.py file
-
         # - Get content of old __init__.py file
 
         if os.path.exists(init_py_path):

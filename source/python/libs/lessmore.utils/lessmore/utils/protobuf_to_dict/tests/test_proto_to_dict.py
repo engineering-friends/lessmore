@@ -194,7 +194,6 @@ class TestProtoConvertor:
         assert m2.nestedMap["123"].req == ""
 
     def test_type_callable_map_used_for_maps(self):
-
         # we give a string key and value and ensure they get run through int()
         d = {}
         d["intMap"] = {}

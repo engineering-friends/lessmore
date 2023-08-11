@@ -1,4 +1,3 @@
-import numpy as np
 from decimal import (
     ROUND_05UP,
     ROUND_CEILING,
@@ -12,6 +11,8 @@ from decimal import (
 )
 from typing import Union
 
+import numpy as np
+
 from lessmore.utils.round.decimal_round.decimal_round import decimal_round
 
 
@@ -22,7 +23,6 @@ def relative_round(
     precision: int = 0,
     pre_round_precision: int = 1,
 ):
-
     # - Pre round
 
     if pre_round_precision:

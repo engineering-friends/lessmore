@@ -46,7 +46,6 @@ class MinioTransactionManager(TransactionManager):
 
     def get_path(self, id: str):
         for status in self._get_statuses():
-
             try:
                 self.minio_client.minio_connect.get_object(
                     bucket_name=self.minio_client.bucket_name,
@@ -64,7 +63,6 @@ class MinioTransactionManager(TransactionManager):
         return self.get_path(id) is not None
 
     def submit(self, id: str, status: str, body: str = ""):
-
         logger.debug("Submitting transaction", id=id, status=status, body=body)
 
         # - Remove transaction if already submitted
@@ -95,7 +93,6 @@ class MinioTransactionManager(TransactionManager):
                 self.minio_client.remove_safe(os.path.join(self.transactions_path, status, base_path))
 
     def get_all(self) -> Dict:
-
         # - Get statuses
 
         statuses = self._get_statuses()

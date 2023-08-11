@@ -1,5 +1,6 @@
-from typing import Dict, List
 import collections.abc
+
+from typing import Dict, List
 
 
 # NOTE: use anyconfig.merge for more advanced merge logics

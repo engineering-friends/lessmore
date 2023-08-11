@@ -4,10 +4,10 @@ import re
 from datetime import datetime, timedelta
 from typing import Optional
 
+from airflow_etl.lib.mattermostdriver_client import MattermostDriverClient
+
 from lessmore.utils.alerter.alert import Alert
 from lessmore.utils.unified import to_timedelta
-
-from airflow_etl.lib.mattermostdriver_client import MattermostDriverClient
 
 
 def resolve_mattermost_alert(
@@ -48,7 +48,6 @@ def resolve_mattermost_alert(
     # - Skip if no messages found
 
     if not messages.get("order"):
-
         # no messages found
         return
 
@@ -63,7 +62,6 @@ def resolve_mattermost_alert(
     # - Process messages
 
     for message in messages:
-
         # - Set color to green
 
         message["props"]["attachments"][0]["color"] = "#00FF00"

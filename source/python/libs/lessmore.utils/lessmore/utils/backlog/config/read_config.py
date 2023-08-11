@@ -39,24 +39,19 @@ def read_config(
     result = None
 
     if isinstance(config_source, list):
-
         # - Read sub configs. Context is a cumulative config
 
         result = reduce(
-            lambda config, sub_config_source: merge_dicts(
-                [config, read_config(sub_config_source, context=config)]
-            ),
+            lambda config, sub_config_source: merge_dicts([config, read_config(sub_config_source, context=config)]),
             [context] + config_source,
         )
 
     elif isinstance(config_source, dict):
-
         # value: {'value': <config_like>, 'is_optional': bool, 'type'}
         assert set(config_source.keys()).issubset({"type", "is_required", "value", "prefix"})
         assert config_source["type"] in ["file", "dictionary", "environment_variables", "url"]
 
         if config_source["type"] == "file":
-
             # - Fill kwargs to path
 
             config_source["value"] = config_source["value"].format(**context)
@@ -98,7 +93,6 @@ def read_config(
         if config_source == "environment_variables":
             return dict(os.environ)
         else:
-
             # - Fill kwargs to path
 
             config_source = config_source.format(**context)

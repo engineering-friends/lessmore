@@ -11,16 +11,13 @@ from loguru import logger
 
 
 def _list_files(path, pattern=None, recursive=True):
-
     # todo later: put to utils [@marklidenberg]
     if not recursive:
         fns = os.listdir(path)
     else:
-
         # glob.glob('**/*') is slower 2.5 times than simple os.walk. It also returns directories
         fns = []
         for root, dirs, files in os.walk(path):
-
             # todo later: make os.path.join faster? [@marklidenberg]
             fns += [os.path.join(root, fn) for fn in files]
     if pattern:

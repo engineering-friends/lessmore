@@ -12,7 +12,6 @@ from more_itertools import (
 
 
 def test():
-
     # - Summarizing
 
     # -- Iterable length

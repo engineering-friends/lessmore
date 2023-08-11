@@ -43,9 +43,7 @@ def shorten_imports(text):
     logger.debug("from_statements", from_statements=from_statements)
 
     for from_statement in from_statements:
-
         if "#" in from_statement:
-
             # skip commented out imports
             continue
 
@@ -82,13 +80,11 @@ def shorten_imports(text):
                         and hasattr(module_shorter, value)
                         and getattr(module_shorter, value, None) == getattr(module, value, None)
                     ):
-
                         # found shorter version!
                         logger.debug("Found shorter version", module_short=module_name_short, value=value, alias=alias)
                         new_import_line = f"from {module_name_short} import {value_alias}"
                         break
                     elif is_last:
-
                         logger.debug(
                             "Failed to find shorter version", module_short=module_name_short, value=value, alias=alias
                         )

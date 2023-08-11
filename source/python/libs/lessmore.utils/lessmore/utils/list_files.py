@@ -10,14 +10,12 @@ def list_files(
     filter: Union[None, str, Callable[[str], bool]] = "*",
     recursive=True,
 ):
-
     # - Get list of files
 
     if not recursive:
         filenames = os.listdir(path)
         filenames = [filename for filename in filenames if os.path.isfile(filename)]
     else:
-
         if os.path.isfile(path):
             filenames = [path]
         else:
@@ -39,7 +37,6 @@ def list_files(
 
 
 def test():
-
     print(
         list_files(
             ".",
@@ -48,5 +45,6 @@ def test():
         )
     )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     test()

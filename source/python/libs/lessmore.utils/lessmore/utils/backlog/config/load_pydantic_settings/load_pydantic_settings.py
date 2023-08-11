@@ -33,7 +33,6 @@ def load_pydantic_settings(
 
 
 def test():
-
     from pydantic import BaseSettings
 
     class Config(BaseSettings):

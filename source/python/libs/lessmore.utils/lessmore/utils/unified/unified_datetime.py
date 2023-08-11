@@ -26,7 +26,6 @@ DatetimeLike = Union[datetime, pendulum.DateTime, str, int, float]
 
 class UnifiedDatetime:
     def __call__(self, value):
-
         # logger.warning("unified_datetime() is deprecated and soon will be removed, use to_datetime() instead")
         return UnifiedDatetime.to_datetime(value)
 
@@ -41,13 +40,11 @@ class UnifiedDatetime:
         elif isinstance(value, pendulum.DateTime):
             return UnifiedDatetime.to_datetime(value.in_timezone(pendulum.UTC).timestamp())
         elif isinstance(value, (int, float)):
-
             # - Try in seconds
 
             try:
                 return datetime.fromtimestamp(value, pendulum.tz.UTC).replace(tzinfo=None)
             except:
-
                 # too small or too big
                 pass
 
@@ -67,7 +64,6 @@ class UnifiedDatetime:
 
             raise Exception(f"Integer out of bounds for datetime: {value}")
         elif isinstance(value, str):
-
             # - Try most common patterns
 
             for pattern in COMMON_DATETIME_PATTERNS:

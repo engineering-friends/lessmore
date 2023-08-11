@@ -6,7 +6,6 @@ from lessmore.utils.encryption.hash_argon import hash_with_argon
 
 
 def encrypt_with_fernet(value: bytes, secret: str):
-
     # - Create Fernet encryptor
 
     encryptor = cryptography.fernet.Fernet(secret)

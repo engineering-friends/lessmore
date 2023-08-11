@@ -2,7 +2,6 @@ from more_itertools import adjacent as mark_neighbors, intersperse as interspers
 
 
 def test():
-
     # - Augmenting
 
     # -- Intersperse: fill inbetween

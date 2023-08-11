@@ -23,7 +23,6 @@ class UnifiedDecimal:
     @staticmethod
     def to_decimal(value, is_stripped=True, max_precision=16):
         if isinstance(value, str):
-
             # - Validate
 
             assert UnifiedDecimal.is_number_like(value)

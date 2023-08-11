@@ -1,6 +1,6 @@
 import time
-from dataclasses import dataclass
 
+from dataclasses import dataclass
 from typing import Optional
 
 import pandas as pd
@@ -34,7 +34,6 @@ class StopWatch:
         self.laps_by_key = {}
 
     def start(self, key: str = "default") -> "StopWatch":
-
         # - Return if disabled
 
         if not self.enabled:
@@ -48,7 +47,6 @@ class StopWatch:
             if self.laps_by_key[key][-1].stop_at is None:
                 raise Exception(f"Clock {key} is already running")
             else:
-
                 # - Add new lap
 
                 self.laps_by_key[key].append(Lap(start_at=t))
@@ -62,7 +60,6 @@ class StopWatch:
         return self
 
     def stop(self, key: Optional[str] = None) -> "StopWatch":
-
         # - Return if disabled
 
         if not self.enabled:
@@ -94,7 +91,6 @@ class StopWatch:
         return self
 
     def stats(self) -> pd.DataFrame:
-
         # - Stop
 
         self.stop()
@@ -127,7 +123,6 @@ clock = StopWatch()
 
 
 def test():
-
     # Usage 1
     clock = StopWatch()
 

@@ -6,7 +6,6 @@ from lessmore.utils.fp import flatten, mark_ends, padded, pairwise, unzip, zip_b
 
 
 def parse_from_statement(from_statement):
-
     search = re.search(
         r"^from\s+([^\s]+)\s+import\s+([^\n\(\)]+)$", string=from_statement, flags=re.MULTILINE
     ) or re.search(r"^from\s+([^\s]+)\s+import\s+\(*([^\(\)]*)\)$", string=from_statement, flags=re.MULTILINE)

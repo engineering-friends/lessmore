@@ -14,7 +14,6 @@ from lessmore.utils.unified import to_datetime, to_datetime_str
 try:
     from loguru import Record
 except ImportError:
-
     # for some reason, Record does not import this way in loguru 0.6.0
     Record = Any
 
@@ -23,7 +22,6 @@ from lessmore.utils.loguru_utils.format_with_trace._get_stack import _get_stack
 
 
 def format_as_json_colored(record: Record):
-
     # - Validate record
 
     assert "_json" not in record["extra"]

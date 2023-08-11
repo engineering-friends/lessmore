@@ -10,10 +10,10 @@ from lessmore.utils.ya_disk_enriched.unit_tests.test_ensure_directory_exists imp
 from lessmore.utils.ya_disk_enriched.unit_tests.test_ensure_path_is_deleted import test_ensure_path_is_deleted
 from lessmore.utils.ya_disk_enriched.unit_tests.test_force_upload import test_force_upload
 
+
 class YaDiskEnriched(yadisk.YaDisk):
     @tested(tests=[test_ensure_directory_exists])
     def ensure_directory_exists(self, path):
-
         # - Prepare paths to create (from root to path: /a/b/c -> /a, /a/b, /a/b/c)
 
         path = path.removesuffix("/").removeprefix("/")  # "/a/b/c/" -> "a/b/c"

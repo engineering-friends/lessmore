@@ -119,7 +119,6 @@ def _field_value_adapter(
     if field.message_type and field.message_type.name == Timestamp_type_name:
         return timestamp_to_datetime
     if field.type == FieldDescriptor.TYPE_MESSAGE:
-
         # recursively encode protobuf sub-message
         return lambda pb: protobuf_to_dict(
             pb,

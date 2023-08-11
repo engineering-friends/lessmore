@@ -1,7 +1,3 @@
-from decimal import Decimal as D
-from typing import Union, Literal
-
-from lessmore.utils.round.decimal_round.strip_zeros import strip_zeros
 from decimal import (
     ROUND_05UP,
     ROUND_CEILING,
@@ -11,7 +7,11 @@ from decimal import (
     ROUND_HALF_EVEN,
     ROUND_HALF_UP,
     ROUND_UP,
+    Decimal as D,
 )
+from typing import Literal, Union
+
+from lessmore.utils.round.decimal_round.strip_zeros import strip_zeros
 
 
 def decimal_round(
@@ -65,6 +65,7 @@ def decimal_round(
     a, b = D(a), D(b)
 
     # - Calculate rounded(a / b)
+
     ratio = a / b / (D(".1") ** precision)
     n = ratio.quantize(D("1."), rounding=rounding)
 
@@ -132,20 +133,19 @@ def test():
     assert decimal_round(a=-1.5, b=1, rounding=ROUND_HALF_UP) == -2
     assert decimal_round(a=-1.9, b=1, rounding=ROUND_HALF_UP) == -2
 
-    assert decimal_round(a=1.1, b=1, rounding=ROUND_05UP) == 1 # DOWN
+    assert decimal_round(a=1.1, b=1, rounding=ROUND_05UP) == 1  # DOWN
     assert decimal_round(a=1.5, b=1, rounding=ROUND_05UP) == 1
     assert decimal_round(a=1.9, b=1, rounding=ROUND_05UP) == 1
     assert decimal_round(a=-1.1, b=1, rounding=ROUND_05UP) == -1
     assert decimal_round(a=-1.5, b=1, rounding=ROUND_05UP) == -1
     assert decimal_round(a=-1.9, b=1, rounding=ROUND_05UP) == -1
 
-    assert decimal_round(a=5.1, b=1, rounding=ROUND_05UP) == 6 # UP for 0 and 5
+    assert decimal_round(a=5.1, b=1, rounding=ROUND_05UP) == 6  # UP for 0 and 5
     assert decimal_round(a=5.5, b=1, rounding=ROUND_05UP) == 6
     assert decimal_round(a=5.9, b=1, rounding=ROUND_05UP) == 6
     assert decimal_round(a=-5.1, b=1, rounding=ROUND_05UP) == -6
     assert decimal_round(a=-5.5, b=1, rounding=ROUND_05UP) == -6
     assert decimal_round(a=-5.9, b=1, rounding=ROUND_05UP) == -6
-
 
 
 if __name__ == "__main__":

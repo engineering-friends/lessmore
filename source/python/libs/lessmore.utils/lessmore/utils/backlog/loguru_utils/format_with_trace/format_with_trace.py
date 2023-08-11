@@ -18,7 +18,6 @@ def format_with_trace(
     ),
     separator=" | ",
 ):
-
     # workaround for custom extra
     record["extra"]["_extra"] = {k: v for k, v in dict(record["extra"]).items() if not k.startswith("_")}
     values = [formatter(record) for formatter in formatters]

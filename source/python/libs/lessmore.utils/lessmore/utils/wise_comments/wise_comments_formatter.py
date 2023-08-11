@@ -23,7 +23,6 @@ class WiseCommentsFormatter:
 
     @staticmethod
     def _repeat_symbol_split(symbol, count, split_number=3):
-
         # symbol="-", count=10, split_count=3 -> "--- --- --- -"
 
         return " ".join(
@@ -32,7 +31,6 @@ class WiseCommentsFormatter:
 
     def _format_steps(self, text, single_comment):
         def substitutor(match, text):
-
             # - Skip case when previous symbol is not "\"
 
             if match.span()[0] >= 2 and text and text[match.span()[0] - 2] == "\\":
@@ -64,7 +62,6 @@ class WiseCommentsFormatter:
 
     def _format_sections(self, text, single_comment):
         def substitutor(match):
-
             # - Process general case
 
             s1, s2, brackets, s3, text = match.groups()  # sample comment: (s1) # (s2) (brackets, like [[[) (s3) (text)
@@ -99,7 +96,6 @@ class WiseCommentsFormatter:
 
     def _format_multi_line_comments(self, text, multi_comment):
         def substitutor(match):
-
             # - Extract
 
             (
@@ -139,7 +135,6 @@ class WiseCommentsFormatter:
 
     def _format_single_line_comments(self, text, single_comment):
         def substitutor(match):
-
             # - Extract
 
             s1, text = match.groups()  # sample comment: (s1) # (text)
@@ -196,7 +191,6 @@ class WiseCommentsFormatter:
 
         for pattern in patterns:
             for match in re.finditer(pattern, text, flags=re.MULTILINE | re.DOTALL):
-
                 # - Find line before
 
                 comment_start = match.span()[0]
@@ -222,7 +216,6 @@ class WiseCommentsFormatter:
                 else:
                     line_after = line_infos[line_after_info_index]["line"]
                 if line_before and line_after:
-
                     # Lines before and after present
 
                     if not is_empty_or_comment_line(line_before) and not is_empty_or_comment_line(line_after):
@@ -247,7 +240,6 @@ class WiseCommentsFormatter:
 
     def _format_todos(self, text, single_comment):
         def substitute(match):
-
             # - Extract
 
             spaces, status, text, tags = (value if value else "" for value in match.groups())
@@ -271,7 +263,6 @@ class WiseCommentsFormatter:
 
             tags = [tag if not re.match(r"[a-zA-Z0-9]", tag[0]) else "#" + tag for tag in tags]
             if self.username and (not tags or "@" != tags[0][0]):
-
                 # There is no a username in tags
 
                 tags = [self.username] + tags

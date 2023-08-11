@@ -4,7 +4,6 @@ from typing import Any
 
 
 def _add_color_tags_to_json(record_dic: dict, record: Any = None):
-
     # - Get json
 
     output = json.dumps(record_dic, default=str, ensure_ascii=False).replace("{", "{{").replace("}", "}}")
@@ -12,7 +11,6 @@ def _add_color_tags_to_json(record_dic: dict, record: Any = None):
     # - Iterate over json and add color tags
 
     for i, (key, value) in enumerate(record_dic.items()):
-
         # - Pick color
 
         color = {

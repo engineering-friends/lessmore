@@ -9,7 +9,6 @@ from lessmore.utils.fp import mark_ends, split_before
 
 
 def _split_words(string: str, upper_case_words: Optional[list] = None):
-
     # - Preprocess arguments
 
     upper_case_words = upper_case_words or []
@@ -48,7 +47,6 @@ def test_split_words():
 
 
 def to_camel_case(string: str, upper_case_words: Optional[list] = None) -> str:
-
     # - Preprocess arguments
 
     upper_case_words = upper_case_words or []

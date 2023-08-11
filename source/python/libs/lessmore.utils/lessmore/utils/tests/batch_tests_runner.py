@@ -16,7 +16,6 @@ class BatchTestsRunner:
 
     # todo later: refactor, save_inputs -> write [@marklidenberg]
     def save_inputs(self, filename, inputs, outputs=None):
-
         # - Preprocess arguments
 
         if isinstance(inputs, str):
