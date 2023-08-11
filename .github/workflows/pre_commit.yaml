@@ -1,0 +1,24 @@
+name: pre-commit
+
+on:
+  pull_request:
+    branches: [master]
+
+
+
+jobs:
+  pre-commit:
+    runs-on:
+      - Linux
+    steps:
+      # - Checkout
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # - Включаем поддержку lfs (выключена для экономии траффика, т.к. здесь не нужна)
+      #      - run: git lfs pull
+
+      # - Pre-commit test
+
+      - uses: pre-commit/action@v3.0.0
