@@ -1,7 +1,9 @@
 import inspect
 
+from typing import Callable
 
-def kwargs_to_args(func, kwargs):
+
+def kwargs_to_args(func: Callable, kwargs: dict) -> list:
     # - Get function signature
 
     signature = inspect.signature(func)
