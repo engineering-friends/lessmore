@@ -4,8 +4,7 @@ from typing import Any, Callable
 
 from loguru import logger
 
-from lessmore.utils.loguru_utils.format_as_json_colored.format_as_json_colored import format_as_json_colored
-from lessmore.utils.loguru_utils.format_with_trace.format_with_trace import format_with_trace
+from lessmore.utils.configure_loguru.format_as_json_colored.format_as_json_colored import format_as_json_colored
 
 
 IS_CONFIGURED = False

@@ -4,7 +4,7 @@ import sys
 
 from loguru import logger
 
-from lessmore.utils.loguru_utils.format_with_trace._get_stack import _get_stack
+from lessmore.utils.configure_loguru.get_stack import get_stack
 
 
 def format_as_json(record):
@@ -24,7 +24,7 @@ def format_as_json(record):
     }
 
     if record["exception"]:
-        record_dic["stack"] = _get_stack(record["exception"])
+        record_dic["stack"] = get_stack(record["exception"])
         record_dic["error"] = record_dic["stack"].split("\n")[-1]
 
     record["extra"]["_json"] = json.dumps(record_dic, default=str)

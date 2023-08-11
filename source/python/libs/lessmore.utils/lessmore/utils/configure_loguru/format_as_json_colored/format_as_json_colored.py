@@ -7,8 +7,9 @@ from typing import Any
 
 from loguru import logger
 
-from lessmore.utils.loguru_utils.format_as_json_colored._add_color_tags_to_json import _add_color_tags_to_json
-from lessmore.utils.to_anything import to_datetime, to_datetime_str
+from lessmore.utils.configure_loguru.format_as_json_colored._add_color_tags_to_json import _add_color_tags_to_json
+from lessmore.utils.configure_loguru.get_stack import get_stack
+from lessmore.utils.to_anything.unified_datetime import to_datetime_str
 
 
 try:
@@ -16,9 +17,6 @@ try:
 except ImportError:
     # for some reason, Record does not import this way in loguru 0.6.0
     Record = Any
-
-
-from lessmore.utils.loguru_utils.format_with_trace._get_stack import _get_stack
 
 
 def format_as_json_colored(record: Record):
@@ -41,7 +39,7 @@ def format_as_json_colored(record: Record):
     }
 
     if record["exception"]:
-        record_dic["stack"] = _get_stack(record["exception"])
+        record_dic["stack"] = get_stack(exception=record["exception"])
         record_dic["error"] = record_dic["stack"].split("\n")[-1]
 
     record_dic = {k: v for k, v in record_dic.items() if v}

@@ -1,7 +1,6 @@
 from loguru import logger
 from retry import retry
-
-from lessmore.utils.loguru_utils import configure_loguru
+from utils_ak.loguru import configure_loguru
 
 
 class LoguruRetryLogger:

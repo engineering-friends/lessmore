@@ -1,6 +1,5 @@
 def _extra_formatter(record, fancy=True):
     if fancy:
-
         values = []
         for i, (k, v) in enumerate(record["extra"]["_extra"].items()):
             values.append(

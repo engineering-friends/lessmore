@@ -1,4 +1,4 @@
-from lessmore.utils.loguru_utils.format_with_trace._get_stack import _get_stack
+from lessmore.utils.configure_loguru.get_stack import get_stack
 
 
 def _exception_formatter(record):
@@ -7,7 +7,7 @@ def _exception_formatter(record):
 
     assert all(key not in record["extra"] for key in ["_stack", "_error"])
 
-    record["extra"]["_stack"] = _get_stack(record["exception"])
+    record["extra"]["_stack"] = get_stack(record["exception"])
     record["extra"]["_error"] = record["extra"]["_stack"].split("\n")[-1]
     _extra = dict(record["extra"])
     _extra.pop("_stack")
