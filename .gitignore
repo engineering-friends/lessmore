@@ -8,6 +8,7 @@
 # - Allow some
 
 !**/*.py
+!**/*.ipynb
 !**/*.pyi
 !**/*.pyx
 !**/*.yaml

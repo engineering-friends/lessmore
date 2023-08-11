@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "monorepo-tooling"
+version = "1.0.0"
+description = "Mark Lidenberg's Monorepo"
+authors = [ "marklidenberg <marklidenberg@gmail.com>" ]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+python-dotenv = "^0.20.0"
+pydantic = "^1.10.2"
+requests = "^2.28.2"
+fire = "^0.4.0"
+loguru = "^0.6.0"
+pendulum = "^2.1.2"
+python-box = "^6.0.2"
+sortedcontainers = "^2.4.0"
+msgpack = "^1.0.4"
+PyYAML = "^6.0"
+"deeplay.utils" = {path = "../../../../source/python/libs/deeplay.utils", develop = true}
+more-itertools = "^9.1.0"
+
+[tool.black]
+# black **/*.py --linge-length 120
+line-length = 120
+
+[tool.isort]
+#  isort **/*.py --profile black --lines-between-types 1 --lines-after-imports 2 --combine-as --line-length 120
+profile = "black"
+combine_as_imports = true
+lines_between_types = 1
+lines_after_imports = 2
+line_length = 120
+
+[tool.semantic_release]
+version_toml = "pyproject.toml:tool.poetry.version"
+build_command = false
+branch = "master"
