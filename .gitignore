@@ -71,14 +71,12 @@
 
 !test_git_lfs.txt
 
+# - Custom
+# ...
+
 # - Git secret
 
 !.gitsecret/**/*
 .gitsecret/keys/random_seed
 !*.secret
-
-test_git_secret.txt
-
-# - Custom
-# ...
-
+test_git_secret
