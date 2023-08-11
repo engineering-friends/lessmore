@@ -67,7 +67,7 @@
 # - Git LFS
 # ...
 
-!test_lfs.txt
+!test_git_lfs.txt
 
 # - Custom
 # ...
