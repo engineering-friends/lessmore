@@ -23,10 +23,6 @@ RUN set -eux \
 COPY ./$SERVICE_LOCAL_PATH/requirements.txt /monorepo/$SERVICE_LOCAL_PATH/requirements.txt
 RUN set -eux && pip install --no-cache-dir -r /monorepo/$SERVICE_LOCAL_PATH/requirements.txt
 
-RUN pip install pytest==7.4.0
-RUN pip install pyyaml==6.0.1
-RUN pip install pymaybe==0.1.6
-
 # - Set working directory
 
 WORKDIR /monorepo/$SERVICE_LOCAL_PATH

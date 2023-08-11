@@ -239,6 +239,20 @@ tests = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900
 tests-no-zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins"]
 
 [[package]]
+name = "better-exceptions"
+version = "0.3.3"
+description = "Pretty and helpful exceptions, automatically"
+optional = false
+python-versions = "*"
+files = [
+    {file = "better_exceptions-0.3.3-py3-none-any.whl", hash = "sha256:9c70b1c61d5a179b84cd2c9d62c3324b667d74286207343645ed4306fdaad976"},
+    {file = "better_exceptions-0.3.3.tar.gz", hash = "sha256:e4e6bc18444d5f04e6e894b10381e5e921d3d544240418162c7db57e9eb3453b"},
+]
+
+[package.dependencies]
+colorama = {version = "*", markers = "sys_platform == \"win32\""}
+
+[[package]]
 name = "black"
 version = "23.7.0"
 description = "The uncompromising code formatter."
@@ -1565,4 +1579,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "0bf49ccb80a02ae87e125aa9eb1a6e95779767b03f0cbd25aa3a1773e283dd2e"
+content-hash = "33eb2f323359b1e78daa8f6ea122f951984e34a74842042ec69c6935e13c8f38"

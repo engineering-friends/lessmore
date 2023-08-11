@@ -65,45 +65,54 @@ async def on_message(message):
     )
     # sample: {"ts":"2023-08-11 17:32:20.496","module":"listen_to_discord","message":{"id":1139612279776751756,"jump_url":"https://discord.com/channels/1106702799938519211/1139612279776751756/1139612279776751756","content":"pongpong","type":["default",0],"author_name":"marklidenberg","author_global_name":"Mark Lidenberg","author_display_name":"Mark Lidenberg","author_id":913095424225706005,"channel_name":"ping","parent_channel_name":"marklidenberg-and-his-bot-discussions","guild_name":"Engineering Friends","created_at":"2023-08-11 17:32:20.471000+00:00"}}
 
-    # - Read emoticons
+    try:
+        # - Read emoticons
 
-    emoticons = read_file("emoticons.txt").strip().split("\n")
+        emoticons = read_file(str(get_current_dir() / "emoticons.txt")).strip().split("\n")
 
-    # - Parse message a bit
+        # - Parse message a bit
 
-    parent_channel_name = maybe(message).channel.parent.name.or_else("")
-    channel_name = maybe(message).channel.name.or_else(None)
+        parent_channel_name = maybe(message).channel.parent.name.or_else("")
+        channel_name = maybe(message).channel.name.or_else(None)
 
-    # - Get emoji from openai
+        # - Get emoji from openai
 
-    # openai.api_key = keyring.get_password(service_name="openai", username="channeled-sharing-bot")
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {
-                "role": "user",
-                "content": f"I want you to respond in a single emoji, one symbol. It should represent the following text: {parent_channel_name}\n{channel_name}\n{message.content}",
-            },
-        ],
-    )
-    emoji = response.choices[0].message.content
+        # openai.api_key = keyring.get_password(service_name="openai", username="channeled-sharing-bot")
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"I want you to respond in a single emoji, one symbol. It should represent the following text: {parent_channel_name}\n{channel_name}\n{message.content}",
+                },
+            ],
+        )
+        emoji = response.choices[0].message.content
 
-    # - Format message for telegram
+        # - Format message for telegram
 
-    parent_channel_name = maybe(message).channel.parent.name.or_else("")
-    channel_name = maybe(message).channel.name.or_else(None)
-    text = ""
-    if parent_channel_name:
-        text += f"#{parent_channel_name}\n"
+        parent_channel_name = maybe(message).channel.parent.name.or_else("")
+        channel_name = maybe(message).channel.name.or_else(None)
+        text = ""
+        if parent_channel_name:
+            text += f"#{parent_channel_name}\n"
 
-    text += f"{emoji} **{channel_name}**\n\n"
-    text += message.content + "\n\n"
+        text += f"{emoji} **{channel_name}**\n\n"
+        text += message.content + "\n\n"
 
-    text += f"[→ к посту {random.choice(emoticons)}]({message.jump_url})"
+        text += f"[→ к посту {random.choice(emoticons)}]({message.jump_url})"
 
-    # - Send message to telegram
+        # - Send message to telegram
 
-    await telegram_client.send_message(entity="marklidenberg", message=text, parse_mode="md", link_preview=False)
+        await telegram_client.send_message(
+            entity="marklidenberg",
+            message=text,
+            parse_mode="md",
+            link_preview=False,
+        )
+
+    except:
+        logger.exception("Failed to forward message")
 
 
 async def main():
