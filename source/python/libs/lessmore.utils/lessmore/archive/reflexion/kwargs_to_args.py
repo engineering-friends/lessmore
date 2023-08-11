@@ -2,7 +2,6 @@ import inspect
 
 
 def kwargs_to_args(func, kwargs):
-
     # - Get function signature
 
     signature = inspect.signature(func)

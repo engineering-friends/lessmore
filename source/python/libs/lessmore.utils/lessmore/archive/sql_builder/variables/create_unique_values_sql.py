@@ -9,7 +9,6 @@ def create_unique_values_sql(
     values_period=None,
     filter_sql: str = None,
 ):
-
     filter_sql = f"AND {filter_sql}" if filter_sql else ""
 
     return f"""

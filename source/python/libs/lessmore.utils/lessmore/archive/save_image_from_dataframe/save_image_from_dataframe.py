@@ -91,7 +91,6 @@ def save_image_from_dataframe(
             cell.set_facecolor(row_colors[row_number % len(row_colors) == 0])
 
         if function_add_custom_style is not None:
-
             if (row_number >= 0 and header_column_count is not None and col_number >= header_column_count) or (
                 row_number >= 0 and header_column_count is None and col_number >= 0
             ):

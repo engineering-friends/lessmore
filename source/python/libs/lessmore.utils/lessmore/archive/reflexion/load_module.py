@@ -27,7 +27,6 @@ def load_module(module_obj, module_name=None, reload=False, import_globals=False
 
                 spec.loader.exec_module(module)
             else:
-
                 # Consider input as module path
                 module = importlib.import_module(module_name)
     else:

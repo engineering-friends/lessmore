@@ -46,39 +46,6 @@ def test_split_words():
     assert _split_words("fooBAR", upper_case_words=["BAR"]) == ["foo", "Bar"]
 
 
-def to_camel_case(string: str, upper_case_words: Optional[list] = None) -> str:
-    # - Preprocess arguments
-
-    upper_case_words = upper_case_words or []
-    upper_case_words = [word.upper() for word in upper_case_words]
-
-    # - Split by words
-
-    words = _split_words(string, upper_case_words=upper_case_words)
-
-    _words = []
-    for is_first, is_last, word in mark_ends(words):
-        if word.upper() in upper_case_words:
-            _words.append(word.upper())
-        else:
-            if is_first:
-                _words.append(word.lower())
-            else:
-                _words.append(word.capitalize())
-
-    return "".join(_words)
-
-
-def test():
-    assert to_camel_case("FooBar") == "fooBar"
-    assert to_camel_case("fooBar") == "fooBar"
-    assert to_camel_case("Foo Bar") == "fooBar"
-    assert to_camel_case("foo-bar") == "fooBar"
-    assert to_camel_case("FOO-BAR") == "fooBar"
-    assert to_camel_case("FOO_BAR") == "fooBar"
-    assert to_camel_case("fooBAR", upper_case_words=["BAR"]) == "fooBAR"
-
-
 def to_pascal_case(string: str, upper_case_words: Optional[list] = None) -> str:
     cameled = to_camel_case(string, upper_case_words=upper_case_words)
     return cameled[0].upper() + cameled[1:]

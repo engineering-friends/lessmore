@@ -9,7 +9,6 @@ from lessmore.utils.sql_builder.wrap_variable_sql import wrap_variable_sql
 
 
 def create_generic_sql(variables_by_name, output, output_name="output"):
-
     # - Preprocess variables
 
     # add variable name to sql (0.8 -> 0.8 AS my_variable)

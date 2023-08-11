@@ -8,7 +8,6 @@ def get_object_from_module(module_obj, object_path, default=None):
     module = load_module(module_obj)
 
     try:
-
         # iterate from module to class by class_name
         return reduce(getattr, object_path.split("."), module)
     except AttributeError:
@@ -21,5 +20,4 @@ def test():
 
 
 if __name__ == "__main__":
-
     test()

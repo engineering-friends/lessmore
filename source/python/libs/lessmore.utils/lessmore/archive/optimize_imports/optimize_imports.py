@@ -3,7 +3,6 @@ from lessmore.utils.optimize_imports.update_init_py_imports import update_init_p
 
 
 def optimize_imports(dir, update_init_py=True, shorten_imports=True):
-
     # - Update init py imports
 
     if update_init_py:
