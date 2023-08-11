@@ -2,7 +2,7 @@ import os
 
 from typing import Callable
 
-from lessmore.utils.unified import to_snake_case
+from lessmore.utils.to_anything import to_snake_case
 
 
 def _build_class_file_content(

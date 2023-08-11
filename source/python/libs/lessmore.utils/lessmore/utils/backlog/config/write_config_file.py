@@ -3,7 +3,7 @@ import os.path
 from datetime import timedelta
 
 from lessmore.utils.apply_recursively import apply_recursively
-from lessmore.utils.unified import to_frequency
+from lessmore.utils.to_anything import to_frequency
 
 
 SUPPORTED_EXTENSIONS = [".env", ".json", ".yaml"]

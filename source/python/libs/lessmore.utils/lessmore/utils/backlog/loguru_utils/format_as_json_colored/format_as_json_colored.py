@@ -8,7 +8,7 @@ from typing import Any
 from loguru import logger
 
 from lessmore.utils.loguru_utils.format_as_json_colored._add_color_tags_to_json import _add_color_tags_to_json
-from lessmore.utils.unified import to_datetime, to_datetime_str
+from lessmore.utils.to_anything import to_datetime, to_datetime_str
 
 
 try:

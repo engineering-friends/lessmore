@@ -7,7 +7,7 @@ from typing import Optional
 from airflow_etl.lib.mattermostdriver_client import MattermostDriverClient
 
 from lessmore.utils.alerter.alert import Alert
-from lessmore.utils.unified import to_timedelta
+from lessmore.utils.to_anything import to_timedelta
 
 
 def resolve_mattermost_alert(
