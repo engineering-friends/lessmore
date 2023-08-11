@@ -41,7 +41,9 @@ def test_function():
 
 def test_class():
     class MyClass:
-        @tested(tests=["test_my_method"])
+        @tested(
+            tests=["test_my_method"]
+        )  # in code use direct function name, so that developers could easily jump to test with IDE
         def my_method(self):
             return "a"
 
