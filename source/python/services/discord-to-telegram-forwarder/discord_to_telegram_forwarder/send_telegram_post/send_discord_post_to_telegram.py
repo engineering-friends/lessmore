@@ -2,6 +2,7 @@ import asyncio
 import random
 
 from discord_to_telegram_forwarder.config.config import config
+from discord_to_telegram_forwarder.send_telegram_post.get_shortened_url import get_shortened_url
 from discord_to_telegram_forwarder.send_telegram_post.request_emoji_from_openai import request_emoji_from_openai
 from discord_to_telegram_forwarder.telegram_client import telegram_client
 
@@ -24,6 +25,10 @@ async def send_discord_post_to_telegram(
 
     emoji = request_emoji_from_openai(f"{post_forum_channel_name} {post_title} {post_body}")
 
+    # - Add discord:// to url and shorten it to make it https:// with redirection to discord://
+
+    inner_shortened_url = get_shortened_url(f"discord://{post_url}")
+
     # - Format message for telegram
 
     text = ""
@@ -35,7 +40,11 @@ async def send_discord_post_to_telegram(
         post_body[:3000] + ("" if len(post_body) < 3000 else "...") + "\n\n"
     )  # maximum telegram message size is 4096. Making it 3000 to resever space for title and for the buffer
 
-    text += f"[→ к посту {random.choice(emoticons)}]({post_url})"
+    text += random.choice(emoticons) + "\n"
+    text += f"[→ к посту]({post_url})"
+
+    if inner_shortened_url:
+        text += f"\n[→ к посту на apple-устройствах]({inner_shortened_url})"
 
     # - Send message to telegram
 
@@ -54,7 +63,7 @@ async def test():
         telegram_chat="marklidenberg",
         post_title="title",
         post_body="body",
-        post_url="https://youtube.com/watch?v=dQw4w9WgXcQ",
+        post_url="https://discord.com/channels/1106702799938519211/1138813657061535814/1138813657061535814",
     )
 
 
