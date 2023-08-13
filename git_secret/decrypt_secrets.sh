@@ -1,1 +1,1 @@
-git secret reveal
+git secret reveal -f # -f: force overwrite
