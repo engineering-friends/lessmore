@@ -1,5 +1,7 @@
 import os
 
+from typing import Union
+
 from pydantic import BaseSettings
 
 from lessmore.utils.load_pydantic_settings.load_pydantic_settings import load_pydantic_settings
@@ -13,7 +15,7 @@ class Config(BaseSettings):
     telegram_api_hash: str
     telegram_bot_name: str
     telegram_bot_token: str
-    telegram_chat: str
+    telegram_chat: Union[int, str]
 
     # - Discord
 
@@ -42,10 +44,11 @@ config: Config = load_pydantic_settings(
     ],
     context={
         "root": str(get_current_dir()),
-        "env": os.environ.get("DISCORD_TO_TELEGRAM_FORWARDER_ENV", "prod"),
+        "env": os.environ.get("DISCORD_TO_TELEGRAM_FORWARDER_ENV", "test"),
     },
 )
 
 if __name__ == "__main__":
     print(config.telegram_bot_name)
     print(config.telegram_api_id)
+    print(type(config.telegram_chat))
