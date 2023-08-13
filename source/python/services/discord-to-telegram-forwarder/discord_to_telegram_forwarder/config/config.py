@@ -40,7 +40,7 @@ config: Config = load_pydantic_settings(
             "is_required": False,
             "value": "{root}/config.secrets.{env}.yaml",
         },
-        "environment_variables",
+        # "environment_variables",
     ],
     context={
         "root": str(get_current_dir()),
