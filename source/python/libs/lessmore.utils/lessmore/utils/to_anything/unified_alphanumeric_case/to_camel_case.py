@@ -2,7 +2,7 @@ from typing import Optional
 
 from more_itertools import mark_ends
 
-from lessmore.utils.to_anything.unified_alpha_numeric_case.split_words import split_words
+from lessmore.utils.to_anything.unified_alphanumeric_case.split_words import split_words
 
 
 def to_camel_case(string: str, upper_case_words: Optional[list] = None) -> str:

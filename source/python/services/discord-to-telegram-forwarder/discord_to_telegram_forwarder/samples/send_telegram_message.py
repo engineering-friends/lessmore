@@ -12,7 +12,7 @@ async def main():
     # - Init client
 
     telegram_client = TelegramClient(
-        session=str(get_current_dir() / "../../data/dynamic/telegram.session"),
+        session=str(get_current_dir() / "telegram.session"),
         api_id=decode_from_json(keyring.get_password(service_name="telegram", username="channeled-sharing-bot"))[
             "api_id"
         ],
@@ -37,7 +37,11 @@ async def main():
 
     # - Send message
 
-    await telegram_client.send_message(entity="marklidenberg", message="\u2614")
+    await telegram_client.send_message(
+        entity="marklidenberg",
+        message="[test](discord://https://discord.com/channels/1106702799938519211/1139820224913342494)",
+        parse_mode="md",
+    )
 
 
 if __name__ == "__main__":
