@@ -30,9 +30,9 @@ async def send_discord_post_to_telegram(
 
     emoji = request_emoji_from_openai(f"{post_forum_channel_name} {post_title} {post_body}")
 
-    # - Add discord:// to url and shorten it to make it https:// with redirection to discord://
+    # - Make discord schema and shorten it to make it https:// with redirection to discord://
 
-    inner_shortened_url = get_shortened_url(f"discord://{post_url}") if add_inner_shortened_url else ""
+    inner_shortened_url = get_shortened_url(post_url.replace("https", "discord")) if add_inner_shortened_url else ""
 
     # - Format message for telegram
 
