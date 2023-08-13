@@ -6,7 +6,7 @@ import openai
 
 from discord import Client
 from discord_to_telegram_forwarder.config.config import config
-from discord_to_telegram_forwarder.send_telegram_post.send_discord_post_to_telegram import (
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_post_to_telegram import (
     request_emoji_from_openai,
     send_discord_post_to_telegram,
 )

@@ -4,8 +4,10 @@ import random
 from typing import Union
 
 from discord_to_telegram_forwarder.config.config import config
-from discord_to_telegram_forwarder.send_telegram_post.get_shortened_url import get_shortened_url
-from discord_to_telegram_forwarder.send_telegram_post.request_emoji_from_openai import request_emoji_from_openai
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url import get_shortened_url
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_from_openai import (
+    request_emoji_from_openai,
+)
 from discord_to_telegram_forwarder.telegram_client import telegram_client
 
 from lessmore.utils.file_helpers.read_file import read_file
