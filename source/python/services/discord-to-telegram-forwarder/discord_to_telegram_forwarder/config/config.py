@@ -40,7 +40,10 @@ config: Config = load_pydantic_settings(
         },
         "environment_variables",
     ],
-    context={"root": str(get_current_dir()), "env": os.environ.get("DISCORD_TO_TELEGRAM_FORWARDER_ENV", "test")},
+    context={
+        "root": str(get_current_dir()),
+        "env": os.environ.get("DISCORD_TO_TELEGRAM_FORWARDER_ENV", "prod"),
+    },
 )
 
 if __name__ == "__main__":
