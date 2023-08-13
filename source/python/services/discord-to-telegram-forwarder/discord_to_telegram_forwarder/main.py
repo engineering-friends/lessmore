@@ -60,14 +60,15 @@ async def on_message(message: discord.Message):
 
     # - Filter forum post messages: from forum channel and is starter message
 
-    is_post_message = isinstance(
-        maybe(message).channel.parent.or_else(None), discord.ForumChannel
-    ) and message.id == maybe(message).channel.starter_message.id.or_else(None)
+    if config.filter_forum_post_messages:
+        is_post_message = isinstance(
+            maybe(message).channel.parent.or_else(None), discord.ForumChannel
+        ) and message.id == maybe(message).channel.starter_message.id.or_else(None)
 
-    logger.info("is_post_message", value=is_post_message)
+        logger.info("is_post_message", value=is_post_message)
 
-    if not is_post_message:
-        return
+        if not is_post_message:
+            return
 
     try:
         await send_discord_post_to_telegram(

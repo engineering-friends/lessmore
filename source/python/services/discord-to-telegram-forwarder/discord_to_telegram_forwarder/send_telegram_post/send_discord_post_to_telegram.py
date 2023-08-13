@@ -16,6 +16,7 @@ async def send_discord_post_to_telegram(
     post_title: str,
     post_body: str,
     post_url: str,
+    add_inner_shortened_url: bool = True,
 ) -> None:
     # - Read emoticons
 
@@ -27,7 +28,7 @@ async def send_discord_post_to_telegram(
 
     # - Add discord:// to url and shorten it to make it https:// with redirection to discord://
 
-    inner_shortened_url = get_shortened_url(f"discord://{post_url}")
+    inner_shortened_url = get_shortened_url(f"discord://{post_url}") if add_inner_shortened_url else ""
 
     # - Format message for telegram
 
@@ -62,8 +63,9 @@ async def test():
         post_forum_channel_name="channel_name",
         telegram_chat="marklidenberg",
         post_title="title",
-        post_body="body",
+        post_body="[sample linke](https://google.com)",
         post_url="https://discord.com/channels/1106702799938519211/1138813657061535814/1138813657061535814",
+        add_inner_shortened_url=False,
     )
 
 

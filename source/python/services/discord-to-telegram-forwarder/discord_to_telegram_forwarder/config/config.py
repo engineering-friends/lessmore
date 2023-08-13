@@ -23,6 +23,10 @@ class Config(BaseSettings):
 
     openai_api_key: str
 
+    # - Logic
+
+    filter_forum_post_messages: bool = False
+
 
 # - Inflate config to environment variables
 
@@ -32,13 +36,11 @@ config: Config = load_pydantic_settings(
         {
             "type": "file",
             "is_required": False,
-            "value": "{root}/config.secrets.yaml",
+            "value": "{root}/config.secrets.{env}.yaml",
         },
         "environment_variables",
     ],
-    context={
-        "root": str(get_current_dir()),
-    },
+    context={"root": str(get_current_dir()), "env": os.environ.get("DISCORD_TO_TELEGRAM_FORWARDER_ENV", "test")},
 )
 
 if __name__ == "__main__":

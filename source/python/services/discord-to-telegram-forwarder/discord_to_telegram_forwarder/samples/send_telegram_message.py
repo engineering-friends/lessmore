@@ -39,7 +39,7 @@ async def main():
 
     await telegram_client.send_message(
         entity="marklidenberg",
-        message="[test](discord://https://discord.com/channels/1106702799938519211/1139820224913342494)",
+        message="@marklidenberg",
         parse_mode="md",
     )
 
