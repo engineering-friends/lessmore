@@ -63,7 +63,7 @@ async def test():
     await telegram_client.start(bot_token=config.telegram_bot_token)
     await send_discord_post_to_telegram(
         post_forum_channel_name="channel_name",
-        telegram_chat=-1001561135632,
+        telegram_chat=config.telegram_chat,
         post_title="Тестирую форвардер",
         post_body="Здесь что-то оооочень важное",
         post_url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
