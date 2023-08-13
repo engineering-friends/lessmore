@@ -1,6 +1,8 @@
 import asyncio
 import random
 
+from typing import Union
+
 from discord_to_telegram_forwarder.config.config import config
 from discord_to_telegram_forwarder.send_telegram_post.get_shortened_url import get_shortened_url
 from discord_to_telegram_forwarder.send_telegram_post.request_emoji_from_openai import request_emoji_from_openai
@@ -11,7 +13,7 @@ from lessmore.utils.path_helpers.get_current_dir import get_current_dir
 
 
 async def send_discord_post_to_telegram(
-    telegram_chat: str,
+    telegram_chat: Union[str, int],
     post_forum_channel_name: str,
     post_title: str,
     post_body: str,
@@ -61,11 +63,11 @@ async def test():
     await telegram_client.start(bot_token=config.telegram_bot_token)
     await send_discord_post_to_telegram(
         post_forum_channel_name="channel_name",
-        telegram_chat="marklidenberg",
-        post_title="title",
-        post_body="[sample linke](https://google.com)",
-        post_url="https://discord.com/channels/1106702799938519211/1138813657061535814/1138813657061535814",
-        add_inner_shortened_url=False,
+        telegram_chat=-1001561135632,
+        post_title="Тестирую форвардер",
+        post_body="Здесь что-то оооочень важное",
+        post_url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
+        add_inner_shortened_url=True,
     )
 
 
