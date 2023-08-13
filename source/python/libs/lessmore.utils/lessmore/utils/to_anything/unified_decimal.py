@@ -5,7 +5,7 @@ from typing import Union
 
 from loguru import logger
 
-from lessmore.utils.round.decimal_round.decimal_round import round_decimal
+from lessmore.utils.round.round_decimal.round_decimal import round_decimal
 
 
 DecimalLike = Union[str, int, float]

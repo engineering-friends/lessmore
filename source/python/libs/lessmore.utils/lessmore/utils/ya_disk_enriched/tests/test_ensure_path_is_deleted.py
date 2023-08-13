@@ -11,10 +11,6 @@ from lessmore.utils.ya_disk_enriched.tests.client import client  # pytest fixtur
 
 @pytest.mark.slow
 def test_ensure_path_is_deleted(client):
-    # - Make imports (important to make imports here to avoid circular imports)
-
-    from lessmore.utils.ya_disk_enriched.ya_disk_enriched import YaDiskEnriched
-
     # - Init test path
 
     remote_dir = Path("/test-ya-disk-enriched/test_ensure_path_is_deleted")

@@ -6,7 +6,10 @@ import openai
 
 from discord import Client
 from discord_to_telegram_forwarder.config.config import config
-from discord_to_telegram_forwarder.send_telegram_post.send_telegram_post import get_emoji_from_text, send_telegram_post
+from discord_to_telegram_forwarder.send_telegram_post.send_discord_post_to_telegram import (
+    request_emoji_from_openai,
+    send_discord_post_to_telegram,
+)
 from discord_to_telegram_forwarder.telegram_client import telegram_client
 from loguru import logger
 from pymaybe import maybe
@@ -33,7 +36,7 @@ async def on_ready():
 
 
 @client.event
-async def on_message(message):
+async def on_message(message: discord.Message):
     # - Log message
 
     logger.info(
@@ -55,12 +58,24 @@ async def on_message(message):
     )
     # sample: {"ts":"2023-08-11 17:32:20.496","module":"listen_to_discord","message":{"id":1139612279776751756,"jump_url":"https://discord.com/channels/1106702799938519211/1139612279776751756/1139612279776751756","content":"pongpong","type":["default",0],"author_name":"marklidenberg","author_global_name":"Mark Lidenberg","author_display_name":"Mark Lidenberg","author_id":913095424225706005,"channel_name":"ping","parent_channel_name":"marklidenberg-and-his-bot-discussions","guild_name":"Engineering Friends","created_at":"2023-08-11 17:32:20.471000+00:00"}}
 
+    # - Filter forum post messages: from forum channel and is starter message
+
+    is_post_message = isinstance(
+        maybe(message).channel.parent.or_else(None), discord.ForumChannel
+    ) and message.id == maybe(message).channel.starter_message.id.or_else(None)
+
+    logger.info("is_post_message", value=is_post_message)
+
+    if not is_post_message:
+        return
+
     try:
-        await send_telegram_post(
-            channel_name=maybe(message).channel.parent.name.or_else(""),
-            title=maybe(message).channel.name.or_else(""),
-            body=message.content,
-            url=message.jump_url,
+        await send_discord_post_to_telegram(
+            telegram_chat=config.telegram_chat,
+            post_forum_channel_name=maybe(message).channel.parent.name.or_else(""),
+            post_title=maybe(message).channel.name.or_else(""),
+            post_body=message.content,
+            post_url=message.jump_url,
         )
     except:
         logger.exception("Failed to forward message")

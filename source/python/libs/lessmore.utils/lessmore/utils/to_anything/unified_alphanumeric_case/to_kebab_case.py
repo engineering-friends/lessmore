@@ -1,6 +1,6 @@
 from typing import Optional
 
-from lessmore.utils.to_anything.unified_alpha_numeric_case.to_snake_case import to_snake_case
+from lessmore.utils.to_anything.unified_alphanumeric_case.to_snake_case import to_snake_case
 
 
 def to_kebab_case(string: str, upper_case_words: Optional[list] = None) -> str:

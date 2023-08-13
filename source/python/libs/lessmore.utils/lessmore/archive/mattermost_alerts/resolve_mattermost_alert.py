@@ -42,7 +42,7 @@ def resolve_mattermost_alert(
     # - Process
 
     messages = mattermost_client.posts__search_for_team_posts(
-        terms=f"{alert.hash_alert_id} from:{mattermost_client.bot_user_id} in:{channel_id} after:{(datetime.utcnow() - to_timedelta(lookback_period)).date()}",
+        terms=f"{alert.id_hash} from:{mattermost_client.bot_user_id} in:{channel_id} after:{(datetime.utcnow() - to_timedelta(lookback_period)).date()}",
     )
 
     # - Skip if no messages found

@@ -11,7 +11,7 @@ from decimal import (
 )
 from typing import Literal, Union
 
-from lessmore.utils.round.decimal_round.strip_zeros import strip_zeros
+from lessmore.utils.round.round_decimal.strip_zeros import strip_zeros
 
 
 def round_decimal(

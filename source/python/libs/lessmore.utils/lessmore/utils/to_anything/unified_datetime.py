@@ -177,4 +177,11 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    # test()
+
+    import pandas as pd
+
+    print(pd.to_datetime("2022.01.01"))
+    print(pd.to_datetime(datetime.now().timestamp()))
+    print(pd.to_datetime(datetime.now().timestamp()))
+    print(pd.to_datetime(pendulum.now()))
