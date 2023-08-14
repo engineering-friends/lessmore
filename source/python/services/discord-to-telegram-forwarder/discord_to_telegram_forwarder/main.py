@@ -76,6 +76,7 @@ async def on_message(message: discord.Message):
             post_forum_channel_name=maybe(message).channel.parent.name.or_else(""),
             post_title=maybe(message).channel.name.or_else(""),
             post_body=message.content,
+            post_author_name=message.author.display_name,
             post_url=message.jump_url,
         )
     except:

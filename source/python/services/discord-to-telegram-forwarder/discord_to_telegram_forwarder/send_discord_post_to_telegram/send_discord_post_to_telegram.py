@@ -4,7 +4,9 @@ import random
 from typing import Union
 
 from discord_to_telegram_forwarder.config.config import config
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url import get_shortened_url
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
+    get_shortened_url_from_tiny_url,
+)
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_from_openai import (
     request_emoji_from_openai,
 )
@@ -19,8 +21,9 @@ async def send_discord_post_to_telegram(
     post_forum_channel_name: str,
     post_title: str,
     post_body: str,
+    post_author_name: str,
     post_url: str,
-    add_inner_shortened_url: bool = True,
+    add_inner_shortened_url: bool = True,  # add discord:// url, shortened and wrapped into https://
 ) -> None:
     # - Read emoticons
 
@@ -32,7 +35,9 @@ async def send_discord_post_to_telegram(
 
     # - Make discord schema and shorten it to make it https:// with redirection to discord://
 
-    inner_shortened_url = get_shortened_url(post_url.replace("https", "discord")) if add_inner_shortened_url else ""
+    inner_shortened_url = (
+        get_shortened_url_from_tiny_url(post_url.replace("https", "discord")) if add_inner_shortened_url else ""
+    )
 
     # - Format message for telegram
 
@@ -45,7 +50,7 @@ async def send_discord_post_to_telegram(
         post_body[:3000] + ("" if len(post_body) < 3000 else "...") + "\n\n"
     )  # maximum telegram message size is 4096. Making it 3000 to resever space for title and for the buffer
 
-    text += random.choice(emoticons) + "\n"
+    text += f"{post_author_name} {random.choice(emoticons)}\n"
     text += f"[→ к посту]({post_url})"
 
     if inner_shortened_url:
@@ -68,6 +73,7 @@ async def test():
         telegram_chat=config.telegram_chat,
         post_title="Тестирую форвардер",
         post_body="Здесь что-то оооочень важное",
+        post_author_name="Mark Lidenberg",
         post_url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
         add_inner_shortened_url=True,
     )
