@@ -3,7 +3,6 @@ import random
 
 from typing import Any, Optional, Sequence, Union
 
-from discord_to_telegram_forwarder.config.config import config
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
 )
@@ -68,6 +67,8 @@ async def send_discord_post_to_telegram(
 
 
 async def test():
+    from discord_to_telegram_forwarder.config.config import config
+
     await telegram_client.start(bot_token=config.telegram_bot_token)
     await send_discord_post_to_telegram(
         post_forum_channel_name="channel_name",

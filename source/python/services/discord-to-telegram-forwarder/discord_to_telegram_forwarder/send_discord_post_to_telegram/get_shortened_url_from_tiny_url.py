@@ -1,7 +1,5 @@
 import requests
 
-from pymaybe import maybe
-
 
 def get_shortened_url_from_tiny_url(url: str) -> str:
     try:
