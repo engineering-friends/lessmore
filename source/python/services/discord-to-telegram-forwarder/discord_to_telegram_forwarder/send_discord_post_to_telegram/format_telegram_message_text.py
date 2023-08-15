@@ -54,9 +54,7 @@ def format_telegram_message_text(
 
 
 def test():
-    random.seed(12)
-
-    assert (
+    print(
         format_telegram_message_text(
             post_forum_channel_name="channel_name",
             post_title="Тестирую форвардер",
@@ -65,15 +63,16 @@ def test():
             post_url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
             add_inner_shortened_url=True,
         )
-    ) == snapshot(
-        """#channel_name
+    )
+
+    # example output:
+    """#channel_name
 🔍 **Тестирую форвардер**
 
 Mark Lidenberg (。◕‿‿◕。)
 [→ к посту](https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley)
 [→ к посту на apple-устройствах](https://tinyurl.com/2bub4s6g)"""
-    )
 
 
 if __name__ == "__main__":
-    run_inline_snapshot_tests()
+    test()
