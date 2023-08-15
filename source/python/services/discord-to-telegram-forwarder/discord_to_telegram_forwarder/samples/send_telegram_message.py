@@ -40,6 +40,7 @@ async def main():
     await telegram_client.send_message(
         entity="marklidenberg",
         message="# Test \n ## Test \n ### Test   ",
+        file=["send_telegram_message.py"],  # works with files or urls
         parse_mode="md",
     )
 

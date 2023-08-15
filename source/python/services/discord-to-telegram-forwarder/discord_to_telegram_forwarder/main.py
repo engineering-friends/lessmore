@@ -29,10 +29,15 @@ intents = discord.Intents.default()
 intents.message_content = True
 client = Client(intents=intents)
 
+# - Log in callback
+
 
 @client.event
 async def on_ready():
     logger.info(f"Logged in", user=client.user, id=client.user.id)
+
+
+# - On message callback
 
 
 @client.event
@@ -70,6 +75,16 @@ async def on_message(message: discord.Message):
         if not is_post_message:
             return
 
+    # - Get image attachments
+
+    image_urls = [
+        attachment.url
+        for attachment in message.attachments
+        if attachment.url.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp"))
+    ]
+
+    # - Send post to telegram
+
     try:
         await send_discord_post_to_telegram(
             telegram_chat=config.telegram_chat,
@@ -78,9 +93,13 @@ async def on_message(message: discord.Message):
             post_body=message.content,
             post_author_name=message.author.display_name,
             post_url=message.jump_url,
+            files=image_urls,
         )
     except:
         logger.exception("Failed to forward message")
+
+
+# - Main
 
 
 async def main():
