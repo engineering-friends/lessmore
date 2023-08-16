@@ -75,13 +75,11 @@ class ProcessorClient(discord.Client):
 
         try:
             await self.process_discord_post(
-                post_kwargs=dict(
-                    channel_name=maybe(message).channel.parent.name.or_else(""),
-                    title=maybe(message).channel.name.or_else(""),
-                    body=message.content,
-                    author_name=message.author.display_name,
-                    url=message.jump_url,
-                ),
+                channel_name=maybe(message).channel.parent.name.or_else(""),
+                title=maybe(message).channel.name.or_else(""),
+                body=message.content,
+                author_name=message.author.display_name,
+                url=message.jump_url,
                 files=image_urls,
             )
         except:

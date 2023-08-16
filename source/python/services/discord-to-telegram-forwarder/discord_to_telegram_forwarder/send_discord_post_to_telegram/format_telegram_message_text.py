@@ -66,7 +66,7 @@ def test_single():
 
 
 def test_batch():
-    assert [format_telegram_message_text(**message) for message in test_post_kwargs.values()] == snapshot(
+    assert [format_telegram_message_text(**post_kwargs) for post_kwargs in test_post_kwargs.values()] == snapshot(
         [
             '#channel_name\n💬 **"Basic"** by Mark Lidenberg\n\nThis is my body!\n\n[→ к посту](https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley)',
             '#channel_name\n📺 **"No body"** by Mark Lidenberg\n\n[→ к посту](https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley)',

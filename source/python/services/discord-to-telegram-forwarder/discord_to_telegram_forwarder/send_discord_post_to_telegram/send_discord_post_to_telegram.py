@@ -12,8 +12,8 @@ from telethon import hints
 
 async def send_discord_post_to_telegram(
     telegram_chat: Union[str, int],
-    post_kwargs: dict,
     files: Sequence[hints.FileLike] = (),  # from telethon
+    **post_kwargs,
 ) -> None:
     # - Send message to telegram
 
@@ -32,15 +32,13 @@ async def test_single():
     await telegram_client.start(bot_token=config.telegram_bot_token)
 
     await send_discord_post_to_telegram(
-        post_kwargs=dict(
-            author_name="Mark Lidenberg",
-            title="Как обходить ограниченный контекст в ChatGPT для больших тасок?",
-            body="Body",
-            channel_name="channel_name",
-            url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
-            add_inner_shortened_url=False,
-            emoji="👍",
-        ),
+        author_name="Mark Lidenberg",
+        title="Как обходить ограниченный контекст в ChatGPT для больших тасок?",
+        body="Body",
+        channel_name="channel_name",
+        url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
+        add_inner_shortened_url=False,
+        emoji="👍",
         telegram_chat=config.telegram_chat,
         files=["https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg"],
     )
@@ -54,25 +52,19 @@ async def test_batch():
 
     # - Send test_messages
 
-    for message in test_post_kwargs.values():
-        await send_discord_post_to_telegram(
-            telegram_chat=config.telegram_chat,
-            post_kwargs=message,
-            files=[],
-        )
+    for post_kwargs in test_post_kwargs.values():
+        await send_discord_post_to_telegram(telegram_chat=config.telegram_chat, files=[], **post_kwargs)
 
     # - Send with image
 
     await send_discord_post_to_telegram(
-        post_kwargs=dict(
-            author_name="Mark Lidenberg",
-            title="Post with image",
-            body="",
-            channel_name="channel_name",
-            url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
-            add_inner_shortened_url=False,
-            emoji="👍",
-        ),
+        author_name="Mark Lidenberg",
+        title="Post with image",
+        body="",
+        channel_name="channel_name",
+        url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
+        add_inner_shortened_url=False,
+        emoji="👍",
         telegram_chat=config.telegram_chat,
         files=["https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg"],
     )
@@ -80,14 +72,12 @@ async def test_batch():
     # - Send dynamic emoji from openai and apple-link
 
     await send_discord_post_to_telegram(
-        post_kwargs=dict(
-            author_name="Mark Lidenberg",
-            title="Post with dynamic emoji and apple-link",
-            body="",
-            channel_name="channel_name",
-            url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
-            add_inner_shortened_url=True,
-        ),
+        author_name="Mark Lidenberg",
+        title="Post with dynamic emoji and apple-link",
+        body="",
+        channel_name="channel_name",
+        url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
+        add_inner_shortened_url=True,
         telegram_chat=config.telegram_chat,
     )
 
