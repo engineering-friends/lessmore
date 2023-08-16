@@ -2,7 +2,7 @@ import asyncio
 
 from typing import Sequence, Union
 
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_telegram_message_text import (
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_telegram_message_text.format_telegram_message_text import (
     format_telegram_message_text,
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.test_post_kwargs import test_post_kwargs

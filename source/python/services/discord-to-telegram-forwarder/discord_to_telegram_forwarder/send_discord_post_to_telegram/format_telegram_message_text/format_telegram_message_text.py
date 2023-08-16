@@ -1,9 +1,9 @@
 from typing import Optional
 
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_telegram_message_text.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
 )
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_from_openai import (
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_telegram_message_text.request_emoji_from_openai import (
     request_emoji_from_openai,
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.test_post_kwargs import test_post_kwargs
