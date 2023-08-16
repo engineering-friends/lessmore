@@ -65,10 +65,10 @@ class ProcessorClient(discord.Client):
 
         # - Get image attachments
 
-        image_urls = [
+        filename_urls = [
             attachment.url
             for attachment in message.attachments
-            if attachment.url.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp"))
+            if maybe(attachment).url.or_else(None) and maybe(attachment).filename.or_else(None)
         ]
 
         # - Send post to telegram
@@ -80,7 +80,7 @@ class ProcessorClient(discord.Client):
                 body=message.content,
                 author_name=message.author.display_name,
                 url=message.jump_url,
-                files=image_urls,
+                files=filename_urls,
             )
         except:
             logger.exception("Failed to forward message")
