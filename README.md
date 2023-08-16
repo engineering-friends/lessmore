@@ -1,2 +1,2 @@
 # lessmore
-Monorepo 
+My personal monorepo. 
