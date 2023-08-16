@@ -5,21 +5,21 @@ from typing import Sequence, Union
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_telegram_message_text import (
     format_telegram_message_text,
 )
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.tests.messages import test_messages
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.test_post_kwargs import test_post_kwargs
 from discord_to_telegram_forwarder.telegram_client import telegram_client
 from telethon import hints
 
 
 async def send_discord_post_to_telegram(
     telegram_chat: Union[str, int],
-    format_telegram_message_text_kwargs: dict,
+    post_kwargs: dict,
     files: Sequence[hints.FileLike] = (),  # from telethon
 ) -> None:
     # - Send message to telegram
 
     await telegram_client.send_message(
         entity=telegram_chat,
-        message=format_telegram_message_text(**format_telegram_message_text_kwargs),
+        message=format_telegram_message_text(**post_kwargs),
         parse_mode="md",
         link_preview=False,
         file=files or None,
@@ -32,12 +32,12 @@ async def test_single():
     await telegram_client.start(bot_token=config.telegram_bot_token)
 
     await send_discord_post_to_telegram(
-        format_telegram_message_text_kwargs=dict(
-            post_author_name="Mark Lidenberg",
-            post_title="Как обходить ограниченный контекст в ChatGPT для больших тасок?",
-            post_body="Body",
-            post_forum_channel_name="channel_name",
-            post_url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
+        post_kwargs=dict(
+            author_name="Mark Lidenberg",
+            title="Как обходить ограниченный контекст в ChatGPT для больших тасок?",
+            body="Body",
+            channel_name="channel_name",
+            url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
             add_inner_shortened_url=False,
             emoji="👍",
         ),
@@ -47,28 +47,29 @@ async def test_single():
 
 
 async def test_batch():
+    # - Init test
     from discord_to_telegram_forwarder.config.config import config
 
     await telegram_client.start(bot_token=config.telegram_bot_token)
 
-    # - Send all
+    # - Send test_messages
 
-    for message in test_messages.values():
+    for message in test_post_kwargs.values():
         await send_discord_post_to_telegram(
             telegram_chat=config.telegram_chat,
-            format_telegram_message_text_kwargs=message,
+            post_kwargs=message,
             files=[],
         )
 
     # - Send with image
 
     await send_discord_post_to_telegram(
-        format_telegram_message_text_kwargs=dict(
-            post_author_name="Mark Lidenberg",
-            post_title="Post with image",
-            post_body="",
-            post_forum_channel_name="channel_name",
-            post_url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
+        post_kwargs=dict(
+            author_name="Mark Lidenberg",
+            title="Post with image",
+            body="",
+            channel_name="channel_name",
+            url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
             add_inner_shortened_url=False,
             emoji="👍",
         ),
@@ -76,15 +77,15 @@ async def test_batch():
         files=["https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg"],
     )
 
-    # - Send emoji and apple-link
+    # - Send dynamic emoji from openai and apple-link
 
     await send_discord_post_to_telegram(
-        format_telegram_message_text_kwargs=dict(
-            post_author_name="Mark Lidenberg",
-            post_title="Post with dynamic emoji and apple-link",
-            post_body="",
-            post_forum_channel_name="channel_name",
-            post_url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
+        post_kwargs=dict(
+            author_name="Mark Lidenberg",
+            title="Post with dynamic emoji and apple-link",
+            body="",
+            channel_name="channel_name",
+            url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
             add_inner_shortened_url=True,
         ),
         telegram_chat=config.telegram_chat,
