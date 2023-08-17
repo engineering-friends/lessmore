@@ -12,17 +12,20 @@ from discord_to_telegram_forwarder.telegram_client import telegram_client
 from telethon import hints
 
 
-TEMPLATE = """#{channel_name}
+TEMPLATE = """#{parent_channel_name}
 {emoji} **"{title}"** by {author}
 {body}
 [→ к посту]({url}){apple_link}"""
 
 
 async def send_discord_post_to_telegram(
-    telegram_chat_to_channel_name_rule: dict[Union[str, int], Callable[[str], bool]],
+    telegram_chat_to_channel_name_rule: dict[
+        Union[str, int], Callable[[str, str], bool]
+    ],  # def rule(chnanel_name:str, parent_chnanel_name:str) -> bool
     author_name: str,
     body: str,
     channel_name: str,
+    parent_channel_name: str,
     title: str,
     url: str,
     add_inner_shortened_url: bool = True,
@@ -45,7 +48,7 @@ async def send_discord_post_to_telegram(
     # -- Format message for telegram
 
     message_text = TEMPLATE.format(
-        channel_name=channel_name.replace("-", "_"),
+        parent_channel_name=parent_channel_name.replace("-", "_"),
         emoji=emoji,
         title=title,
         author=author_name,
@@ -56,7 +59,7 @@ async def send_discord_post_to_telegram(
 
     # - Send message to telegram
     for telegram_chat, channel_name_rule in telegram_chat_to_channel_name_rule.items():
-        if channel_name_rule(channel_name):
+        if channel_name_rule(channel_name=channel_name, parent_channel_name=parent_channel_name):
             await telegram_client.send_message(
                 entity=telegram_chat,
                 message=message_text,

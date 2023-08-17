@@ -75,7 +75,8 @@ class OnMessageDiscordClient(discord.Client):
 
         try:
             await self.process_message(
-                channel_name=maybe(message).channel.parent.name.or_else(""),
+                channel_name=maybe(message).channel.name.or_else(""),
+                parent_channel_name=maybe(message).channel.parent.name.or_else(""),
                 title=maybe(message).channel.name.or_else(""),
                 body=message.content,
                 author_name=message.author.display_name,
