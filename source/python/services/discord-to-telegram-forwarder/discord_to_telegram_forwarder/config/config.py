@@ -16,6 +16,7 @@ class Config(BaseSettings):
     telegram_bot_name: str
     telegram_bot_token: str
     telegram_chat: Union[int, str]
+    telegram_channel: Union[int, str]
 
     # - Discord
 

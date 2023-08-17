@@ -1,6 +1,6 @@
 import asyncio
 
-from typing import Optional, Sequence, Union
+from typing import Callable, Optional, Sequence, Union
 
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
@@ -19,7 +19,7 @@ TEMPLATE = """#{channel_name}
 
 
 async def send_discord_post_to_telegram(
-    telegram_chat: Union[str, int],
+    telegram_chat_to_channel_name_rule: dict[Union[str, int], Callable[[str], bool]],
     author_name: str,
     body: str,
     channel_name: str,
@@ -55,14 +55,15 @@ async def send_discord_post_to_telegram(
     )
 
     # - Send message to telegram
-
-    await telegram_client.send_message(
-        entity=telegram_chat,
-        message=message_text,
-        parse_mode="md",
-        link_preview=False,
-        file=files or None,
-    )
+    for telegram_chat, channel_name_rule in telegram_chat_to_channel_name_rule.items():
+        if channel_name_rule(channel_name):
+            await telegram_client.send_message(
+                entity=telegram_chat,
+                message=message_text,
+                parse_mode="md",
+                link_preview=False,
+                file=files or None,
+            )
 
 
 async def test():
@@ -78,7 +79,7 @@ async def test():
         url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
         add_inner_shortened_url=False,
         emoji="👍",
-        telegram_chat=config.telegram_chat,
+        telegram_chat_to_channel_name_rule={config.telegram_chat: lambda channel_name: True},
         files=["https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg"],
     )
 
