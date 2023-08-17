@@ -14,16 +14,16 @@ from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
 # - Init discord client
 
 
-class ProcessorClient(discord.Client):
+class OnMessageDiscordClient(discord.Client):
     def __init__(
         self,
         *args,
-        process_discord_post: Callable,
+        process_message: Callable,
         filter_forum_post_messages: bool = False,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
-        self.process_discord_post = process_discord_post
+        self.process_message = process_message
         self.filter_forum_post_messages = filter_forum_post_messages
 
     async def on_ready(self):
@@ -74,7 +74,7 @@ class ProcessorClient(discord.Client):
         # - Send post to telegram
 
         try:
-            await self.process_discord_post(
+            await self.process_message(
                 channel_name=maybe(message).channel.parent.name.or_else(""),
                 title=maybe(message).channel.name.or_else(""),
                 body=message.content,
@@ -89,15 +89,15 @@ class ProcessorClient(discord.Client):
 async def test():
     # - Define process_discord_post
 
-    async def process_discord_post(**kwargs):
+    async def process(**kwargs):
         logger.info("Processing discord post", **kwargs)
 
     # - Init client
 
     intents = discord.Intents.default()
     intents.message_content = True
-    client = ProcessorClient(
-        process_discord_post=process_discord_post,
+    client = OnMessageDiscordClient(
+        process_message=process,
         intents=intents,
     )
 

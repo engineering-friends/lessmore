@@ -6,7 +6,7 @@ import discord
 import openai
 
 from discord_to_telegram_forwarder.config.config import config
-from discord_to_telegram_forwarder.processor_client import ProcessorClient
+from discord_to_telegram_forwarder.on_message_discord_client import OnMessageDiscordClient
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_post_to_telegram import (
     send_discord_post_to_telegram,
 )
@@ -23,8 +23,8 @@ openai.api_key = config.openai_api_key
 
 intents = discord.Intents.default()
 intents.message_content = True
-client = ProcessorClient(
-    process_discord_post=partial(
+client = OnMessageDiscordClient(
+    process_message=partial(
         send_discord_post_to_telegram,
         telegram_chat=config.telegram_chat,
     ),

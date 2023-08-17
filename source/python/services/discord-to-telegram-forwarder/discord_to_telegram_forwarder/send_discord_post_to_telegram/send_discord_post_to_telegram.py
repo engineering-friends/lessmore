@@ -1,25 +1,65 @@
 import asyncio
 
-from typing import Sequence, Union
+from typing import Optional, Sequence, Union
 
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_telegram_message_text.format_telegram_message_text import (
-    format_telegram_message_text,
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
+    get_shortened_url_from_tiny_url,
+)
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_representing_text_from_openai import (
+    request_emoji_representing_text_from_openai,
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.test_post_kwargs import test_post_kwargs
 from discord_to_telegram_forwarder.telegram_client import telegram_client
 from telethon import hints
 
 
+TEMPLATE = """#{channel_name}
+{emoji} **"{title}"** by {author}
+{body}
+[→ к посту]({url}){apple_link}"""
+
+
 async def send_discord_post_to_telegram(
     telegram_chat: Union[str, int],
+    author_name: str,
+    body: str,
+    channel_name: str,
+    title: str,
+    url: str,
+    add_inner_shortened_url: bool = True,
+    emoji: Optional[str] = None,
     files: Sequence[hints.FileLike] = (),  # from telethon
-    **post_kwargs,
 ) -> None:
+    # - Prepare message text
+
+    # -- Get emoji from openai
+
+    if not emoji:
+        emoji = request_emoji_representing_text_from_openai(f"{channel_name} {title} {body}")
+
+    # -- Make discord schema and shorten it to make it https:// with redirection to discord://
+
+    inner_shortened_url = (
+        get_shortened_url_from_tiny_url(url.replace("https", "discord")) if add_inner_shortened_url else ""
+    )
+
+    # -- Format message for telegram
+
+    message_text = TEMPLATE.format(
+        channel_name=channel_name.replace("-", "_"),
+        emoji=emoji,
+        title=title,
+        author=author_name,
+        body=("\n" + body[:3000] + ("" if len(body) < 3000 else "...")) + "\n" if body else "",
+        url=url,
+        apple_link=f"\n[→ к посту на apple-устройствах]({inner_shortened_url})" if inner_shortened_url else "",
+    )
+
     # - Send message to telegram
 
     await telegram_client.send_message(
         entity=telegram_chat,
-        message=format_telegram_message_text(**post_kwargs),
+        message=message_text,
         parse_mode="md",
         link_preview=False,
         file=files or None,

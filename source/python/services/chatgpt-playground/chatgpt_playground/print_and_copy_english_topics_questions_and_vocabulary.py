@@ -23,5 +23,9 @@ def print_and_copy_english_topics_questions_and_vocabulary() -> None:
     print_and_copy(text)
 
 
-if __name__ == "__main__":
+def test():
     print_and_copy_english_topics_questions_and_vocabulary()
+
+
+if __name__ == "__main__":
+    test()

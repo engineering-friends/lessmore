@@ -6,7 +6,7 @@ PROMPT_TEMPLATE = (
 )
 
 
-def request_emoji_from_openai(text: str) -> str:
+def request_emoji_representing_text_from_openai(text: str) -> str:
     """Returns emoji as a string (e.g. "👍")"""
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -22,7 +22,7 @@ def request_emoji_from_openai(text: str) -> str:
 
 
 def test():
-    print(request_emoji_from_openai("channel_name title body"))
+    print(request_emoji_representing_text_from_openai("channel_name title body"))
 
 
 if __name__ == "__main__":
