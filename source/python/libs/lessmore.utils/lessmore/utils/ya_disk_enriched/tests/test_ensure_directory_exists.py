@@ -4,12 +4,14 @@ from pathlib import Path
 
 import pytest
 
-from lessmore.utils.ya_disk_enriched.tests.client import client  # pytest fixture
+from lessmore.utils.ya_disk_enriched.tests.init_test_client import init_client
 
 
 @pytest.mark.slow
-def test_ensure_directory_exists(client):
-    # - Make imports (important to make imports here to avoid circular imports)
+def test_ensure_directory_exists():
+    # - Init client
+
+    client = init_client()
 
     # - Init test path
 

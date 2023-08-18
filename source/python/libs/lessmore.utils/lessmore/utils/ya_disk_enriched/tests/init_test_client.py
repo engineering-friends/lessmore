@@ -2,8 +2,7 @@ import keyring
 import pytest
 
 
-@pytest.fixture
-def client():
+def init_client():
     from lessmore.utils.ya_disk_enriched.ya_disk_enriched import YaDiskEnriched
 
     return YaDiskEnriched(

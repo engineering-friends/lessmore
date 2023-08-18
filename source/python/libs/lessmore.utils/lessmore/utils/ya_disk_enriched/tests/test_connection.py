@@ -1,9 +1,13 @@
 import pytest
 
-from lessmore.utils.ya_disk_enriched.tests.client import client  # pytest fixture
+from lessmore.utils.ya_disk_enriched.tests.init_test_client import init_client
 
 
-def test_connection(client):
+def test_connection():
+    # - Init client
+
+    client = init_client()
+
     # - Check if exists
 
     assert client.exists("/")

@@ -2,15 +2,18 @@ import os
 
 from pathlib import Path
 
-import keyring
 import pytest
 
 from lessmore.utils.path_helpers.get_current_dir import get_current_dir
-from lessmore.utils.ya_disk_enriched.tests.client import client
+from lessmore.utils.ya_disk_enriched.tests.init_test_client import init_client
 
 
 @pytest.mark.slow
-def test_force_upload(client):
+def test_force_upload():
+    # - Init client
+
+    client = init_client()
+
     # - Init test path
 
     remote_dir = Path("/test-ya-disk-enriched/test_force_upload")
