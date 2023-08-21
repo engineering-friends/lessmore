@@ -58,6 +58,11 @@ async def send_discord_post_to_telegram(
         get_shortened_url_from_tiny_url(url.replace("https", "discord")) if add_inner_shortened_url else ""
     )
 
+    # -- Replace @ for ~ in the body and title
+
+    title = title.replace("@", "~")
+    body = body.replace("@", "~")
+
     # -- Format message for telegram
 
     message_text = TEMPLATE.format(

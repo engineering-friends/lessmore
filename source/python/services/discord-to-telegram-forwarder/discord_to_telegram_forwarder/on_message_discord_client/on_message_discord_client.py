@@ -126,10 +126,6 @@ class OnMessageDiscordClient(discord.Client):
 
                 message.content = message.content.replace(f"<@&{role_id}>", f"{role.name}")
 
-            # - Replace @ with ~
-
-            message.content = message.content.replace("@", "~")
-
             # - Process message
 
             await self.process_message(
