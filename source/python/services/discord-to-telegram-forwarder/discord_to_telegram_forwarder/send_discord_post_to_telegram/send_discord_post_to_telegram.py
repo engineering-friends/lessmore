@@ -67,7 +67,7 @@ async def send_discord_post_to_telegram(
         author=author_name,
         body=("\n" + body[:3000] + ("" if len(body) < 3000 else "...")) + "\n" if body else "",
         url=url,
-        apple_link=f" ([→ ссылка для ]({inner_shortened_url}))" if inner_shortened_url else "",
+        apple_link=f" / [→ к посту для ]({inner_shortened_url})" if inner_shortened_url else "",
     )
 
     # - Send message to telegram
