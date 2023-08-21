@@ -42,5 +42,6 @@ if __name__ == "__main__":
     configure_loguru()
     intents = discord.Intents.default()
     intents.message_content = True
+    intents.members = True
     client = MyClient(intents=intents)
     client.run(keyring.get_password(service_name="discord", username="marklidenberg-bot"))

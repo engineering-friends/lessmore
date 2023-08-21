@@ -80,6 +80,7 @@ stackprinter = "^0.2.10"
 nest-asyncio = "^1.5.7"
 dill = "^0.3.7"
 openai = "^0.27.8"
+emoji = "^2.8.0"
 
 [tool.poetry.dev-dependencies]
 

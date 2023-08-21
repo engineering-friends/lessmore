@@ -22,7 +22,11 @@ def request_emoji_representing_text_from_openai(text: str) -> str:
 
 
 def test():
-    print(request_emoji_representing_text_from_openai("channel_name title body"))
+    print(
+        request_emoji_representing_text_from_openai(
+            "Yesterday I was walking in the street and I stepped in a puddle and my shoes got wet."
+        )
+    )
 
 
 if __name__ == "__main__":

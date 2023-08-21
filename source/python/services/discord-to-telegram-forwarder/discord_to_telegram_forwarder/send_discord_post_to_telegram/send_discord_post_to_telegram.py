@@ -1,6 +1,9 @@
 import asyncio
+import re
 
 from typing import Callable, Optional, Sequence, Union
+
+import emoji as emoji_lib
 
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
@@ -34,10 +37,20 @@ async def send_discord_post_to_telegram(
 ) -> None:
     # - Prepare message text
 
-    # -- Get emoji from openai
+    # -- Get emoji
 
     if not emoji:
-        emoji = request_emoji_representing_text_from_openai(f"{channel_name} {title} {body}")
+        if emoji_lib.is_emoji(title[0]):
+            # get from title
+            emoji = title[0]
+            title = title[1:]
+
+            # remove space after emoji
+            title = re.sub(r"^\s+", "", title)
+
+        else:
+            # get from openai
+            emoji = request_emoji_representing_text_from_openai(f"{channel_name} {title} {body}")
 
     # -- Make discord schema and shorten it to make it https:// with redirection to discord://
 
@@ -54,10 +67,11 @@ async def send_discord_post_to_telegram(
         author=author_name,
         body=("\n" + body[:3000] + ("" if len(body) < 3000 else "...")) + "\n" if body else "",
         url=url,
-        apple_link=f"\n[→ к посту на apple-устройствах]({inner_shortened_url})" if inner_shortened_url else "",
+        apple_link=f" ([→ ссылка для ]({inner_shortened_url}))" if inner_shortened_url else "",
     )
 
     # - Send message to telegram
+
     for telegram_chat, channel_name_rule in telegram_chat_to_channel_name_rule.items():
         if channel_name_rule(channel_name=channel_name, parent_channel_name=parent_channel_name):
             await telegram_client.send_message(
@@ -76,13 +90,13 @@ async def test():
 
     await send_discord_post_to_telegram(
         author_name="Mark Lidenberg",
-        title="Как обходить ограниченный контекст в ChatGPT для больших тасок?",
+        title="⚙️Новая инженерная сессия!",
         body="Body",
         channel_name="channel_name",
+        parent_channel_name="parent_channel_name",
         url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
-        add_inner_shortened_url=False,
-        emoji="👍",
-        telegram_chat_to_channel_name_rule={config.telegram_chat: lambda channel_name: True},
+        add_inner_shortened_url=True,
+        telegram_chat_to_channel_name_rule={config.telegram_chat: lambda channel_name, parent_channel_name: True},
         files=["https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg"],
     )
 

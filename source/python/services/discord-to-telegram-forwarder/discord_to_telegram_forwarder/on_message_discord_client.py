@@ -1,4 +1,5 @@
 import asyncio
+import re
 
 from typing import Callable
 
@@ -71,6 +72,39 @@ class OnMessageDiscordClient(discord.Client):
             if maybe(attachment).url.or_else(None) and maybe(attachment).filename.or_else(None)
         ]
 
+        # - Fix usernames in message text and replace with display names
+
+        for user_id in re.findall(r"<@(\d+)>", message.content):  # <@913095424225706005>
+            # - Get user
+
+            user = message.guild.get_member(int(user_id))
+
+            # - Replace <@913095424225706005> with <name>
+
+            message.content = message.content.replace(f"<@{user_id}>", user.nick or user.global_name)
+
+        # - Find all channels and replace with links
+
+        for channel_id in re.findall(r"<#(\d+)>", message.content):  # <#1106702799938519211>
+            # - Get channel
+
+            channel = message.guild.get_channel(int(channel_id))
+
+            # - Replace <#1106702799938519211> with <name>
+
+            message.content = message.content.replace(f"<#{channel_id}>", f"[{channel.name}]({channel.jump_url})")
+
+        # - Find all roles and replace with their names
+
+        for role_id in re.findall(r"<@&(\d+)>", message.content):  # <@&1106702799938519211>
+            # - Get role
+
+            role = message.guild.get_role(int(role_id))
+
+            # - Replace <@&1106702799938519211> with @<name>
+
+            message.content = message.content.replace(f"<@&{role_id}>", f"@{role.name}")
+
         # - Send post to telegram
 
         try:
@@ -97,6 +131,7 @@ async def test():
 
     intents = discord.Intents.default()
     intents.message_content = True
+    intents.members = True
     client = OnMessageDiscordClient(
         process_message=process,
         intents=intents,
