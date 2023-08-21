@@ -6,6 +6,9 @@ from typing import Callable
 import discord
 
 from discord_to_telegram_forwarder.config.config import config
+from discord_to_telegram_forwarder.on_message_discord_client.is_discord_channel_private import (
+    is_discord_channel_private,
+)
 from loguru import logger
 from pymaybe import maybe
 
@@ -21,17 +24,18 @@ class OnMessageDiscordClient(discord.Client):
         *args,
         process_message: Callable,
         filter_forum_post_messages: bool = False,
+        filter_public: bool = True,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.process_message = process_message
         self.filter_forum_post_messages = filter_forum_post_messages
+        self.filter_public = filter_public
 
     async def on_ready(self):
         logger.info(f"Logged in", user=self.user, id=self.user.id)
 
     async def on_message(self, message: discord.Message):
-        # global try-except
         try:
             # - Log message
 
@@ -65,6 +69,21 @@ class OnMessageDiscordClient(discord.Client):
 
                 if not is_post_message:
                     return
+
+            # - Filter public
+
+            if self.filter_public:
+                for channel_candidate in [
+                    message.channel,
+                    getattr(message.channel, "parent", None),
+                ]:  # for forum messages, message.channel is a Thread, but message.channel.parent is a ForumChannel
+                    if isinstance(channel_candidate, discord.abc.GuildChannel):
+                        is_channel_private = is_discord_channel_private(channel_candidate)
+
+                        logger.info("is_channel_private", name=channel_candidate.name, value=is_channel_private)
+
+                        if is_channel_private:
+                            return
 
             # - Get image attachments
 

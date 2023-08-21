@@ -6,7 +6,7 @@ import discord
 import openai
 
 from discord_to_telegram_forwarder.config.config import config
-from discord_to_telegram_forwarder.on_message_discord_client import OnMessageDiscordClient
+from discord_to_telegram_forwarder.on_message_discord_client.on_message_discord_client import OnMessageDiscordClient
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_post_to_telegram import (
     send_discord_post_to_telegram,
 )
