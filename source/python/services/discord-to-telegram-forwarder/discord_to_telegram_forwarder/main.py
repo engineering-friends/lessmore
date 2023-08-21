@@ -23,6 +23,7 @@ openai.api_key = config.openai_api_key
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 client = OnMessageDiscordClient(
     process_message=partial(
         send_discord_post_to_telegram,
