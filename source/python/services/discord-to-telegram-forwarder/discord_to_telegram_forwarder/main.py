@@ -28,8 +28,10 @@ client = OnMessageDiscordClient(
     process_message=partial(
         send_discord_post_to_telegram,
         telegram_chat_to_channel_name_rule={
-            config.telegram_chat: lambda channel_name, parent_channel_name: parent_channel_name != "news",
-            config.telegram_channel: lambda channel_name, parent_channel_name: parent_channel_name == "news",
+            config.telegram_ef_discussions: lambda channel_name, parent_channel_name, category_name: category_name
+            == "Discussions",
+            config.telegram_ef_channel: lambda channel_name, parent_channel_name, category_name: parent_channel_name
+            in ["news", "whois", "engineering-session-requests"],
         },
     ),
     filter_forum_post_messages=config.filter_forum_post_messages,

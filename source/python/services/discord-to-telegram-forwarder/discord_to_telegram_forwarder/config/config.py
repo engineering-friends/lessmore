@@ -15,8 +15,8 @@ class Config(BaseSettings):
     telegram_api_hash: str
     telegram_bot_name: str
     telegram_bot_token: str
-    telegram_chat: Union[int, str]
-    telegram_channel: Union[int, str]
+    telegram_ef_discussions: Union[int, str]
+    telegram_ef_channel: Union[int, str]
 
     # - Discord
 
@@ -52,4 +52,4 @@ config: Config = load_pydantic_settings(
 if __name__ == "__main__":
     print(config.telegram_bot_name)
     print(config.telegram_api_id)
-    print(type(config.telegram_chat))
+    print(type(config.telegram_ef_channel))

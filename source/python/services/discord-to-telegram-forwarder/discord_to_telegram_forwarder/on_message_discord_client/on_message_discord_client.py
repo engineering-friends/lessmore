@@ -24,13 +24,13 @@ class OnMessageDiscordClient(discord.Client):
         *args,
         process_message: Callable,
         filter_forum_post_messages: bool = False,
-        filter_public: bool = True,
+        filter_public_channels: bool = True,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.process_message = process_message
         self.filter_forum_post_messages = filter_forum_post_messages
-        self.filter_public = filter_public
+        self.filter_public_channels = filter_public_channels
 
     async def on_ready(self):
         logger.info(f"Logged in", user=self.user, id=self.user.id)
@@ -72,7 +72,7 @@ class OnMessageDiscordClient(discord.Client):
 
             # - Filter public
 
-            if self.filter_public:
+            if self.filter_public_channels:
                 for channel_candidate in [
                     message.channel,
                     getattr(message.channel, "parent", None),
@@ -126,11 +126,16 @@ class OnMessageDiscordClient(discord.Client):
 
                 message.content = message.content.replace(f"<@&{role_id}>", f"{role.name}")
 
+            # - Get category name
+
+            category_name = maybe(message).channel.category.name.or_else("")
+
             # - Process message
 
             await self.process_message(
                 channel_name=maybe(message).channel.name.or_else(""),
                 parent_channel_name=maybe(message).channel.parent.name.or_else(""),
+                category_name=category_name,
                 title=maybe(message).channel.name.or_else(""),
                 body=message.content,
                 author_name=message.author.display_name,

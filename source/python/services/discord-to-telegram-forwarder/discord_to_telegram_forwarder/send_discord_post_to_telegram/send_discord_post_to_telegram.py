@@ -23,12 +23,13 @@ TEMPLATE = """#{parent_channel_name}
 
 async def send_discord_post_to_telegram(
     telegram_chat_to_channel_name_rule: dict[
-        Union[str, int], Callable[[str, str], bool]
-    ],  # def rule(chnanel_name:str, parent_chnanel_name:str) -> bool
+        Union[str, int], Callable[[str, str, str], bool]
+    ],  # def rule(chnanel_name:str, parent_channel_name:str, category_name: str) -> bool
     author_name: str,
     body: str,
     channel_name: str,
     parent_channel_name: str,
+    category_name: str,
     title: str,
     url: str,
     add_inner_shortened_url: bool = True,
@@ -78,7 +79,9 @@ async def send_discord_post_to_telegram(
     # - Send message to telegram
 
     for telegram_chat, channel_name_rule in telegram_chat_to_channel_name_rule.items():
-        if channel_name_rule(channel_name=channel_name, parent_channel_name=parent_channel_name):
+        if channel_name_rule(
+            channel_name=channel_name, parent_channel_name=parent_channel_name, category_name=category_name
+        ):
             await telegram_client.send_message(
                 entity=telegram_chat,
                 message=message_text,
@@ -92,7 +95,6 @@ async def test():
     from discord_to_telegram_forwarder.config.config import config
 
     await telegram_client.start(bot_token=config.telegram_bot_token)
-
     await send_discord_post_to_telegram(
         author_name="Mark Lidenberg",
         title="⚙️Новая инженерная сессия!",
@@ -101,7 +103,9 @@ async def test():
         parent_channel_name="parent_channel_name",
         url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
         add_inner_shortened_url=True,
-        telegram_chat_to_channel_name_rule={config.telegram_chat: lambda channel_name, parent_channel_name: True},
+        telegram_chat_to_channel_name_rule={
+            config.telegram_ef_discussions: lambda channel_name, parent_channel_name, category_name: True
+        },
         files=["https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg"],
     )
 
