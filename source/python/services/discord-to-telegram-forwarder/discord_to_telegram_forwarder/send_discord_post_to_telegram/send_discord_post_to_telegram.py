@@ -16,7 +16,7 @@ from telethon import hints
 
 
 TEMPLATE = """#{parent_channel_name}
-{emoji} **"{title}"** by {author}
+{emoji} **{title}** by {author}
 {body}
 [→ к посту]({url}){apple_link}"""
 
