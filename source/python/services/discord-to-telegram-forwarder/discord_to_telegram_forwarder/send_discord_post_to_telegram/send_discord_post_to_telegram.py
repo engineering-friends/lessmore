@@ -64,6 +64,15 @@ async def send_discord_post_to_telegram(
     title = title.replace("@", "~")
     body = body.replace("@", "~")
 
+    # -- Remove prefix emojis from parent channel name if any non-emoji characters are present
+
+    if any([not emoji_lib.is_emoji(character) for character in parent_channel_name]):
+        first_non_emoji_index = next(
+            (index for index, character in enumerate(parent_channel_name) if not emoji_lib.is_emoji(character)), None
+        )
+        if first_non_emoji_index:
+            parent_channel_name = parent_channel_name[first_non_emoji_index:]
+
     # -- Format message for telegram
 
     message_text = TEMPLATE.format(
@@ -101,6 +110,7 @@ async def test():
         body="Body",
         channel_name="channel_name",
         parent_channel_name="parent_channel_name",
+        category_name="category_name",
         url="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
         add_inner_shortened_url=True,
         telegram_chat_to_channel_name_rule={
