@@ -64,14 +64,17 @@ async def send_discord_post_to_telegram(
     title = title.replace("@", "~")
     body = body.replace("@", "~")
 
-    # -- Remove prefix emojis from parent channel name if any non-emoji characters are present
+    # -- Remove prefix non-alhpanumeric (or -) characters from parent_channel_name
 
-    if any([not emoji_lib.is_emoji(character) for character in parent_channel_name]):
-        first_non_emoji_index = next(
-            (index for index, character in enumerate(parent_channel_name) if not emoji_lib.is_emoji(character)), None
-        )
-        if first_non_emoji_index:
-            parent_channel_name = parent_channel_name[first_non_emoji_index:]
+    def _is_alphanumeric_with_dashes(string: str) -> bool:
+        return all([character.isalnum() or character == "-" for character in string])
+
+    first_allowed_symbol_index = next(
+        (index for index, character in enumerate(parent_channel_name) if _is_alphanumeric_with_dashes(character)),
+        None,
+    )
+    if first_allowed_symbol_index:
+        parent_channel_name = parent_channel_name[first_allowed_symbol_index:]
 
     # -- Format message for telegram
 
