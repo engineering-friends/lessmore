@@ -2,6 +2,7 @@ import inspect
 
 from inspect import FrameInfo
 from pathlib import Path
+from pprint import pprint
 
 from lessmore.utils.get_frame_path.test_get_frame_path.test_get_frame_path import test_get_frame_path
 from lessmore.utils.tested import tested
@@ -16,7 +17,6 @@ def get_frame_path(
     current_frame = inspect.currentframe()
 
     # - Get the frame
-
     caller_frame: FrameInfo = inspect.getouterframes(current_frame)[
         frame_num + 2
     ]  # 0: tested, 1: get_frame_path, 2: caller, ...
@@ -27,4 +27,4 @@ def get_frame_path(
 
 
 def get_parent_frame_path():
-    return get_frame_path(frame_num=1)
+    return get_frame_path(frame_num=2)
