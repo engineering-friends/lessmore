@@ -1,5 +1,5 @@
 def test_get_frame_path():
-    from lessmore.utils.path_helpers.test_get_frame_path.f3 import f3
+    from lessmore.utils.get_frame_path.test_get_frame_path.f3 import f3
 
     assert f3(frame_num=0).name == "f1.py"
     assert f3(frame_num=1).name == "f2.py"

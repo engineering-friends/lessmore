@@ -4,7 +4,7 @@ from inline_snapshot import snapshot
 
 from lessmore.utils.file_helpers.read_file import read_file
 from lessmore.utils.file_helpers.write_file import write_file
-from lessmore.utils.path_helpers.get_frame_path import get_frame_path, get_parent_frame_path
+from lessmore.utils.get_frame_path.get_frame_path import get_frame_path, get_parent_frame_path
 
 
 class SnapshotUpdateOptions:

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from lessmore.utils.path_helpers.test_get_frame_path.f1 import f1
+from lessmore.utils.get_frame_path.test_get_frame_path.f1 import f1
 
 
 def f2(frame_num: int) -> Path:

@@ -3,7 +3,7 @@ import inspect
 from inspect import FrameInfo
 from pathlib import Path
 
-from lessmore.utils.path_helpers.test_get_frame_path.test_get_frame_path import test_get_frame_path
+from lessmore.utils.get_frame_path.test_get_frame_path.test_get_frame_path import test_get_frame_path
 from lessmore.utils.tested import tested
 
 
