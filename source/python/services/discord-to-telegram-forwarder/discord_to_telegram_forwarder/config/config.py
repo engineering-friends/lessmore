@@ -1,11 +1,11 @@
 import os
 
+from pathlib import Path
 from typing import Union
 
 from pydantic import BaseSettings
 
 from lessmore.utils.load_pydantic_settings.load_pydantic_settings import load_pydantic_settings
-from lessmore.utils.path_helpers.get_current_dir import get_current_dir
 
 
 class Config(BaseSettings):
@@ -44,7 +44,7 @@ config: Config = load_pydantic_settings(
         # "environment_variables",
     ],
     context={
-        "root": str(get_current_dir()),
+        "root": str(Path(__file__).parent),
         "env": os.environ.get("DISCORD_TO_TELEGRAM_FORWARDER_ENV", "test"),
     },
 )

@@ -1,18 +1,19 @@
 import asyncio
 
+from pathlib import Path
+
 import keyring
 
 from telethon import TelegramClient
 
 from lessmore.utils.encoding.decode_from_json import decode_from_json
-from lessmore.utils.path_helpers.get_current_dir import get_current_dir
 
 
 async def main():
     # - Init client
 
     telegram_client = TelegramClient(
-        session=str(get_current_dir() / "telegram.session"),
+        session=str(Path(__file__).parent / "telegram.session"),
         api_id=decode_from_json(keyring.get_password(service_name="telegram", username="channeled-sharing-bot"))[
             "api_id"
         ],

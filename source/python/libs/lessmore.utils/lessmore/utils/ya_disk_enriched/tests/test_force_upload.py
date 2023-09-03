@@ -4,7 +4,6 @@ from pathlib import Path
 
 import pytest
 
-from lessmore.utils.path_helpers.get_current_dir import get_current_dir
 from lessmore.utils.ya_disk_enriched.tests.init_test_client import init_client
 
 
@@ -21,7 +20,7 @@ def test_force_upload():
     # - Upload file
 
     client.force_upload(
-        filename=str(get_current_dir() / "test_force_upload.py"),
+        filename=str(Path(__file__).parent / "test_force_upload.py"),
         remote_filename=str(remote_dir / "test_force_upload.py"),
     )
 
@@ -32,7 +31,7 @@ def test_force_upload():
     # - Upload file second time
 
     client.force_upload(
-        filename=str(get_current_dir() / "test_force_upload.py"),
+        filename=str(Path(__file__).parent / "test_force_upload.py"),
         remote_filename=str(remote_dir / "test_force_upload.py"),
     )
 
