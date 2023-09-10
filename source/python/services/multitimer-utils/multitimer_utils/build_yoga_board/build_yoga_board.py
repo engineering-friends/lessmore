@@ -5,7 +5,7 @@ from lessmore.utils.file_helpers.read_file import read_file
 from lessmore.utils.file_helpers.write_file import write_file
 
 
-def generate_yoga_board(label_and_times: list[tuple[str, TimedeltaLike]]):  # [("work", 25), ("rest", 5)]
+def build_yoga_board(label_and_times: list[tuple[str, TimedeltaLike]]):  # [("work", 25), ("rest", 5)]
     return render_jinja2_template(
         read_file("yoga_board_template.xml"),
         interval_timer=render_jinja2_template(
@@ -27,7 +27,7 @@ def generate_yoga_board(label_and_times: list[tuple[str, TimedeltaLike]]):  # [(
 
 
 def test():
-    board = generate_yoga_board(
+    board = build_yoga_board(
         label_and_times=[
             ("Разминка груди", "3m"),
             ("Массаж предплеч", "3m"),
