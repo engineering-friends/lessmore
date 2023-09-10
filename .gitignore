@@ -37,6 +37,7 @@
 !**/*.cfg
 !**/*.gpg
 !**/*.txt
+!**/*.xml
 
 # - Dot files
 
