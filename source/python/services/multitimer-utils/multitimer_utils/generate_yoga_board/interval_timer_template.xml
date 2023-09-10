@@ -1,0 +1,12 @@
+<Timer class="IntervalTimer">
+    <Key>{{ key }}</Key>
+    <Color>{{ color | default("#00596A") }}</Color>
+    {{ items }}
+    <Label>{{ label }}</Label>
+    <Clock>;;0;0.0</Clock>
+    <Locked>0</Locked>
+    <Alert class="Alert">
+        <Sound>{{ sound | default("hax9")}}</Sound>
+        <Repeats>{{ repeats | default(0) }}</Repeats>
+    </Alert>
+</Timer>

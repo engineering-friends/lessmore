@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Root class="MTB">
+	<Board class="Board">
+		<Matrix class="AdaptiveMatrix" />
+
+		<Timer class="QuickTimer">
+			<Key>k2</Key>
+			<Time>1140.0</Time>
+			<Alert class="Alert">
+				<Repeats>0</Repeats>
+				<Sound>hax9</Sound>
+			</Alert>
+			<Locked>0</Locked>
+			<Label>Total</Label>
+			<Color>#00596A</Color>
+			<Clock>;;0;0.0</Clock>
+		</Timer>
+
+		{{ interval_timer }}
+
+		<Timer class="CountdownTimer">
+			<Label>Repeat</Label>
+			<Overtime />
+			<Clock>;;0;0.0</Clock>
+			<Key>k9</Key>
+			<Locked>0</Locked>
+			<Time>120.0</Time>
+			<Color>#00596A</Color>
+			<Alert class="Alert">
+				<Repeats>0</Repeats>
+				<Sound>ey4r</Sound>
+			</Alert>
+		</Timer>
+
+		<Name>{{ name }}</Name>
+		<Key>k1</Key>
+	</Board>
+	<NTP>0.0</NTP>
+	<Date>{{ date | default("2023-01-01T00:00:00") }}</Date>
+	<Version>1</Version>
+</Root>

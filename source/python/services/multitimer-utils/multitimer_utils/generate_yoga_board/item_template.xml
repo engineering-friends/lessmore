@@ -1,0 +1,10 @@
+<Item class="IntervalTimer.IntervalEntry">
+    <Time>{{ time }}</Time>
+    <Color>{{ color | default("#006E70") }}</Color>
+    <Repeats>1</Repeats>
+    <Label>{{ label }}</Label>
+    <Alert class="Alert">
+        <Sound>{{ sound | default("l7dd")}}</Sound>
+        <Repeats>{{ repeats | default(0)}}</Repeats>
+    </Alert>
+</Item>
