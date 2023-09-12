@@ -1,2 +1,2 @@
 # lessmore
-My personal monorepo. 
+Mark Lidenberg personal monorepo. 

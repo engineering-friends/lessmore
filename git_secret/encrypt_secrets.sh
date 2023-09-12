@@ -1,1 +1,1 @@
-git secret hide
+cd .. && git secret hide
