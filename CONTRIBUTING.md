@@ -11,7 +11,7 @@
 
 # Настройка монорепы
 
-Для macos лежит [здесь](https://github.com/engineering-friends/lessmore/blob/master/docs/settings.md).
+Для macos лежит [здесь](https://github.com/engineering-friends/lessmore/blob/master/setup_monorepo.sh).
 
 # Структура веток и коммитов
 
