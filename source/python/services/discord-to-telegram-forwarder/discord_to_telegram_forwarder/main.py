@@ -4,16 +4,15 @@ from functools import partial
 
 import discord
 import openai
-
+from pymaybe import maybe
 from discord_to_telegram_forwarder.config.config import config
-from discord_to_telegram_forwarder.on_message_discord_client.on_message_discord_client import OnMessageDiscordClient
+from discord_to_telegram_forwarder.on_message_discord_client import OnMessageDiscordClient
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_post_to_telegram import (
     send_discord_post_to_telegram,
 )
 from discord_to_telegram_forwarder.telegram_client import telegram_client
 
 from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
-
 
 # - Configure openai api key
 
@@ -28,13 +27,12 @@ client = OnMessageDiscordClient(
     process_message=partial(
         send_discord_post_to_telegram,
         telegram_chat_to_channel_name_rule={
-            config.telegram_ef_discussions: lambda channel_name, parent_channel_name, category_name: category_name
+            config.telegram_ef_discussions: lambda message: maybe(message).channel.category.or_else("")
             == "Discussions",
-            config.telegram_ef_channel: lambda channel_name, parent_channel_name, category_name: category_name
-            != "Discussions",
+            config.telegram_ef_channel: lambda message: maybe(message).channel.category.or_else("") != "Discussions",
         },
+        filter_forum_post_messages=config.filter_forum_post_messages,
     ),
-    filter_forum_post_messages=config.filter_forum_post_messages,
     intents=intents,
 )
 
