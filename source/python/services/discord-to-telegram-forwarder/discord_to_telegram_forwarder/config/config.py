@@ -21,6 +21,7 @@ class Config(BaseSettings):
     # - Discord
 
     discord_token: str
+    guild_name: str
 
     # - OpenAI
 

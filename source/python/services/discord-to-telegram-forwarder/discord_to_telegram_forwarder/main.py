@@ -27,9 +27,10 @@ client = OnMessageDiscordClient(
     process_message=partial(
         send_discord_post_to_telegram,
         telegram_chat_to_channel_name_rule={
-            config.telegram_ef_discussions: lambda message: maybe(message).channel.category.or_else("")
-            == "Discussions",
-            config.telegram_ef_channel: lambda message: maybe(message).channel.category.or_else("") != "Discussions",
+            config.telegram_ef_discussions: lambda message: maybe(message).channel.category.or_else("") == "Discussions"
+            and message.guild.name == config.guild_name,
+            config.telegram_ef_channel: lambda message: maybe(message).channel.category.or_else("") != "Discussions"
+            and message.guild.name == config.guild_name,
         },
         filter_forum_post_messages=config.filter_forum_post_messages,
     ),

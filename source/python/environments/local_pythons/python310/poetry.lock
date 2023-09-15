@@ -1362,6 +1362,52 @@ files = [
 testing = ["flake8", "pytest", "pytest-cov", "pytest-virtualenv", "pytest-xdist", "sphinx"]
 
 [[package]]
+name = "confluent-kafka"
+version = "2.2.0"
+description = "Confluent's Python client for Apache Kafka"
+optional = false
+python-versions = "*"
+files = [
+    {file = "confluent-kafka-2.2.0.tar.gz", hash = "sha256:c91a79cd0420eec98d547bdc974232619831d8ca5214eade55443cdf1015b0bc"},
+    {file = "confluent_kafka-2.2.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:069830518594f2639025b60351bc44a9ef9e33a3cf648706854e6f84dbbf2fa4"},
+    {file = "confluent_kafka-2.2.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:6af70f3a8a4ad3df232c8d25658f87fe6318daa85867851a469cd853859cc976"},
+    {file = "confluent_kafka-2.2.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c544064acd50c8f4cb5b6e2158f0dd046fe36ce49a3bf69f018d67d8aa31252a"},
+    {file = "confluent_kafka-2.2.0-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:0ecfb19465d2272e985b2cf8d02cbc6b1e878ad24fe342e7489a22bb0694e0ff"},
+    {file = "confluent_kafka-2.2.0-cp310-cp310-win_amd64.whl", hash = "sha256:bfe649c950db27b36fe099e7dec3e6f9f6264dcd683fefca1a3d1baafea71489"},
+    {file = "confluent_kafka-2.2.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:994fcf16cb59906558921fa58c9357c8211feef534a0218a75acd805786c67bd"},
+    {file = "confluent_kafka-2.2.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:36d74ae7880c504e347dca6f573681c6e17d35e000b187300dfdde1250330636"},
+    {file = "confluent_kafka-2.2.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4df1118f5ed39a59aed3c4e1b94ec7d369f30a99e7609cb1eebc789cd2c0f86c"},
+    {file = "confluent_kafka-2.2.0-cp311-cp311-manylinux_2_28_aarch64.whl", hash = "sha256:3f8033fabdd32e51b8fec44783b5d54ce7e2569207b42536b822c44911a06b4e"},
+    {file = "confluent_kafka-2.2.0-cp311-cp311-win_amd64.whl", hash = "sha256:f6ff4b71ea8b5b58fc38a401481dc0406b501a9f469e0a3c7920db379b4667c8"},
+    {file = "confluent_kafka-2.2.0-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:aa78d70c12e04c3331ac34b00e59f3216aacb140e464f3d55d965741e9cbae7a"},
+    {file = "confluent_kafka-2.2.0-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:93cd00b95f317c190e1c73266ff63c2001c08db141f3543792970f8019311d12"},
+    {file = "confluent_kafka-2.2.0-cp36-cp36m-manylinux_2_28_aarch64.whl", hash = "sha256:76ae8f773e7b34db4d1ca7e83ca3b7bca4d75172aee71cb49db0adf30e091156"},
+    {file = "confluent_kafka-2.2.0-cp36-cp36m-win_amd64.whl", hash = "sha256:59596a6d6e53cebb5dc020edf972700cb93f147703638bca9ff659e5ba41b096"},
+    {file = "confluent_kafka-2.2.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:a80e7202b361466fe275b76e8b76e7a89e2933099e4a1fbb5a5b71ccc3898647"},
+    {file = "confluent_kafka-2.2.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0099be6c21c54c09b18f99d40b9189b20d9779af520b79320dc3be1b954a6735"},
+    {file = "confluent_kafka-2.2.0-cp37-cp37m-manylinux_2_28_aarch64.whl", hash = "sha256:7fbc55cf74babe350974836691225920e2cc0acf51a49aac9896df4ca1ba6375"},
+    {file = "confluent_kafka-2.2.0-cp37-cp37m-win_amd64.whl", hash = "sha256:ee8f1ddb977d94be7daa30527eaded6357d62dbbe7fdff764df260f134f6e304"},
+    {file = "confluent_kafka-2.2.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:cabea69e2e6803eabaa99c8b72eb3747150bd9672bb819e16883750b37deae26"},
+    {file = "confluent_kafka-2.2.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:bdf449bd515d7ae859449e170ccf7f65d1ad9093ed5c8d7e4b6132a2388d1ae8"},
+    {file = "confluent_kafka-2.2.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:67f5ea8b5669165a808a19f9aacae54e9606a4ccad40af1bb5da5c2ac95ad32c"},
+    {file = "confluent_kafka-2.2.0-cp38-cp38-manylinux_2_28_aarch64.whl", hash = "sha256:404b7c628721feaabc7c92e7a7308f2002b42d307aef2c22a62fc1554a8edea1"},
+    {file = "confluent_kafka-2.2.0-cp38-cp38-win_amd64.whl", hash = "sha256:ab27f2c13e581b02ac34ce972f9a2f4165358c346f7ff8514d63ff13f422319d"},
+    {file = "confluent_kafka-2.2.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:9ded465e3dbdf3cae2be02aeed084b198832cbb97f08a433e83bb38fd6be9bf3"},
+    {file = "confluent_kafka-2.2.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:3e24a41d7be375e96b0149646b676c923cab7871fbf782c485c740f7cc2d8a68"},
+    {file = "confluent_kafka-2.2.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:71cd9dbb7553f2fe3c5cac6fe47808e450aa4b09d9cbf448454fe049d8f603b2"},
+    {file = "confluent_kafka-2.2.0-cp39-cp39-manylinux_2_28_aarch64.whl", hash = "sha256:7b84e9b75b47646ca195d54bacca4b8cadc31ee676594cd7f4e5260ee09586be"},
+    {file = "confluent_kafka-2.2.0-cp39-cp39-win_amd64.whl", hash = "sha256:29bc97ec1bc42c8995a0fba50d055a6b968d9ad4f4e95277754df43fcc8195a8"},
+]
+
+[package.extras]
+avro = ["avro (>=1.11.1,<2)", "fastavro (>=0.23.0,<1.0)", "fastavro (>=1.0)", "requests"]
+dev = ["avro (>=1.11.1,<2)", "fastavro (>=0.23.0,<1.0)", "fastavro (>=1.0)", "flake8", "pytest", "pytest (==4.6.4)", "pytest-timeout", "requests"]
+doc = ["avro (>=1.11.1,<2)", "fastavro (>=0.23.0,<1.0)", "fastavro (>=1.0)", "requests", "sphinx", "sphinx-rtd-theme"]
+json = ["jsonschema", "pyrsistent", "pyrsistent (==0.16.1)", "requests"]
+protobuf = ["protobuf", "requests"]
+schema-registry = ["requests"]
+
+[[package]]
 name = "connexion"
 version = "2.14.2"
 description = "Connexion - API first applications with OpenAPI/Swagger and Flask"
@@ -2726,6 +2772,25 @@ files = [
 ]
 
 [[package]]
+name = "importlib-metadata"
+version = "6.8.0"
+description = "Read metadata from Python packages"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "importlib_metadata-6.8.0-py3-none-any.whl", hash = "sha256:3ebb78df84a805d7698245025b975d9d67053cd94c79245ba4b3eb694abe68bb"},
+    {file = "importlib_metadata-6.8.0.tar.gz", hash = "sha256:dbace7892d8c0c4ac1ad096662232f831d4e64f4c4545bd53016a3e9d4654743"},
+]
+
+[package.dependencies]
+zipp = ">=0.5"
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+perf = ["ipython"]
+testing = ["flufl.flake8", "importlib-resources (>=1.3)", "packaging", "pyfakefs", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy (>=0.9.1)", "pytest-perf (>=0.9.2)", "pytest-ruff"]
+
+[[package]]
 name = "inflection"
 version = "0.5.1"
 description = "A port of Ruby on Rails inflector to Python"
@@ -2856,6 +2921,24 @@ files = [
 ]
 
 [[package]]
+name = "jaraco-classes"
+version = "3.3.0"
+description = "Utility functions for Python class constructs"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "jaraco.classes-3.3.0-py3-none-any.whl", hash = "sha256:10afa92b6743f25c0cf5f37c6bb6e18e2c5bb84a16527ccfc0040ea377e7aaeb"},
+    {file = "jaraco.classes-3.3.0.tar.gz", hash = "sha256:c063dd08e89217cee02c8d5e5ec560f2c8ce6cdc2fcdc2e68f7b2e5547ed3621"},
+]
+
+[package.dependencies]
+more-itertools = "*"
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+testing = ["pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy (>=0.9.1)", "pytest-ruff"]
+
+[[package]]
 name = "jedi"
 version = "0.18.1"
 description = "An autocompletion tool for Python that can be used for text editors."
@@ -2872,6 +2955,21 @@ parso = ">=0.8.0,<0.9.0"
 [package.extras]
 qa = ["flake8 (==3.8.3)", "mypy (==0.782)"]
 testing = ["Django (<3.1)", "colorama", "docopt", "pytest (<7.0.0)"]
+
+[[package]]
+name = "jeepney"
+version = "0.8.0"
+description = "Low-level, pure Python DBus protocol wrapper."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "jeepney-0.8.0-py3-none-any.whl", hash = "sha256:c0a454ad016ca575060802ee4d590dd912e35c122fa04e70306de3d076cce755"},
+    {file = "jeepney-0.8.0.tar.gz", hash = "sha256:5efe48d255973902f6badc3ce55e2aa6c5c3b3bc642059ef3a91247bcfcc5806"},
+]
+
+[package.extras]
+test = ["async-timeout", "pytest", "pytest-asyncio (>=0.17)", "pytest-trio", "testpath", "trio"]
+trio = ["async_generator", "trio"]
 
 [[package]]
 name = "jinja2"
@@ -3024,6 +3122,43 @@ files = [
     {file = "jupyterlab_widgets-3.0.3-py3-none-any.whl", hash = "sha256:6aa1bc0045470d54d76b9c0b7609a8f8f0087573bae25700a370c11f82cb38c8"},
     {file = "jupyterlab_widgets-3.0.3.tar.gz", hash = "sha256:c767181399b4ca8b647befe2d913b1260f51bf9d8ef9b7a14632d4c1a7b536bd"},
 ]
+
+[[package]]
+name = "kafka-python"
+version = "2.0.2"
+description = "Pure Python client for Apache Kafka"
+optional = false
+python-versions = "*"
+files = [
+    {file = "kafka-python-2.0.2.tar.gz", hash = "sha256:04dfe7fea2b63726cd6f3e79a2d86e709d608d74406638c5da33a01d45a9d7e3"},
+    {file = "kafka_python-2.0.2-py2.py3-none-any.whl", hash = "sha256:2d92418c7cb1c298fa6c7f0fb3519b520d0d7526ac6cb7ae2a4fc65a51a94b6e"},
+]
+
+[package.extras]
+crc32c = ["crc32c"]
+
+[[package]]
+name = "keyring"
+version = "24.2.0"
+description = "Store and access your passwords safely."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "keyring-24.2.0-py3-none-any.whl", hash = "sha256:4901caaf597bfd3bbd78c9a0c7c4c29fcd8310dab2cffefe749e916b6527acd6"},
+    {file = "keyring-24.2.0.tar.gz", hash = "sha256:ca0746a19ec421219f4d713f848fa297a661a8a8c1504867e55bfb5e09091509"},
+]
+
+[package.dependencies]
+importlib-metadata = {version = ">=4.11.4", markers = "python_version < \"3.12\""}
+"jaraco.classes" = "*"
+jeepney = {version = ">=0.4.2", markers = "sys_platform == \"linux\""}
+pywin32-ctypes = {version = ">=0.2.0", markers = "sys_platform == \"win32\""}
+SecretStorage = {version = ">=3.2", markers = "sys_platform == \"linux\""}
+
+[package.extras]
+completion = ["shtab"]
+docs = ["furo", "jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+testing = ["pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.3)", "pytest-mypy (>=0.9.1)", "pytest-ruff"]
 
 [[package]]
 name = "kiwisolver"
@@ -4583,6 +4718,16 @@ files = [
 ]
 
 [[package]]
+name = "protol"
+version = "0.0.3"
+description = "Compile ProtoBuf proto files on the fly"
+optional = false
+python-versions = "*"
+files = [
+    {file = "protol-0.0.3.tar.gz", hash = "sha256:36dab232651994a549f9ad109b34b57eeea63f1e895b82786a2f32435cad7f4f"},
+]
+
+[[package]]
 name = "psutil"
 version = "5.9.2"
 description = "Cross-platform lib for process and system monitoring in Python."
@@ -4922,6 +5067,17 @@ docs = ["sphinx (>=4.5.0,<5.0.0)", "sphinx-rtd-theme", "zope.interface"]
 tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
 
 [[package]]
+name = "pymaybe"
+version = "0.1.6"
+description = "A Python implementation of the Maybe pattern."
+optional = false
+python-versions = "*"
+files = [
+    {file = "pymaybe-0.1.6-py2.py3-none-any.whl", hash = "sha256:01d0f71b98e1c155ecfecd9db44ce49f37ae374b5cb8f1d27c0ee00c3d7aa4dd"},
+    {file = "pymaybe-0.1.6.tar.gz", hash = "sha256:77ed1602e1b9e8b05dccd0d84891ede4ee2004728170e52af7f9c08d4c62378c"},
+]
+
+[[package]]
 name = "pynacl"
 version = "1.5.0"
 description = "Python binding to the Networking and Cryptography (NaCl) library"
@@ -5213,6 +5369,17 @@ files = [
     {file = "pywin32-304-cp38-cp38-win_amd64.whl", hash = "sha256:ead865a2e179b30fb717831f73cf4373401fc62fbc3455a0889a7ddac848f83e"},
     {file = "pywin32-304-cp39-cp39-win32.whl", hash = "sha256:25746d841201fd9f96b648a248f731c1dec851c9a08b8e33da8b56148e4c65cc"},
     {file = "pywin32-304-cp39-cp39-win_amd64.whl", hash = "sha256:d24a3382f013b21aa24a5cfbfad5a2cd9926610c0affde3e8ab5b3d7dbcf4ac9"},
+]
+
+[[package]]
+name = "pywin32-ctypes"
+version = "0.2.2"
+description = "A (partial) reimplementation of pywin32 using ctypes/cffi"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "pywin32-ctypes-0.2.2.tar.gz", hash = "sha256:3426e063bdd5fd4df74a14fa3cf80a0b42845a87e1d1e81f6549f9daec593a60"},
+    {file = "pywin32_ctypes-0.2.2-py3-none-any.whl", hash = "sha256:bf490a1a709baf35d688fe0ecf980ed4de11d2b3e37b51e5442587a75d9957e7"},
 ]
 
 [[package]]
@@ -5712,6 +5879,21 @@ pandas = ">=0.25"
 
 [package.extras]
 stats = ["scipy (>=1.3)", "statsmodels (>=0.10)"]
+
+[[package]]
+name = "secretstorage"
+version = "3.3.3"
+description = "Python bindings to FreeDesktop.org Secret Service API"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "SecretStorage-3.3.3-py3-none-any.whl", hash = "sha256:f356e6628222568e3af06f2eba8df495efa13b3b63081dafd4f7d9a7b7bc9f99"},
+    {file = "SecretStorage-3.3.3.tar.gz", hash = "sha256:2403533ef369eca6d2ba81718576c5e0f564d5cca1b58f73a8b23e7d4eeebd77"},
+]
+
+[package.dependencies]
+cryptography = ">=2.0"
+jeepney = ">=0.6"
 
 [[package]]
 name = "send2trash"
@@ -6916,6 +7098,21 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [[package]]
+name = "zipp"
+version = "3.16.2"
+description = "Backport of pathlib-compatible object wrapper for zip files"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "zipp-3.16.2-py3-none-any.whl", hash = "sha256:679e51dd4403591b2d6838a48de3d283f3d188412a9782faadf845f298736ba0"},
+    {file = "zipp-3.16.2.tar.gz", hash = "sha256:ebc15946aa78bd63458992fc81ec3b6f7b1e92d51c35e6de1c3804e73b799147"},
+]
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-ignore-flaky", "pytest-mypy (>=0.9.1)", "pytest-ruff"]
+
+[[package]]
 name = "zstandard"
 version = "0.19.0"
 description = "Zstandard bindings for Python"
@@ -6984,4 +7181,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "2f3b89b5a3655c1574d64c7e9038fdf8d566f6021db15eac090f5073f3cc7af3"
+content-hash = "37d5de5707cd8d7ec86e9a21d776da6d8b195cbc070534d22f375012da288c3d"
