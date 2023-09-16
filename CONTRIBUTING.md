@@ -71,7 +71,7 @@
 Настройки лежат в файле `.pre-commit-config.yaml`.
 
 ## Проверка на стиль
-- 
+
 - `black`: `black --line-length 120`
 - `isort`: `isort --settings-path <MONOREPO_PATH>/pyproject.toml`
 
