@@ -33,6 +33,7 @@ pyyaml = "^6.0.1"
 pymaybe = "^0.1.6"
 better-exceptions = "^0.3.3"
 emoji = "^2.8.0"
+python-box = "^7.1.1"
 
 [tool.poetry.dev-dependencies]
 

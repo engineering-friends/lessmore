@@ -1,3 +1,5 @@
+cd ${0%/*}
+
 poetry run pip list --format=freeze > requirements.txt
 
 # remove editable installs and current library from requirements.txt

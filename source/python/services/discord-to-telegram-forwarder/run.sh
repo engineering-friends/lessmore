@@ -1,1 +1,1 @@
-poetry run python discord_to_telegram_forwarder/main.py
+
