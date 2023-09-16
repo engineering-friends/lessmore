@@ -1,7 +1,6 @@
 import asyncio
 
 from box import Box
-
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_post_to_telegram import (
     send_discord_post_to_telegram,
 )
@@ -97,7 +96,7 @@ inputs_by_name = {
                 "content": "",
                 "author": {"display_name": "Mark Lidenberg"},
                 "jump_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
-                "attachments": [{"url": "https://i.imgur.com/4M34hi2.png", 'filename': 'image.png'}],
+                "attachments": [{"url": "https://i.imgur.com/4M34hi2.png", "filename": "image.png"}],
             }
         ),
         add_inner_shortened_url=False,
@@ -117,10 +116,7 @@ async def test_batch():
 
     for input_ in inputs_by_name.values():
         await send_discord_post_to_telegram(
-            telegram_chat_to_filter={
-                config.telegram_ef_discussions: lambda message: True
-            },
-            **input_
+            telegram_chat_to_filter={config.telegram_ef_discussions: lambda message: True}, **input_
         )
 
 

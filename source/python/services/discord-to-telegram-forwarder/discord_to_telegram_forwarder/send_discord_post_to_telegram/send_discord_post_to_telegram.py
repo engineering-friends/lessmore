@@ -3,12 +3,10 @@ import re
 
 from typing import Callable, Optional, Sequence, Union
 
-from box import Box
-from pymaybe import maybe
 import discord
 import emoji as emoji_lib
-from loguru import logger
 
+from box import Box
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
@@ -20,6 +18,8 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_r
     request_emoji_representing_text_from_openai,
 )
 from discord_to_telegram_forwarder.telegram_client import telegram_client
+from loguru import logger
+from pymaybe import maybe
 
 
 async def send_discord_post_to_telegram(
@@ -175,7 +175,9 @@ async def send_discord_post_to_telegram(
         body_size = len(body)
         non_body_size = len(message_text_full) - body_size
         body_size_limit = message_size_limit - non_body_size - 3  # 3 is for extra "..." added in the end
-        body_size_limit -= 100 # for safety, as telegram could in theory have slightly different way of counting symbols
+        body_size_limit -= (
+            100  # for safety, as telegram could in theory have slightly different way of counting symbols
+        )
         body = body[:body_size_limit] + ("" if len(body) < body_size_limit else "...")
 
     # --- Format message text

@@ -4,15 +4,17 @@ from functools import partial
 
 import discord
 import openai
-from pymaybe import maybe
+
 from discord_to_telegram_forwarder.config.config import config
 from discord_to_telegram_forwarder.on_message_discord_client import OnMessageDiscordClient
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_post_to_telegram import (
     send_discord_post_to_telegram,
 )
 from discord_to_telegram_forwarder.telegram_client import telegram_client
+from pymaybe import maybe
 
 from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
+
 
 # - Configure openai api key
 
