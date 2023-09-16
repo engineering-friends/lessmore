@@ -1,1 +1,1 @@
-cd .. && git secret reveal -f # -f: force overwrite
+cd ${0%/*}/.. && git secret reveal -f # -f: force overwrite

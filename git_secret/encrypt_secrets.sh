@@ -1,1 +1,1 @@
-cd .. && git secret hide
+cd ${0%/*}/.. && git secret hide
