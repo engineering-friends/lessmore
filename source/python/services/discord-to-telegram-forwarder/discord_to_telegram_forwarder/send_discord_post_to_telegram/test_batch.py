@@ -117,7 +117,7 @@ async def test_batch():
 
     for input_ in inputs_by_name.values():
         await send_discord_post_to_telegram(
-            telegram_chat_to_channel_name_rule={
+            telegram_chat_to_filter={
                 config.telegram_ef_discussions: lambda message: True
             },
             **input_

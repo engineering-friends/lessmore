@@ -17,8 +17,8 @@ from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
 class OnMessageDiscordClient(discord.Client):
     def __init__(
         self,
-        *args,
         process_message: Callable,
+        *args,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
@@ -31,7 +31,7 @@ class OnMessageDiscordClient(discord.Client):
         try:
             # - Log
 
-            logger.info('Received message', message=message)
+            logger.info("Received message", message=message)
 
             # - Process message
 

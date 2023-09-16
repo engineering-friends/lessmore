@@ -27,7 +27,7 @@ TEMPLATE = """#{parent_channel_name}
 
 
 async def send_discord_post_to_telegram(
-    telegram_chat_to_channel_name_rule: dict[Union[str, int], Callable[[discord.Message], bool]],
+    telegram_chat_to_filter: dict[Union[str, int], Callable[[discord.Message], bool]],
     message: discord.Message,
     filter_forum_post_messages: bool = False,
     filter_public_channels: bool = True,
@@ -165,8 +165,8 @@ async def send_discord_post_to_telegram(
 
     # - Send message to telegram
 
-    for telegram_chat, channel_name_rule in telegram_chat_to_channel_name_rule.items():
-        if channel_name_rule(message=message):
+    for telegram_chat, filter_ in telegram_chat_to_filter.items():
+        if filter_(message=message):
             await telegram_client.send_message(
                 entity=telegram_chat,
                 message=message_text,
@@ -194,7 +194,7 @@ async def test():
             }
         ),
         add_inner_shortened_url=True,
-        telegram_chat_to_channel_name_rule={
+        telegram_chat_to_filter={
             config.telegram_ef_discussions: lambda message: True
         },
     )
