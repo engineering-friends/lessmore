@@ -35,7 +35,7 @@ class OnMessageDiscordClient(discord.Client):
 
             # - Process message
 
-            await self.process_message(message)
+            await self.process_message(message=message)
         except Exception as e:
             logger.exception(e)
 

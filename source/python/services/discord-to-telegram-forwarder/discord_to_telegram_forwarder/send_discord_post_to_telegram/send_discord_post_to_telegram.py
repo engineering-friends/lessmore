@@ -8,6 +8,8 @@ from pymaybe import maybe
 import discord
 import emoji as emoji_lib
 from loguru import logger
+
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
 )
@@ -20,16 +22,10 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_r
 from discord_to_telegram_forwarder.telegram_client import telegram_client
 
 
-TEMPLATE = """#{parent_channel_name}
-{emoji} **{title}** by {author}
-{body}
-[→ к посту]({url}){apple_link}"""
-
-
 async def send_discord_post_to_telegram(
-    telegram_chat_to_filter: dict[Union[str, int], Callable[[discord.Message], bool]],
     message: discord.Message,
-    filter_forum_post_messages: bool = False,
+    telegram_chat_to_filter: dict[Union[str, int], Callable[[discord.Message], bool]],
+    filter_forum_post_messages: bool = True,
     filter_public_channels: bool = True,
     emoji: Optional[str] = None,
     add_inner_shortened_url: bool = True,
@@ -153,14 +149,45 @@ async def send_discord_post_to_telegram(
 
     # -- Format message for telegram
 
-    message_text = TEMPLATE.format(
-        parent_channel_name=parent_channel_name.replace("-", "_"),
+    # --- Limit
+
+    message_size_limit = (
+        4096 if not filename_urls else 1024
+    )  # 4096 is telegram message size limit, but caption limit is 1024
+
+    # --- Crop body if necessary
+
+    if body:
+        # - First get full message text
+
+        message_text_full = format_message(
+            parent_channel_name=parent_channel_name,
+            emoji=emoji,
+            title=title,
+            author_name=author_name,
+            body=body,
+            url=url,
+            inner_shortened_url=inner_shortened_url,
+        )
+
+        # - Then cut it to size limit
+
+        body_size = len(body)
+        non_body_size = len(message_text_full) - body_size
+        body_size_limit = message_size_limit - non_body_size - 3  # 3 is for extra "..." added in the end
+        body_size_limit -= 100 # for safety, as telegram could in theory have slightly different way of counting symbols
+        body = body[:body_size_limit] + ("" if len(body) < body_size_limit else "...")
+
+    # --- Format message text
+
+    message_text = format_message(
+        parent_channel_name=parent_channel_name,
         emoji=emoji,
         title=title,
-        author=author_name,
-        body=("\n" + body[:3000] + ("" if len(body) < 3000 else "...")) + "\n" if body else "",
+        author_name=author_name,
+        body=body,
         url=url,
-        apple_link=f" / [→ к посту для ]({inner_shortened_url})" if inner_shortened_url else "",
+        inner_shortened_url=inner_shortened_url,
     )
 
     # - Send message to telegram
@@ -190,16 +217,13 @@ async def test():
                 "content": "Body",
                 "author": {"display_name": "Mark Lidenberg"},
                 "jump_url": "https://discord.com/channels/1106702799938519211/1106702799938519213/913095424225706005",
-                'attachments': []
+                "attachments": [],
             }
         ),
         add_inner_shortened_url=True,
-        telegram_chat_to_filter={
-            config.telegram_ef_discussions: lambda message: True
-        },
+        telegram_chat_to_filter={config.telegram_ef_discussions: lambda message: True},
     )
 
 
 if __name__ == "__main__":
     asyncio.run(test())
-
