@@ -12,6 +12,7 @@ def format_message(
     body: str,
     url: str,
     inner_shortened_url: str = None,
+    comments_count: int = 0,
 ):
     return TEMPLATE.format(
         parent_channel_name=parent_channel_name.replace("-", "_"),
@@ -20,7 +21,9 @@ def format_message(
         author=author_name,
         body="\n" + body + "\n" if body else "",
         url=url,
-        apple_link=f" / [→ к посту для ]({inner_shortened_url})" if inner_shortened_url else "",
+        apple_link=f" / [→ к посту для ]({inner_shortened_url}) ({'+' if comments_count else ''}{comments_count})"
+        if inner_shortened_url
+        else "",
     )
 
 
@@ -34,6 +37,7 @@ def test():
             body="<body>",
             url="<url>",
             inner_shortened_url="<inner_shortened_url>",
+            comments_count=5,
         )
     )
 

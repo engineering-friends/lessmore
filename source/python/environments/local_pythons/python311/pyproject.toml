@@ -83,6 +83,9 @@ inline-snapshot = "^0.3.2"
 pytest = "^7.4.2"
 pymaybe = "^0.1.6"
 emoji = "^2.8.0"
+kafka-python = "^2.0.2"
+frozendict = "^2.3.8"
+keyring = "^24.2.0"
 
 [tool.poetry.dev-dependencies]
 

@@ -6,7 +6,6 @@ import discord
 
 from box import Box
 from discord_to_telegram_forwarder.config.config import config
-from discord_to_telegram_forwarder.telegram_client import telegram_client
 from loguru import logger
 from pymaybe import maybe
 
@@ -29,27 +28,19 @@ class OnMessageDiscordClient(discord.Client):
     async def on_ready(self):
         logger.info(f"Logged in", user=self.user, id=self.user.id)
 
-    async def on_message(self, message: discord.Message):
-        try:
-            # - Log
+        all_channels = self.get_all_channels()
 
-            logger.info("Received message", message=message)
+        channel = self.get_channel()
+        if not channel:
+            await ctx.send("Channel not found.")
+            return
 
-            # - Get parent message
-
-            parent_message = [sub_message async for sub_message in message.channel.history(limit=1, oldest_first=True)][
-                0
-            ]
-
-            # - Find telegram message
-
-            async for message in telegram_client.iter_messages(-1001829309947, search=parent_message.content):
-                print(message)
-                print(message.text)
-
-            await self.process_message(message=message)
-        except Exception as e:
-            logger.exception(e)
+        async for message in channel.history(limit=1000):  # Adjust the limit if needed
+            if query in message.content:
+                await ctx.send(f"Found in message by {message.author}: {message.content}")
+                break
+        else:
+            await ctx.send("Message not found.")
 
 
 async def test():
@@ -62,7 +53,6 @@ async def test():
 
     intents = discord.Intents.default()
     intents.message_content = True
-    intents.messages = True
     intents.members = True
     client = OnMessageDiscordClient(
         process_message=process_message,
@@ -70,6 +60,11 @@ async def test():
     )
 
     # - Run main
+
+    # async with client:
+    #     await client.start(token=config.discord_token)
+
+    # - Search message in discord with title "Notion мощно обновил свои формулы, я как-то не заметил"
 
     async with client:
         await client.start(token=config.discord_token)

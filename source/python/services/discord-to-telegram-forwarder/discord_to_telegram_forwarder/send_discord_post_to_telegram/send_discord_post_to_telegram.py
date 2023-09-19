@@ -18,13 +18,14 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_r
     request_emoji_representing_text_from_openai,
 )
 from discord_to_telegram_forwarder.telegram_client import telegram_client
+from frozendict import frozendict
 from loguru import logger
 from pymaybe import maybe
 
 
 async def send_discord_post_to_telegram(
     message: discord.Message,
-    telegram_chat_to_filter: dict[Union[str, int], Callable[[discord.Message], bool]],
+    telegram_chat_to_filter: dict[str | int, Callable[[discord.Message], bool]],
     filter_forum_post_messages: bool = True,
     filter_public_channels: bool = True,
     emoji: Optional[str] = None,
@@ -219,11 +220,13 @@ async def test():
                 "content": "Body",
                 "author": {"display_name": "Mark Lidenberg"},
                 "jump_url": "https://discord.com/channels/1106702799938519211/1106702799938519213/913095424225706005",
-                "attachments": [],
+                "attachments": [{"url": "https://i.imgur.com/4M34hi2.png", "filename": "image.png"}],
             }
         ),
         add_inner_shortened_url=True,
         telegram_chat_to_filter={config.telegram_ef_discussions: lambda message: True},
+        filter_forum_post_messages=False,
+        filter_public_channels=False,
     )
 
 
