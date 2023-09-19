@@ -4,7 +4,7 @@ from typing import Callable
 
 import discord
 
-from discord_to_telegram_forwarder.config import config
+from discord_to_telegram_forwarder.deps.init_deps.init_deps import init_deps
 from loguru import logger
 
 from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
@@ -17,11 +17,13 @@ class OnMessageDiscordClient(discord.Client):
     def __init__(
         self,
         process_message: Callable,
-        *args,
         **kwargs,
     ):
-        super().__init__(*args, **kwargs)
         self.process_message = process_message
+        super().__init__(
+            intents=discord.Intents.all(),  # request all intents for simplicity
+            **kwargs,
+        )
 
     async def on_ready(self):
         logger.info(f"Logged in", user=self.user, id=self.user.id)
@@ -40,6 +42,10 @@ class OnMessageDiscordClient(discord.Client):
 
 
 async def test():
+    # - Init deps
+
+    deps = init_deps()
+
     # - Define process_discord_post
 
     async def process_message(message):
@@ -47,18 +53,12 @@ async def test():
 
     # - Init client
 
-    intents = discord.Intents.default()
-    intents.message_content = True
-    intents.members = True
-    client = OnMessageDiscordClient(
-        process_message=process_message,
-        intents=intents,
-    )
+    client = OnMessageDiscordClient(process_message=process_message)
 
     # - Run main
 
     async with client:
-        await client.start(token=config.discord_token)
+        await client.start(token=deps.config.discord_token)
 
 
 if __name__ == "__main__":

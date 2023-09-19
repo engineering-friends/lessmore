@@ -7,9 +7,8 @@ import discord
 import emoji as emoji_lib
 
 from box import Box
-from discord_to_telegram_forwarder.context.init_default_context.telegram_clients.telegram_bot_client import (
-    telegram_bot_client,
-)
+from discord_to_telegram_forwarder.deps.deps import Deps
+from discord_to_telegram_forwarder.deps.init_deps.init_deps import init_deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
@@ -25,6 +24,7 @@ from pymaybe import maybe
 
 
 async def send_discord_post_to_telegram(
+    deps: Deps,
     message: discord.Message,
     telegram_chat_to_filter: dict[Union[str, int], Callable[[discord.Message], bool]],
     filter_forum_post_messages: bool = True,
@@ -198,7 +198,7 @@ async def send_discord_post_to_telegram(
 
     for telegram_chat, filter_ in telegram_chat_to_filter.items():
         if filter_(message=message):
-            await telegram_bot_client.send_message(
+            await deps.telegram_bot_client.send_message(
                 entity=telegram_chat,
                 message=message_text,
                 parse_mode="md",
@@ -208,10 +208,13 @@ async def send_discord_post_to_telegram(
 
 
 async def test():
-    from discord_to_telegram_forwarder.config import config
+    # - Init deps
 
-    await telegram_bot_client.start(bot_token=config.telegram_bot_token)
+    deps = init_deps()
+
+    await deps.telegram_bot_client.start(bot_token=deps.config.telegram_bot_token)
     await send_discord_post_to_telegram(
+        deps=deps,
         message=Box(
             {
                 "channel": {
@@ -225,7 +228,9 @@ async def test():
             }
         ),
         add_inner_shortened_url=True,
-        telegram_chat_to_filter={config.telegram_ef_discussions: lambda message: True},
+        telegram_chat_to_filter={deps.config.telegram_ef_discussions: lambda message: True},
+        filter_forum_post_messages=False,
+        filter_public_channels=False,
     )
 
 

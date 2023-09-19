@@ -1,9 +1,7 @@
 import asyncio
 
 from box import Box
-from discord_to_telegram_forwarder.context.init_default_context.telegram_clients.telegram_bot_client import (
-    telegram_bot_client,
-)
+from discord_to_telegram_forwarder.deps.init_deps.telegram_clients.telegram_bot_client import telegram_bot_client
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_post_to_telegram import (
     send_discord_post_to_telegram,
 )
