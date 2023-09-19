@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "python3.10"
+name = "discord-telegram-forwarder"
 version = "0.1.0"
 description = ""
 authors = ["marklidenberg <marklidenberg@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
 cachetools = ">=4.0.0"
 loguru = "^0.6.0"
 environs = "^9.5.0"
