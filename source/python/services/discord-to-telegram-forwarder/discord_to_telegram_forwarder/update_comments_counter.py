@@ -4,16 +4,23 @@ import re
 import discord
 
 from box import Box
-from discord_to_telegram_forwarder.telegram_clients.telegram_user_client import telegram_user_client
+from discord_to_telegram_forwarder.context.context import Context
 from loguru import logger
 
 
-async def update_comments_counter(message: discord.Message, channels: list[str]) -> None:
+async def update_comments_counter(
+    context: Context,
+    message: discord.Message,
+    channels: list[str],
+) -> None:
     # - Find telegram message
 
     telegram_messages = sum(
         [
-            [message async for message in telegram_user_client.iter_messages(channel, search=message.channel.name)]
+            [
+                message
+                async for message in context.telegram_user_client.iter_messages(channel, search=message.channel.name)
+            ]
             for channel in channels
         ],
         [],

@@ -12,7 +12,7 @@ def is_discord_channel_private(channel: discord.abc.GuildChannel) -> bool:
 
 
 async def test():
-    from discord_to_telegram_forwarder.config.config import config
+    from discord_to_telegram_forwarder.config import config
 
     class MyClient(discord.Client):
         async def on_ready(self):

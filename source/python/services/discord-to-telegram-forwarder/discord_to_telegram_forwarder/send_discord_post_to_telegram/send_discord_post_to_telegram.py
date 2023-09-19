@@ -7,6 +7,9 @@ import discord
 import emoji as emoji_lib
 
 from box import Box
+from discord_to_telegram_forwarder.context.init_default_context.telegram_clients.telegram_bot_client import (
+    telegram_bot_client,
+)
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
@@ -17,7 +20,6 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.is_discord_chan
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_representing_text_from_openai import (
     request_emoji_representing_text_from_openai,
 )
-from discord_to_telegram_forwarder.telegram_clients.telegram_bot_client import telegram_bot_client
 from loguru import logger
 from pymaybe import maybe
 
@@ -206,7 +208,7 @@ async def send_discord_post_to_telegram(
 
 
 async def test():
-    from discord_to_telegram_forwarder.config.config import config
+    from discord_to_telegram_forwarder.config import config
 
     await telegram_bot_client.start(bot_token=config.telegram_bot_token)
     await send_discord_post_to_telegram(

@@ -3,13 +3,17 @@ import asyncio
 import discord
 import openai
 
-from discord_to_telegram_forwarder.config.config import config
+from discord_to_telegram_forwarder.config import config
+from discord_to_telegram_forwarder.context.init_default_context.telegram_clients.telegram_bot_client import (
+    telegram_bot_client,
+)
+from discord_to_telegram_forwarder.context.init_default_context.telegram_clients.telegram_user_client import (
+    telegram_user_client,
+)
 from discord_to_telegram_forwarder.on_message_discord_client import OnMessageDiscordClient
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_post_to_telegram import (
     send_discord_post_to_telegram,
 )
-from discord_to_telegram_forwarder.telegram_clients.telegram_bot_client import telegram_bot_client
-from discord_to_telegram_forwarder.telegram_clients.telegram_user_client import telegram_user_client
 from discord_to_telegram_forwarder.update_comments_counter import update_comments_counter
 from pymaybe import maybe
 

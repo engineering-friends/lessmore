@@ -4,10 +4,8 @@ from typing import Callable
 
 import discord
 
-from box import Box
-from discord_to_telegram_forwarder.config.config import config
+from discord_to_telegram_forwarder.config import config
 from loguru import logger
-from pymaybe import maybe
 
 from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
 
