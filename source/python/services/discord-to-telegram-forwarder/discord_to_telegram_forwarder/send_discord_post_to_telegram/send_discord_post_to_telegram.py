@@ -1,7 +1,7 @@
 import asyncio
 import re
 
-from typing import Callable, Optional, Sequence, Union
+from typing import Callable, Optional, Union
 
 import discord
 import emoji as emoji_lib
@@ -17,7 +17,7 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.is_discord_chan
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_representing_text_from_openai import (
     request_emoji_representing_text_from_openai,
 )
-from discord_to_telegram_forwarder.telegram_client import telegram_client
+from discord_to_telegram_forwarder.telegram_clients.telegram_bot_client import telegram_bot_client
 from loguru import logger
 from pymaybe import maybe
 
@@ -196,7 +196,7 @@ async def send_discord_post_to_telegram(
 
     for telegram_chat, filter_ in telegram_chat_to_filter.items():
         if filter_(message=message):
-            await telegram_client.send_message(
+            await telegram_bot_client.send_message(
                 entity=telegram_chat,
                 message=message_text,
                 parse_mode="md",
@@ -208,7 +208,7 @@ async def send_discord_post_to_telegram(
 async def test():
     from discord_to_telegram_forwarder.config.config import config
 
-    await telegram_client.start(bot_token=config.telegram_bot_token)
+    await telegram_bot_client.start(bot_token=config.telegram_bot_token)
     await send_discord_post_to_telegram(
         message=Box(
             {
