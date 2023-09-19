@@ -2,6 +2,9 @@ import asyncio
 
 import discord
 
+from discord_to_telegram_forwarder.deps.init_deps.init_deps import init_deps
+from loguru import logger
+
 
 def is_discord_channel_private(channel: discord.abc.GuildChannel) -> bool:
     for overwrite_type, overwrite in channel.overwrites.items():
@@ -12,7 +15,9 @@ def is_discord_channel_private(channel: discord.abc.GuildChannel) -> bool:
 
 
 async def test():
-    from discord_to_telegram_forwarder.config.config import config
+    # - Init deps
+
+    deps = init_deps()
 
     class MyClient(discord.Client):
         async def on_ready(self):
@@ -20,22 +25,21 @@ async def test():
 
             for guild in self.guilds:
                 for channel in guild.text_channels:
-                    print(channel.name, is_discord_channel_private(channel))
+                    logger.info(
+                        "Text channel", channel_name=channel.name, is_private=is_discord_channel_private(channel)
+                    )
 
                 for channel in guild.forums:
-                    print(channel.name, is_discord_channel_private(channel))
+                    logger.info("Forum", channel_name=channel.name, is_private=is_discord_channel_private(channel))
 
     # - Init client
 
-    intents = discord.Intents.default()
-    intents.message_content = True
-    intents.members = True
-    client = MyClient(intents=intents)
+    client = MyClient(intents=discord.Intents.all())
 
     # - Run main
 
     async with client:
-        await client.start(token=config.discord_token)
+        await client.start(token=deps.config.discord_token)
 
 
 if __name__ == "__main__":

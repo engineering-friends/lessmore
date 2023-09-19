@@ -1,10 +1,10 @@
 import asyncio
 
 from box import Box
+from discord_to_telegram_forwarder.deps.init_deps.telegram_clients.telegram_bot_client import telegram_bot_client
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_post_to_telegram import (
     send_discord_post_to_telegram,
 )
-from discord_to_telegram_forwarder.telegram_clients.telegram_bot_client import telegram_bot_client
 
 
 inputs_by_name = {
@@ -108,7 +108,7 @@ inputs_by_name = {
 async def test_batch():
     # - Init test
 
-    from discord_to_telegram_forwarder.config.config import config
+    from discord_to_telegram_forwarder.config import config
 
     await telegram_bot_client.start(bot_token=config.telegram_bot_token)
 

@@ -4,16 +4,21 @@ import re
 import discord
 
 from box import Box
-from discord_to_telegram_forwarder.telegram_clients.telegram_user_client import telegram_user_client
+from discord_to_telegram_forwarder.deps.deps import Deps
+from discord_to_telegram_forwarder.deps.init_deps.init_deps import init_deps
 from loguru import logger
 
 
-async def update_comments_counter(message: discord.Message, channels: list[str]) -> None:
+async def update_comments_counter(
+    deps: Deps,
+    message: discord.Message,
+    channels: list[str],
+) -> None:
     # - Find telegram message
 
     telegram_messages = sum(
         [
-            [message async for message in telegram_user_client.iter_messages(channel, search=message.channel.name)]
+            [message async for message in deps.telegram_user_client.iter_messages(channel, search=message.channel.name)]
             for channel in channels
         ],
         [],
@@ -22,6 +27,7 @@ async def update_comments_counter(message: discord.Message, channels: list[str])
     if not telegram_messages:
         logger.warning(f"Telegram message not found for discord message", content=message.text)
         return
+
     telegram_message = telegram_messages[0]
 
     # - Update text
@@ -39,7 +45,7 @@ async def update_comments_counter(message: discord.Message, channels: list[str])
 
     # - Edit message
 
-    await telegram_user_client.edit_message(
+    await deps.telegram_user_client.edit_message(
         entity=telegram_messages[0],
         message=text,
         parse_mode="md",
@@ -49,9 +55,16 @@ async def update_comments_counter(message: discord.Message, channels: list[str])
 
 
 async def test():
-    await telegram_user_client.start()
+    # - Init hub
+
+    deps = init_deps(env="test")
+
+    # - Start client
+
+    await deps.telegram_user_client.start()
     await update_comments_counter(
-        message=Box({"channel": {"name": "New post by Mark Lidenberg"}, "position": 6}),
+        deps=deps,
+        message=Box({"channel": {"name": "Foo by Mark Lidenberg"}, "position": 123}),
         channels=["-1001897462358"],  # EF: Test
     )
 
