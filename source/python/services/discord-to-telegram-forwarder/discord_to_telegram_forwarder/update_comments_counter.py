@@ -4,8 +4,6 @@ import re
 import discord
 
 from box import Box
-from deeplay.utils.json_utils import to_json
-from deeplay.utils.print_json import print_json
 from discord_to_telegram_forwarder.telegram_clients.telegram_user_client import telegram_user_client
 from loguru import logger
 
