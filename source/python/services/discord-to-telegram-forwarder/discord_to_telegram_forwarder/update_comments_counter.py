@@ -43,6 +43,17 @@ async def update_comments_counter(
         text = text.rstrip()
         text = text + f" ({'+' if comments_count else ''}{comments_count})"
 
+    logger.info(
+        "Updating telegram message message",
+        original_text=telegram_messages[0].text,
+        text=text,
+        discord_message_content=message.content,
+        comments_count=comments_count,
+        message_position=message.position,
+        message_id=message.id,
+        starter_message_id=message.channel.starter_message.id,
+    )
+
     # - Edit message
 
     await deps.telegram_user_client.edit_message(
