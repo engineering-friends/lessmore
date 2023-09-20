@@ -1,10 +1,8 @@
 import asyncio
 
 import discord
-import openai
 
-from discord_to_telegram_forwarder.deps.deps import Deps
-from discord_to_telegram_forwarder.deps.init_deps.init_deps import init_deps
+from discord_to_telegram_forwarder.deps.init_deps import init_deps
 from discord_to_telegram_forwarder.on_message_discord_client import OnMessageDiscordClient
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_post_to_telegram import (
     send_discord_post_to_telegram,
@@ -15,46 +13,41 @@ from pymaybe import maybe
 from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
 
 
-# - Define process_message function
-
-
-async def process_message(deps: Deps, message: discord.Message):
-    # - Post message
-
-    await send_discord_post_to_telegram(
-        deps=deps,
-        message=message,
-        telegram_chat_to_filter={
-            deps.config.telegram_ef_discussions: lambda message: maybe(message).channel.category.name.or_else("")
-            == "Discussions"
-            and message.guild.name == deps.config.guild_name,
-            deps.config.telegram_ef_channel: lambda message: maybe(message).channel.category.name.or_else("")
-            != "Discussions"
-            and message.guild.name == deps.config.guild_name,
-        },
-        filter_forum_post_messages=deps.config.filter_forum_post_messages,
-    )
-
-    # - Update comments counter
-
-    await update_comments_counter(
-        deps=deps,
-        message=message,
-        channels=[deps.config.telegram_ef_discussions, deps.config.telegram_ef_channel],
-    )
-
-
-# - Init discord client
-
-client = OnMessageDiscordClient(process_message=process_message)
-
-# - Run main
-
-
 async def main():
     # - Init deps
 
     deps = init_deps()
+
+    # - Define process_message function
+
+    async def process_message(message: discord.Message):
+        # - Post message
+
+        await send_discord_post_to_telegram(
+            deps=deps,
+            message=message,
+            telegram_chat_to_filter={
+                deps.config.telegram_ef_discussions: lambda message: maybe(message).channel.category.name.or_else("")
+                == "Discussions"
+                and message.guild.name == deps.config.guild_name,
+                deps.config.telegram_ef_channel: lambda message: maybe(message).channel.category.name.or_else("")
+                != "Discussions"
+                and message.guild.name == deps.config.guild_name,
+            },
+            filter_forum_post_messages=deps.config.filter_forum_post_messages,
+        )
+
+        # - Update comments counter
+
+        await update_comments_counter(
+            deps=deps,
+            message=message,
+            channels=[deps.config.telegram_ef_discussions, deps.config.telegram_ef_channel],
+        )
+
+    # - Init discord client
+
+    client = OnMessageDiscordClient(process_message=process_message)
 
     # - Start telegram clients
 

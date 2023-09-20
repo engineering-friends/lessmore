@@ -1,7 +1,7 @@
 import asyncio
 
 from box import Box
-from discord_to_telegram_forwarder.deps.init_deps.telegram_clients.telegram_bot_client import telegram_bot_client
+from discord_to_telegram_forwarder.deps.init_deps import init_deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_post_to_telegram import (
     send_discord_post_to_telegram,
 )
@@ -106,17 +106,23 @@ inputs_by_name = {
 
 
 async def test_batch():
-    # - Init test
+    # - Init deps
 
-    from discord_to_telegram_forwarder.config import config
+    deps = init_deps()
 
-    await telegram_bot_client.start(bot_token=config.telegram_bot_token)
+    # - Start telegram bot client
+
+    await deps.telegram_bot_client.start(bot_token=deps.config.telegram_bot_token)
 
     # - Send test_messages
 
     for input_ in inputs_by_name.values():
         await send_discord_post_to_telegram(
-            telegram_chat_to_filter={config.telegram_ef_discussions: lambda message: True}, **input_
+            deps=deps,
+            telegram_chat_to_filter={deps.config.telegram_ef_discussions: lambda message: True},
+            filter_forum_post_messages=False,
+            filter_public_channels=False,
+            **input_,
         )
 
 

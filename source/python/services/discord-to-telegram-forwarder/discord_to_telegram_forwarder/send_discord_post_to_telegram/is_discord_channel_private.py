@@ -2,7 +2,7 @@ import asyncio
 
 import discord
 
-from discord_to_telegram_forwarder.deps.init_deps.init_deps import init_deps
+from discord_to_telegram_forwarder.deps.init_deps import init_deps
 from loguru import logger
 
 

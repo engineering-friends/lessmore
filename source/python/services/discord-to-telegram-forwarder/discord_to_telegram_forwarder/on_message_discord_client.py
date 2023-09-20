@@ -4,7 +4,7 @@ from typing import Callable
 
 import discord
 
-from discord_to_telegram_forwarder.deps.init_deps.init_deps import init_deps
+from discord_to_telegram_forwarder.deps.init_deps import init_deps
 from loguru import logger
 
 from lessmore.utils.configure_loguru.configure_loguru import configure_loguru

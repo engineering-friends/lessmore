@@ -8,7 +8,7 @@ import emoji as emoji_lib
 
 from box import Box
 from discord_to_telegram_forwarder.deps.deps import Deps
-from discord_to_telegram_forwarder.deps.init_deps.init_deps import init_deps
+from discord_to_telegram_forwarder.deps.init_deps import init_deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
@@ -39,9 +39,8 @@ async def send_discord_post_to_telegram(
             maybe(message).channel.parent.or_else(None), discord.ForumChannel
         ) and message.id == maybe(message).channel.starter_message.id.or_else(None)
 
-        logger.info("is_post_message", value=is_post_message)
-
         if not is_post_message:
+            logger.info("Message is not a forum post message, skipping", message_id=message.id)
             return
 
     # - Filter public
@@ -54,9 +53,8 @@ async def send_discord_post_to_telegram(
             if isinstance(channel_candidate, discord.abc.GuildChannel):
                 is_channel_private = is_discord_channel_private(channel_candidate)
 
-                logger.info("is_channel_private", name=channel_candidate.name, value=is_channel_private)
-
                 if is_channel_private:
+                    logger.info("Channel is private, skipping", channel_id=channel_candidate.id)
                     return
 
     # - Get image attachments

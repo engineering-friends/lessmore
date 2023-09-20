@@ -6,7 +6,7 @@ from typing import Literal
 
 import openai
 
-from discord_to_telegram_forwarder.config import Config
+from discord_to_telegram_forwarder.config.config import Config
 from discord_to_telegram_forwarder.deps.deps import Deps
 from loguru import logger
 from telethon import TelegramClient
@@ -29,7 +29,7 @@ def init_deps(env: Literal["test", "prod"] = "test") -> Deps:
             # "environment_variables",
         ],
         context={
-            "root": str(Path(__file__).parent),
+            "root": str(Path(__file__).parent / "../config"),
             "env": os.environ.get("DISCORD_TO_TELEGRAM_FORWARDER_ENV", env),
         },
     )
@@ -48,12 +48,12 @@ def init_deps(env: Literal["test", "prod"] = "test") -> Deps:
     return Deps(
         config=config,
         telegram_bot_client=TelegramClient(
-            session=str(Path(__file__).parent / "telegram_user.session"),
+            session=str(Path(__file__).parent / "../../data/dynamic/telegram_bot.session"),
             api_id=int(config.telegram_api_id),
             api_hash=config.telegram_api_hash,
         ),
         telegram_user_client=TelegramClient(
-            session=str(Path(__file__).parent / "telegram_user.session"),
+            session=str(Path(__file__).parent / "../../data/dynamic/telegram_user.session"),
             api_id=int(config.telegram_api_id),
             api_hash=config.telegram_api_hash,
         ),

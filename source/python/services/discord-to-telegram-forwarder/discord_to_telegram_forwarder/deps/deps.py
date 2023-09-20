@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from discord_to_telegram_forwarder.config import Config
+from discord_to_telegram_forwarder.config.config import Config
 from telethon import TelegramClient
 
 

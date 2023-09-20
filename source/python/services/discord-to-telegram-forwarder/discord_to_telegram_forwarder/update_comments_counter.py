@@ -5,8 +5,9 @@ import discord
 
 from box import Box
 from discord_to_telegram_forwarder.deps.deps import Deps
-from discord_to_telegram_forwarder.deps.init_deps.init_deps import init_deps
+from discord_to_telegram_forwarder.deps.init_deps import init_deps
 from loguru import logger
+from pymaybe import maybe
 
 
 async def update_comments_counter(
@@ -34,7 +35,11 @@ async def update_comments_counter(
 
     text = telegram_messages[0].text
 
-    comments_count = 0 if message.channel.starter_message.id == message.id else message.position + 1
+    comments_count = (
+        0
+        if message.channel.starter_message and message.channel.starter_message.id == message.id
+        else message.position + 1
+    )
 
     # "(+2)" or "" -> "(+3)"
     if re.search(r"\(\+?\d+\)$", text):
@@ -51,7 +56,7 @@ async def update_comments_counter(
         comments_count=comments_count,
         message_position=message.position,
         message_id=message.id,
-        starter_message_id=message.channel.starter_message.id,
+        starter_message_id=maybe(message).channel.starter_message.id.or_else(""),
     )
 
     # - Edit message
