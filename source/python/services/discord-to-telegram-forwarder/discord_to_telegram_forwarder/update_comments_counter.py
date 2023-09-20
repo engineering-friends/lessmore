@@ -25,7 +25,7 @@ async def update_comments_counter(
     )
 
     if not telegram_messages:
-        logger.warning(f"Telegram message not found for discord message", content=message.text)
+        logger.warning(f"Telegram message not found for discord message", content=message.content)
         return
 
     telegram_message = telegram_messages[0]
@@ -57,14 +57,22 @@ async def update_comments_counter(
 async def test():
     # - Init hub
 
-    deps = init_deps(env="test")
+    deps = init_deps()
 
     # - Start client
 
     await deps.telegram_user_client.start()
     await update_comments_counter(
         deps=deps,
-        message=Box({"channel": {"name": "Foo by Mark Lidenberg"}, "position": 123}),
+        message=Box(
+            {
+                "channel": {
+                    "name": "Foo by Mark Lidenberg",
+                    "starter_message": {"id": 123},
+                },
+                "position": 123,
+            }
+        ),
         channels=["-1001897462358"],  # EF: Test
     )
 
