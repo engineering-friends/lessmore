@@ -21,7 +21,3 @@ class Config(BaseSettings):
     # - OpenAI
 
     openai_api_key: str
-
-    # - Logic
-
-    filter_forum_post_messages: bool = False

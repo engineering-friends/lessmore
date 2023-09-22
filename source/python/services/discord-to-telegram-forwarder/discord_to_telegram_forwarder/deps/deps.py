@@ -7,5 +7,6 @@ from telethon import TelegramClient
 @dataclass
 class Deps:
     config: Config
+    cache: dict
     telegram_bot_client: TelegramClient
     telegram_user_client: TelegramClient

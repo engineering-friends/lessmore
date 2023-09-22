@@ -7,7 +7,7 @@ from discord_to_telegram_forwarder.on_message_discord_client import OnMessageDis
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_post_to_telegram import (
     send_discord_post_to_telegram,
 )
-from discord_to_telegram_forwarder.update_comments_counter import update_comments_counter
+from discord_to_telegram_forwarder.update_comments_counter.update_comments_counter import update_comments_counter
 from pymaybe import maybe
 
 from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
@@ -34,7 +34,6 @@ async def main():
                 != "Discussions"
                 and message.guild.name == deps.config.guild_name,
             },
-            filter_forum_post_messages=deps.config.filter_forum_post_messages,
         )
 
         # - Update comments counter

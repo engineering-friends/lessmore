@@ -19,6 +19,8 @@ async def test():
 
     deps = init_deps()
 
+    # - Init client
+
     class MyClient(discord.Client):
         async def on_ready(self):
             print("Logged on as", self.user)
@@ -26,13 +28,17 @@ async def test():
             for guild in self.guilds:
                 for channel in guild.text_channels:
                     logger.info(
-                        "Text channel", channel_name=channel.name, is_private=is_discord_channel_private(channel)
+                        "Text channel",
+                        channel_name=channel.name,
+                        is_private=is_discord_channel_private(channel),
                     )
 
                 for channel in guild.forums:
-                    logger.info("Forum", channel_name=channel.name, is_private=is_discord_channel_private(channel))
-
-    # - Init client
+                    logger.info(
+                        "Forum",
+                        channel_name=channel.name,
+                        is_private=is_discord_channel_private(channel),
+                    )
 
     client = MyClient(intents=discord.Intents.all())
 

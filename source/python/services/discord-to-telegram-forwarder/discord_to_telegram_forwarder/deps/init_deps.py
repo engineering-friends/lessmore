@@ -15,7 +15,7 @@ from lessmore.utils.configure_loguru.format_as_json_colored.format_as_json_color
 from lessmore.utils.load_pydantic_settings.load_pydantic_settings import load_pydantic_settings
 
 
-def init_deps(env: Literal["test", "prod"] = "test") -> Deps:
+def init_deps(env: Literal["test", "prod"] = "test", log_level="DEBUG") -> Deps:
     # - Init config
 
     config = load_pydantic_settings(
@@ -41,12 +41,15 @@ def init_deps(env: Literal["test", "prod"] = "test") -> Deps:
     # - Init logger
 
     logger.remove()
-    logger.add(sink=sys.stdout, level="DEBUG", format=format_as_json_colored)
+    logger.add(sink=sys.stdout, level=log_level, format=format_as_json_colored)
 
     # - Return context
 
+    os.makedirs(str(Path(__file__).parent / "../../data/dynamic"), exist_ok=True)
+
     return Deps(
         config=config,
+        cache={},
         telegram_bot_client=TelegramClient(
             session=str(Path(__file__).parent / "../../data/dynamic/telegram_bot.session"),
             api_id=int(config.telegram_api_id),

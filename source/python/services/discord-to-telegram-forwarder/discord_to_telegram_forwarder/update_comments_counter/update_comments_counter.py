@@ -6,6 +6,7 @@ import discord
 from box import Box
 from discord_to_telegram_forwarder.deps.deps import Deps
 from discord_to_telegram_forwarder.deps.init_deps import init_deps
+from discord_to_telegram_forwarder.update_comments_counter.search_telegram_messages import search_telegram_messages
 from loguru import logger
 from pymaybe import maybe
 
@@ -13,13 +14,13 @@ from pymaybe import maybe
 async def update_comments_counter(
     deps: Deps,
     message: discord.Message,
-    channels: list[str],
+    channels: list[str | int],
 ) -> None:
     # - Find telegram message
 
     telegram_messages = sum(
         [
-            [message async for message in deps.telegram_user_client.iter_messages(channel, search=message.channel.name)]
+            await search_telegram_messages(deps=deps, channel=channel, query=message.channel.name)
             for channel in channels
         ],
         [],
@@ -61,6 +62,10 @@ async def update_comments_counter(
 
     # - Edit message
 
+    if telegram_messages[0].text == text:
+        logger.info("Text is the same, skipping")
+        return
+
     await deps.telegram_user_client.edit_message(
         entity=telegram_messages[0],
         message=text,
@@ -87,9 +92,11 @@ async def test():
                     "starter_message": {"id": 123},
                 },
                 "position": 123,
+                "id": "id",
+                "content": "content",
             }
         ),
-        channels=["-1001897462358"],  # EF: Test
+        channels=[-1001897462358],  # EF: Test
     )
 
 
