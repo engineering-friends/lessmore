@@ -27,11 +27,7 @@ async def main():
             deps=deps,
             message=message,
             telegram_chat_to_filter={
-                deps.config.telegram_ef_discussions: lambda message: maybe(message).channel.category.name.or_else("")
-                == "Discussions"
-                and message.guild.name == deps.config.guild_name,
-                deps.config.telegram_ef_channel: lambda message: maybe(message).channel.category.name.or_else("")
-                != "Discussions"
+                deps.config.telegram_ef_channel: "engineering-sessions" not in maybe(message).channel.name.or_else("")
                 and message.guild.name == deps.config.guild_name,
             },
         )
@@ -41,7 +37,7 @@ async def main():
         await update_comments_counter(
             deps=deps,
             message=message,
-            channels=[deps.config.telegram_ef_discussions, deps.config.telegram_ef_channel],
+            channels=[deps.config.telegram_ef_channel],
         )
 
     # - Init discord client
