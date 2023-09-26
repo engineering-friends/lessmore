@@ -36,11 +36,7 @@ async def update_comments_counter(
 
     text = telegram_messages[0].text
 
-    comments_count = (
-        0
-        if message.channel.starter_message and message.channel.starter_message.id == message.id
-        else message.position + 1
-    )
+    comments_count = 0 if maybe(message).channel.starter_message.id.or_else("") == message.id else message.position + 1
 
     # "(+2)" or "" -> "(+3)"
     if re.search(r"\(\+?\d+\)$", text):

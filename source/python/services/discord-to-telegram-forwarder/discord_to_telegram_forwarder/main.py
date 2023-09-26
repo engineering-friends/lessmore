@@ -27,7 +27,8 @@ async def main():
             deps=deps,
             message=message,
             telegram_chat_to_filter={
-                deps.config.telegram_ef_channel: "engineering-sessions" not in maybe(message).channel.name.or_else("")
+                deps.config.telegram_ef_channel: lambda message: "engineering-sessions"
+                not in maybe(message).channel.name.or_else("")
                 and message.guild.name == deps.config.guild_name,
             },
         )
