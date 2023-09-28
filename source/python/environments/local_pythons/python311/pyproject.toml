@@ -83,6 +83,7 @@ inline-snapshot = "^0.3.2"
 pytest = "^7.4.2"
 pymaybe = "^0.1.6"
 emoji = "^2.8.0"
+humps = "^0.2.2"
 
 [tool.poetry.dev-dependencies]
 
