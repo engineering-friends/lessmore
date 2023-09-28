@@ -1,13 +1,18 @@
 chrome.runtime.sendMessage({ action: "fetchBookmarks" }, (bookmarkLinks) => {
-  const observer = new MutationObserver(() => {
+  function highlightLinks() {
     const pageLinks = document.querySelectorAll("a");
+
     pageLinks.forEach((linkElement) => {
-      const matchedBookmark = bookmarkLinks.find(bookmark => linkElement.href.startsWith(bookmark));
+      const fullURL = new URL(linkElement.getAttribute('href'), window.location).toString();
+      const matchedBookmark = bookmarkLinks.find(bookmark => fullURL.startsWith(bookmark));
       if (matchedBookmark) {
-        linkElement.style.color = "#186F65";
+       linkElement.style.color = "#186F65";
       }
     });
-  });
+  }
 
-  observer.observe(document.body, { childList: true, subtree: true });
+  highlightLinks();
+
+  // Re-apply every 5 seconds
+  setInterval(highlightLinks, 500);
 });
