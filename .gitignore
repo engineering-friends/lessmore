@@ -38,6 +38,7 @@
 !**/*.gpg
 !**/*.txt
 !**/*.xml
+!**/*.lua
 
 # - Dot files
 
