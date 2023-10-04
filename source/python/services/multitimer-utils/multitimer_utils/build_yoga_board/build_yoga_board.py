@@ -29,32 +29,16 @@ def build_yoga_board(label_and_times: list[tuple[str, TimedeltaLike]]):  # [("wo
 def test():
     board = build_yoga_board(
         label_and_times=[
-            # - Massage
-            ("Само-массаж", "15m"),
-            # - ATG pack
-            ("Couch stretch R", "3m"),
-            ("Couch stretch L", "3m"),
-            ("Calf stretch R", "3m"),
-            ("Calf stretch L", "3m"),
-            ("Hamstring stretch R", "3m"),
-            ("Hamstring stretch L", "3m"),
-            ("Eye of the needle R", "3m"),
-            ("Eye of the needle L", "3m"),
-            ("Groin stretch", "3m"),
-            # - Legs
-            ("Воин Л", "3m"),
-            ("Бабочка", "3m"),
-            # - Yoga classics
-            ("Кошка", "5m"),
-            ("Собака", "3m"),
-            # - Chest opener
-            ("Намасте сзади", "3m"),
-            # - Splits
-            ("Обнимание колена П", "3m"),
-            ("Обнимание колена Л", "3m"),
-            ("Шпагат П", "3m"),
-            ("Шпагат Л", "3m"),
-            ("Шпагат боковой", "8m"),
+            ("Поза воина", "2m"),
+            ("Наклон", "2m"),
+            ("Бабочка", "2m"),
+            ("Намасте сзади", "2m"),
+            ("Шпагат П", "2m"),
+            ("Шпагат Л", "2m"),
+            ("Шпагат боковой", "2m"),
+            ("Голубь П", "2m"),
+            ("Голубь Л", "2m"),
+            ("Мостик", "2m"),
         ]
     )
 
