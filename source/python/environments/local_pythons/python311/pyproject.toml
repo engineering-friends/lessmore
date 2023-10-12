@@ -84,6 +84,10 @@ pytest = "^7.4.2"
 pymaybe = "^0.1.6"
 emoji = "^2.8.0"
 humps = "^0.2.2"
+confluent-kafka = "^2.2.0"
+acryl-datahub = "^0.11.0.2"
+acryl-datahub-airflow-plugin = "^0.11.0.2"
+mattermostdriver = "^7.3.2"
 
 [tool.poetry.dev-dependencies]
 
