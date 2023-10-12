@@ -1,1 +1,1 @@
-python run_tests.py --exclude-slow=False
+python run_tests.py --exclude-slow=True

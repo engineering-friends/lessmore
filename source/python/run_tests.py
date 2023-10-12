@@ -11,7 +11,7 @@ from lessmore.utils.list_files import list_files
 def run_tests(
     path: str = ".",
     excluded_dirs: Iterable = ("/.venv/", "/archive/", "/backlog/"),
-    exclude_slow: bool = True,
+    exclude_slow: bool = False,
 ):
     # - Get all python files
 
