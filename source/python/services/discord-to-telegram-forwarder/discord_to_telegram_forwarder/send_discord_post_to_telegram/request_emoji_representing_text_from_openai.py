@@ -5,7 +5,7 @@ from lessmore.utils.remove_duplicates_ordered import remove_duplicates_ordered
 
 
 def request_emoji_representing_text_from_openai(text: str, limit: int = 3) -> str:
-    """Returns emoji as a string (e.g. "👍"). Or several."""
+    """Returns emojis as a string (e.g. "👍")"""
 
     # - Get response text
 
