@@ -216,10 +216,14 @@ async def test():
         message=Box(
             {
                 "channel": {
-                    "name": "channel_name",
+                    "name": "Мета-исследование об эффекте кофе на организм",
                     "parent": {"name": "parent_channel_name"},
                 },
-                "content": "Body",
+                "content": """1) На скриншоте - исследование про генетическую чувствительность к разным эффектам кофе.
+TL;DR строго индивидуально
+2) Статья - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8070495/
+tl;dr Кофе снижает смертность от всех причин
+Mark Lidenberg На счет того пить или не пить и что для кого правильно :)""",
                 "author": {"display_name": "Mark Lidenberg"},
                 "jump_url": "https://discord.com/channels/1106702799938519211/1106702799938519213/913095424225706005",
                 "attachments": [],
