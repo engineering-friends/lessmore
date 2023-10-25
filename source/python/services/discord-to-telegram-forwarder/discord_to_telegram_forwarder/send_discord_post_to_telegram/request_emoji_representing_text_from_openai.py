@@ -4,9 +4,6 @@ import openai
 from lessmore.utils.remove_duplicates_ordered import remove_duplicates_ordered
 
 
-PROMPT_TEMPLATE = "### Text\n{text}"
-
-
 def request_emoji_representing_text_from_openai(text: str, limit: int = 3) -> str:
     """Returns emoji as a string (e.g. "👍"). Or several."""
 
@@ -25,10 +22,7 @@ def request_emoji_representing_text_from_openai(text: str, limit: int = 3) -> st
         Хочу оптимизировать навигацию между разными сущностями при работе. Приложения, окна, вкладки, недавние, поиск по тексту, сессии, пины … - все вот это хочу разбить на рабочие механики и продумать, где что лучше как юзать""",
             },
             {"role": "assistant", "content": """🔍💡🗺️🚀🤔"""},
-            {
-                "role": "user",
-                "content": PROMPT_TEMPLATE.format(text=text),
-            },
+            {"role": "user", "content": f"### Text\n{text}"},
         ],
     )  # sample answer: {"id":"chatcmpl-7mS5ErOokrcpg33WsJKrZ6rnhLazt","object":"chat.completion","created":1691782052,"model":"gpt-3.5-turbo-0613","choices":[{"index":0,"message":{"role":"assistant","content":"☔"},"finish_reason":"stop"}],"usage":{"prompt_tokens":44,"completion_tokens":2,"total_tokens":46}} # pragma: allowlist secret
     response_text = response.choices[0].message.content
