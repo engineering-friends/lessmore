@@ -1,15 +1,14 @@
 import asyncio
 import os
 import re
+
 from typing import Callable, Optional, Union
 
 import discord
 import emoji as emoji_lib
 import requests
-from box import Box
-from loguru import logger
-from pymaybe import maybe
 
+from box import Box
 from discord_to_telegram_forwarder.deps.deps import Deps
 from discord_to_telegram_forwarder.deps.init_deps import init_deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
@@ -22,25 +21,27 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.is_discord_chan
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_representing_text_from_openai import (
     request_emoji_representing_text_from_openai,
 )
+from loguru import logger
+from pymaybe import maybe
 
 
 def download_file(url, filename):
     r = requests.get(url, allow_redirects=True)
     temp_path = "/tmp/discord_to_telegram_forwarder/" + filename
     os.makedirs(os.path.dirname(temp_path), exist_ok=True)
-    with open(temp_path, 'wb') as temp_file:
+    with open(temp_path, "wb") as temp_file:
         temp_file.write(r.content)
     return temp_path
 
 
 async def send_discord_post_to_telegram(
-        deps: Deps,
-        message: discord.Message,
-        telegram_chat_to_filter: dict[Union[str, int], Callable[[discord.Message], bool]],
-        filter_forum_post_messages: bool = True,
-        filter_public_channels: bool = True,
-        emoji: Optional[str] = None,
-        add_inner_shortened_url: bool = True,
+    deps: Deps,
+    message: discord.Message,
+    telegram_chat_to_filter: dict[Union[str, int], Callable[[discord.Message], bool]],
+    filter_forum_post_messages: bool = True,
+    filter_public_channels: bool = True,
+    emoji: Optional[str] = None,
+    add_inner_shortened_url: bool = True,
 ) -> None:
     # - Filter forum post messages: from forum channel and is starter message
 
@@ -72,7 +73,7 @@ async def send_discord_post_to_telegram(
     files = []
     for attachment in message.attachments:
         if maybe(attachment).url.or_else(None) and maybe(attachment).filename.or_else(None):
-            if attachment.filename.lower().endswith(('.mp4', '.avi', '.mov')) and len(message.attachments) > 1:
+            if attachment.filename.lower().endswith((".mp4", ".avi", ".mov")) and len(message.attachments) > 1:
                 # - Need to download videos
                 temp_path = download_file(attachment.url, attachment.filename)
                 files.append(temp_path)
@@ -165,9 +166,7 @@ async def send_discord_post_to_telegram(
 
     # --- Limit
 
-    message_size_limit = (
-        4096 if not files else 1024
-    )  # 4096 is telegram message size limit, but caption limit is 1024
+    message_size_limit = 4096 if not files else 1024  # 4096 is telegram message size limit, but caption limit is 1024
 
     # --- Crop body if necessary
 
