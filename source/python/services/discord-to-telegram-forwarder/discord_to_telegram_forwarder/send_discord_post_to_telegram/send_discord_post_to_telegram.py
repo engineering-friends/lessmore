@@ -5,6 +5,7 @@ from typing import Callable, Optional, Union
 
 import discord
 import emoji as emoji_lib
+import telethon.tl.types
 
 from box import Box
 from discord_to_telegram_forwarder.deps.deps import Deps
@@ -21,7 +22,20 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_r
 )
 from loguru import logger
 from pymaybe import maybe
+import os
+import requests
+import io
 
+import pickle
+from pathlib import Path
+import tempfile
+pp1 = Path('~/scratches/data/p1.pkl').expanduser()
+pp2 = Path('~/scratches/data/p2.pkl').expanduser()
+pp1.parent.mkdir(parents=True, exist_ok=True)
+
+def download_file(url,):
+    r = requests.get(url, allow_redirects=True)
+    return r.content
 
 async def send_discord_post_to_telegram(
     deps: Deps,
@@ -59,11 +73,35 @@ async def send_discord_post_to_telegram(
 
     # - Get image attachments
 
-    filename_urls = [
-        attachment.url
-        for attachment in message.attachments
-        if maybe(attachment).url.or_else(None) and maybe(attachment).filename.or_else(None)
-    ]
+    files = []
+    for attachment in message.attachments:
+        if maybe(attachment).url.or_else(None) and maybe(attachment).filename.or_else(None):
+            if attachment.filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+                # - Images can pass forward directly
+                files.append(attachment.url)
+            elif attachment.filename.lower().endswith((# '.mp4', '.avi',
+                                                        '.mov')): # '.gif',
+                # - need to download gifs and videos
+
+                # # option 1: try upload with url
+                # uploaded_media = await deps.telegram_bot_client.upload_file(attachment.url)
+                # filename_urls.append(uploaded_media)
+
+                # option 2: download and upload
+                response = requests.get(attachment.url)
+
+                if response.status_code != 200:
+                    logger.warning(f"Failed to download attachment, {attachment.url}", attachment=attachment)
+                    continue
+                # let's save to temp file
+                temp_path = "/tmp/discord_to_telegram_forwarder/"+attachment.filename
+                os.makedirs(os.path.dirname(temp_path), exist_ok=True)
+                with open(temp_path, 'wb') as temp_file:
+                    temp_file.write(response.content)
+                files.append(temp_path)
+            else:
+                logger.warning(f"Unknown attachment type, {attachment.url}", attachment=attachment)
+                files.append(attachment.url)
 
     # - Fix usernames in message text and replace with display names
 
@@ -152,7 +190,7 @@ async def send_discord_post_to_telegram(
     # --- Limit
 
     message_size_limit = (
-        4096 if not filename_urls else 1024
+        4096 if not files else 1024
     )  # 4096 is telegram message size limit, but caption limit is 1024
 
     # --- Crop body if necessary
@@ -196,14 +234,44 @@ async def send_discord_post_to_telegram(
 
     for telegram_chat, filter_ in telegram_chat_to_filter.items():
         if filter_(message=message):
-            await deps.telegram_bot_client.send_message(
-                entity=telegram_chat,
-                message=message_text,
-                parse_mode="md",
-                link_preview=False,
-                file=filename_urls or None,
-            )
+            # send gifs as single files
 
+
+
+            if files:
+                if len(files) == 1:
+                    files = files[0]
+                try:
+
+                    await deps.telegram_bot_client.send_file(
+                        entity=telegram_chat,
+                        file=files,
+                        caption=message_text,
+                        parse_mode="md",
+                        link_preview=True,
+                    )
+
+                    await deps.telegram_user_client.send_message(
+                    # deps.telegram_bot_client.send_message(
+                        entity=telegram_chat,
+                        file=files,
+                        message=message_text,
+                        parse_mode="md",
+                        link_preview=False,
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to send media group, {e}", message=message)
+                    message_text += "\n\n" + "Also, there's some video!"
+                    await deps.telegram_bot_client.send_message(
+                        entity=telegram_chat,
+                        message=message_text,
+                        parse_mode="md",
+                        link_preview=False,
+                        file=files or None,
+                    )
+    for file in files:
+        if isinstance(file, str) and os.path.exists(file):
+            os.remove(file)
 
 async def test():
     # - Init deps
