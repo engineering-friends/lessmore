@@ -48,7 +48,7 @@ def request_emoji_representing_text_from_openai(
                 "role": "system",
                 "content": """
                 Your role as an Emoji Interpreter Model is to read and understand the core sentiments, ideas, and themes of short texts. 
-                Your insights should then be translated into five emojis, each of which captures the essence of the text in a visual and succinct way. 
+                Your insights should then be translated into one to five emojis, each of which captures the essence of the text in a visual and succinct way. 
                 Your work will enable emoji-based communication and understanding of textual data.
                 Focus on the core ideas and sentiments of the text that make it stand out. 
                 """,
@@ -78,7 +78,15 @@ def request_emoji_representing_text_from_openai(
             They wait for the bus and talk to each other.
             """,
             },
-            {"role": "assistant", "content": """🎥🍿👀👁👶🦮🤔🌳👥👔💇"""},
+            {"role": "assistant", "content": """🎥🍿👶🦮💇"""},
+            {
+                "role": "user",
+                "content": """Завтрак у Тиффани!""",
+            },
+            {
+                "role": "assistant",
+                "content": """👒""",
+            },
             {
                 "role": "user",
                 "content": f"### Text\n{text}",
