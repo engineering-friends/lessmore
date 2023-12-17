@@ -1,9 +1,12 @@
+import math
+import random
 import time
 
 import emoji
 import openai
 
 from discord_to_telegram_forwarder.config.config import EmojiPack
+from pytest import mark
 
 from lessmore.utils.remove_duplicates_ordered import remove_duplicates_ordered
 
@@ -129,36 +132,57 @@ def request_emoji_representing_text_from_openai(
     return "".join(emojis[:limit])
 
 
-def test():
-    for text in [
-        """к слову про AI Search в своих файлах by Petr Lavrov
+test_texts = [
+    """Peterson Lecture Series: По поводу того, что с ютуба удалили все плейлисты с Гарвардскими курсами лекций Питерсона - но все оригинальные видео до сих пор остались на канале, я их выгрузил
+
+Кстати, попробовал по дороге Барда с youtube access plugin - полное говно, не справился) 
+
+Зато вот из Youtube Data API все досталось""",
+    """Расскажите как и что вы автоматизируете в личной жизни? Телеграм / Slack боты
+Apple Shortcuts / automations (реально используемые регулярно)
+cron jobs? Notion Automations?
+Zapier / Move?
+
+Рассказать про мои?)""",
+    """Как найти в хроме вкладку на которой играет видео / звук. Cmd + Shift + A - поиск по всем вкладкам.
+Вкладка с аудио (из любого окна) будет вверху
+""",
+    """Возвращаясь к теме закаливания""",
+    """к слову про AI Search в своих файлах by Petr Lavrov
 
 https://www.theverge.com/2023/6/21/23767248/dropbox-ai-dash-universal-search""",
-        """А все знают, что значит вот это число в форварде поста?""",
-        """Попробовал DALLE-3 (через Bing), очень понравилось by Petr Lavrov
+    """А все знают, что значит вот это число в форварде поста?""",
+    """Попробовал DALLE-3 (через Bing), очень понравилось by Petr Lavrov
 
 https://www.bing.com/images/create/
 с Midjourney гораздо сложнее было сгенерить то что хочется
 """,
-        """Илья, а мне зашел birthdaycountbot :) Создает доброе ощущение sense of urgency by Mark Lidenberg
+    """Илья, а мне зашел birthdaycountbot :) Создает доброе ощущение sense of urgency by Mark Lidenberg
 
 Пока оставлю :) 
 
 https://t.me/birthdaycountbot
 
 Илья (Ilya)""",
-        """Кто делал себе вторую личность? Как правильно подготовить себя к заляганию на дно? by Georgy Gorbachev
+    """Кто делал себе вторую личность? Как правильно подготовить себя к заляганию на дно? by Georgy Gorbachev
 
 Я собрал определённый набор предметов для второй иностранной личности, однако как будто этого недостаточно. Хочу поделиться и проконсультироваться)))
 
 Также делаю себе advanved VPN cluster своими руками для впна как в РФ так и во вне для себя и семьи под прикрытием игрового сервиса, пробивающий будущую блокировку дипиайями большинство существующих VPN-протоколов. Обсудил бы это если останется время)""",
-        """ Хочу обсудить проблемы  недостатки и классные фичи приложений для изучения языков by Илья (Ilya)
+    """ Хочу обсудить проблемы  недостатки и классные фичи приложений для изучения языков by Илья (Ilya)
 
 Разрабатываю прототип мобильного приложения, являющегося лучшей версией anki и хочу услышать об опыте взаимодействия с приложениями для изучения языков. Что понравилось, и чего не хватало""",
-    ]:
-        print(text[:10], request_emoji_representing_text_from_openai(text, limit=5))
-        time.sleep(1)
+]
+
+
+@mark.parametrize("max_count, emoji_pack", list(zip([5, 3, 1], ["all", "core", "minimal"])))
+def test_parametrized(max_count, emoji_pack):
+    for text in test_texts:
+        limit = max_count - math.isqrt(random.randint(0, max_count * max_count - 1))
+        emoji = request_emoji_representing_text_from_openai(text, limit=limit, emoji_pack=emoji_pack)
+        print(f"{text[:20]}... -> {emoji} (limit={limit}, pack={emoji_pack})")
+        time.sleep(0.5)
 
 
 if __name__ == "__main__":
-    test()
+    test_parametrized()
