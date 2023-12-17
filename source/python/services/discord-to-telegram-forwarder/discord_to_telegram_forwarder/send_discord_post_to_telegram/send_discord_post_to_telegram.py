@@ -6,11 +6,11 @@ from typing import Callable, Optional, Union
 
 import discord
 import emoji as emoji_lib
-import requests
 
 from box import Box
 from discord_to_telegram_forwarder.deps.deps import Deps
 from discord_to_telegram_forwarder.deps.init_deps import init_deps
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.download_as_temp_file import _download_as_temp_file
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
@@ -23,15 +23,6 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_r
 )
 from loguru import logger
 from pymaybe import maybe
-
-
-def download_file(url, filename):
-    r = requests.get(url, allow_redirects=True)
-    temp_path = "/tmp/discord_to_telegram_forwarder/" + filename
-    os.makedirs(os.path.dirname(temp_path), exist_ok=True)
-    with open(temp_path, "wb") as temp_file:
-        temp_file.write(r.content)
-    return temp_path
 
 
 async def send_discord_post_to_telegram(
@@ -75,7 +66,7 @@ async def send_discord_post_to_telegram(
         if maybe(attachment).url.or_else(None) and maybe(attachment).filename.or_else(None):
             if attachment.filename.lower().endswith((".mp4", ".avi", ".mov")) and len(message.attachments) > 1:
                 # - Need to download videos
-                temp_path = download_file(attachment.url, attachment.filename)
+                temp_path = _download_as_temp_file(attachment.url, attachment.filename)
                 files.append(temp_path)
             else:
                 files.append(attachment.url)
@@ -209,24 +200,15 @@ async def send_discord_post_to_telegram(
 
     for telegram_chat, filter_ in telegram_chat_to_filter.items():
         if filter_(message=message):
-            if len(files) == 1:
-                # - Undownloaded videos and gifs can ONLY be send as single files
-                await deps.telegram_bot_client.send_message(
-                    entity=telegram_chat,
-                    file=files[0],
-                    message=message_text,
-                    parse_mode="md",
-                    link_preview=False,
-                )
-            else:
-                # todo: if >1 files - pick out gifs and send separately
-                await deps.telegram_bot_client.send_message(
-                    entity=telegram_chat,
-                    file=files,
-                    message=message_text,
-                    parse_mode="md",
-                    link_preview=False,
-                )
+            # - Undownloaded videos and gifs can ONLY be sent as single files
+            # todo: if >1 files - pick out gifs and send separately
+            await deps.telegram_bot_client.send_message(
+                entity=telegram_chat,
+                file=files[0] if len(files) == 1 else files or None,
+                message=message_text,
+                parse_mode="md",
+                link_preview=False,
+            )
 
     # - Remove temp files
 
