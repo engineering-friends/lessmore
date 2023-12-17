@@ -8,6 +8,7 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_po
     send_discord_post_to_telegram,
 )
 from discord_to_telegram_forwarder.update_comments_counter.update_comments_counter import update_comments_counter
+from dotenv import load_dotenv
 from pymaybe import maybe
 
 from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
@@ -57,5 +58,6 @@ async def main():
 
 
 if __name__ == "__main__":
+    load_dotenv()
     configure_loguru()
     asyncio.run(main())

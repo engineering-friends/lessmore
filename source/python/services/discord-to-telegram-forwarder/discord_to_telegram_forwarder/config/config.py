@@ -1,6 +1,18 @@
-from typing import Union
+from enum import Enum
+from typing import Dict, Union
 
 from pydantic import BaseSettings
+
+
+class EmojiPack(Enum):
+    MINIMAL = "minimal"
+    CORE = "core"
+    ALL = "all"
+
+
+class EmojiUserConfig(BaseSettings):
+    emoji_count: int
+    emoji_pack: EmojiPack
 
 
 class Config(BaseSettings):
@@ -21,3 +33,12 @@ class Config(BaseSettings):
     # - OpenAI
 
     openai_api_key: str
+
+    # - Emoji Config
+
+    emoji_config: Dict[str, EmojiUserConfig] = {
+        "Mark Lidenberg": {"emoji_count": 1, "emoji_pack": EmojiPack.MINIMAL},
+        "Petr Lavrov": {"emoji_count": 5, "emoji_pack": EmojiPack.ALL},
+        "Mikhail Vodolagin": {"emoji_count": 3, "emoji_pack": EmojiPack.CORE},
+        "default": {"emoji_count": 1, "emoji_pack": EmojiPack.CORE},
+    }
