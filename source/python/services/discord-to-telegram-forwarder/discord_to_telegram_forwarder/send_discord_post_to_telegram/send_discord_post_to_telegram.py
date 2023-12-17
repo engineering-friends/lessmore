@@ -127,8 +127,8 @@ async def send_discord_post_to_telegram(
             emoji_config = deps.config.emoji_config.get(author_name, default_emoji_config)
 
             # - random emoji count with bias towards lower numbers
-            c = emoji_config.emoji_count
-            limit = c - math.isqrt(random.randint(0, c * c))
+            max_count = emoji_config.emoji_count
+            limit = max_count - math.isqrt(random.randint(0, max_count * max_count - 1))
 
             emoji = request_emoji_representing_text_from_openai(
                 f"{channel_name} {title} {body}",

@@ -21,11 +21,11 @@ CORE_EMOJIS = (
     +
     # signs
     """🤷♂♀🤦🔍🔎❓❗️❔❕💡"""
-) + MINIMAL_EMOJIS
+)
 
 emoji_packs_map = {
-    EmojiPack.MINIMAL: MINIMAL_EMOJIS,
-    EmojiPack.CORE: CORE_EMOJIS,
+    EmojiPack.MINIMAL: MINIMAL_EMOJIS + CORE_EMOJIS,
+    EmojiPack.CORE: CORE_EMOJIS + MINIMAL_EMOJIS,
     EmojiPack.ALL: "",
 }
 
