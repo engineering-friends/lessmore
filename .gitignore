@@ -88,3 +88,6 @@
 !git_secret
 !git_secret/**/*
 git_secret/test_git_secret
+
+# ignore IntelliJ config files
+.idea/
