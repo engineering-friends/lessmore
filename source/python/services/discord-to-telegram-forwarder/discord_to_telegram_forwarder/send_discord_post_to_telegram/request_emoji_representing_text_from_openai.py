@@ -4,10 +4,38 @@ import emoji
 import openai
 
 from lessmore.utils.remove_duplicates_ordered import remove_duplicates_ordered
+from discord_to_telegram_forwarder.config.config import EmojiPack
+
+# Signature Mark Emojis
+MINIMAL_EMOJIS = """👾🕊️🤍👍👎👌🙂🙃😢☹️"""
 
 
-def request_emoji_representing_text_from_openai(text: str, limit: int = 1) -> str:
+CORE_EMOJIS = (
+    # faces
+    """👨😀😕😃😄😁😆😅🤣😂🙂🙃😉😊😗😙😚😋😛😜😝🤗🤔🤨😐😑😶😏😒🙄😬🤥😌😔😪🤤🥴😕😟🙁☹️😮😯😲😳😦😧😖😣😞😓😩😫😠"""
+    +
+    # hands
+    """👍👎👌👏👋🤚🖐✋🖖👌🤏✌️🤞🤟🤘👈👉👆👇☝️🤛🤜👏👐🤲🙏🤝👐🫱🫲"""
+    +
+    # signs
+    """🤷♂♀🤦🔍🔎❓❗️❔❕💡"""
+) + MINIMAL_EMOJIS
+
+emoji_packs_map = {
+    EmojiPack.MINIMAL: MINIMAL_EMOJIS,
+    EmojiPack.CORE: CORE_EMOJIS,
+    EmojiPack.ALL: "",
+}
+
+
+def request_emoji_representing_text_from_openai(
+    text: str, limit: int = 1, emoji_pack: EmojiPack = EmojiPack.CORE
+) -> str:
     """Returns emojis as a string (e.g. "👍")"""
+
+    # - Convert emoji_pack to Enum
+
+    emoji_pack = EmojiPack(emoji_pack)
 
     # - Get response text
 
@@ -37,6 +65,20 @@ def request_emoji_representing_text_from_openai(text: str, limit: int = 1) -> st
             },
             {
                 "role": "user",
+                "content": """I went to the cinema and saw a movie about
+            Strange yellow creatures with one or two eyes. 
+            I think they are called minions. 
+            They are very funny and cute. I like them. I want to have one as a pet. 
+            I think they are very smart and can do a lot of things.
+            After that I went to the park and saw a lot of people. 
+            I thought: They must be like minions. 
+            They wear the same clothes and have the same hair.
+            They wait for the bus and talk to each other.
+            """,
+            },
+            {"role": "assistant", "content": """🎥🍿👀👁👶🦮🤔🌳👥👔💇"""},
+            {
+                "role": "user",
                 "content": f"### Text\n{text}",
             },
         ],
@@ -47,17 +89,10 @@ def request_emoji_representing_text_from_openai(text: str, limit: int = 1) -> st
 
     emojis = [letter for letter in response_text if emoji.is_emoji(letter)]
 
-    # - Move boring emojis to the end
+    # - Move ~~awesome~~ boring emojis to the end
 
-    emojis = list(
-        sorted(
-            emojis,
-            key=lambda emoji: emoji
-            in """👨😀😕😃😄😁😆😅🤣😂🙂🙃😉😊😗😙😚😋😛😜😝🤗🤔🤨😐😑😶😏😒🙄😬🤥😌😔😪🤤🥴😕😟🙁☹️😮😯😲😳😦😧😖😣😞😓😩😫😠"""
-            + """👍👎👌👏👋🤚🖐✋🖖👌🤏✌️🤞🤟🤘👈👉👆👇☝️🤛🤜👏👐🤲🙏🤝👐🫱🫲"""
-            + """🤷♂♀🤦🔍🔎❓❗️❔❕💡""",
-        )
-    )
+    preferred_emojis = emoji_packs_map[emoji_pack]
+    emojis = list(sorted(emojis, key=lambda emoji: emoji in preferred_emojis))
 
     # - Remove duplicates
 
