@@ -34,6 +34,7 @@ pymaybe = "^0.1.6"
 better-exceptions = "^0.3.3"
 emoji = "^2.8.0"
 python-box = "^7.1.1"
+python-dotenv = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
 

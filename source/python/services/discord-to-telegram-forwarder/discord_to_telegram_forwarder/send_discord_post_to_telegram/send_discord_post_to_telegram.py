@@ -122,9 +122,7 @@ async def send_discord_post_to_telegram(
 
         else:
             default_emoji_config = deps.config.emoji_config.get("default")
-            emoji_config = deps.config.emoji_config.get(
-                author_name, default_emoji_config
-            )
+            emoji_config = deps.config.emoji_config.get(author_name, default_emoji_config)
 
             emoji = request_emoji_representing_text_from_openai(
                 f"{channel_name} {title} {body}",

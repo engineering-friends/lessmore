@@ -1,8 +1,6 @@
-from typing import Union
-
-from pydantic import BaseSettings
 from enum import Enum
 from typing import Dict, Union
+
 from pydantic import BaseSettings
 
 

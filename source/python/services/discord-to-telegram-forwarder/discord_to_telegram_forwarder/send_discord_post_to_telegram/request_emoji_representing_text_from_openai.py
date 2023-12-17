@@ -3,8 +3,10 @@ import time
 import emoji
 import openai
 
-from lessmore.utils.remove_duplicates_ordered import remove_duplicates_ordered
 from discord_to_telegram_forwarder.config.config import EmojiPack
+
+from lessmore.utils.remove_duplicates_ordered import remove_duplicates_ordered
+
 
 # Signature Mark Emojis
 MINIMAL_EMOJIS = """👾🕊️🤍👍👎👌🙂🙃😢☹️"""
