@@ -40,7 +40,6 @@ def request_emoji_representing_text_from_openai(
     emoji_pack = EmojiPack(emoji_pack)
 
     # - Get response text
-
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -89,10 +88,27 @@ def request_emoji_representing_text_from_openai(
             },
             {
                 "role": "user",
+                "content": """А я сегодня посмотрел завтрак у Тиффани!""",
+            },
+            {
+                "role": "assistant",
+                "content": """🍳🥐🥂👩🏻‍🦰🐈""",
+            },
+            {
+                "role": "user",
+                "content": """Ходили в зоопарк смотреть на макак""",
+            },
+            {
+                "role": "assistant",
+                "content": """🐒""",
+            },
+            {
+                "role": "user",
                 "content": f"### Text\n{text}",
             },
         ],
     )  # sample answer: {"id":"chatcmpl-7mS5ErOokrcpg33WsJKrZ6rnhLazt","object":"chat.completion","created":1691782052,"model":"gpt-3.5-turbo-0613","choices":[{"index":0,"message":{"role":"assistant","content":"☔"},"finish_reason":"stop"}],"usage":{"prompt_tokens":44,"completion_tokens":2,"total_tokens":46}} # pragma: allowlist secret
+
     response_text = response.choices[0].message.content
 
     # - Filter emojis
