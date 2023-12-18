@@ -1,4 +1,5 @@
 import asyncio
+import os
 import re
 
 from typing import Callable, Optional, Union
@@ -9,6 +10,7 @@ import emoji as emoji_lib
 from box import Box
 from discord_to_telegram_forwarder.deps.deps import Deps
 from discord_to_telegram_forwarder.deps.init_deps import init_deps
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.download_as_temp_file import _download_as_temp_file
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
@@ -59,11 +61,15 @@ async def send_discord_post_to_telegram(
 
     # - Get image attachments
 
-    filename_urls = [
-        attachment.url
-        for attachment in message.attachments
-        if maybe(attachment).url.or_else(None) and maybe(attachment).filename.or_else(None)
-    ]
+    files = []
+    for attachment in message.attachments:
+        if maybe(attachment).url.or_else(None) and maybe(attachment).filename.or_else(None):
+            if attachment.filename.lower().endswith((".mp4", ".avi", ".mov")) and len(message.attachments) > 1:
+                # - Need to download videos
+                temp_path = _download_as_temp_file(attachment.url, attachment.filename)
+                files.append(temp_path)
+            else:
+                files.append(attachment.url)
 
     # - Fix usernames in message text and replace with display names
 
@@ -151,9 +157,7 @@ async def send_discord_post_to_telegram(
 
     # --- Limit
 
-    message_size_limit = (
-        4096 if not filename_urls else 1024
-    )  # 4096 is telegram message size limit, but caption limit is 1024
+    message_size_limit = 4096 if not files else 1024  # 4096 is telegram message size limit, but caption limit is 1024
 
     # --- Crop body if necessary
 
@@ -196,13 +200,21 @@ async def send_discord_post_to_telegram(
 
     for telegram_chat, filter_ in telegram_chat_to_filter.items():
         if filter_(message=message):
+            # - Undownloaded videos and gifs can ONLY be sent as single files
+            # todo: if >1 files - pick out gifs and send separately
             await deps.telegram_bot_client.send_message(
                 entity=telegram_chat,
+                file=files[0] if len(files) == 1 else files or None,
                 message=message_text,
                 parse_mode="md",
                 link_preview=False,
-                file=filename_urls or None,
             )
+
+    # - Remove temp files
+
+    for file in files:
+        if isinstance(file, str) and os.path.isfile(file):
+            os.remove(file)
 
 
 async def test():
