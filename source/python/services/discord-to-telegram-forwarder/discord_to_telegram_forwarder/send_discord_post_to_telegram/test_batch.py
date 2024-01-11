@@ -8,11 +8,11 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_po
 
 
 inputs_by_name = {
-    "basic": dict(
+    "basic_example": dict(
         message=Box(
             {
                 "channel": {
-                    "name": "basic",
+                    "name": "basic_example",
                     "parent": {"name": "parent_channel_name"},
                 },
                 "content": "This is my body!",
