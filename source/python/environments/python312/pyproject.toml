@@ -28,7 +28,6 @@ matplotlib = "^3.5.3"
 seaborn = "^0.12.0"
 python-telegram-bot = {version = "20.0a4", allow-prereleases = true}
 Telethon = "1.24.0"
-fire = "^0.4.0"
 anyconfig = "^0.13.0"
 clickhouse-driver = "^0.2.4"
 requests = "^2.28.1"
@@ -90,6 +89,7 @@ acryl-datahub-airflow-plugin = "^0.11.0.2"
 mattermostdriver = "^7.3.2"
 numpydoc = "^1.6.0"
 numpy = "^1.26.2"
+fire = "^0.5.0"
 
 [tool.poetry.dev-dependencies]
 
