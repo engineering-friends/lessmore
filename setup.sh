@@ -1,4 +1,9 @@
-# - Install Homebrew if needed
+
+# - Go to monorepo root
+
+cd ${0%/*}
+
+# - Install Homebrew if not installed
 
 if [[ $(brew --version) == *"Homebrew"* ]]; then
   echo "Homebrew already installed"
@@ -7,7 +12,7 @@ else
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-# - Install Poetry if needed
+# - Install and configure poetry
 
 if [[ $(poetry --version) == *"Poetry"* ]]; then
   echo "Poetry already installed"
@@ -19,14 +24,16 @@ else
   echo export PATH=\"\$HOME/.poetry/bin:\$PATH\" >> ~/.zshrc
 fi
 
-# make poetry create environment locally (see https://github.com/python-poetry/poetry/issues/108)
-poetry config virtualenvs.in-project true
-
-# - Install Git LFS if needed
+# - Install Git LFS if not installed
 
 brew list git-lfs || brew install git-lfs
+git lfs pull # pull git lfs files
 
-# - Install pre-commit if needed
+# - Install and configure pre-commit
 
-brew list pre-commit || brew install pre-commit
+pip install pre-commit
 pre-commit install
+
+# - Install detect-secrets
+
+pip install detect-secrets
