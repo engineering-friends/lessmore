@@ -97,7 +97,7 @@ def test():
     # todo: make independent test from colluder-gun
 
     from deeplay.schemas.proto.build.deeplay.ultron.replay_urls.v1 import replay_urls_pb2, replay_urls_pb2_grpc
-    from pyflink_etl.pipelines.colluder_gun.config.colluder_gun_config import colluder_gun_config
+    from pyflink_etl.pipelines.colluder_gun import colluder_gun_config
 
     grpc_client = GRPCClient(
         host=colluder_gun_config.hhpoker_replayer_grpc_host,
