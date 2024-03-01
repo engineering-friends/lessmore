@@ -1,8 +1,19 @@
-test_git_lfs.txt filter=lfs diff=lfs merge=lfs -text # add file to git-lfs
-test-git-lfs/**/* filter=lfs diff=lfs merge=lfs -text # add directory to git-lfs
-test-git-lfs/a/**/* filter= diff= merge= text # exclude from git-lfs
+# INLINE COMMENTS ARE NOT SUPPORTED. DO NOT USE THEM OR THEY WILL BREAK YOUR RULES AND THEY'LL BE IGNORED
 
-# to remove file from git-lfs
+# - Add file to git-lfs
+
+test_git_lfs.txt filter=lfs diff=lfs merge=lfs -text
+
+# - Add directory to git-lfs
+
+test-git-lfs/**/* filter=lfs diff=lfs merge=lfs -text
+
+# - Exclude from git-lfs
+
+test-git-lfs/a/**/* filter= diff= merge= text
+
+# - Remove file from git-lfs
+
 # git lfs untrack <file>
 # git rm --cached <file>
 # git add <file>
