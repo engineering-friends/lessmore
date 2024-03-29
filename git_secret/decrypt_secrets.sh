@@ -1,1 +1,2 @@
+# Decrypt of *.secret files in the repository. This will create the decrypted files in the same directory with the same name but without the .secret extension.
 cd ${0%/*}/.. && git secret reveal -f # -f: force overwrite
