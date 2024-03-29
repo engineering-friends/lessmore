@@ -29,6 +29,7 @@ from pymaybe import maybe
 
 load_dotenv()
 user_map = json.loads(os.getenv("USER_MAP", "{}"))
+mention_char_placeholder = os.getenv("MENTION_CHAR_PLACEHOLDER", "ç")
 
 
 async def send_discord_post_to_telegram(
@@ -87,7 +88,7 @@ async def send_discord_post_to_telegram(
         telegram_username = user_map.get(user.nick, user_map.get(user.global_name, user_map.get(user.name)))
         if telegram_username:
             # - Replace <@913095424225706005> with <@telegram_username>
-            message.content = message.content.replace(f"<@{user_id}>", f"@{telegram_username}")
+            message.content = message.content.replace(f"<@{user_id}>", f"{mention_char_placeholder}{telegram_username}")
         else:
             # - Replace <@913095424225706005> with <name>
             message.content = message.content.replace(f"<@{user_id}>", user.display_name)
@@ -150,6 +151,10 @@ async def send_discord_post_to_telegram(
 
     title = title.replace("@", "~")
     body = body.replace("@", "~")
+
+    # -- allow specific user mentions from dicsord to bypass the filter
+
+    body = body.replace(mention_char_placeholder, "@")
 
     # -- Remove prefix non-alhpanumeric (or -) characters from parent_channel_name
 
