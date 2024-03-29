@@ -22,6 +22,7 @@
 - Make sure that all files in `.gitsecret` are added to git, except random_seed  (due to .gitignore settings)
 - Commit `.gitsecret` 
 - Commands
+    - List current secret files: `git secret list`
     - Register user: `git secret tell marklidenberg@gmail.com`
     - Add file: `git secret add test_git_secret.txt`
     - Remove file: `git secret remove test_git_secret.txt`
