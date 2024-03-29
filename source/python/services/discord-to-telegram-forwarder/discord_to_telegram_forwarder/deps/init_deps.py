@@ -30,7 +30,7 @@ def init_deps(env: Literal["test", "prod"] = "test", log_level="DEBUG") -> Deps:
         ],
         context={
             "root": str(Path(__file__).parent / "../config"),
-            "env": os.environ.get("DISCORD_TO_TELEGRAM_FORWARDER_ENV", env),
+            "env": env,
         },
     )
 
