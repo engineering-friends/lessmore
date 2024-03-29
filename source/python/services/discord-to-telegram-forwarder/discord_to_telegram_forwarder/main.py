@@ -15,7 +15,7 @@ from pymaybe import maybe
 from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
 
 
-async def main(env: Literal["test", "prod"]):
+async def main(env: Literal["test", "prod"] = "test"):
     # - Init deps
 
     deps = init_deps(env=env)
