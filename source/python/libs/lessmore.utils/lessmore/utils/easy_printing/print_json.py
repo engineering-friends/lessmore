@@ -1,10 +1,10 @@
 import json
 
 
-def print_json(value, default=str, copy: bool = False, **kwargs):
-    # - Dump
+def print_json(obj, copy: bool = False, default=str, indent=1, ensure_ascii=False, **kwargs):
+    # - Dumps
 
-    s = json.dumps(value, default=default, indent=1, **kwargs)
+    s = json.dumps(obj, default=default, indent=indent, ensure_ascii=ensure_ascii, **kwargs)
 
     # - Copy
 
