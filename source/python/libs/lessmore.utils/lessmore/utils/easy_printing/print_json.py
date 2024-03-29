@@ -4,7 +4,7 @@ import json
 def print_json(value, default=str, copy: bool = False, **kwargs):
     # - Dump
 
-    s = json.dumps(value, default=default, **kwargs)
+    s = json.dumps(value, default=default, indent=1, **kwargs)
 
     # - Copy
 
