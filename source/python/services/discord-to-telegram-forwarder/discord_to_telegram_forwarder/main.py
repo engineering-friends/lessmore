@@ -1,5 +1,7 @@
 import asyncio
 
+from typing import Literal
+
 import discord
 
 from discord_to_telegram_forwarder.deps.init_deps import init_deps
@@ -13,10 +15,10 @@ from pymaybe import maybe
 from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
 
 
-async def main():
+async def main(env: Literal["test", "prod"] = "test"):
     # - Init deps
 
-    deps = init_deps()
+    deps = init_deps(env=env)
 
     # - Define process_message function
 
