@@ -1,0 +1,1 @@
+docker run --rm --name discord-to-telegram-forwarder localhost/discord-to-telegram-forwarder:latest python /monorepo/source/python/services/discord-to-telegram-forwarder/discord_to_telegram_forwarder/main.py --env prod
