@@ -1,4 +1,5 @@
 import asyncio
+import json
 import os
 import re
 
@@ -21,8 +22,13 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.is_discord_chan
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_representing_text_from_openai import (
     request_emoji_representing_text_from_openai,
 )
+from dotenv import load_dotenv
 from loguru import logger
 from pymaybe import maybe
+
+
+load_dotenv()
+user_map = json.loads(os.getenv("USER_MAP", "{}"))
 
 
 async def send_discord_post_to_telegram(
@@ -78,9 +84,13 @@ async def send_discord_post_to_telegram(
 
         user = message.guild.get_member(int(user_id))
 
-        # - Replace <@913095424225706005> with <name>
-
-        message.content = message.content.replace(f"<@{user_id}>", user.nick or user.display_name)
+        telegram_username = user_map.get(user.nick, user_map.get(user.display_name))
+        if telegram_username:
+            # - Replace <@913095424225706005> with <@telegram_username>
+            message.content = message.content.replace(f"<@{user_id}>", f"@{telegram_username}")
+        else:
+            # - Replace <@913095424225706005> with <name>
+            message.content = message.content.replace(f"<@{user_id}>", user.nick or user.display_name)
 
     # - Find all channels and replace with links
 
