@@ -84,13 +84,13 @@ async def send_discord_post_to_telegram(
 
         user = message.guild.get_member(int(user_id))
 
-        telegram_username = user_map.get(user.nick, user_map.get(user.display_name))
+        telegram_username = user_map.get(user.nick, user_map.get(user.global_name, user_map.get(user.name)))
         if telegram_username:
             # - Replace <@913095424225706005> with <@telegram_username>
             message.content = message.content.replace(f"<@{user_id}>", f"@{telegram_username}")
         else:
             # - Replace <@913095424225706005> with <name>
-            message.content = message.content.replace(f"<@{user_id}>", user.nick or user.display_name)
+            message.content = message.content.replace(f"<@{user_id}>", user.display_name)
 
     # - Find all channels and replace with links
 
