@@ -1,6 +1,7 @@
 from second_sun.deps.deps import Deps
 from second_sun.deps.init_deps import init_deps
 
+from lessmore.utils.easy_printing.print_json import print_json
 from lessmore.utils.execute_system_command import execute_system_command
 
 
@@ -9,11 +10,12 @@ def set_global_brightness(brightness: int, deps: Deps):
 
     # -- Get all devices from mi cloud as raw string
 
-    output = execute_system_command(
-        f"miiocli cloud --username {deps.config.mi_cloud_username} --password {deps.config.mi_cloud_password}"
-    )
+    # output = execute_system_command(
+    #     f"miiocli cloud --username {deps.config.mi_cloud_username} --password {deps.config.mi_cloud_password}"
+    # )
 
-    """
+    # [DEBUG]
+    output = """
 == Xiaomi Smart Air Purifier 4 Pro (Device offline ) ==
 	Model: zhimi.airp.vb4
 	Token: acd6a69eb1024a452b6cfb49046bcb3b
@@ -26,24 +28,49 @@ def set_global_brightness(brightness: int, deps: Deps):
 	IP: 192.168.100.162 (mac: 7C:C2:94:58:B0:23)
 	DID: 506808437
 	Locale: ru
-== Mi Smart LED Bulb Essential (White and Color) (Device online ) ==
-	Model: yeelink.light.color5
-	Token: bc83f5ac3473732e9afc512957f835ff
-	IP: 192.168.100.164 (mac: 7C:C2:94:81:62:5A)
-	DID: 509475500
-	Locale: ru
-...
-"""
-    print(output)
+    """.strip()
+
     # -- Parse devices and their properties
 
     lines = output.split("\n")
     starting_line_indices = [i for i, line in enumerate(lines) if "==" in line]
     device_infos = [
-        "\n".join(lines[starting_line_indices[i] : starting_line_indices[i + 1]])
-        for i in range(len(starting_line_indices) - 1)
+        "\n".join(
+            lines[
+                starting_line_indices[i] : starting_line_indices[i + 1] if i + 1 < len(starting_line_indices) else None
+            ]
+        )
+        for i in range(len(starting_line_indices))
     ]
-    print(device_infos)
+
+    devices = []
+
+    for device_info in device_infos:
+        lines = device_info.strip().split("\n")
+        device = {
+            "title": lines[0].strip("= ").strip(),
+            **{line.split(": ")[0].strip(): line.split(": ", 1)[1].strip() for line in lines[1:]},
+        }
+        devices.append(device)
+    """
+    [  {
+  "title": "Mi WiFi Range Extender AC1200 (Device offline )",
+  "Model": "xiaomi.repeater.v6",
+  "Token": "33415a6f4763444b7a45794b5a70304b", # pragma: allowlist secret
+  "IP": "192.168.100.3 (mac: a4:39:b3:a8:d1:bd)",
+  "DID": "579810583",
+  "Locale": "ru"
+ }, ...]
+ """
+
+    # - Set brightness for all light bulbs
+
+    bulb_devices = [device for device in devices if "bulb" in device["title"].lower()]
+
+    for bulb_device in bulb_devices:
+        ip = bulb_device["IP"].split(" ")[0]
+        token = bulb_device["Token"]
+        execute_system_command(f"miiocli yeelight --ip {ip} --token {token} set_brightness {brightness}")
 
 
 def test():

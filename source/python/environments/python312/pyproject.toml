@@ -15,7 +15,6 @@ python-dateutil = "^2.8.2"
 pandas = "^1.4.3"
 path = "^16.4.0"
 tqdm = "^4.64.0"
-pydantic = "^1.9.2"
 pendulum = "^3.0.0"
 better-exceptions = "^0.3.3"
 jupyter = "^1.0.0"
@@ -84,14 +83,13 @@ pymaybe = "^0.1.6"
 emoji = "^2.8.0"
 humps = "^0.2.2"
 confluent-kafka = "^2.2.0"
-acryl-datahub = "^0.11.0.2"
-acryl-datahub-airflow-plugin = "^0.11.0.2"
 mattermostdriver = "^7.3.2"
 numpydoc = "^1.6.0"
 numpy = "^1.26.2"
 fire = "^0.5.0"
 yeelight = {git = "https://github.com/vrachieru/xiaomi-yeelight-api.git"}
 python-miio = "^0.5.12"
+pydantic = "^2.6.4"
 
 [tool.poetry.dev-dependencies]
 
