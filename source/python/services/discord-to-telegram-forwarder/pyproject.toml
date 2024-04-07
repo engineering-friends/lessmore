@@ -13,7 +13,6 @@ environs = "9.5.0"
 python-dateutil = "2.8.2"
 path = "16.4.0"
 tqdm = "4.64.0"
-pydantic = "1.9.2"
 sortedcontainers = "2.4.0"
 python-telegram-bot = {version = "20.0a4", allow-prereleases = true}
 Telethon = "1.24.0"
@@ -33,6 +32,9 @@ emoji = "2.8.0"
 python-box = "7.1.1"
 pendulum = "3.0.0"
 openai = "1.16.2"
+jupyter = "1.0.0"
+pydantic = "2.6.4"
+pydantic-settings = "^2.2.1"
 
 [tool.poetry.dev-dependencies]
 

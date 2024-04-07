@@ -61,3 +61,11 @@ def init_deps(env: Literal["test", "prod"] = "test", log_level="DEBUG") -> Deps:
             api_hash=config.telegram_api_hash,
         ),
     )
+
+
+def test():
+    print(init_deps())
+
+
+if __name__ == "__main__":
+    test()

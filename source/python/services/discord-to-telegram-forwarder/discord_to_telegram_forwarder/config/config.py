@@ -1,6 +1,6 @@
 from typing import Union
 
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class Config(BaseSettings):

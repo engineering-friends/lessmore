@@ -1,6 +1,6 @@
 from typing import Any, Optional, Type
 
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 from lessmore.utils.load_pydantic_settings.config_source_like import ConfigSourceLike
 from lessmore.utils.load_pydantic_settings.inflate_envs import inflate_envs
