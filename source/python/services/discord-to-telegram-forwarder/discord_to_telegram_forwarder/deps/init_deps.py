@@ -64,7 +64,7 @@ def init_deps(env: Literal["test", "prod"] = "test", log_level="DEBUG") -> Deps:
 
 
 def test():
-    print(init_deps())
+    print(type(init_deps().config.telegram_ef_discussions))
 
 
 if __name__ == "__main__":

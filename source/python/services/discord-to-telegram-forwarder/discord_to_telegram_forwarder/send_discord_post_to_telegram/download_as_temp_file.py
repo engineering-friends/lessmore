@@ -3,7 +3,7 @@ import os
 import requests
 
 
-def _download_as_temp_file(url, filename):
+def _download_as_temp_file(url: str, filename: str) -> str:
     r = requests.get(url, allow_redirects=True)
     temp_path = "/tmp/discord_to_telegram_forwarder/" + filename
     os.makedirs(os.path.dirname(temp_path), exist_ok=True)

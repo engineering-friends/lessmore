@@ -13,6 +13,7 @@ from discord_to_telegram_forwarder.deps.deps import Deps
 from discord_to_telegram_forwarder.deps.init_deps import init_deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.download_as_temp_file import _download_as_temp_file
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover import generate_article_cover
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
 )
@@ -137,6 +138,22 @@ async def send_discord_post_to_telegram(
     author_name = message.author.display_name
     url = message.jump_url
 
+    # - Generate images if there are none
+
+    if not files:
+        # - Generate article cover
+
+        url = generate_article_cover(
+            text="\n".join([title, body]),
+            prompt_template="Pixel art: {text}",
+        )
+
+        # - Add to files
+        import uuid
+
+        if url:
+            files = [_download_as_temp_file(url, filename=f"{uuid.uuid4()}.png")]
+
     # - Prepare message text
 
     # -- Get emoji
@@ -251,7 +268,12 @@ async def test():
 
     deps = init_deps()
 
+    # - Start telegram bots
+
     await deps.telegram_bot_client.start(bot_token=deps.config.telegram_bot_token)
+
+    # - Send message
+
     await send_discord_post_to_telegram(
         deps=deps,
         message=Box(  # note: test won't work with user_id, as it is not a discord.Message

@@ -1,5 +1,6 @@
 from typing import Union
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -12,6 +13,21 @@ class Config(BaseSettings):
     telegram_bot_token: str
     telegram_ef_discussions: Union[int, str]
     telegram_ef_channel: Union[int, str]
+
+    @field_validator("telegram_ef_discussions", mode="before")
+    @classmethod
+    def convert_telegram_ef_discussions(cls, telegram_ef_discussions: Union[int, str]):
+        try:
+            return int(telegram_ef_discussions)
+        except:
+            return telegram_ef_discussions @ field_validator("telegram_ef_channel", mode="before")
+
+    @classmethod
+    def convert_telegram_ef_channel(cls, telegram_ef_discussions: Union[int, str]):
+        try:
+            return int(telegram_ef_discussions)
+        except:
+            return telegram_ef_discussions
 
     # - Discord
 
