@@ -2,6 +2,7 @@ import asyncio
 import json
 import os
 import re
+import uuid
 
 from typing import Callable, Optional, Union
 
@@ -149,7 +150,6 @@ async def send_discord_post_to_telegram(
         )
 
         # - Add to files
-        import uuid
 
         if url:
             files = [_download_as_temp_file(url, filename=f"{uuid.uuid4()}.png")]
