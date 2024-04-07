@@ -27,17 +27,13 @@ async def test():
 
     # - Start telegram client
 
-    await deps.telegram_bot_client.start()
+    await deps.telegram_user_client.start()
 
     # - Search messages
 
-    # todo later: if >1 files - pick out gifs and send separately [@marklidenberg]
-    await deps.telegram_bot_client.send_message(
-        entity=-1001897462358,
-        message="hello",
-        parse_mode="md",
-        link_preview=False,
-    )
+    print(await search_telegram_messages(deps=deps, channel=-1001897462358, query="Foo by Mark Lidenberg"))
+    print(await search_telegram_messages(deps=deps, channel=-1001897462358, query="Foo by Mark Lidenberg"))
+    print("cache", deps.cache)
 
 
 if __name__ == "__main__":
