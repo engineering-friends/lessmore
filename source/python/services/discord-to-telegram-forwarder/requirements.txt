@@ -13,6 +13,7 @@ charset-normalizer==2.1.1
 click==8.1.7
 decorator==5.1.1
 discord.py==2.3.1
+distro==1.9.0
 emoji==2.8.0
 environs==9.5.0
 executing==1.2.0
@@ -29,7 +30,7 @@ marshmallow==3.21.1
 more-itertools==9.0.0
 multidict==6.0.5
 mypy-extensions==1.0.0
-openai==0.27.8
+openai==1.16.2
 packaging==24.0
 path==16.4.0
 pathspec==0.12.1

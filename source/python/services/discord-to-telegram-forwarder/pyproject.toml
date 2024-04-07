@@ -24,7 +24,6 @@ retry = "0.9.2"
 pyperclip = "1.8.2"
 more-itertools = "9.0.0"
 "discord.py" = "2.3.1"
-openai = "0.27.8"
 inline-snapshot = "0.3.2"
 pytest = "7.4.0"
 pyyaml = "6.0.1"
@@ -32,7 +31,8 @@ pymaybe = "0.1.6"
 better-exceptions = "0.3.3"
 emoji = "2.8.0"
 python-box = "7.1.1"
-pendulum = "^3.0.0"
+pendulum = "3.0.0"
+openai = "1.16.2"
 
 [tool.poetry.dev-dependencies]
 

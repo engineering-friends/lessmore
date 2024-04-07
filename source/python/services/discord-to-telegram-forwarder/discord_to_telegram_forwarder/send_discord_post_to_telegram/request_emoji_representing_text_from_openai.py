@@ -1,7 +1,9 @@
+import os
 import time
 
 import emoji
-import openai
+
+from openai import OpenAI
 
 from lessmore.utils.remove_duplicates_ordered import remove_duplicates_ordered
 
@@ -9,9 +11,13 @@ from lessmore.utils.remove_duplicates_ordered import remove_duplicates_ordered
 def request_emoji_representing_text_from_openai(text: str, limit: int = 1) -> str:
     """Returns emojis as a string (e.g. "👍")"""
 
+    # - Init client
+
+    client = OpenAI()
+
     # - Get response text
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {
