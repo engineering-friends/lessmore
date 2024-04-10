@@ -2557,6 +2557,28 @@ pytz = "*"
 tornado = ">=5.0.0,<7.0.0"
 
 [[package]]
+name = "font-roboto"
+version = "0.0.1"
+description = "Roboto sans-serif font"
+optional = false
+python-versions = "*"
+files = [
+    {file = "font-roboto-0.0.1.tar.gz", hash = "sha256:8bc9136bf46609fbb13af4783016799b14e23dda294a61791171de7ea2ec457f"},
+]
+
+[[package]]
+name = "fonts"
+version = "0.0.3"
+description = "Python Fonts"
+optional = false
+python-versions = "*"
+files = [
+    {file = "fonts-0.0.3-py2-none-any.whl", hash = "sha256:bc4e3d7923bb09013606fcd7bf5c66d95af5ddd094a14a09195ebdab9808c40d"},
+    {file = "fonts-0.0.3-py3-none-any.whl", hash = "sha256:e5f551379088ab260c2537980c3ccdff8af93408d9d4fa3319388d2ee25b7b6d"},
+    {file = "fonts-0.0.3.tar.gz", hash = "sha256:c626655b75a60715e118e44e270656fd22fd8f54252901ff6ebf1308ad01c405"},
+]
+
+[[package]]
 name = "fonttools"
 version = "4.47.0"
 description = "Tools to manipulate font files"
@@ -8130,6 +8152,22 @@ files = [
 ]
 
 [[package]]
+name = "texttoimage"
+version = "0.0.2"
+description = "Texttoimage is a Python library for converting text to a transparent image."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "texttoimage-0.0.2-py3-none-any.whl", hash = "sha256:42a723f6c9d7d1bc0dec57430399fa4c8a68d747133f8865bc6ac8f04137b7c2"},
+    {file = "texttoimage-0.0.2.tar.gz", hash = "sha256:546c0e7ed64d72b0fe9bcf178abecb92401bfc360366ba7905184ec6f06dc6cd"},
+]
+
+[package.dependencies]
+font-roboto = "*"
+fonts = "*"
+Pillow = "*"
+
+[[package]]
 name = "textual"
 version = "0.46.0"
 description = "Modern Text User Interface framework"
@@ -9134,4 +9172,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "828c58851542b6bfa0c500f5e3cb48aa941aac7f0aee821169d65e213d4b28f9"
+content-hash = "bc227e86e2d56e9c9fd51bda59c6383b5f646415c0927313cb0876e6713bfc6a"
