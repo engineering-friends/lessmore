@@ -14,7 +14,7 @@ from lessmore.utils.get_frame_path.get_frame_path import get_parent_frame_path
 
 def run_inline_tests(
     path: Optional[str] = None,
-    mode: Literal["disabled", "create_missing", "fix_broken", "update_all"] = "create_missing",
+    mode: Literal["assert", "create_missing", "fix_broken", "update_all"] = "create_missing",
 ):
     """Run test with inline snapshots.
 
