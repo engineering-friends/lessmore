@@ -1,20 +1,13 @@
-import pytest
-
-from _pytest.runner import CallInfo
 from inline_snapshot import external, outsource, snapshot
 from loguru import logger
 
 from lessmore.utils.run_inline_tests.run_inline_tests import run_inline_tests, separate_tests
 
 
-def test1():
-    print("Print message from test 1")
-
-
-def test2():
+def test():
     # - Logs
 
-    print("Print message from test 2")
+    print("Print message from test")
 
     logger.debug("Debug message")
     logger.info("Info message")
@@ -24,18 +17,23 @@ def test2():
 
     # - Inline snapshot
 
-    assert "value" == snapshot("value")
-    assert 5 <= snapshot(5)
-    assert 5 in snapshot([5])
+    assert "value" == snapshot()
+    assert 5 <= snapshot()
+    assert 5 in snapshot()
 
-    a = snapshot({"key": "value"})
+    a = snapshot()
     assert a["key"] == "value"
 
-    assert outsource(
-        "Long data" * 1000,
-        suffix=".png",  # defaults to .bin for bytes and .txt for str
-    ) == snapshot(external("dc9b148c966a*.png"))
+    assert (
+        outsource(
+            "Long data" * 1000,
+            suffix=".png",  # defaults to .bin for bytes and .txt for str
+        )
+        == snapshot()
+    )
 
+
+def test_fail():
     raise Exception("An exception occured!")
 
 
