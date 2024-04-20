@@ -14,7 +14,20 @@ def pytest_report_teststatus(report):
 @pytest.hookimpl(tryfirst=True)
 def pytest_exception_interact(node, call, report):
     if report.failed:
-        print("\n", call.excinfo.getrepr(style="native"), file=sys.stderr)
+        # - Get report output
+
+        traceback = str(call.excinfo.getrepr(style="short"))
+
+        # - Find first line starting with test name and crop to it
+
+        test_name = report.location[-1]
+        lines = traceback.split("\n")
+        line_with_test_name = [line for line in lines if test_name in line][0]
+        traceback = "\n".join(lines[lines.index(line_with_test_name) :])
+
+        # - Print cropped traceback
+
+        print("\n" + traceback, file=sys.stderr)
 
 
 def pytest_sessionstart(session):
@@ -27,11 +40,7 @@ def pytest_sessionstart(session):
     original_write = terminal_reporter._tw.write
 
     def custom_write(s, **kwargs):
-        # leave only last line of the test summary
-        if "::" in s and not s.startswith("FAILED"):
+        if "::" in s and not s.startswith("FAILED"):  # test names
             original_write("-" * 80 + "\n[" + s.strip() + "]\n", **kwargs)
-        elif " in " in s:
-            original_write("-" * 80 + "\n")
-            original_write(s.replace("=", "").strip(), **kwargs)  # 1 failed, 1 warning, 1 Passed in 0.04s
 
     terminal_reporter._tw.write = custom_write
