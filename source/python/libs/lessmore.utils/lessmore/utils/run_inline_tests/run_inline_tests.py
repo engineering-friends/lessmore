@@ -24,6 +24,22 @@ def run_inline_tests(
     fix: bool = False,
     trim: bool = False,
 ):
+    """Run test with inline snapshots.
+
+    Parameters
+    ----------
+    path : str, optional
+        Path to the file to run tests from. If not provided, the current file is used.
+    create : bool, optional
+        creates snapshots which are currently not defined, see https://15r10nk.github.io/inline-snapshot/pytest/
+    update : bool, optional
+        update snapshots if they changed their representation (result of repr()), see https://15r10nk.github.io/inline-snapshot/pytest/
+    fix : bool, optional
+        change snapshots which are currently breaking your tests (where the result of the snapshot operation is False)., see https://15r10nk.github.io/inline-snapshot/pytest/
+    trim : bool, optional
+        changes the snapshot in a way which will make the snapshot more precise (see value in snapshot() and snapshot()[key]), see https://15r10nk.github.io/inline-snapshot/pytest/
+    """
+
     # - Configure loguru
 
     configure_loguru()
