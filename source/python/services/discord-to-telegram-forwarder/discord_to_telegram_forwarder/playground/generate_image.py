@@ -38,22 +38,19 @@ def test():
 
     # - Define prompt
 
-    prompt_template = """
-    I NEED to test how the tool works with extremely simple prompts. DO NOT add any detail, just use it AS-IS:
-    pixel art, {text}.
-        """
+    prompt_template = """I NEED to test how the tool works with extremely simple prompts. DO NOT add any detail, just use it AS-IS: Pixel Art, LOW DETAILS: {text}"""
 
     output_directory = "images/" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + "/"
     os.makedirs(output_directory, exist_ok=True)
 
-    for i, message in tqdm.tqdm(enumerate(read_file(path="messages.json", reader=json.load)[:20])):
+    for i, message in tqdm.tqdm(enumerate(read_file(filename="messages.json", reader=json.load)[:20])):
         # - Get story
 
-        story = generate_image_description(message)
+        description = generate_image_description(message)
 
         # - Generate image
 
-        response = generate_image(prompt_template.format(text=story))
+        response = generate_image(prompt_template.format(text=description))
 
         # - Lot image
 
@@ -70,7 +67,7 @@ def test():
 
         metadata = {
             "message": message,
-            "story": story,
+            "description": description,
             "revised_prompt": response.data[0].revised_prompt,
         }
 
@@ -78,7 +75,7 @@ def test():
 
         with open(output_directory + f"{i}_metadata.txt", "w") as f:
             for key, value in metadata.items():
-                f.write(f"# {key}\n {value}\n\n")
+                f.write(f"# {key}\n\n{value}\n\n")
 
 
 if __name__ == "__main__":
