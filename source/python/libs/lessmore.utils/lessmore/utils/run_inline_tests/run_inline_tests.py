@@ -12,13 +12,6 @@ from lessmore.utils.file_utils.write_file import write_file
 from lessmore.utils.get_frame_path.get_frame_path import get_parent_frame_path
 
 
-@pytest.fixture(autouse=True)
-def separate_tests():
-    # print("\n")
-    yield
-    # print("\n")
-
-
 def run_inline_tests(
     path: Optional[str] = None,
     create: bool = True,
