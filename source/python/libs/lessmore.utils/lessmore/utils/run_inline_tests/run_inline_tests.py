@@ -1,7 +1,9 @@
+import logging
 import os
 
 from typing import Optional
 
+import inline_snapshot
 import pytest
 
 from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
@@ -12,9 +14,9 @@ from lessmore.utils.get_frame_path.get_frame_path import get_parent_frame_path
 
 @pytest.fixture(autouse=True)
 def separate_tests():
-    print("\n" + "─" * 88)
+    # print("\n")
     yield
-    print("\n")
+    # print("\n")
 
 
 def run_inline_tests(
@@ -40,6 +42,12 @@ def run_inline_tests(
         changes the snapshot in a way which will make the snapshot more precise (see value in snapshot() and snapshot()[key]), see https://15r10nk.github.io/inline-snapshot/pytest/
     """
 
+    # - Assert inline_snapshot is ^0.8.0
+
+    assert (
+        inline_snapshot.__version__ >= "0.8.0" and inline_snapshot.__version__ < "0.9.0"
+    ), "Only 0.8.0 inline_snapshot version is supported for now"
+
     # - Configure loguru
 
     configure_loguru()
@@ -56,6 +64,14 @@ def run_inline_tests(
     if trim:
         flags.append("trim")
 
+    # - Disable ugly logs from inline_snapshot
+
+    class _Filter(logging.Filter):
+        def filter(self, record):
+            return not record.module.startswith("_")
+
+    logging.getLogger().addFilter(_Filter())
+
     # - Create `conftest.py` file with hook to show traceback on failures
 
     # todo later: put into a plugin [@marklidenberg]
@@ -64,20 +80,7 @@ def run_inline_tests(
 
     write_file(
         filename="conftest.py",
-        data="\n".join(
-            [
-                old_contents,
-                rf"""
-import pytest
-import sys
-
-@pytest.hookimpl(tryfirst=True)
-def pytest_exception_interact(node, call, report):
-    if report.failed:
-        print('\n', call.excinfo.getrepr(style='native'), file=sys.stderr)
-        """.strip(),
-            ]
-        ),
+        data="\n".join([old_contents, read_file(os.path.join(os.path.dirname(__file__), "default_conftest.py"))]),
     )
 
     # - Run tests
@@ -90,7 +93,9 @@ def pytest_exception_interact(node, call, report):
             "--log-cli-level=INFO",  # enables "live logs": logging records are shown immediately as they happen
             "--disable-warnings",
             "--no-header",  # disables pytest header, like python version and stuff
-            "--no-summary",  # disables post-tests summary
+            # "--no-summary",  # inline-snapshot works ONLY with the summary
+            "--tb=no",
+            "--quiet",  # even less noise
         ]
     )
 
