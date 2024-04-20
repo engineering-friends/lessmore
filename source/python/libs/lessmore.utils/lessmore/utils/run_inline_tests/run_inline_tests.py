@@ -1,7 +1,7 @@
 import logging
 import os
 
-from typing import Optional
+from typing import Literal, Optional
 
 import inline_snapshot
 import pytest
@@ -14,10 +14,7 @@ from lessmore.utils.get_frame_path.get_frame_path import get_parent_frame_path
 
 def run_inline_tests(
     path: Optional[str] = None,
-    create: bool = True,
-    update: bool = False,
-    fix: bool = False,
-    trim: bool = False,
+    mode: Literal["disabled", "create_missing", "fix_broken", "update_all"] = "create_missing",
 ):
     """Run test with inline snapshots.
 
@@ -25,21 +22,13 @@ def run_inline_tests(
     ----------
     path : str, optional
         Path to the file to run tests from. If not provided, the current file is used.
-    create : bool, optional
-        creates snapshots which are currently not defined, see https://15r10nk.github.io/inline-snapshot/pytest/
-    update : bool, optional
-        update snapshots if they changed their representation (result of repr()), see https://15r10nk.github.io/inline-snapshot/pytest/
-    fix : bool, optional
-        change snapshots which are currently breaking your tests (where the result of the snapshot operation is False)., see https://15r10nk.github.io/inline-snapshot/pytest/
-    trim : bool, optional
-        changes the snapshot in a way which will make the snapshot more precise (see value in snapshot() and snapshot()[key]), see https://15r10nk.github.io/inline-snapshot/pytest/
     """
 
     # - Assert inline_snapshot is ^0.8.0
 
     assert (
-        inline_snapshot.__version__ >= "0.8.0" and inline_snapshot.__version__ < "0.9.0"
-    ), "Only 0.8.0 inline_snapshot version is supported for now"
+        inline_snapshot.__version__ == "0.8.0-marklidenberg-1.0.0"
+    ), "Works only with https://github.com/marklidenberg/inline-snapshot"
 
     # - Configure loguru
 
@@ -48,14 +37,17 @@ def run_inline_tests(
     # - Collect flags
 
     flags = []
-    if create:
-        flags.append("create")
-    if update:
-        flags.append("update")
-    if fix:
-        flags.append("fix")
-    if trim:
-        flags.append("trim")
+
+    if mode == "create_missing":
+        flags = ["create"]
+    elif mode == "fix_broken":
+        flags = ["create", "fix"]
+    elif mode == "update_all":
+        flags = ["create", "update", "trim"]
+    elif mode == "disabled":
+        pass
+    else:
+        raise Exception(f"Unknown mode: {mode}. Use one of ['disabled', 'create_missing', 'fix_broken', 'update_all']")
 
     # - Disable ugly logs from inline_snapshot
 

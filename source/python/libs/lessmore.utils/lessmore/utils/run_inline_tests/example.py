@@ -10,24 +10,23 @@ def test():
     print("Print message from test")
 
     logger.debug("Debug message")
-    logger.info("Info message")
-    logger.warning("Warning message")
-    logger.error("Error message")
-    logger.critical("Critical message")
 
     # - Inline snapshot
 
-    assert "value" == snapshot("value2")
-    assert 5 <= snapshot(5)
-    assert 5 in snapshot([5])
+    assert "value" == snapshot()
+    assert 5 <= snapshot()
+    assert 5 in snapshot()
 
-    a = snapshot({"key": "value"})
+    a = snapshot()
     assert a["key"] == "value"
 
-    assert outsource(
-        "Long data" * 1000,
-        suffix=".png",  # defaults to .bin for bytes and .txt for str
-    ) == snapshot(external("dc9b148c966a*.png"))
+    assert (
+        outsource(
+            "Long data" * 1000,
+            suffix=".png",  # defaults to .bin for bytes and .txt for str
+        )
+        == snapshot()
+    )
 
 
 def test_fail():
