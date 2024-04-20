@@ -43,7 +43,7 @@ def run_inline_tests(
     elif mode == "fix_broken":
         flags = ["create", "fix"]
     elif mode == "update_all":
-        flags = ["create", "update", "trim"]
+        flags = ["create", "fix", "update", "trim"]
     elif mode == "disabled":
         pass
     else:
