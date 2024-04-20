@@ -40,6 +40,9 @@ def pytest_sessionstart(session):
     original_write = terminal_reporter._tw.write
 
     def custom_write(s, **kwargs):
+        if "snapshots have incorrect values (--inline-snapshot=fix)" in s:
+            raise AssertionError(s.replace("Error: ", "").replace("(--inline-snapshot=fix)", "").strip())
+
         if "::" in s and not s.startswith("FAILED"):  # test names
             original_write("-" * 80 + "\n[" + s.strip() + "]\n", **kwargs)
 

@@ -17,20 +17,17 @@ def test():
 
     # - Inline snapshot
 
-    assert "value" == snapshot()
-    assert 5 <= snapshot()
-    assert 5 in snapshot()
+    assert "value" == snapshot("value2")
+    assert 5 <= snapshot(5)
+    assert 5 in snapshot([5])
 
-    a = snapshot()
+    a = snapshot({"key": "value"})
     assert a["key"] == "value"
 
-    assert (
-        outsource(
-            "Long data" * 1000,
-            suffix=".png",  # defaults to .bin for bytes and .txt for str
-        )
-        == snapshot()
-    )
+    assert outsource(
+        "Long data" * 1000,
+        suffix=".png",  # defaults to .bin for bytes and .txt for str
+    ) == snapshot(external("dc9b148c966a*.png"))
 
 
 def test_fail():
