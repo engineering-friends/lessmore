@@ -24,7 +24,7 @@ def run_inline_tests(
         Path to the file to run tests from. If not provided, the current file is used.
     """
 
-    # - Assert inline_snapshot is ^0.8.0
+    # - Assert inline_snapshot is ^0.8.0, forked by marklidenberg
 
     assert (
         inline_snapshot.__version__ == "0.8.0-marklidenberg-1.0.0"
@@ -36,18 +36,16 @@ def run_inline_tests(
 
     # - Collect flags
 
-    flags = []
-
-    if mode == "create_missing":
+    if mode == "assert":
+        flags = []
+    elif mode == "create_missing":
         flags = ["create"]
     elif mode == "fix_broken":
         flags = ["create", "fix"]
     elif mode == "update_all":
         flags = ["create", "fix", "update", "trim"]
-    elif mode == "disabled":
-        pass
     else:
-        raise Exception(f"Unknown mode: {mode}. Use one of ['disabled', 'create_missing', 'fix_broken', 'update_all']")
+        raise Exception(f"Unknown mode: {mode}. Use one of ['assert', 'create_missing', 'fix_broken', 'update_all']")
 
     # - Disable ugly logs from inline_snapshot
 
@@ -77,9 +75,9 @@ def run_inline_tests(
             "--capture=no",  # disables capturing of print calls
             "--log-cli-level=INFO",  # enables "live logs": logging records are shown immediately as they happen
             "--disable-warnings",
-            "--no-header",  # disables pytest header, like python version and stuff
+            "--no-header",
             # "--no-summary",  # inline-snapshot works ONLY with the summary
-            "--tb=no",
+            "--tb=no",  # disable traceback in the summary
             "--quiet",  # even less noise
         ]
     )
