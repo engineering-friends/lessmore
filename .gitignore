@@ -72,7 +72,9 @@
 # - Git LFS
 # ...
 
+
 !test_git_lfs.txt
+!source/python/services/discord-to-telegram-forwarder/discord_to_telegram_forwarder/send_discord_post_to_telegram/to_png_images/**
 
 # - Custom
 # ...
@@ -88,3 +90,4 @@
 !git_secret
 !git_secret/**/*
 git_secret/files/test_git_secret
+
