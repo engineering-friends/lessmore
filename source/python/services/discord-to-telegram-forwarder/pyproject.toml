@@ -37,6 +37,8 @@ pydantic = "2.6.4"
 pydantic-settings = "^2.2.1"
 opencv-python = "^4.9.0.80"
 pillow = "^10.3.0"
+matplotlib = "^3.8.4"
+pandas = "^2.2.2"
 
 [tool.poetry.dev-dependencies]
 
