@@ -24,6 +24,7 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.is_discord_chan
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_representing_text_from_openai import (
     request_emoji_representing_text_from_openai,
 )
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.to_png import to_png
 from loguru import logger
 from pymaybe import maybe
 
@@ -71,9 +72,13 @@ async def send_discord_post_to_telegram(
         if maybe(attachment).url.or_else(None) and maybe(attachment).filename.or_else(None):
             if attachment.filename.lower().endswith((".mp4", ".avi", ".mov")) and len(message.attachments) > 1:
                 # - Need to download videos
-
                 temp_path = _download_as_temp_file(attachment.url, attachment.filename)
                 files.append(temp_path)
+            elif attachment.filename.lower().endswith((".webp", ".bmp")):
+                # common image formats, not supported by telegram
+                temp_path = _download_as_temp_file(attachment.url, attachment.filename)
+                png_temp_path = to_png(temp_path)
+                files.append(png_temp_path)
             else:
                 files.append(attachment.url)
 
@@ -256,12 +261,6 @@ async def send_discord_post_to_telegram(
                 link_preview=False,
             )
 
-    # - Remove temp files
-
-    for file in files:
-        if isinstance(file, str) and os.path.isfile(file):
-            os.remove(file)
-
 
 async def test():
     # - Init deps
@@ -289,7 +288,12 @@ tl;dr Кофе снижает смертность от всех причин
 Mark Lidenberg На счет того пить или не пить и что для кого правильно :)""",
                 "author": {"display_name": "Mark Lidenberg"},
                 "jump_url": "https://discord.com/channels/1106702799938519211/1106702799938519213/913095424225706005",
-                "attachments": [],
+                "attachments": [
+                    {
+                        "url": "https://media.discordapp.net/attachments/1236674220549738586/1236674221644714137/calmmage_shared_Realistic_landscape_of_the_green_pastures_hills_8e238106-df39-4566-a7c8-8294cc447545.webp?ex=663ad85e&is=663986de&hm=4b3b95ff371eb815500456d5efdfc4b4e6ddcdbd668bc5d1eb4a516cb8ee3226&=&format=webp&width=1227&height=1227",
+                        "filename": "file_example_SVG_20kB.webp",
+                    }
+                ],
             }
         ),
         add_inner_shortened_url=True,

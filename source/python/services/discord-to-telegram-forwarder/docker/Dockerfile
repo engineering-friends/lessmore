@@ -1,4 +1,4 @@
-FROM python:3.12.0-alpine
+FROM python:3.11.7-alpine
 
 # - Prepare environment
 
