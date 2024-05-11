@@ -49,16 +49,16 @@ def generate_image(text: str, image_prompt: str, image_description_prompt: str =
 def test():
     # - Get message (texts)
 
-    texts = read_file(filename="data/messages.json", reader=json.load)[:25]
+    texts = read_file(filename="data/messages.json", reader=json.load)[:5]
 
     # - Define prompts
 
     text_prompts_by_label = {
-        # "basic": "Describe in one small sentence, no more than 10 words: ",
-        # "key_detail": "Extract key detail from the text in one sentence, no more than 10 words: ",
-        # "essence": "In one sentence, describe the essence of the text: ",
-        # "movie_shot": "Suppose that this text is a shot in a movie. Describe the shot in one sentence: ",
-        "movie_title": "If this text was a movie, what would be the title of the movie?: ",
+        "basic": "Describe in one small sentence, no more than 10 words: ",
+        "key_detail": "Extract key detail from the text in one sentence, no more than 10 words: ",
+        "essence": "In one sentence, describe the essence of the text: ",
+        "movie_shot": "Suppose that this text is a shot in a movie. Describe the shot in one sentence: ",  # too many text
+        "movie_title": "If this text was a movie, what would be the title of the movie?: ",  # great!
     }
 
     image_prompts_by_label = {"pixel_art, low_details": "Pixel Art, LOW DETAILS:"}
@@ -72,7 +72,7 @@ def test():
             for i, text in enumerate(texts):
                 # - Define output directory and filename
 
-                output_directory = f"output/{text_prompt_label}_{image_prompt_label}"
+                output_directory = f"generated_images/{text_prompt_label}_{image_prompt_label}"
                 os.makedirs(output_directory, exist_ok=True)
                 filename = f"{output_directory}/{i}.png"
 
@@ -117,16 +117,18 @@ def test():
     for text_prompt_label, text_prompt in text_prompts_by_label.items():
         for image_prompt_label, image_prompt in image_prompts_by_label.items():
             for i, text in enumerate(texts):
-                output_directory = f"output/{text_prompt_label}_{image_prompt_label}"
+                output_directory = f"generated_images/{text_prompt_label}_{image_prompt_label}"
                 filename = f"{output_directory}/{i}.png"
                 values.append([f"{text_prompt_label}_{image_prompt_label}", filename, text])
     df = pd.DataFrame(values, columns=["label", "filename", "text"])
     # make label as index, text as columns
     df = df.pivot(index="label", columns="text", values="filename")
 
-    plot_dataframe_of_images(df=df, output_filename="output/grid.png")
+    grid_filename = f"grids/{datetime.now()}.png"
+    os.makedirs("grids", exist_ok=True)
+    plot_dataframe_of_images(df=df, output_filename=grid_filename)
 
-    open_file_in_os("output/grid.png")
+    open_file_in_os(grid_filename)
 
 
 if __name__ == "__main__":

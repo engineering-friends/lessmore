@@ -8,7 +8,7 @@ import pandas as pd
 
 def plot_dataframe_of_images(df: pd.DataFrame, output_filename: str = "grid.png"):
     # - Create grid
-    fig, axes = plt.subplots(nrows=df.shape[0] + 1, ncols=df.shape[1] + 1, figsize=(3 * df.shape[1], 3 * df.shape[0]))
+    fig, axes = plt.subplots(nrows=df.shape[0] + 1, ncols=df.shape[1] + 1, figsize=(2 * df.shape[1], 2 * df.shape[0]))
 
     # - Set titles
 
