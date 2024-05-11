@@ -4,7 +4,10 @@ from deeplay.utils.file_utils.read_file import read_file
 from openai import OpenAI
 
 
-def generate_image_description(text: str) -> str:
+def generate_image_description(
+    text: str,
+    prompt: str = "Describe in one small sentence, no more than 10 words: ",
+) -> str:
     return (
         OpenAI()
         .chat.completions.create(
@@ -12,9 +15,7 @@ def generate_image_description(text: str) -> str:
             messages=[
                 {
                     "role": "user",
-                    "content": """Describe in one small sentence, no more than 10 words: {text}""".format(
-                        text=text
-                    ).strip(),
+                    "content": "\n".join([prompt + text]).strip(),
                 },
             ],
         )
@@ -24,11 +25,11 @@ def generate_image_description(text: str) -> str:
 
 
 def test():
-    print(generate_image_description("""New tools in Deeplay availble"""))
+    print(generate_image_description("""New tools in Deeplay available"""))
 
     # - Check with all messages
 
-    for message in read_file(filename="messages.json", reader=json.load):
+    for message in read_file(filename="data/messages.json", reader=json.load)[:10]:
         if not message:
             continue
         print(message)
