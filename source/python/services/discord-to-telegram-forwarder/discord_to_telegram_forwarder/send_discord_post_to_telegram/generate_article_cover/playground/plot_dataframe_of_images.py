@@ -8,14 +8,13 @@ import pandas as pd
 
 def plot_dataframe_of_images(df: pd.DataFrame, output_filename: str = "grid.png"):
     # - Create grid
-
-    fig, axes = plt.subplots(nrows=df.shape[0] + 1, ncols=df.shape[1] + 1, figsize=(10, 2 * df.shape[1]))
+    fig, axes = plt.subplots(nrows=df.shape[0] + 1, ncols=df.shape[1] + 1, figsize=(3 * df.shape[1], 3 * df.shape[0]))
 
     # - Set titles
 
     axes[0, 0].axis("off")
     for j, column in enumerate(df.columns, start=1):
-        axes[0, j].text(0.5, 0.5, column, fontsize=12, ha="center", va="center")
+        axes[0, j].text(0.5, 0.5, column[:128], fontsize=5, ha="center", va="center")
         axes[0, j].axis("off")
 
     # - Set labels and images
@@ -27,11 +26,12 @@ def plot_dataframe_of_images(df: pd.DataFrame, output_filename: str = "grid.png"
 
         # - Set images
 
-        for j, (column, image_filename) in enumerate(row.items(), start=1):
+        for j in range(df.shape[1]):
+            image_filename = row[df.columns[j]]
             if not os.path.isfile(image_filename) or not os.path.exists(image_filename):
                 continue
-            axes[i, j].imshow(mpimg.imread(image_filename))
-            axes[i, j].axis("off")
+            axes[i, j + 1].imshow(mpimg.imread(image_filename))
+            axes[i, j + 1].axis("off")
 
     plt.tight_layout()
     plt.savefig(output_filename)
