@@ -5,7 +5,7 @@ description = ""
 authors = ["marklidenberg <marklidenberg@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "3.12.*"
+python = "3.11.7"
 aiohttp = "3.9.3"
 cachetools = "5.2.0"
 loguru = "0.6.0"
@@ -35,6 +35,8 @@ openai = "1.16.2"
 jupyter = "1.0.0"
 pydantic = "2.6.4"
 pydantic-settings = "^2.2.1"
+opencv-python = "^4.9.0.80"
+pillow = "^10.3.0"
 
 [tool.poetry.dev-dependencies]
 
