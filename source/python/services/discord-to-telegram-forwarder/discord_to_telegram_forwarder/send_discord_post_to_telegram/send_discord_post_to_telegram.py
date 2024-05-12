@@ -1,4 +1,5 @@
 import asyncio
+import io
 import json
 import os
 import re
@@ -14,7 +15,12 @@ from discord_to_telegram_forwarder.deps.deps import Deps
 from discord_to_telegram_forwarder.deps.init_deps import init_deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.download_as_temp_file import _download_as_temp_file
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover import generate_article_cover
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.cache_on_disk import (
+    cache_on_disk,
+)
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.generate_image import (
+    generate_image,
+)
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
 )
@@ -26,7 +32,11 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_r
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.to_png import to_png
 from loguru import logger
+from PIL import Image
 from pymaybe import maybe
+from utils_ak.os import open_file_in_os
+
+from lessmore.utils.file_utils.write_file import write_file
 
 
 MENTION_CHAR_PLACEHOLDER = "ç"
@@ -149,15 +159,25 @@ async def send_discord_post_to_telegram(
     if not files:
         # - Generate article cover
 
-        url = generate_article_cover(
+        image_contents = cache_on_disk()(generate_image)(
             text="\n".join([title, body]),
-            prompt_template="Pixel art: {text}",
-        )
+            text_prompt="",
+            image_prompt="Anime:",
+        ).image_contents
 
-        # - Add to files
+        # - Resize image to 1280x731 (telegram max size)
 
-        if url:
-            files = [_download_as_temp_file(url, filename=f"{uuid.uuid4()}.png")]
+        image = Image.open(io.BytesIO(image_contents))
+        image_resized = image.resize((1280, 731), Image.LANCZOS)
+        image_contents = io.BytesIO()
+        image_resized.save(image_contents, format="PNG")
+        image_contents = image_contents.getvalue()
+
+        # - Save to tmp file and add to files
+
+        filename = f"/tmp/{uuid.uuid4()}.png"
+        write_file(data=image_contents, path=filename, as_bytes=True)
+        files = [filename]
 
     # - Prepare message text
 
@@ -288,12 +308,7 @@ tl;dr Кофе снижает смертность от всех причин
 Mark Lidenberg На счет того пить или не пить и что для кого правильно :)""",
                 "author": {"display_name": "Mark Lidenberg"},
                 "jump_url": "https://discord.com/channels/1106702799938519211/1106702799938519213/913095424225706005",
-                "attachments": [
-                    {
-                        "url": "https://media.discordapp.net/attachments/1236674220549738586/1236674221644714137/calmmage_shared_Realistic_landscape_of_the_green_pastures_hills_8e238106-df39-4566-a7c8-8294cc447545.webp?ex=663ad85e&is=663986de&hm=4b3b95ff371eb815500456d5efdfc4b4e6ddcdbd668bc5d1eb4a516cb8ee3226&=&format=webp&width=1227&height=1227",
-                        "filename": "file_example_SVG_20kB.webp",
-                    }
-                ],
+                "attachments": [],
             }
         ),
         add_inner_shortened_url=True,

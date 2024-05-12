@@ -71,7 +71,8 @@ def test():
     df = generate_images(
         # texts=read_file(filename="data/messages.json", reader=json.load)[:10],
         texts=[
-            """Exploring the Depths of Bot Technology and Personal Data Management Through Advanced Automation and Creative Web Development Tools"""
+            """Exploring the Depths of Bot Technology and Personal Data Management Through Advanced Automation and Creative Web Development Tools""",
+            """From Finance to Marathons: A Man's Journey Through Personal and Professional Adventures""",
         ],
         text_prompts_by_label={
             # "basic": "Describe in one small sentence, no more than 10 words: ",
@@ -85,10 +86,10 @@ def test():
             #     Just the title:"""
         },
         image_prompts_by_label={
-            # "low_details": "Pixel Art, LOW DETAILS:",
-            # "minimal": "Pixel Art, minimal",
-            # "zero_text": "Pixel Art, ZERO TEXT. People will be VERY upset if they find words in the image:",
-            "simple_pixel_art": "Simple Pixel Art",
+            "low_details": "Pixel Art, LOW DETAILS:",
+            "minimal": "Pixel Art, minimal",
+            "zero_text": "Pixel Art, ZERO TEXT. People will be VERY upset if they find words in the image:",
+            "one focus point": "Pixel Art, one focus point:",
         },
     )
     grid_filename = f"data/grids/{datetime.now()}.png"

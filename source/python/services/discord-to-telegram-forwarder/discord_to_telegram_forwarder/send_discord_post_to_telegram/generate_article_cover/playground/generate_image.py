@@ -103,10 +103,11 @@ def generate_image(
             response = OpenAI().images.generate(
                 model="dall-e-3",
                 prompt="\n".join([keep_prompt_prefix, image_prompt, text]),
-                size="1024x1024",
+                size="1792x1024",
                 quality="standard",
                 n=1,
             )
+
         except Exception as e:
             if "content_policy_violation" in str(e):
                 print("Content policy violation, trying again, attempt", attempt)

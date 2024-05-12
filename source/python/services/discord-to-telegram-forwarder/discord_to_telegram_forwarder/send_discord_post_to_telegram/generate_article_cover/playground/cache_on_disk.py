@@ -8,7 +8,7 @@ from diskcache import Cache
 
 
 @lru_cache(maxsize=None)
-def cache_on_disk(directory: str = "cache_on_disk", reset: bool = False) -> callable:
+def cache_on_disk(directory: str = "/tmp/cache_on_disk", reset: bool = False) -> callable:
     """
     Decorator factory that takes a directory name for storing cache data.
     Returns a decorator that caches the results of the function to disk.
