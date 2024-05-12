@@ -47,9 +47,24 @@ def test():
                 # prompt="""If this text was a movie, what would be the title and one-sentence description of the movie?
                 # Skip any names, use abstract forms (e.g. Petr Lavrov -> a man)
                 # Just the title:""",
-                prompt="""If this text was a movie, what would be the title in 10+ words of the movie?
-                Skip any people names, use abstract forms (e.g. Petr Lavrov -> a man). Keep intact other names (e.g. Apple, Russia, ChatGPT, ...)  
-                Just the title:""",
+                prompt="""
+                
+                - There is an animated movie with a scene, that is described below. Describe the first shot of the scene. 
+                - DO NOT INCLUDE any electronic devices with screens (e.g. phones, laptops, etc.)
+                - It should be ONE shot, describing ONE scene. Choose any scene from the text.
+                - It MUST have describe the text briefly, including it's core idea
+                - Make it 15 words max
+                
+                Examples of other scenes: 
+                - A man is standing in the middle of the desert, looking at the sky, happy
+                - The night sky full of fireworks
+                - Winter landscape with houses, trees and snow covered mountain background, a sky filled with snowflakes
+                - A man finishing a grueling marathon race, crowd cheering, with a mountainous backdrop.
+                - Man submits documents to military office to deregister, a military officer standing right in front of him, looking ominous.
+                - iPhone with Kremlin on the background 
+                
+                The text: 
+                """,
             )
         )
         print("=" * 20)

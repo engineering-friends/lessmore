@@ -78,6 +78,10 @@ def generate_image(
     image_prompt: str,
     text_prompt: str = "",
     keep_original_prompt: bool = True,
+    size: str = "1792x1024",
+    quality: str = "standard",
+    style: str = "vivid",
+    model: str = "dall-e-3",
 ) -> Box:
     # - Preprocess text if needed
 
@@ -87,7 +91,9 @@ def generate_image(
                 text=text,
                 prompt="\n".join(["" if attempt == 0 else random.choice(RANDOMIZERS), text_prompt]),
             )
+            print()
             print(text)
+            print()
 
         # - Set prompt prefix
 
@@ -101,10 +107,11 @@ def generate_image(
 
         try:
             response = OpenAI().images.generate(
-                model="dall-e-3",
+                model=model,
                 prompt="\n".join([keep_prompt_prefix, image_prompt, text]),
-                size="1792x1024",
-                quality="standard",
+                size=size,
+                quality=quality,
+                style=style,
                 n=1,
             )
 

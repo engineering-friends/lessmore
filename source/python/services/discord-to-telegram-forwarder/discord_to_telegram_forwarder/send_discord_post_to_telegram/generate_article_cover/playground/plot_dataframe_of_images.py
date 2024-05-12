@@ -11,13 +11,15 @@ from utils_ak.os import open_file_in_os
 def plot_dataframe_of_images(df: pd.DataFrame, output_filename: str = "grid.png"):
     # - Create grid
 
-    fig, axes = plt.subplots(nrows=df.shape[0] + 1, ncols=df.shape[1] + 1, figsize=(3 * df.shape[1], 3 * df.shape[0]))
+    fig, axes = plt.subplots(
+        nrows=df.shape[0] + 1, ncols=df.shape[1] + 1, figsize=(4 * (df.shape[1] + 1), 4 * (df.shape[0] + 1))
+    )
 
     # - Set titles
 
     axes[0, 0].axis("off")
     for j, column in enumerate(df.columns, start=1):
-        axes[0, j].text(0.5, 0.5, column[:128], fontsize=5, ha="center", va="center")
+        axes[0, j].text(0.5, 0.5, column[:12], fontsize=12, ha="center", va="center")
         axes[0, j].axis("off")
 
     # - Set labels and images
@@ -25,7 +27,7 @@ def plot_dataframe_of_images(df: pd.DataFrame, output_filename: str = "grid.png"
     for i, (idx, row) in enumerate(df.iterrows(), start=1):
         # - Set label
 
-        axes[i, 0].text(0.5, 0.5, idx, fontsize=5, ha="center", va="center")
+        axes[i, 0].text(0.5, 0.5, idx, fontsize=12, ha="center", va="center")
         axes[i, 0].axis("off")
 
         # - Set images
@@ -35,10 +37,15 @@ def plot_dataframe_of_images(df: pd.DataFrame, output_filename: str = "grid.png"
             axes[i, j + 1].axis("off")
 
     # - Disable matploblit warnings like plt.tight_layout()
+
     import warnings
 
     warnings.filterwarnings("ignore")
-    plt.tight_layout()
+
+    # - Save
+    # Alternatively, you can use subplots_adjust to finely control spacing
+    plt.subplots_adjust(left=0, right=1, top=1, bottom=0, wspace=0.05, hspace=-0.7)  # Remove space between rows
+    # plt.tight_layout(pad=0.1, h_pad=0.1, w_pad=0.1)
     plt.savefig(output_filename)
 
 
@@ -52,6 +59,7 @@ def test():
 
     image_contents = requests.get(url).content
     image = PIL.Image.open(PIL.Image.io.BytesIO(image_contents))
+
     # - Convert to PIL image
 
     index = []
