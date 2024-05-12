@@ -11,7 +11,7 @@ from utils_ak.os import open_file_in_os
 def plot_dataframe_of_images(df: pd.DataFrame, output_filename: str = "grid.png"):
     # - Create grid
 
-    fig, axes = plt.subplots(nrows=df.shape[0] + 1, ncols=df.shape[1] + 1, figsize=(2 * df.shape[1], 2 * df.shape[0]))
+    fig, axes = plt.subplots(nrows=df.shape[0] + 1, ncols=df.shape[1] + 1, figsize=(3 * df.shape[1], 3 * df.shape[0]))
 
     # - Set titles
 
@@ -25,7 +25,7 @@ def plot_dataframe_of_images(df: pd.DataFrame, output_filename: str = "grid.png"
     for i, (idx, row) in enumerate(df.iterrows(), start=1):
         # - Set label
 
-        axes[i, 0].text(0.5, 0.5, idx, fontsize=12, ha="center", va="center")
+        axes[i, 0].text(0.5, 0.5, idx, fontsize=5, ha="center", va="center")
         axes[i, 0].axis("off")
 
         # - Set images
@@ -34,6 +34,10 @@ def plot_dataframe_of_images(df: pd.DataFrame, output_filename: str = "grid.png"
             axes[i, j + 1].imshow(row[df.columns[j]])
             axes[i, j + 1].axis("off")
 
+    # - Disable matploblit warnings like plt.tight_layout()
+    import warnings
+
+    warnings.filterwarnings("ignore")
     plt.tight_layout()
     plt.savefig(output_filename)
 
@@ -55,8 +59,8 @@ def test():
     for i in range(3):
         index.append(f"row_{i}")
         values.append({f"image_{j}": image for j in range(5)})
-    plot_dataframe_of_images(pd.DataFrame(values, index=index), output_filename="grid.png")
-    open_file_in_os("grid.png")
+    plot_dataframe_of_images(pd.DataFrame(values, index=index), output_filename="/tmp/grid.png")
+    open_file_in_os("/tmp/grid.png")
 
 
 if __name__ == "__main__":

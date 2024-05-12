@@ -1,5 +1,6 @@
 import hashlib
 import inspect
+import json
 
 from functools import lru_cache, wraps
 
@@ -7,7 +8,7 @@ from diskcache import Cache
 
 
 @lru_cache(maxsize=None)
-def cache_on_disk(directory: str = "cache_on_disk") -> callable:
+def cache_on_disk(directory: str = "cache_on_disk", reset: bool = False) -> callable:
     """
     Decorator factory that takes a directory name for storing cache data.
     Returns a decorator that caches the results of the function to disk.
@@ -28,20 +29,19 @@ def cache_on_disk(directory: str = "cache_on_disk") -> callable:
 
             # -- Get full kwargs
 
-            sig = inspect.signature(func)
-            bound_arguments = sig.bind(*args, **kwargs)
+            bound_arguments = inspect.signature(func).bind(*args, **kwargs)
             bound_arguments.apply_defaults()
             full_kwargs = bound_arguments.arguments
 
             # -- Generate the key
 
             hasher = hashlib.sha256()
-            hasher.update(func.__name__.encode() + str(full_kwargs).encode())
+            hasher.update(func.__name__.encode() + json.dumps(full_kwargs, sort_keys=True, default=str).encode())
             key = hasher.hexdigest()
 
             # - Check if the result is already in the cache
 
-            if key in cache:
+            if key in cache and not reset:
                 return cache[key]
 
             # - Calculate the result if not cached

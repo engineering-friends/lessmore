@@ -1,5 +1,6 @@
 import json
 import os
+import random
 
 from dataclasses import dataclass
 from datetime import datetime
@@ -20,6 +21,58 @@ from openai import OpenAI
 from utils_ak.os import open_file_in_os
 
 
+RANDOMIZERS = [
+    "ancient",
+    "mystical",
+    "luminous",
+    "enigmatic",
+    "whimsical",
+    "tranquil",
+    "opulent",
+    "rustic",
+    "vivid",
+    "ethereal",
+    "grotesque",
+    "serene",
+    "majestic",
+    "quaint",
+    "baroque",
+    "minimalist",
+    "ornate",
+    "bleak",
+    "surreal",
+    "vibrant",
+    "dystopian",
+    "idyllic",
+    "gloomy",
+    "futuristic",
+    "timeless",
+    "decadent",
+    "eerie",
+    "splendid",
+    "rugged",
+    "buoyant",
+    "melancholic",
+    "pristine",
+    "chaotic",
+    "cozy",
+    "stark",
+    "lavish",
+    "haunting",
+    "abstract",
+    "radiant",
+    "murky",
+    "gleaming",
+    "forgotten",
+    "stunning",
+    "bizarre",
+    "crisp",
+    "dilapidated",
+    "lush",
+    "turbulent",
+]
+
+
 def generate_image(
     text: str,
     image_prompt: str,
@@ -28,26 +81,40 @@ def generate_image(
 ) -> Box:
     # - Preprocess text if needed
 
-    if text_prompt:
-        text = cache_on_disk()(generate_image_description)(text=text, prompt=text_prompt)
+    for attempt in range(5):
+        if text_prompt:
+            text = cache_on_disk(reset=attempt != 0)(generate_image_description)(
+                text=text,
+                prompt="\n".join(["" if attempt == 0 else random.choice(RANDOMIZERS), text_prompt]),
+            )
+            print(text)
 
-    # - Set prompt prefix
+        # - Set prompt prefix
 
-    keep_prompt_prefix = (
-        """I NEED to test how the tool works with extremely simple prompts. DO NOT add any detail, just use it AS-IS:"""
-        if keep_original_prompt
-        else ""
-    )
+        keep_prompt_prefix = (
+            """I NEED to test how the tool works with extremely simple prompts. DO NOT add any detail, just use it AS-IS:"""
+            if keep_original_prompt
+            else ""
+        )
 
-    # - Create image
+        # - Create image
 
-    response = OpenAI().images.generate(
-        model="dall-e-3",
-        prompt="\n".join([keep_prompt_prefix, image_prompt, text]),
-        size="1024x1024",
-        quality="standard",
-        n=1,
-    )
+        try:
+            response = OpenAI().images.generate(
+                model="dall-e-3",
+                prompt="\n".join([keep_prompt_prefix, image_prompt, text]),
+                size="1024x1024",
+                quality="standard",
+                n=1,
+            )
+        except Exception as e:
+            if "content_policy_violation" in str(e):
+                print("Content policy violation, trying again, attempt", attempt)
+                continue
+            else:
+                raise e
+
+        break
 
     # - Get image contents from url just as file contents
 
@@ -59,10 +126,38 @@ def generate_image(
 
 def test():
     box = generate_image(
-        text="""Escape the Draft: One Man's Elaborate Quest to Deregister from Military Service and Navigate the Maze of Bureaucracy""",
+        text="""#session_requests
+💬 **Новые целевые запросы на коворкинг** by Petr Lavrov
+
+Хочу посидеть поковырять виспер бота
+Вероятно ~alexeykudrinsky 
+
+Хочу посидеть поковырять GPT Assistant (телеграм бот чтобы он тебе в календаре умел события рисовать и напоминалки/джобы скедулить)
+Вероятно Konstantin Ershov, или Mitya Shabat если интересно
+Хочу на базе собранных данных о локациях сделать сайт 146 школы с картой, залогином, админкой, базой и возможностью вносить / редактировать данные
+Вероятно ~palych65 
+
+Хочу настроить себе data feed личных данных - письма, календарь, браузерные букмарки, (история Ютуба?), Слак, дискорд, чатики в телеге
+Notion? 
+- хочу попробовать для этого prefect.hq или тупо n8n
+Вероятно Mikhail Vodolagin, или Daniel Lytkin 
+
+Хочу писать тулзы продуктивности на базе GPT
+Вероятно Mark Lidenberg 
+Кстати у Alexander Votyakov есть интерес к habit tracker, можем обсудить это делать вместе или отдельно
+
+[→ к посту](https://discord.com/channels/1106702799938519211/1223037035460427949/1223037035460427949) / [→ к посту для ](https://tinyurl.com/2bbmjeut) (+19)""",
         image_prompt="pixel art :",
+        text_prompt="""If this text was a movie, what would be the title in 10+ words of the movie?
+                Skip any people names, use abstract forms (e.g. Petr Lavrov -> a man). Keep intact other names (e.g. Apple, Russia, ChatGPT, ...)  
+                Just the title:""",
     )
-    print(box.image_contents)
+
+    # save image to file
+
+    with open("/tmp/image.png", "wb") as f:
+        f.write(box.image_contents)
+    open_file_in_os("/tmp/image.png")
 
 
 if __name__ == "__main__":
