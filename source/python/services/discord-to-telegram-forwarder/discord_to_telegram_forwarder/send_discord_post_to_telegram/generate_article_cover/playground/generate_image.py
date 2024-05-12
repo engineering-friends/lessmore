@@ -14,6 +14,9 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_articl
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.generate_image_description import (
     generate_image_description,
 )
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.generate_image_description2 import (
+    generate_image_description2,
+)
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.plot_dataframe_of_images import (
     plot_dataframe_of_images,
 )
@@ -87,9 +90,9 @@ def generate_image(
 
     for attempt in range(5):
         if text_prompt:
-            text = cache_on_disk(reset=attempt != 0)(generate_image_description)(
+            text = cache_on_disk(reset=attempt != 0)(generate_image_description2)(
                 text=text,
-                prompt="\n".join(["" if attempt == 0 else random.choice(RANDOMIZERS), text_prompt]),
+                # prompt="\n".join(["" if attempt == 0 else random.choice(RANDOMIZERS), text_prompt]),
             )
             print()
             print(text)
