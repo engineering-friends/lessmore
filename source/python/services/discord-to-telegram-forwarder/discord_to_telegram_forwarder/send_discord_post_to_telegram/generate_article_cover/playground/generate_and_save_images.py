@@ -28,77 +28,33 @@ def generate_images(
     text_prompts_by_label: dict,
     image_prompts_by_label: dict,
 ) -> pd.DataFrame:  # label, text, filename
-    # - Run image generation
-
-    print("Generating images")
-    for text_prompt_label, text_prompt in tqdm.tqdm(list(text_prompts_by_label.items())):
-        print("text_prompt_label:", text_prompt_label)
-        for image_prompt_label, image_prompt in image_prompts_by_label.items():
-            print("image_prompt_label:", image_prompt_label)
-            for i, text in enumerate(tqdm.tqdm(texts)):
-                # - Define output directory and filename
-
-                output_directory = f"generated_images/{text_prompt_label}--{image_prompt_label}"
-                os.makedirs(output_directory, exist_ok=True)
-                filename = f"{output_directory}/{i}.png"
-
-                # - Skip if file exists
-
-                if os.path.exists(filename):
-                    continue
-
-                # - Generate image
-
-                image_contents, revised_prompt = cache_on_disk()(generate_image)(
-                    text=text,
-                    image_prompt=image_prompt,
-                    image_description_prompt=text_prompt,
-                    keep_original_prompt=True,
-                )
-
-                # - Save image to file
-
-                image = np.array(PIL.Image.open(image_contents))
-
-                cv2.imwrite(filename, cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
-
-                # - Save metadata to yaml file
-
-                metadata = {
-                    "text": text,
-                    "revised_prompt": revised_prompt,
-                }
-
-                # dump yaml file
-
-                with open(f"{output_directory}/{i}_metadata.txt", "w") as f:
-                    for key, value in metadata.items():
-                        f.write(f"# {key}\n\n{value}\n\n")
-
-    # - Collect results and plot grid
-
-    print("Collecting results and plotting grid")
     values = []
     for text_prompt_label, text_prompt in text_prompts_by_label.items():
         for image_prompt_label, image_prompt in image_prompts_by_label.items():
             for i, text in enumerate(texts):
-                output_directory = f"generated_images/{text_prompt_label}--{image_prompt_label}"
-                filename = f"{output_directory}/{i}.png"
-                values.append([f"{text_prompt_label}_{image_prompt_label}", filename, text])
-    df = pd.DataFrame(values, columns=["label", "filename", "text"])
-
-    # make label as index, text as columns
-    df = df.pivot(index="label", columns="text", values="filename")
-
+                generated_image = cache_on_disk()(generate_image)(
+                    text=text,
+                    text_prompt=text_prompt,
+                    image_prompt=image_prompt,
+                )
+                values.append(
+                    [
+                        f"{text_prompt_label}_{image_prompt_label}",
+                        PIL.Image.open(PIL.Image.io.BytesIO(generated_image.image_contents)),
+                        text,
+                    ]
+                )
+    df = pd.DataFrame(values, columns=["label", "image", "text"])
+    df = df.pivot(index="label", columns="text", values="image")
     return df
 
 
 def test():
     df = generate_images(
-        texts=read_file(filename="data/messages.json", reader=json.load)[:10],
-        # texts=[
-        #     """Escape the Draft: One Man's Elaborate Quest to Deregister from Military Service and Navigate the Maze of Bureaucracy"""
-        # ],
+        # texts=read_file(filename="data/messages.json", reader=json.load)[:10],
+        texts=[
+            """Escape the Draft: One Man's Elaborate Quest to Deregister from Military Service and Navigate the Maze of Bureaucracy"""
+        ],
         text_prompts_by_label={
             # "basic": "Describe in one small sentence, no more than 10 words: ",
             # "key_detail": "Extract key detail from the text in one sentence, no more than 10 words: ",
@@ -115,11 +71,11 @@ def test():
             # "no_text_test1": "Pixel Art, pictogram",
             # "no_text_test3": "Pixel Art, abstract",
             # "no_text_test4": "Pixel Art, solid",
-            "no_text_test2": "Pixel Art, vector",
-            "no_text_test5": "Pixel Art, minimal",
-            "no_text_test6": "Pixel Art, NO TEXT",
-            "no_text_test6_2": "Pixel Art, ZERO TEXT",
-            "no_text_test7": "Pixel Art, in a world where people are blind",
+            # "no_text_test2": "Pixel Art, vector",
+            # "no_text_test5": "Pixel Art, minimal",
+            # "no_text_test6": "Pixel Art, NO TEXT",
+            # "no_text_test6_2": "Pixel Art, ZERO TEXT",
+            # "no_text_test7": "Pixel Art, in a world where people are blind",
             # "no_text_test8": "Pixel Art, a poster for blind people",
             # "no_text_test9": "Pixel Art, a poster for people with dyslexia",
         },

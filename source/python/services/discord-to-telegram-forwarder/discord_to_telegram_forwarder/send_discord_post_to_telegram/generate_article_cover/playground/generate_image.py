@@ -23,13 +23,13 @@ from utils_ak.os import open_file_in_os
 def generate_image(
     text: str,
     image_prompt: str,
-    image_description_prompt: str = "",
+    text_prompt: str = "",
     keep_original_prompt: bool = True,
 ) -> Box:
     # - Preprocess text if needed
 
-    if image_description_prompt:
-        text = cache_on_disk()(generate_image_description)(text=text, prompt=image_description_prompt)
+    if text_prompt:
+        text = cache_on_disk()(generate_image_description)(text=text, prompt=text_prompt)
 
     # - Set prompt prefix
 

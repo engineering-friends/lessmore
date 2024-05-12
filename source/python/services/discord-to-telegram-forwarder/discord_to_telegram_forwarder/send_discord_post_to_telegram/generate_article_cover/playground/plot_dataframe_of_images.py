@@ -43,11 +43,18 @@ def test():
     import requests
 
     url = "https://fastly.picsum.photos/id/125/200/300.jpg?hmac=yLvRBwUcr6LYWuGaGk05UjiU5vArBo3Idr3ap5tpSxU"
+
+    # - Get image contents
+
+    image_contents = requests.get(url).content
+    image = PIL.Image.open(PIL.Image.io.BytesIO(image_contents))
+    # - Convert to PIL image
+
     index = []
     values = []
     for i in range(3):
         index.append(f"row_{i}")
-        values.append({f"image_{j}": PIL.image.open(requests.get(url).content) for j in range(5)})
+        values.append({f"image_{j}": image for j in range(5)})
     plot_dataframe_of_images(pd.DataFrame(values, index=index), output_filename="grid.png")
     open_file_in_os("grid.png")
 
