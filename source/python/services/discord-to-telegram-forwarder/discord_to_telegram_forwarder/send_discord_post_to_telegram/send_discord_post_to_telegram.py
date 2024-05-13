@@ -18,7 +18,7 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message 
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.cache_on_disk import (
     cache_on_disk,
 )
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.generate_image import (
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.generate_image_old import (
     generate_image,
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (

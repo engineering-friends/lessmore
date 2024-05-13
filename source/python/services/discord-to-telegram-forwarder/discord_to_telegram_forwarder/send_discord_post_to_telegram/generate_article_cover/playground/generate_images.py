@@ -14,7 +14,7 @@ from deeplay.utils.file_utils.read_file import read_file
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.cache_on_disk import (
     cache_on_disk,
 )
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.generate_image import (
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.generate_image_old import (
     generate_image,
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.plot_dataframe_of_images import (
@@ -50,12 +50,13 @@ def generate_images(
     # - Run combinations
 
     for combination in tqdm.tqdm(combinations):
-        generated_image = cache_on_disk()(generate_image)(
+        generated_image = cache_on_disk(reset=True)(generate_image)(
             text=combination["text"],
             text_prompt=combination["text_prompt"],
             image_prompt=combination["image_prompt"],
             **generate_image_kwargs,
         )
+        print("Revised prompt:", generated_image.revised_prompt)
         values.append(
             [
                 f"{combination['text_prompt_label']}--{combination['image_prompt_label']}",
@@ -70,54 +71,47 @@ def generate_images(
 
 def test():
     df = generate_images(
-        texts=read_file(filename="data/messages.json", reader=json.load)[:5],
+        # texts=read_file(filename="data/messages.json", reader=json.load)[:3],
         # texts=[
         #     """pixel art style, dramatic lighting: Cute Harry Potter, standing outside Hogwarts.""",
         #     # """From Finance to Marathons: A Man's Journey Through Personal and Professional Adventures""",
         # ],
-        # texts=['AI Talks: Testing Alpha in Russia. A man tests the alpha version of a chat tool on his Russian profile.'],
+        texts=[
+            "AI Talks, Testing Alpha in Russia. A man tests the alpha version of a chat tool on his Russian profile."
+        ],
         text_prompts_by_label={
-            # "no_text_prompt": "",
+            "no_text_prompt": "",
             # "basic": "Describe in one small sentence, no more than 10 words: ",
             # "key_detail": "Extract key detail from the text in one sentence, no more than 10 words: ",
             # "movie_title": "If this text was a movie, what would be the title of the movie?: ",  # great!
             # "title_10plus_words": """If this text was a movie, what would be the title in 10+ words of the movie?
             #     Skip any people names, use abstract forms (e.g. Petr Lavrov -> a man). Keep intact other names (e.g. Apple, Russia, ChatGPT, ...)
-            #     Just the title:"""
-            # "auto": "Make a prompt for image generation. Use close-up, 50mm, f/1.2. Use no more than 20 words. Example:`Close up photography of coffee beans background roasted falling or flying on dark background. 50 mm f/1.2`. The prompt should describe the following text:"
-            "title_10plus_words2": """                
-                - There is an animated movie with a scene, that is described below. Describe the first shot of the scene. 
-                - DO NOT INCLUDE any electronic devices with screens (e.g. phones, laptops, etc.)
-                - It should be ONE shot, describing ONE scene. Choose any scene from the text.
-                - It MUST have describe the text briefly, including it's core idea
-                - Skip any people names, use abstract forms (e.g. Petr Lavrov -> a man). Keep intact other names (e.g. Apple, Russia, ChatGPT, ...)
-                - Make it 15 words max
-                
-                
-                Examples of other scenes: 
-                - A man is standing in the middle of the desert, looking at the sky, happy
-                - The night sky full of fireworks
-                - Winter landscape with houses, trees and snow covered mountain background, a sky filled with snowflakes
-                - A man finishing a grueling marathon race, crowd cheering, with a mountainous backdrop.
-                - Man hands over documents at military registration desk, civilian officer reviews them, austere office setting.
-                - Father and son discussing universities at home, papers with "PROS/CONS" lists on the table.
-                - A man examining floating, digitally scanned leaves and branches in a virtual reality museum.
-                
-                The text: """
+            #     Just the title:""",
+            # "title_10plus_words2": """
+            #     - There is an animated movie with a scene, that is described below. Describe the first shot of the scene.
+            #     - EXCLUDE all electronic devices with screens (e.g. phones, laptops, etc.)
+            #     - It should be ONE shot, describing ONE scene. Choose any scene from the text.
+            #     - It MUST have describe the text briefly, including it's core idea
+            #     - Skip any people names, use abstract forms (e.g. Petr Lavrov -> a man). Keep intact other names (e.g. Apple, Russia, ChatGPT, ...)
+            #     - Make it 15 words max
+            #
+            #     Examples of other scenes:
+            #     - A man is standing in the middle of the desert, looking at the sky, happy
+            #     - The night sky full of fireworks
+            #     - Winter landscape with houses, trees and snow covered mountain background, a sky filled with snowflakes
+            #     - A man finishing a grueling marathon race, crowd cheering, with a mountainous backdrop.
+            #     - Man hands over documents at military registration desk, civilian officer reviews them, austere office setting.
+            #     - Father and son discussing universities at home, papers with "PROS/CONS" lists on the table.
+            #     - A man examining floating, digitally scanned leaves and branches in a virtual reality museum.
+            #
+            #     The text: """,
         },
         image_prompts_by_label={
-            # 'roy': 'A painting by Roy Lichtenstein: '
-            # 'no_image_prompt': '',
-            # "low_details": "Pixel Art, LOW DETAILS:",
-            # "zero_text": "Pixel Art, ZERO TEXT. People will be VERY upset if they find words in the image:",
-            # "movie_poster": "pixar animated style:",
-            "pixel": "pixel art style: ",
-            "outline": "Continuous lines very easy, very thin outline, Clean and minimalist, black outline only:",
-            "pixar": "pixar animated style: ",
-            "close-up": "Close up photography, 50mm f/1.2: ",
-            "roy": "Roy Lichtenstein: ",
-            "bansky": "Banksy: ",
+            # "pixel": "pixel art style: ",
+            # "outline": "Continuous lines very easy, very thin outline, Clean and minimalist, black outline only:",
+            "pixar": "a Pixar-style shot from the film, ",
         },
+        generate_image_kwargs=dict(keep_original_prompt=True),
     )
     grid_filename = f"data/grids/{datetime.now()}.png"
     os.makedirs("data/grids", exist_ok=True)

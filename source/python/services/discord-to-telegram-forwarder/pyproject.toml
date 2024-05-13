@@ -31,7 +31,6 @@ better-exceptions = "0.3.3"
 emoji = "2.8.0"
 python-box = "7.1.1"
 pendulum = "3.0.0"
-openai = "1.16.2"
 jupyter = "1.0.0"
 pydantic = "2.6.4"
 pydantic-settings = "^2.2.1"
@@ -40,6 +39,7 @@ pillow = "^10.3.0"
 matplotlib = "^3.8.4"
 pandas = "^2.2.2"
 diskcache = "^5.6.3"
+openai = "^1.28.2"
 
 [tool.poetry.dev-dependencies]
 
