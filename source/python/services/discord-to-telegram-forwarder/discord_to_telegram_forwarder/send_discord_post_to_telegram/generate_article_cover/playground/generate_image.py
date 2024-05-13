@@ -6,12 +6,18 @@ from openai import OpenAI
 
 def generate_image(
     prompt: str,
+    pre_prompt_template: str = "",
     force_original_prompt: bool = True,
     openai_kwargs: dict = dict(
         model="dall-e-3",
         size="1792x1024",
     ),
 ) -> Box:
+    # - Apply pre-prompt
+
+    if pre_prompt_template:
+        prompt = ...
+
     # - Change prompt to original prompt if needed
     original_prompt = str(prompt)
 
@@ -30,6 +36,8 @@ def generate_image(
     # - Assert that the prompt is the original prompt if needed
 
     if force_original_prompt:
+        print(original_prompt.lower())
+        print(response.data[0].revised_prompt.lower())
         assert original_prompt.lower() == response.data[0].revised_prompt.lower()
 
     # - Get image contents from url just as file contents
