@@ -35,6 +35,10 @@ class Config(BaseSettings):
     discord_token: str
     guild_name: str
 
+    # - Notion
+
+    notion_token: str
+
     # - Telegram and discord
 
     telegram_username_to_discord_aliases_json: str = "{}"

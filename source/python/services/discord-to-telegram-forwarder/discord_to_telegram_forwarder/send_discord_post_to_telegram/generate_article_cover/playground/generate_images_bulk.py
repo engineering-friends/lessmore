@@ -11,16 +11,12 @@ import PIL
 import tqdm
 
 from deeplay.utils.file_utils.read_file import read_file
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.ask import ask
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.cache_on_disk import (
-    cache_on_disk,
-)
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.generate_image import (
-    generate_image,
-)
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.ask import ask
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.generate_image import generate_image
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.plot_dataframe_of_images import (
     plot_dataframe_of_images,
 )
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.utils.cache_on_disk import cache_on_disk
 from retry import retry
 from utils_ak.os import open_file_in_os
 

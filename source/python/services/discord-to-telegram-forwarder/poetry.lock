@@ -2275,6 +2275,20 @@ jupyter-server = ">=1.8,<3"
 test = ["pytest", "pytest-console-scripts", "pytest-jupyter", "pytest-tornasync"]
 
 [[package]]
+name = "notion-client"
+version = "2.2.1"
+description = "Python client for the official Notion API"
+optional = false
+python-versions = ">=3.7, <4"
+files = [
+    {file = "notion-client-2.2.1.tar.gz", hash = "sha256:3827e381ccb5a21aeb606686787edfb6c7a10681cb3507c4d606a1918e791061"},
+    {file = "notion_client-2.2.1-py2.py3-none-any.whl", hash = "sha256:4ecf9ec527a124462f7bd407d9c9ead9853a9b2c8f00e56f3fa8fb15106ad871"},
+]
+
+[package.dependencies]
+httpx = ">=0.15.0"
+
+[[package]]
 name = "numpy"
 version = "1.26.4"
 description = "Fundamental package for array computing in Python"
@@ -4141,4 +4155,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.7"
-content-hash = "95596a7d9be9d046fe249bc44d2bd722efa68ad029c09aa0e8801eeb4f3891ad"
+content-hash = "926d3d0ce6402ae5be2dbc86d66cab75a256c96115e0df57b2889e2f50ad852e"
