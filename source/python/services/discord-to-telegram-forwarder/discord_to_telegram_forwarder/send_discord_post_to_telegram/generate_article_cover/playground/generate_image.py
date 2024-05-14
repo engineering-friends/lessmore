@@ -33,9 +33,12 @@ def generate_image(
     if force_original_prompt:
         template = """Use exactly this prompt: 
         
-        ```{prompt}``` 
+        ```{prompt}```. 
         
         Remember to use exactly this prompt. If you change even a single word or character, I’ll fire you!"""
+
+        # template = f'''I NEED to test how the tool works with extremely simple prompts. DO NOT add any detail, just use it AS-IS: {prompt}'''
+
         prompt = template.format(prompt=original_prompt)
 
     # - Generate image
@@ -55,7 +58,9 @@ def generate_image(
 
 
 def test():
-    image_contents = generate_image(prompt="A cute cat sleeping on a couch")
+    image_contents = generate_image(
+        prompt="Continuous lines very easy, very thin outline, Clean and minimalist, black outline only, a cat with a long beard"
+    )
     with open("/tmp/image.png", "wb") as f:
         f.write(image_contents)
     from utils_ak.os import open_file_in_os
