@@ -39,15 +39,18 @@ def generate_covers_bulk(
                 prompt="Generate a two-word description for this description: {}".format(description_template)
             )
 
-            description = cache_on_disk()(ask)(prompt=description_template.format(text=text))
-
             for style_template in style_templates:
                 style_template_label = cache_on_disk()(ask)(
                     prompt="Generate a two-word description for this style: {}".format(style_template)
                 )
-                image_contents = cache_on_disk()(retry(tries=3, delay=1, exceptions=[AssertionError])(generate_image))(
-                    prompt=style_template.format(description=description)
-                )
+                image_contents = cache_on_disk()(
+                    retry(tries=10, delay=1)(
+                        lambda prompt: generate_image(
+                            bag=prompt,
+                            pre_processor=lambda prompt: ask(prompt=description_template.format(text=prompt)),
+                        )
+                    )
+                )(prompt=style_template.format(description=description))
                 values.append(
                     {
                         "image": image_contents,

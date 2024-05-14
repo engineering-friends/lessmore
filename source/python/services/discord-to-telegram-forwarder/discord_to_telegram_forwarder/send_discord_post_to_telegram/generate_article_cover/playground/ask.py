@@ -3,7 +3,7 @@ from openai import OpenAI
 
 def ask(
     prompt: str,
-    open_ai_kwargs: dict = dict(model="gpt-4-turbo"),
+    open_ai_kwargs: dict = dict(model="gpt-4o"),
 ) -> str:
     return (
         OpenAI()

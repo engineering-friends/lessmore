@@ -1,3 +1,5 @@
+from typing import Callable
+
 import requests
 
 from box import Box
@@ -5,20 +7,34 @@ from openai import OpenAI
 
 
 def generate_image(
-    prompt: str,
-    pre_prompt_template: str = "",
+    bag: dict | str,
+    style: Callable | str = "{prompt}",
+    pre_processor: Callable = lambda bag: bag,
     force_original_prompt: bool = True,
     openai_kwargs: dict = dict(
         model="dall-e-3",
         size="1792x1024",
     ),
 ) -> Box:
-    # - Apply pre-prompt
+    # - Preprocess arguments
 
-    if pre_prompt_template:
-        prompt = ...
+    if isinstance(bag, str):
+        bag = {"prompt": bag}
+
+    if isinstance(style, str):
+        _style = str(style)
+        style = lambda bag: _style.format(**bag)
+
+    # - Preprocess prompt if needed
+
+    bag = pre_processor(bag)
+
+    # - Get prompt
+
+    prompt = style(bag=bag)
 
     # - Change prompt to original prompt if needed
+
     original_prompt = str(prompt)
 
     if force_original_prompt:
@@ -27,7 +43,7 @@ def generate_image(
         ```{prompt}``` 
         
         Remember to use exactly this prompt. If you change even a single word or character, I’ll fire you!"""
-        prompt = template.format(prompt=prompt)
+        prompt = template.format(prompt=original_prompt)
 
     # - Generate image
 
@@ -36,8 +52,6 @@ def generate_image(
     # - Assert that the prompt is the original prompt if needed
 
     if force_original_prompt:
-        print(original_prompt.lower())
-        print(response.data[0].revised_prompt.lower())
         assert original_prompt.lower() == response.data[0].revised_prompt.lower()
 
     # - Get image contents from url just as file contents
@@ -46,7 +60,7 @@ def generate_image(
 
 
 def test():
-    image_contents = generate_image("A cute cat sleeping on a couch")
+    image_contents = generate_image(bag="A cute cat sleeping on a couch")
     with open("/tmp/image.png", "wb") as f:
         f.write(image_contents)
     from utils_ak.os import open_file_in_os
