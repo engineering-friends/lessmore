@@ -18,7 +18,6 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_articl
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.utils.cache_on_disk import cache_on_disk
 from retry import retry
-from utils_ak.os import open_file_in_os
 
 
 def _label(text: str, n_words: int = 1):

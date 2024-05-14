@@ -5,8 +5,6 @@ import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from utils_ak.os import open_file_in_os
-
 
 def plot_dataframe_of_images(df: pd.DataFrame, output_filename: str = "grid.png"):
     # - Create grid
@@ -68,6 +66,7 @@ def test():
         index.append(f"row_{i}")
         values.append({f"image_{j}": image for j in range(5)})
     plot_dataframe_of_images(pd.DataFrame(values, index=index), output_filename="/tmp/grid.png")
+
     open_file_in_os("/tmp/grid.png")
 
 

@@ -53,7 +53,6 @@ def test():
     )
     with open("/tmp/image.png", "wb") as f:
         f.write(image_contents)
-    from utils_ak.os import open_file_in_os
 
     open_file_in_os("/tmp/image.png")
 

@@ -31,7 +31,6 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.utils.cache_on_
 from loguru import logger
 from PIL import Image
 from pymaybe import maybe
-from utils_ak.os import open_file_in_os
 
 from lessmore.utils.file_utils.write_file import write_file
 
