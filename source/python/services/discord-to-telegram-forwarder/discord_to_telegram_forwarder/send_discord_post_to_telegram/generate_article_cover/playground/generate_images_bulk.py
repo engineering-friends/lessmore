@@ -26,9 +26,7 @@ from utils_ak.os import open_file_in_os
 
 
 def _label(text):
-    return cache_on_disk()(ask)(
-        prompt=f'Give a single-word label for the text, lower case. Use `empty` if its empty: "{text}"'
-    )
+    return cache_on_disk()(ask)(prompt=f'Give a single-word label for the template, lower case: "{text}"')
 
 
 def generate_covers_bulk(
@@ -54,25 +52,45 @@ def generate_covers_bulk(
                     }
                 )
     df = pd.DataFrame(values)
-    df = df[["text", "index", "image"]]
+    df = df[["prompt", "index", "image"]]
+    print(df[["prompt", "index"]])
     df = df.pivot(index="index", columns="prompt", values="image")
     return df
 
 
 def test():
     df = generate_covers_bulk(
-        prompts=[
-            "AI Talks, Testing Alpha in Russia. A man tests the alpha version of a chat tool on his Russian profile."
-        ],
+        prompts=read_file(filename="data/messages.json", reader=json.load)[:20],
         pre_prompts=[
-            "",
+            # "",
             # "Describe in one small sentence, no more than 10 words: {prompt}",
-            # "Extract key detail from the text in one sentence, no more than 10 words: {text}",
-            # "If this text was a movie, what would be the title of the movie?: {text}",
-            # "If this text was a movie, what would be the title in 10+ words of the movie?\n Skip any people names, use abstract forms (e.g. Petr Lavrov -> a man). Keep intact other names (e.g. Apple, Russia, ChatGPT, ...)\n Just the title: {text}",
-            # '- There is an animated movie with a scene, that is described below. Describe the first shot of the scene\n - EXCLUDE all electronic devices with screens (e.g. phones, laptops, etc.)\n - It should be ONE shot, describing ONE scene. Choose any scene from the text\n - It MUST have describe the text briefly, including it\'s core idea\n - Skip any people names, use abstract forms (e.g. Petr Lavrov -> a man). Keep intact other names (e.g. Apple, Russia, ChatGPT, ...)\n                - Make it 15 words max\n\n                Examples of other scenes:\n                - A man is standing in the middle of the desert, looking at the sky, happy\n                - The night sky full of fireworks\n                - Winter landscape with houses, trees and snow covered mountain background, a sky filled with snowflakes\n                - A man finishing a grueling marathon race, crowd cheering, with a mountainous backdrop\n                - Man hands over documents at military registration desk, civilian officer reviews them, austere office setting\n                - Father and son discussing universities at home, papers with "PROS/CONS" lists on the table\n                - A man examining floating, digitally scanned leaves and branches in a virtual reality museum\n\n The text: {text}',
+            # "Extract key detail from the text in one sentence, no more than 10 words: {prompt}",
+            # "If this text was a movie, what would be the title of the movie?: {prompt}",
+            # "If this text was a movie, what would be the title in 10+ words of the movie?\n Skip any people names, use abstract forms (e.g. Petr Lavrov -> a man). Keep intact other names (e.g. Apple, Russia, ChatGPT, ...)\n Just the title: {prompt}",
+            """
+                    - There is an animated movie with a scene, that is described below. Describe the first shot of the scene
+                    - EXCLUDE all electronic devices with screens (e.g. phones, laptops, etc.)
+                    - It should be ONE shot, describing ONE scene. Choose any scene from the text
+                    - It MUST have describe the text briefly, including it's core idea
+                    - Skip any people names, use abstract forms (e.g. Petr Lavrov -> a man). Keep intact other names (e.g. Apple, Russia, ChatGPT, ...)
+                    - Make it 15 words max
+
+                    Examples of other scenes:
+                    - A man is standing in the middle of the desert, looking at the sky, happy
+                    - The night sky full of fireworks
+                    - Winter landscape with houses, trees and snow covered mountain background, a sky filled with snowflakes
+                    - A man finishing a grueling marathon race, crowd cheering, with a mountainous backdrop
+                    - Man hands over documents at military registration desk, civilian officer reviews them, austere office setting
+                    - Father and son discussing universities at home, papers with "PROS/CONS" lists on the table
+                    - A man examining floating, digitally scanned leaves and branches in a virtual reality museum
+
+                    The text: {prompt}"""
         ],
-        styles=["Continuous lines very easy, very thin outline, clean and minimalist, black outline only, {prompt}"],
+        styles=[
+            "Continuous lines very easy, very thin outline, clean and minimalist, black outline only, {prompt}",
+            "Pixar style, dramatic, {prompt}",
+            "Pixel style, dramatic, {prompt}",
+        ],
     )
     grid_filename = f"data/grids/{datetime.now()}.png"
     os.makedirs("data/grids", exist_ok=True)

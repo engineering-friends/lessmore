@@ -31,26 +31,16 @@ def generate_image(
     original_prompt = str(prompt)
 
     if force_original_prompt:
-        template = """Use exactly this prompt: 
-        
-        ```{prompt}```. 
-        
-        Remember to use exactly this prompt. If you change even a single word or character, I’ll fire you!"""
+        # template = """USE EXACTLY THIS SHORT PROMPT. IF YOU CHANGE EVEN A SINGLE WORD, I’LL FIRE YOU:
+        # ```{prompt}```"""
 
-        # template = f'''I NEED to test how the tool works with extremely simple prompts. DO NOT add any detail, just use it AS-IS: {prompt}'''
+        template = """Use this prompt as close as possible: {prompt}"""
 
         prompt = template.format(prompt=original_prompt)
 
     # - Generate image
 
     response = OpenAI().images.generate(prompt=prompt, **openai_kwargs)
-
-    # - Assert that the prompt is the original prompt if needed
-
-    if force_original_prompt:
-        print("Original prompt:", original_prompt)
-        print("Revised prompt:", response.data[0].revised_prompt)
-        assert original_prompt.lower() == response.data[0].revised_prompt.lower()
 
     # - Get image contents from url just as file contents
 
@@ -59,7 +49,7 @@ def generate_image(
 
 def test():
     image_contents = generate_image(
-        prompt="Continuous lines very easy, very thin outline, Clean and minimalist, black outline only, a cat with a long beard"
+        prompt="Continuous lines very easy, very thin outline, clean and minimalist, black outline only, a cat with a beard."
     )
     with open("/tmp/image.png", "wb") as f:
         f.write(image_contents)
