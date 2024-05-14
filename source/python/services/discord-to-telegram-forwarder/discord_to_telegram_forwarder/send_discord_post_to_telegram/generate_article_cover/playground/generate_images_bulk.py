@@ -25,8 +25,8 @@ from retry import retry
 from utils_ak.os import open_file_in_os
 
 
-def _label(text):
-    return cache_on_disk()(ask)(prompt=f'Give a single-word label for the template, lower case: "{text}"')
+def _label(text: str, n_words: int = 1):
+    return cache_on_disk()(ask)(prompt=f'Give a description for the template, lower case, {n_words} words: "{text}"')
 
 
 def generate_covers_bulk(
@@ -47,13 +47,12 @@ def generate_covers_bulk(
                 values.append(
                     {
                         "image": PIL.Image.open(PIL.Image.io.BytesIO(image_contents)),
-                        "prompt": prompt,
+                        "prompt": _label(prompt, n_words=5),
                         "index": f"{_label(pre_prompt)}--{_label(style)}",
                     }
                 )
     df = pd.DataFrame(values)
     df = df[["prompt", "index", "image"]]
-    print(df[["prompt", "index"]])
     df = df.pivot(index="index", columns="prompt", values="image")
     return df
 

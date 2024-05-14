@@ -19,7 +19,7 @@ def plot_dataframe_of_images(df: pd.DataFrame, output_filename: str = "grid.png"
 
     axes[0, 0].axis("off")
     for j, column in enumerate(df.columns, start=1):
-        axes[0, j].text(0.5, 0.5, column[:12], fontsize=12, ha="center", va="center")
+        axes[0, j].text(0.5, 0.5, column, fontsize=12, ha="center", va="center")
         axes[0, j].axis("off")
 
     # - Set labels and images

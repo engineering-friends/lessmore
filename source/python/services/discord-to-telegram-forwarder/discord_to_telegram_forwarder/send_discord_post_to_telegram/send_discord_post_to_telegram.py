@@ -18,7 +18,7 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message 
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.cache_on_disk import (
     cache_on_disk,
 )
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.generate_image_old import (
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.generate_image import (
     generate_image,
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
@@ -82,6 +82,7 @@ async def send_discord_post_to_telegram(
         if maybe(attachment).url.or_else(None) and maybe(attachment).filename.or_else(None):
             if attachment.filename.lower().endswith((".mp4", ".avi", ".mov")) and len(message.attachments) > 1:
                 # - Need to download videos
+
                 temp_path = _download_as_temp_file(attachment.url, attachment.filename)
                 files.append(temp_path)
             elif attachment.filename.lower().endswith((".webp", ".bmp")):
@@ -160,10 +161,27 @@ async def send_discord_post_to_telegram(
         # - Generate article cover
 
         image_contents = cache_on_disk()(generate_image)(
-            text="\n".join([title, body]),
-            text_prompt="",
-            image_prompt="Anime:",
-        ).image_contents
+            prompt="\n".join([title, body]),
+            pre_prompt="""
+                    - There is an animated movie with a scene, that is described below. Describe the first shot of the scene
+                    - EXCLUDE all electronic devices with screens (e.g. phones, laptops, etc.)
+                    - It should be ONE shot, describing ONE scene. Choose any scene from the text
+                    - It MUST have describe the text briefly, including it's core idea
+                    - Skip any people names, use abstract forms (e.g. Petr Lavrov -> a man). Keep intact other names (e.g. Apple, Russia, ChatGPT, ...)
+                    - Make it 15 words max
+
+                    Examples of other scenes:
+                    - A man is standing in the middle of the desert, looking at the sky, happy
+                    - The night sky full of fireworks
+                    - Winter landscape with houses, trees and snow covered mountain background, a sky filled with snowflakes
+                    - A man finishing a grueling marathon race, crowd cheering, with a mountainous backdrop
+                    - Man hands over documents at military registration desk, civilian officer reviews them, austere office setting
+                    - Father and son discussing universities at home, papers with "PROS/CONS" lists on the table
+                    - A man examining floating, digitally scanned leaves and branches in a virtual reality museum
+
+                    The text: {prompt}""",
+            style="Continuous lines very easy, very thin outline, clean and minimalist, black outline only, {prompt}",
+        )
 
         # - Resize image to 1280x731 (telegram max size)
 

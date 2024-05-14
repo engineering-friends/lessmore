@@ -20,7 +20,7 @@ def format_message(
         author=author_name,
         body="\n" + body + "\n" if body else "",
         url=url,
-        apple_link=f" / [→ к посту для ]({inner_shortened_url})" if inner_shortened_url else "",
+        apple_link=f" / [→ к посту для mac]({inner_shortened_url})" if inner_shortened_url else "",
     )
 
 
