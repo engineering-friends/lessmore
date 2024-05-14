@@ -31,6 +31,7 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.utils.cache_on_
 from loguru import logger
 from PIL import Image
 from pymaybe import maybe
+from retry import retry
 
 from lessmore.utils.file_utils.write_file import write_file
 
@@ -161,42 +162,46 @@ async def send_discord_post_to_telegram(
     if not files:
         # - Generate article cover
 
-        image_contents = cache_on_disk()(generate_image)(
-            prompt="\n".join([title, body]),
-            pre_prompt="""
-                    - There is an animated movie with a scene, that is described below. Describe the first shot of the scene
-                    - EXCLUDE all electronic devices with screens (e.g. phones, laptops, etc.)
-                    - It should be ONE shot, describing ONE scene. Choose any scene from the text
-                    - It MUST have describe the text briefly, including it's core idea
-                    - Skip any people names, use abstract forms (e.g. Petr Lavrov -> a man). Keep intact other names (e.g. Apple, Russia, ChatGPT, ...)
-                    - Make it 15 words max
+        try:
+            image_contents = cache_on_disk()(retry(tries=5, delay=1)(generate_image))(
+                prompt="\n".join([title, body]),
+                pre_prompt="""
+                        - There is an animated movie with a scene, that is described below. Describe the first shot of the scene
+                        - EXCLUDE all electronic devices with screens (e.g. phones, laptops, etc.)
+                        - It should be ONE shot, describing ONE scene. Choose any scene from the text
+                        - It MUST have describe the text briefly, including it's core idea
+                        - Skip any people names, use abstract forms (e.g. Petr Lavrov -> a man). Keep intact other names (e.g. Apple, Russia, ChatGPT, ...)
+                        - Make it 15 words max
+    
+                        Examples of other scenes:
+                        - A man is standing in the middle of the desert, looking at the sky, happy
+                        - The night sky full of fireworks
+                        - Winter landscape with houses, trees and snow covered mountain background, a sky filled with snowflakes
+                        - A man finishing a grueling marathon race, crowd cheering, with a mountainous backdrop
+                        - Man hands over documents at military registration desk, civilian officer reviews them, austere office setting
+                        - Father and son discussing universities at home, papers with "PROS/CONS" lists on the table
+                        - A man examining floating, digitally scanned leaves and branches in a virtual reality museum
+    
+                        The text: {prompt}""",
+                style="Continuous lines very easy, very thin outline, clean and minimalist, black outline only, {prompt}",
+            )
 
-                    Examples of other scenes:
-                    - A man is standing in the middle of the desert, looking at the sky, happy
-                    - The night sky full of fireworks
-                    - Winter landscape with houses, trees and snow covered mountain background, a sky filled with snowflakes
-                    - A man finishing a grueling marathon race, crowd cheering, with a mountainous backdrop
-                    - Man hands over documents at military registration desk, civilian officer reviews them, austere office setting
-                    - Father and son discussing universities at home, papers with "PROS/CONS" lists on the table
-                    - A man examining floating, digitally scanned leaves and branches in a virtual reality museum
+            # - Resize image to 1280x731 (telegram max size)
 
-                    The text: {prompt}""",
-            style="Continuous lines very easy, very thin outline, clean and minimalist, black outline only, {prompt}",
-        )
+            image = Image.open(io.BytesIO(image_contents))
+            image_resized = image.resize((1280, 731), Image.LANCZOS)
+            image_contents = io.BytesIO()
+            image_resized.save(image_contents, format="PNG")
+            image_contents = image_contents.getvalue()
 
-        # - Resize image to 1280x731 (telegram max size)
+            # - Save to tmp file and add to files
 
-        image = Image.open(io.BytesIO(image_contents))
-        image_resized = image.resize((1280, 731), Image.LANCZOS)
-        image_contents = io.BytesIO()
-        image_resized.save(image_contents, format="PNG")
-        image_contents = image_contents.getvalue()
-
-        # - Save to tmp file and add to files
-
-        filename = f"/tmp/{uuid.uuid4()}.png"
-        write_file(data=image_contents, path=filename, as_bytes=True)
-        files = [filename]
+            filename = f"/tmp/{uuid.uuid4()}.png"
+            write_file(data=image_contents, path=filename, as_bytes=True)
+            files = [filename]
+        except Exception as e:
+            logger.error("Failed to generate image", e=e)
+            files = []
 
     # - Prepare message text
 
