@@ -1,6 +1,6 @@
 TEMPLATE = """#{parent_channel_name}
 {emoji} **{title}** by {author}
-{body}
+{body}{tags}
 [→ к посту]({url}){apple_link}"""
 
 
@@ -8,6 +8,7 @@ def format_message(
     parent_channel_name: str,
     emoji: str,
     title: str,
+    tags: list[str],
     author_name: str,
     body: str,
     url: str,
@@ -19,6 +20,7 @@ def format_message(
         title=title,
         author=author_name,
         body="\n" + body + "\n" if body else "",
+        tags="\n" + " ".join([f"#{tag}" for tag in tags]) + "\n" if tags else "",
         url=url,
         apple_link=f" / [→ к посту для mac]({inner_shortened_url})" if inner_shortened_url else "",
     )

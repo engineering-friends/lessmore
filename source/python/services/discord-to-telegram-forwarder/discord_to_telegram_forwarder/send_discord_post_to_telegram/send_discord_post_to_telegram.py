@@ -151,6 +151,7 @@ async def send_discord_post_to_telegram(
     channel_name = maybe(message).channel.name.or_else("")
     parent_channel_name = maybe(message).channel.parent.name.or_else("")
     title = maybe(message).channel.name.or_else("")
+    tags = [tag.name for tag in maybe(message).channel.applied_tags.or_else([])]
     body = message.content
     author_name = message.author.display_name
     url = message.jump_url
@@ -256,6 +257,7 @@ async def send_discord_post_to_telegram(
             parent_channel_name=parent_channel_name,
             emoji=emoji,
             title=title,
+            tags=tags,
             author_name=author_name,
             body=body,
             url=url,
@@ -278,6 +280,7 @@ async def send_discord_post_to_telegram(
         parent_channel_name=parent_channel_name,
         emoji=emoji,
         title=title,
+        tags=tags,
         author_name=author_name,
         body=body,
         url=url,
@@ -318,6 +321,7 @@ async def test():
                 "channel": {
                     "name": "Мета-исследование об эффекте кофе на организм",
                     "parent": {"name": "parent_channel_name"},
+                    # 'applied_tags': [Box({'name': 'tag1'}), Box({'name': 'tag2'})],
                 },
                 "content": """1) На скриншоте - исследование про генетическую чувствительность к разным эффектам кофе.
 TL;DR строго индивидуально
