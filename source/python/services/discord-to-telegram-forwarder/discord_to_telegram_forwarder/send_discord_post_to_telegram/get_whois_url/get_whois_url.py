@@ -8,7 +8,7 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.utils.cache_on_
 from notion_client import Client
 
 
-PROMPT = """Here is a list of pages. If user {name} if present, return the url of the page. Names can differ a bit, that's ok. Otherwise, return "None".
+PROMPT = """Here is a list of pages. If user {name} if present, return the url of the page. Names can differ a bit, that's ok (but not completely). Otherwise, return "None".
 
 Just the url (like "https://google.com" or "None") 
 
@@ -20,7 +20,7 @@ Just the url (like "https://google.com" or "None")
 def get_whois_url(
     name: str,
     deps: Deps,
-    whois_database_id: str = "641eaea7c7ad4881bbed5ea096a4421a",
+    whois_database_id: str = "641eaea7c7ad4881bbed5ea096a4421a",  # ef whois in notion
 ) -> str:
     # - Init notion client
 
@@ -57,7 +57,7 @@ def get_whois_url(
 def test():
     deps = init_deps()
     print(get_whois_url("Misha Vodolagin", deps=deps))
-    print(get_whois_url("Mark Lidenberg", deps=deps))
+    print(get_whois_url("Mark Vodolagin", deps=deps))
 
 
 if __name__ == "__main__":

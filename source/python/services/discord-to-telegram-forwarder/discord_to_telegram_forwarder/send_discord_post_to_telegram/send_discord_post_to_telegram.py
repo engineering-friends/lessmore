@@ -13,17 +13,13 @@ import emoji as emoji_lib
 from box import Box
 from discord_to_telegram_forwarder.deps.deps import Deps
 from discord_to_telegram_forwarder.deps.init_deps import init_deps
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.generate_image import generate_image
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.download_as_temp_file import _download_as_temp_file
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.cache_on_disk import (
-    cache_on_disk,
-)
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.generate_image import (
-    generate_image,
-)
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
 )
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_whois_url.get_whois_url import get_whois_url
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.is_discord_channel_private import (
     is_discord_channel_private,
 )
@@ -31,6 +27,7 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_r
     request_emoji_representing_text_from_openai,
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.to_png import to_png
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.utils.cache_on_disk import cache_on_disk
 from loguru import logger
 from PIL import Image
 from pymaybe import maybe
@@ -156,6 +153,10 @@ async def send_discord_post_to_telegram(
     author_name = message.author.display_name
     url = message.jump_url
 
+    # - Get author whois url
+
+    author_whois_url = get_whois_url(name=author_name, deps=deps)
+
     # - Generate images if there are none
 
     if not files:
@@ -262,6 +263,7 @@ async def send_discord_post_to_telegram(
             body=body,
             url=url,
             inner_shortened_url=inner_shortened_url,
+            author_url=author_whois_url,
         )
 
         # - Then cut it to size limit
@@ -285,6 +287,7 @@ async def send_discord_post_to_telegram(
         body=body,
         url=url,
         inner_shortened_url=inner_shortened_url,
+        author_url=author_whois_url,
     )
 
     # - Send message to telegram

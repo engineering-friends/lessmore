@@ -3,7 +3,7 @@ from typing import Callable
 import requests
 
 from box import Box
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.ask import ask
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.ask import ask
 from openai import OpenAI
 
 

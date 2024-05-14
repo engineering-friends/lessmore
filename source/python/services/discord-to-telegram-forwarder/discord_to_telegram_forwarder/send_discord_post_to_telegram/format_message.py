@@ -12,13 +12,14 @@ def format_message(
     author_name: str,
     body: str,
     url: str,
-    inner_shortened_url: str = None,
+    inner_shortened_url: str = "",
+    author_url: str = "",
 ):
     return TEMPLATE.format(
         parent_channel_name=parent_channel_name.replace("-", "_"),
         emoji=emoji,
         title=title,
-        author=author_name,
+        author=author_name if not author_url else f"[{author_name}]({author_url})",
         body="\n" + body + "\n" if body else "",
         tags="\n" + " ".join([f"#{tag}" for tag in tags]) + "\n" if tags else "",
         url=url,
