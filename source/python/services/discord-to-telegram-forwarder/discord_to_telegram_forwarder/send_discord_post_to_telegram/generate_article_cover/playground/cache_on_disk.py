@@ -34,9 +34,27 @@ def cache_on_disk(directory: str = "/tmp/cache_on_disk", reset: bool = False) ->
             full_kwargs = bound_arguments.arguments
 
             # -- Generate the key
-
             hasher = hashlib.sha256()
-            hasher.update(func.__name__.encode() + json.dumps(full_kwargs, sort_keys=True, default=str).encode())
+
+            # Include function name in the hash
+            hasher.update(func.__name__.encode())
+
+            # Function to convert arguments to a hashable form
+            def hashable(arg):
+                if callable(arg):  # Check if the argument is callable (e.g., a lambda function)
+                    try:
+                        source = inspect.getsource(arg).strip()
+                        hasher.update(source.encode())
+                    except (TypeError, OSError):  # If the source can't be retrieved
+                        hasher.update(str(id(arg)).encode())  # Use the memory address as a fallback
+                else:
+                    hasher.update(json.dumps(arg, sort_keys=True, default=str).encode())
+
+            # Convert arguments and keyword arguments to a hashable form
+            for key, value in full_kwargs.items():
+                hasher.update(key.encode())
+                hashable(value)
+
             key = hasher.hexdigest()
 
             # - Check if the result is already in the cache
