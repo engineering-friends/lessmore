@@ -43,20 +43,25 @@ def init_deps(env: Literal["test", "prod"] = "test", log_level="DEBUG") -> Deps:
     logger.remove()
     logger.add(sink=sys.stdout, level=log_level, format=format_as_json_colored)
 
+    # - Get data path
+
+    local_files_dir = str(Path(__file__).parent / f"../../data/dynamic/{env}")
+
     # - Return context
 
-    os.makedirs(str(Path(__file__).parent / "../../data/dynamic"), exist_ok=True)
+    os.makedirs(local_files_dir, exist_ok=True)
 
     return Deps(
         config=config,
         cache={},
+        local_files_dir=local_files_dir,
         telegram_bot_client=TelegramClient(
-            session=str(Path(__file__).parent / f"../../data/dynamic/telegram_bot_{env}.session"),
+            session=str(Path(local_files_dir) / "telegram_bot.session"),
             api_id=int(config.telegram_api_id),
             api_hash=config.telegram_api_hash,
         ),
         telegram_user_client=TelegramClient(
-            session=str(Path(__file__).parent / f"../../data/dynamic/telegram_user_{env}.session"),
+            session=str(Path(local_files_dir) / f"telegram_user.session"),
             api_id=int(config.telegram_api_id),
             api_hash=config.telegram_api_hash,
         ),

@@ -167,7 +167,9 @@ async def send_discord_post_to_telegram(
         # - Generate article cover
 
         try:
-            image_contents = cache_on_disk("generate_image")(retry(tries=5, delay=1)(generate_image))(
+            image_contents = cache_on_disk(f"{deps.local_files_dir}/generate_image")(
+                retry(tries=5, delay=1)(generate_image)
+            )(
                 prompt="\n".join([title, body]),
                 pre_prompt="""
                         - There is an animated movie with a scene, that is described below. Describe the first shot of the scene

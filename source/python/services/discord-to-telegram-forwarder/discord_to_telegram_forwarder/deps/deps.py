@@ -8,5 +8,6 @@ from telethon import TelegramClient
 class Deps:
     config: Config
     cache: dict
+    local_files_dir: str
     telegram_bot_client: TelegramClient
     telegram_user_client: TelegramClient

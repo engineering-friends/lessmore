@@ -46,7 +46,7 @@ def get_whois_url(
 
     # - Ask gpt the link for the page with the name
 
-    url = cache_on_disk(directory="whois")(ask)(PROMPT.format(name=name, pages=str(pages)))
+    url = cache_on_disk(directory=f"{deps.local_files_dir}/whois")(ask)(PROMPT.format(name=name, pages=str(pages)))
 
     if url == "None":
         return None
