@@ -51,12 +51,12 @@ def init_deps(env: Literal["test", "prod"] = "test", log_level="DEBUG") -> Deps:
         config=config,
         cache={},
         telegram_bot_client=TelegramClient(
-            session=str(Path(__file__).parent / "../../data/dynamic/telegram_bot.session"),
+            session=str(Path(__file__).parent / f"../../data/dynamic/telegram_bot_{env}.session"),
             api_id=int(config.telegram_api_id),
             api_hash=config.telegram_api_hash,
         ),
         telegram_user_client=TelegramClient(
-            session=str(Path(__file__).parent / "../../data/dynamic/telegram_user.session"),
+            session=str(Path(__file__).parent / f"../../data/dynamic/telegram_user_{env}.session"),
             api_id=int(config.telegram_api_id),
             api_hash=config.telegram_api_hash,
         ),
