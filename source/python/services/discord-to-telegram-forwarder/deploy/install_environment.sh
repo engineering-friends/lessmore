@@ -3,7 +3,7 @@
 # basics
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt-get update -y
-sudo apt install -y hstr git-secret python3-pip pipx software-properties-common python3.11
+sudo apt install -y hstr git-secret python3-pip pipx software-properties-common python3.11 unzip
 pipx install poetry
 
 # pyenv
