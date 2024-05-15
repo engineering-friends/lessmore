@@ -1,3 +1,6 @@
+# - Go to the script directory
+
+cd ${0%/*}
 
 # - Get the keys from enrcyped file. Ask admin for the password
 
