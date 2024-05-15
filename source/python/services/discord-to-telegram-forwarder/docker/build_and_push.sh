@@ -2,7 +2,7 @@
 
 # - Update requirements
 
-./requirements.txt.update.sh
+../requirements.txt.update.sh
 
 # - Build and push image
 

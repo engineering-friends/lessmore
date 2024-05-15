@@ -1,1 +1,4 @@
-cd ${0%/*} && poetry run python discord_to_telegram_forwarder/main.py --env prod
+cd ${0%/*}
+git pull
+poetry install
+poetry run python discord_to_telegram_forwarder/main.py --env prod
