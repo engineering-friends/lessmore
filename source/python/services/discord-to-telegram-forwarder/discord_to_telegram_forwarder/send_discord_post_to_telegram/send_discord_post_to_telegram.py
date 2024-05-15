@@ -38,6 +38,9 @@ from lessmore.utils.file_utils.write_file import write_file
 
 MENTION_CHAR_PLACEHOLDER = "ç"
 
+CAPTION_MESSAGE_LIMIT = 1024
+MESSAGE_LIMIT = 4096
+
 
 async def send_discord_post_to_telegram(
     deps: Deps,
@@ -255,10 +258,6 @@ async def send_discord_post_to_telegram(
 
     # -- Format message for telegram
 
-    # --- Limit
-
-    message_size_limit = 4096 if not files else 1024  # 4096 is telegram message size limit, but caption limit is 1024
-
     # --- Crop body if necessary
 
     if body:
@@ -280,11 +279,11 @@ async def send_discord_post_to_telegram(
 
         body_size = len(body)
         non_body_size = len(message_text_full) - body_size
-        body_size_limit = message_size_limit - non_body_size - 3  # 3 is for extra "..." added in the end
+        body_size_limit = MESSAGE_LIMIT - non_body_size - len("... (больше в посте)")
         body_size_limit -= (
             100  # for safety, as telegram could in theory have slightly different way of counting symbols
         )
-        body = body[:body_size_limit] + ("" if len(body) < body_size_limit else "...")
+        body = body[:body_size_limit] + ("" if len(body) < body_size_limit else "... (больше в посте)")
 
     # --- Format message text
 
@@ -300,20 +299,31 @@ async def send_discord_post_to_telegram(
         author_url=author_whois_url,
     )
 
+    # - Split files to separate message if needed
+
+    message_text_and_files = []
+    if files and (len(body) > CAPTION_MESSAGE_LIMIT - 50):
+        message_text_and_files.append(("", files))
+        message_text_and_files.append((message_text, []))
+    else:
+        message_text_and_files.append((message_text, files))
+
     # - Send message to telegram
 
     for telegram_chat, filter_ in telegram_chat_to_filter.items():
         if filter_(message=message):
             # - Undownloaded videos and gifs can ONLY be sent as single files
 
-            # todo later: if >1 files - pick out gifs and send separately [@marklidenberg]
-            await deps.telegram_bot_client.send_message(
-                entity=telegram_chat,
-                file=files[0] if len(files) == 1 else files or None,
-                message=message_text,
-                parse_mode="md",
-                link_preview=False,
-            )
+            for _message_text, _files in message_text_and_files:
+                await deps.telegram_bot_client.send_message(
+                    entity=telegram_chat,
+                    file=_files[0]
+                    if len(_files) == 1
+                    else _files or None,  # todo later: if >1 files - pick out gifs and send separately [@marklidenberg]
+                    message=_message_text,
+                    parse_mode="md",
+                    link_preview=False,
+                )
 
 
 async def test():
