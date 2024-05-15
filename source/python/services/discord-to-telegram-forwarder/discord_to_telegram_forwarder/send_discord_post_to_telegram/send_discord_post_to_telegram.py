@@ -303,6 +303,7 @@ async def send_discord_post_to_telegram(
 
     message_text_and_files = []
     if files and (len(body) > CAPTION_MESSAGE_LIMIT - 50):
+        # images have different limits, so we need to split them
         message_text_and_files.append(("", files))
         message_text_and_files.append((message_text, []))
     else:
