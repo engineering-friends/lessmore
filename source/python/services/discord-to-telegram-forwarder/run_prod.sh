@@ -4,9 +4,19 @@ cd ${0%/*}
 git pull
 poetry install
 
+# Get directories
+
+SERVICE_PATH=$(pwd)
+MONOREPO_PATH=$SERVICE_PATH/../../../..
+
 # - Decrypt secrets
 
-./../../../../git_secret/decrypt_secrets.sh
+$MONOREPO_PATH/git_secret/decrypt_secrets.sh
+
+# - Set PYTHONPATH
+
+export PYTHONPATH="$SERVICE_PATH:$PYTHONPATH"
+export PYTHONPATH="$MONOREPO_PATH/source/python/libs/lessmore.utils:$PYTHONPATH"
 
 # - Run the service
 

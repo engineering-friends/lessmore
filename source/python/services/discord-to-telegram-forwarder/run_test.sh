@@ -11,7 +11,7 @@ MONOREPO_PATH=$SERVICE_PATH/../../../..
 
 # - Decrypt secrets
 
-./$MONOREPO_PATH/git_secret/decrypt_secrets.sh
+$MONOREPO_PATH/git_secret/decrypt_secrets.sh
 
 # - Set PYTHONPATH
 
