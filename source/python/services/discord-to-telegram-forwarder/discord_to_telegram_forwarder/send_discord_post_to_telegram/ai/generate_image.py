@@ -6,6 +6,8 @@ from box import Box
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.ask import ask
 from openai import OpenAI
 
+from lessmore.utils.open_file_in_os import open_file_in_os
+
 
 def generate_image(
     prompt: str,
