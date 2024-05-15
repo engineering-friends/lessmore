@@ -155,7 +155,11 @@ async def send_discord_post_to_telegram(
 
     # - Get author whois url
 
-    author_whois_url = get_whois_url(name=author_name, deps=deps)
+    try:
+        author_whois_url = get_whois_url(name=author_name, deps=deps)
+    except:
+        logger.error("Failed to get author whois url", author_name=author_name)
+        author_whois_url = ""
 
     # - Generate images if there are none
 
