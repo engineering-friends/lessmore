@@ -21,5 +21,5 @@ export PYTHONPATH="$MONOREPO_PATH/source/python/libs/lessmore.utils:$PYTHONPATH"
 # - Run the service
 
 mkdir -p logs
-poetry run python discord_to_telegram_forwarder/main.py --env test
-#screen -dmS discord_to_telegram_forwarder_test  -L -Logfile logs/test.log poetry run python discord_to_telegram_forwarder/main.py --env test
+poetry run python discord_to_telegram_forwarder/main.py --env prod
+#screen -dmS discord_to_telegram_forwarder_prod  -L -Logfile logs/prod.log poetry run python discord_to_telegram_forwarder/main.py --env prod
