@@ -2,7 +2,7 @@
 
 cd ${0%/*}
 git pull
-poetry install
+poetry install --no-root
 
 # Get directories
 
