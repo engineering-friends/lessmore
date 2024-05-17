@@ -10,14 +10,16 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_po
     send_discord_post_to_telegram,
 )
 from discord_to_telegram_forwarder.update_comments_counter.update_comments_counter import update_comments_counter
+from loguru import logger
 from pymaybe import maybe
 
 from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
 
 
 async def main(env: Literal["test", "prod"] = "test"):
-    # - Init deps
+    logger.info("Starting discord-to-telegram-forwarder", env=env)
 
+    # - Init deps
     deps = init_deps(env=env)
 
     # - Define process_message function
@@ -29,7 +31,7 @@ async def main(env: Literal["test", "prod"] = "test"):
             deps=deps,
             message=message,
             telegram_chat_to_filter={
-                deps.config.telegram_ef_channel: lambda message: "engineering-sessions"
+                deps.config.telegram_ef_channel: lambda message: "sessions"
                 not in maybe(message).channel.parent.name.or_else("")
                 and message.guild.name == deps.config.guild_name,
             },

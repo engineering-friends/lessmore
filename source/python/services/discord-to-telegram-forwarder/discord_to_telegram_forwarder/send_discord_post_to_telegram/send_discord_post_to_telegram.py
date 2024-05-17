@@ -1,7 +1,9 @@
 import asyncio
+import io
 import json
 import os
 import re
+import uuid
 
 from typing import Callable, Optional, Union
 
@@ -11,11 +13,13 @@ import emoji as emoji_lib
 from box import Box
 from discord_to_telegram_forwarder.deps.deps import Deps
 from discord_to_telegram_forwarder.deps.init_deps import init_deps
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.generate_image import generate_image
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.download_as_temp_file import _download_as_temp_file
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
 )
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_whois_url.get_whois_url import get_whois_url
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.is_discord_channel_private import (
     is_discord_channel_private,
 )
@@ -23,11 +27,19 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_r
     request_emoji_representing_text_from_openai,
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.to_png import to_png
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.utils.cache_on_disk import cache_on_disk
 from loguru import logger
+from PIL import Image
 from pymaybe import maybe
+from retry import retry
+
+from lessmore.utils.file_utils.write_file import write_file
 
 
 MENTION_CHAR_PLACEHOLDER = "ç"
+
+CAPTION_MESSAGE_LIMIT = 1024
+MESSAGE_LIMIT = 4096
 
 
 async def send_discord_post_to_telegram(
@@ -70,6 +82,7 @@ async def send_discord_post_to_telegram(
         if maybe(attachment).url.or_else(None) and maybe(attachment).filename.or_else(None):
             if attachment.filename.lower().endswith((".mp4", ".avi", ".mov")) and len(message.attachments) > 1:
                 # - Need to download videos
+
                 temp_path = _download_as_temp_file(attachment.url, attachment.filename)
                 files.append(temp_path)
             elif attachment.filename.lower().endswith((".webp", ".bmp")):
@@ -138,9 +151,66 @@ async def send_discord_post_to_telegram(
     channel_name = maybe(message).channel.name.or_else("")
     parent_channel_name = maybe(message).channel.parent.name.or_else("")
     title = maybe(message).channel.name.or_else("")
+    tags = [tag.name for tag in maybe(message).channel.applied_tags.or_else([])]
     body = message.content
     author_name = message.author.display_name
     url = message.jump_url
+
+    # - Get author whois url
+
+    try:
+        author_whois_url = get_whois_url(name=author_name, deps=deps)
+    except:
+        logger.error("Failed to get author whois url", author_name=author_name)
+        author_whois_url = ""
+
+    # - Generate images if there are none
+
+    if not files:
+        # - Generate article cover
+
+        try:
+            image_contents = cache_on_disk(f"{deps.local_files_dir}/generate_image")(
+                retry(tries=5, delay=1)(generate_image)
+            )(
+                prompt="\n".join([title, body]),
+                pre_prompt="""
+                        - There is an animated movie with a scene, that is described below. Describe the first shot of the scene
+                        - EXCLUDE all electronic devices with screens (e.g. phones, laptops, etc.)
+                        - It should be ONE shot, describing ONE scene. Choose any scene from the text
+                        - It MUST have describe the text briefly, including it's core idea
+                        - Skip any people names, use abstract forms (e.g. Petr Lavrov -> a man). Keep intact other names (e.g. Apple, Russia, ChatGPT, ...)
+                        - Make it 15 words max
+    
+                        Examples of other scenes:
+                        - A man is standing in the middle of the desert, looking at the sky, happy
+                        - The night sky full of fireworks
+                        - Winter landscape with houses, trees and snow covered mountain background, a sky filled with snowflakes
+                        - A man finishing a grueling marathon race, crowd cheering, with a mountainous backdrop
+                        - Man hands over documents at military registration desk, civilian officer reviews them, austere office setting
+                        - Father and son discussing universities at home, papers with "PROS/CONS" lists on the table
+                        - A man examining floating, digitally scanned leaves and branches in a virtual reality museum
+    
+                        The text: {prompt}""",
+                style="Continuous lines very easy, very thin outline, clean and minimalist, black outline only, {prompt}",
+            )
+
+            # - Resize image to 1280x731 (telegram max size)
+
+            image = Image.open(io.BytesIO(image_contents))
+            image_resized = image.resize((1280, 731), Image.LANCZOS)
+            image_contents = io.BytesIO()
+            image_resized.save(image_contents, format="PNG")
+            image_contents = image_contents.getvalue()
+
+            # - Save to tmp file and add to files
+
+            filename = f"/tmp/{uuid.uuid4()}.png"
+            write_file(data=image_contents, path=filename, as_bytes=True)
+            files = [filename]
+        except Exception as e:
+            logger.error("Failed to generate image", e=e)
+            files = []
 
     # - Prepare message text
 
@@ -188,10 +258,6 @@ async def send_discord_post_to_telegram(
 
     # -- Format message for telegram
 
-    # --- Limit
-
-    message_size_limit = 4096 if not files else 1024  # 4096 is telegram message size limit, but caption limit is 1024
-
     # --- Crop body if necessary
 
     if body:
@@ -201,21 +267,23 @@ async def send_discord_post_to_telegram(
             parent_channel_name=parent_channel_name,
             emoji=emoji,
             title=title,
+            tags=tags,
             author_name=author_name,
             body=body,
             url=url,
             inner_shortened_url=inner_shortened_url,
+            author_url=author_whois_url,
         )
 
         # - Then cut it to size limit
 
         body_size = len(body)
         non_body_size = len(message_text_full) - body_size
-        body_size_limit = message_size_limit - non_body_size - 3  # 3 is for extra "..." added in the end
+        body_size_limit = MESSAGE_LIMIT - non_body_size - len("... (больше в посте)")
         body_size_limit -= (
             100  # for safety, as telegram could in theory have slightly different way of counting symbols
         )
-        body = body[:body_size_limit] + ("" if len(body) < body_size_limit else "...")
+        body = body[:body_size_limit] + ("" if len(body) < body_size_limit else "... (больше в посте)")
 
     # --- Format message text
 
@@ -223,11 +291,23 @@ async def send_discord_post_to_telegram(
         parent_channel_name=parent_channel_name,
         emoji=emoji,
         title=title,
+        tags=tags,
         author_name=author_name,
         body=body,
         url=url,
         inner_shortened_url=inner_shortened_url,
+        author_url=author_whois_url,
     )
+
+    # - Split files to separate message if needed
+
+    message_text_and_files = []
+    if files and (len(body) > CAPTION_MESSAGE_LIMIT - 50):
+        # images have different limits, so we need to split them
+        message_text_and_files.append(("", files))
+        message_text_and_files.append((message_text, []))
+    else:
+        message_text_and_files.append((message_text, files))
 
     # - Send message to telegram
 
@@ -235,14 +315,16 @@ async def send_discord_post_to_telegram(
         if filter_(message=message):
             # - Undownloaded videos and gifs can ONLY be sent as single files
 
-            # todo later: if >1 files - pick out gifs and send separately [@marklidenberg]
-            await deps.telegram_bot_client.send_message(
-                entity=telegram_chat,
-                file=files[0] if len(files) == 1 else files or None,
-                message=message_text,
-                parse_mode="md",
-                link_preview=False,
-            )
+            for _message_text, _files in message_text_and_files:
+                await deps.telegram_bot_client.send_message(
+                    entity=telegram_chat,
+                    file=_files[0]
+                    if len(_files) == 1
+                    else _files or None,  # todo later: if >1 files - pick out gifs and send separately [@marklidenberg]
+                    message=_message_text,
+                    parse_mode="md",
+                    link_preview=False,
+                )
 
 
 async def test():
@@ -250,7 +332,12 @@ async def test():
 
     deps = init_deps()
 
+    # - Start telegram bots
+
     await deps.telegram_bot_client.start(bot_token=deps.config.telegram_bot_token)
+
+    # - Send message
+
     await send_discord_post_to_telegram(
         deps=deps,
         message=Box(  # note: test won't work with user_id, as it is not a discord.Message
@@ -258,6 +345,7 @@ async def test():
                 "channel": {
                     "name": "Мета-исследование об эффекте кофе на организм",
                     "parent": {"name": "parent_channel_name"},
+                    # 'applied_tags': [Box({'name': 'tag1'}), Box({'name': 'tag2'})],
                 },
                 "content": """1) На скриншоте - исследование про генетическую чувствительность к разным эффектам кофе.
 TL;DR строго индивидуально
@@ -266,12 +354,7 @@ tl;dr Кофе снижает смертность от всех причин
 Mark Lidenberg На счет того пить или не пить и что для кого правильно :)""",
                 "author": {"display_name": "Mark Lidenberg"},
                 "jump_url": "https://discord.com/channels/1106702799938519211/1106702799938519213/913095424225706005",
-                "attachments": [
-                    {
-                        "url": "https://media.discordapp.net/attachments/1236674220549738586/1236674221644714137/calmmage_shared_Realistic_landscape_of_the_green_pastures_hills_8e238106-df39-4566-a7c8-8294cc447545.webp?ex=663ad85e&is=663986de&hm=4b3b95ff371eb815500456d5efdfc4b4e6ddcdbd668bc5d1eb4a516cb8ee3226&=&format=webp&width=1227&height=1227",
-                        "filename": "file_example_SVG_20kB.webp",
-                    }
-                ],
+                "attachments": [],
             }
         ),
         add_inner_shortened_url=True,

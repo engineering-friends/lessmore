@@ -7,7 +7,6 @@ import requests
 
 from inline_snapshot import snapshot
 
-from lessmore.utils.backlog.run_inline_snapshot_tests import run_inline_snapshot_tests
 from lessmore.utils.dictionary.merge_dicts import merge_dicts
 from lessmore.utils.encoding.decode_from_yaml import decode_from_yaml
 from lessmore.utils.load_pydantic_settings.config_source_like import ConfigSourceLike
@@ -147,7 +146,3 @@ def test():
             {"type": "dictionary", "value": {"b": 3, "c": 4}},
         ]
     ) == {"a": 1, "b": 3, "c": 4}
-
-
-if __name__ == "__main__":
-    run_inline_snapshot_tests()

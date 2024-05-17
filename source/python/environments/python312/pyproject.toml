@@ -76,7 +76,7 @@ cryptography = "^41.0.2"
 grpcio = "^1.57.0"
 stackprinter = "^0.2.10"
 nest-asyncio = "^1.5.7"
-openai = "^1.16.2"
+inline-snapshot = "^0.3.2"
 pytest = "^7.4.2"
 pymaybe = "^0.1.6"
 emoji = "^2.8.0"
@@ -87,9 +87,12 @@ numpydoc = "^1.6.0"
 numpy = "^1.26.2"
 fire = "^0.5.0"
 yeelight = {git = "https://github.com/vrachieru/xiaomi-yeelight-api.git"}
-inline-snapshot = {git = "https://github.com/marklidenberg/inline-snapshot.git"}
 python-miio = "^0.5.12"
 pydantic = "^2.6.4"
+pydantic-settings = "^2.2.1"
+openai = "^1.16.2"
+opencv-python = "^4.9.0.80"
+texttoimage = "^0.0.2"
 
 [tool.poetry.dev-dependencies]
 

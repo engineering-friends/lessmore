@@ -2,8 +2,8 @@ import os
 
 from lessmore.utils.encoding.decode_from_json import decode_from_json
 from lessmore.utils.encoding.decode_from_yaml import decode_from_yaml
-from lessmore.utils.file_helpers.read_file import read_file
-from lessmore.utils.file_helpers.write_file import write_file
+from lessmore.utils.file_utils.read_file import read_file
+from lessmore.utils.file_utils.write_file import write_file
 
 
 SUPPORTED_EXTENSIONS = [".json", ".yaml"]
@@ -31,7 +31,7 @@ def read_config_file(filename: str) -> dict:
 def test():
     # - Write sample file
 
-    write_file(content='{"a": 1}', filename="/tmp/sample.json")
+    write_file(content='{"a": 1}', path="/tmp/sample.json")
 
     # - Read sample file
 
@@ -39,7 +39,7 @@ def test():
 
     # - Write sample file
 
-    write_file(content="a: 1", filename="/tmp/sample.yaml")
+    write_file(content="a: 1", path="/tmp/sample.yaml")
 
     # - Read sample file
 

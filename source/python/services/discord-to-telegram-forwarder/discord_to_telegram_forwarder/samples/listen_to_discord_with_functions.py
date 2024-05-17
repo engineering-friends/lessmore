@@ -44,6 +44,29 @@ async def on_message(message):
     # sample: {"ts":"2023-08-11 17:32:20.496","module":"listen_to_discord","message":{"id":1139612279776751756,"jump_url":"https://discord.com/channels/1106702799938519211/1139612279776751756/1139612279776751756","content":"pongpong","type":["default",0],"author_name":"marklidenberg","author_global_name":"Mark Lidenberg","author_display_name":"Mark Lidenberg","author_id":913095424225706005,"channel_name":"ping","parent_channel_name":"marklidenberg-and-his-bot-discussions","guild_name":"Engineering Friends","created_at":"2023-08-11 17:32:20.471000+00:00"}}
 
 
+# Event handler for when a thread is created
+@client.event
+async def on_thread_create(thread):
+    # Check if the thread's parent is a forum channel
+    if not isinstance(thread.parent, discord.ForumChannel):
+        print("Not a forum channel")
+        return
+
+    # Extract and print the tags
+    applied_tags = thread.applied_tags
+    available_tags = thread.parent.available_tags
+
+    tags = [
+        next((tag.name for tag in available_tags if tag.id == applied_tag_id), None) for applied_tag_id in applied_tags
+    ]
+    tags = [tag for tag in tags if tag is not None]  # Filter out None values
+
+    print(f"Tags: {', '.join(tags)}")
+
+
 if __name__ == "__main__":
     configure_loguru()
-    client.run(token=keyring.get_password(service_name="discord", username="marklidenberg-bot"))
+    from discord_to_telegram_forwarder.deps.init_deps import init_deps
+
+    deps = init_deps(env="test")
+    client.run(token=deps.config.discord_token)

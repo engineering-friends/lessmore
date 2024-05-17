@@ -1,11 +1,11 @@
 from deeplay.utils.unified import TimedeltaLike, to_seconds
 from multitimer_utils.render_jinja2_template import render_jinja2_template
 
-from lessmore.utils.file_helpers.read_file import read_file
-from lessmore.utils.file_helpers.write_file import write_file
+from lessmore.utils.file_utils.read_file import read_file
+from lessmore.utils.file_utils.write_file import write_file
 
 
-def build_yoga_board(label_and_times: list[tuple[str, TimedeltaLike]]):  # [("work", 25), ("rest", 5)]
+def build_yoga_board(label_and_times: list[tuple[str, TimedeltaLike]]) -> str:  # [("work", 25), ("rest", 5)]
     return render_jinja2_template(
         read_file("yoga_board_template.xml"),
         interval_timer=render_jinja2_template(
@@ -42,7 +42,7 @@ def test():
         ]
     )
 
-    write_file(board, "yoga.mtb")
+    write_file(content=board, path="yoga.mtb")
 
 
 if __name__ == "__main__":
