@@ -4,10 +4,11 @@ import sys
 from pathlib import Path
 from typing import Literal
 
+import openai
+
 from langchain_playground.config.config import Config
 from langchain_playground.deps.deps import Deps
 from loguru import logger
-from telethon import TelegramClient
 
 from lessmore.utils.configure_loguru.format_as_json_colored.format_as_json_colored import format_as_json_colored
 from lessmore.utils.load_pydantic_settings.load_pydantic_settings import load_pydantic_settings
@@ -42,15 +43,15 @@ def init_deps(log_level="DEBUG") -> Deps:
 
     # - Set openai key
 
-    openai.api_key = ""
+    openai.api_key = config.openai_api_key
 
     # - Return deps
 
-    return Deps()
+    return Deps(config=config)
 
 
 def test():
-    print(type(init_deps().config.telegram_ef_discussions))
+    print(init_deps())
 
 
 if __name__ == "__main__":
