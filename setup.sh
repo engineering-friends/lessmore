@@ -37,3 +37,8 @@ pre-commit install
 # - Install detect-secrets
 
 pip install detect-secrets
+
+# - Install git secret
+
+brew list gpg || brew install gpg
+brew list git-secret || brew install git-secret
