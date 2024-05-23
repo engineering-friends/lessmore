@@ -1,6 +1,6 @@
 import os.path
 
-from lessmore.utils.recursive_apply import recursive_apply
+from lessmore.utils.recursive_apply import apply
 
 
 def inflate_envs(envs_by_name: dict, to_upper_case: bool = True) -> None:
@@ -11,7 +11,7 @@ def inflate_envs(envs_by_name: dict, to_upper_case: bool = True) -> None:
 
     # - Stringify
 
-    envs_by_name = recursive_apply(value=envs_by_name, value_func=str)
+    envs_by_name = apply(value=envs_by_name, value_func=str)
 
     # - Inflate values
 

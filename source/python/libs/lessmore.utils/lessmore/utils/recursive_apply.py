@@ -1,89 +1,51 @@
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Sequence
 
 
-def recursive_apply(
+def apply(
     value: Any,
     value_func: Callable = lambda x: x,
     key_func: Callable = lambda x: x,
-    filter_func: Optional[Callable] = None,
-    excluded_builtin_types: Optional[list] = None,
-    *args,
-    **kwargs,
+    filter_func: Callable = lambda key, value: True,
+    excluded_builtin_types: Sequence = (),
 ):
     """Apply function recursively to python common object types: list, dict, set, tuple"""
 
-    # - Init input arguments
-
-    value_func = value_func or (lambda x: x)
-    key_func = key_func or (lambda x: x)
-    filter_func = filter_func or (lambda key, value: True)
-
     # - Return applied function if not dict, list, set, tuple
 
-    if not isinstance(value, (dict, list, set, tuple)):
-        return value_func(value, *args, **kwargs)
+    if not isinstance(value, (dict, list, set, tuple)) or (
+        excluded_builtin_types and type(value) in excluded_builtin_types
+    ):
+        return value_func(value)
 
-    if excluded_builtin_types and type(value) in excluded_builtin_types:
-        return value_func(value, *args, **kwargs)
+    # - Apply function to dict, list, set, tuple
 
     if isinstance(value, dict):
         return {
-            key_func(k): recursive_apply(
+            key_func(k): apply(
                 v,
                 value_func=value_func,
                 key_func=key_func,
                 filter_func=filter_func,
                 excluded_builtin_types=excluded_builtin_types,
-                *args,
-                **kwargs,
             )
             for k, v in value.items()
             if filter_func(key=k, value=v)
         }
-    elif isinstance(value, list):
-        return [
-            recursive_apply(
-                v,
-                value_func=value_func,
-                key_func=key_func,
-                filter_func=filter_func,
-                excluded_builtin_types=excluded_builtin_types,
-                *args,
-                **kwargs,
-            )
-            for v in value
-            if filter_func(key=None, value=v)
-        ]
-    elif isinstance(value, set):
-        return {
-            recursive_apply(
-                v,
-                value_func=value_func,
-                key_func=key_func,
-                filter_func=filter_func,
-                excluded_builtin_types=excluded_builtin_types,
-                *args,
-                **kwargs,
-            )
-            for v in value
-            if filter_func(key=None, value=v)
-        }
-    elif isinstance(value, tuple):
-        return tuple(
-            recursive_apply(
-                v,
-                value_func=value_func,
-                key_func=key_func,
-                filter_func=filter_func,
-                excluded_builtin_types=excluded_builtin_types,
-                *args,
-                **kwargs,
-            )
-            for v in value
-            if filter_func(key=None, value=v)
-        )
     else:
-        return value_func(value, *args, **kwargs)
+        # isinstance(value, (list, set, tuple))
+        return type(value)(
+            (
+                apply(
+                    v,
+                    value_func=value_func,
+                    key_func=key_func,
+                    filter_func=filter_func,
+                    excluded_builtin_types=excluded_builtin_types,
+                )
+                for v in value
+                if filter_func(key=None, value=v)
+            )
+        )
 
 
 def test():
@@ -91,14 +53,14 @@ def test():
 
     # - Basic usage
 
-    assert recursive_apply(d, value_func=lambda v: None) == {
+    assert apply(d, value_func=lambda v: None) == {
         "d": None,
         "b": {"e": [None, None, None], "f": {"g": None}},
     }
 
     # - Exclude types
 
-    assert recursive_apply(
+    assert apply(
         d,
         value_func=lambda value: "this was a list" if isinstance(value, list) else None,
         excluded_builtin_types=[list],
@@ -109,11 +71,11 @@ def test():
 
     # - Apply to keys
 
-    assert recursive_apply(d, key_func=lambda key: key.upper()) == {"D": 3, "B": {"E": [1, 2, 3], "F": {"G": 1}}}
+    assert apply(d, key_func=lambda key: key.upper()) == {"D": 3, "B": {"E": [1, 2, 3], "F": {"G": 1}}}
 
     # - Filter
 
-    assert recursive_apply(d, filter_func=lambda key, value: value != 3) == {"b": {"e": [1, 2], "f": {"g": 1}}}
+    assert apply(d, filter_func=lambda key, value: value != 3) == {"b": {"e": [1, 2], "f": {"g": 1}}}
 
 
 if __name__ == "__main__":

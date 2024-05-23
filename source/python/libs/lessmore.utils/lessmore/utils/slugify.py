@@ -4,7 +4,7 @@ import unicodedata
 from typing import Any
 
 
-def slugify(value: Any, allow_unicode: bool = False):
+def slugify(value: Any, allow_unicode: bool = False) -> str:
     """
     Taken from here: https://github.com/django/django/blob/main/django/utils/text.py (2023-08-10)
 
