@@ -1,7 +1,7 @@
 import time
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Literal, Optional
 
 import pandas as pd
 import pytest
@@ -19,10 +19,13 @@ class StopWatch:
     def __init__(
         self,
         max_laps_per_key: int = 100_000,
+        timing_target: Literal["precision", "prettiness"] = "precision",
     ):
         self.max_laps_per_key = max_laps_per_key
         self.laps_by_key: dict[str, list[Lap]] = {}
         self.enabled = True
+        self.timer = time.time if timing_target == "prettiness" else time.perf_counter
+        assert timing_target in ["precision", "prettiness"]
 
     def enable(self):
         self.enabled = True
@@ -109,9 +112,6 @@ class StopWatch:
         df.columns = self.laps_by_key.keys()
         return df.agg(["count", "mean", "sum", "max", "min"])
 
-    def __getitem__(self, item):
-        return self.stats().T["sum"][item]
-
 
 # global stop_watch instance
 stop_watch = StopWatch()
@@ -119,35 +119,11 @@ stop_watch = StopWatch()
 
 @pytest.mark.slow
 def test():
-    # Usage 1
     stop_watch = StopWatch()
-
-    print(stop_watch.stats())
-
-    # Start stop_watch
-    stop_watch.start("first")
-    time.sleep(0.1)
-
-    # Stop stop_watch
-    stop_watch.stop("first")
-
-    stop_watch.start("second")
-    time.sleep(0.2)
-    stop_watch.stop("second")
-
-    # This will add statistics to the 'first' key
-    stop_watch.start("first")
-    time.sleep(0.1)
-    stop_watch.stop("first")
-
-    print(stop_watch.stats())
-
-    # Check max laps
-    stop_watch = StopWatch(max_laps_per_key=3)
     for i in range(10):
-        stop_watch.start("a")
-        time.sleep(0.01 * i)
-        stop_watch.stop("a")
+        stop_watch.start(key=str(i % 2))
+        time.sleep(0.01)
+        stop_watch.stop(key=str(i % 2))
     print(stop_watch.stats())
 
 
