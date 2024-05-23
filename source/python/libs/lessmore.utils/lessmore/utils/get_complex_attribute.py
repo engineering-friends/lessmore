@@ -1,7 +1,10 @@
-def get_complex_attribute(value, expression, default=None):
+from typing import Any
+
+
+def get_nested_attr(value, expression: str, default: Any = None):
     if isinstance(expression, list):
         for sub_expression in expression:
-            res = get_complex_attribute(value, sub_expression)
+            res = get_nested_attr(value, sub_expression)
             if res is not None:
                 return res
     else:
@@ -18,13 +21,13 @@ def get_complex_attribute(value, expression, default=None):
 def test():
     import numpy as np
 
-    print(get_complex_attribute(np, "random"))
-    print(get_complex_attribute(np, "random.choice"))
-    print(get_complex_attribute(np, "random.choice"))
-    print(get_complex_attribute(np, "rand.choice", default="Default"))
+    print(get_nested_attr(np, expression="random"))
+    print(get_nested_attr(np, expression="random.choice"))
+    print(get_nested_attr(np, expression="random.choice"))
+    print(get_nested_attr(np, expression="rand.choice", default="Default"))
 
     try:
-        print(get_complex_attribute(np, "rand.choice"))
+        print(get_nested_attr(np, expression="rand.choice"))
     except:
         print("Attribute not found")
 
