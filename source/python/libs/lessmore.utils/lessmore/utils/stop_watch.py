@@ -24,7 +24,7 @@ class StopWatch:
         self.max_laps_per_key = max_laps_per_key
         self.laps_by_key: dict[str, list[Lap]] = {}
         self.enabled = True
-        self.timer = time.time if timing_target == "prettiness" else time.perf_counter
+        self.time_func = time.time if timing_target == "prettiness" else time.perf_counter
         assert timing_target in ["precision", "prettiness"]
 
     def enable(self):
@@ -49,7 +49,7 @@ class StopWatch:
         # - Start new lap if last lap is stopped or not exists
 
         if not self.laps_by_key[key] or self.laps_by_key[key][-1].stop_at is not None:
-            self.laps_by_key[key].append(Lap(start_at=time.time()))
+            self.laps_by_key[key].append(Lap(start_at=self.time_func()))
 
         # - Remove oldest laps if max_laps_per_key is reached
 
@@ -71,8 +71,9 @@ class StopWatch:
         # - Stop all if key is None and return
 
         if key is None:
-            for key in self.laps_by_key.keys():
-                self.stop(key)
+            for laps in self.laps_by_key.values():
+                if laps[-1].stop_at is None:
+                    laps[-1].stop_at = self.time_func()
             return self
 
         # - Return if not started
@@ -83,7 +84,7 @@ class StopWatch:
 
         # - Stop last lap
 
-        self.laps_by_key[key][-1].stop_at = time.time()
+        self.laps_by_key[key][-1].stop_at = self.time_func()
 
         # - Return
 
