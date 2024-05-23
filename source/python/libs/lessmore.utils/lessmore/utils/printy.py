@@ -8,7 +8,7 @@ except ImportError:
     import json
 
 
-def better_print(
+def printy(
     value: Any,
     clip: bool = False,
     jsonify: bool = True,
@@ -42,8 +42,8 @@ def better_print(
 
 
 def test():
-    better_print({"a": 1, "b": 2})
-    better_print(better_print)
+    printy({"a": 1, "b": 2})
+    printy(printy)
 
 
 if __name__ == "__main__":
