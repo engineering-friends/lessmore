@@ -1,6 +1,6 @@
 import json
 
-import keyring
+import keyring_tutorial
 
 
 # - Single secret per service-username pair
