@@ -11,7 +11,9 @@ from decimal import (
 )
 from typing import Literal, Union
 
-from lessmore.utils.round.round_decimal.strip_zeros import strip_zeros
+
+def strip_zeros(s):
+    return s.rstrip("0").rstrip(".") if "." in s else s  # 0.000 -> 0, 0.001 -> 0.001
 
 
 def round_decimal(

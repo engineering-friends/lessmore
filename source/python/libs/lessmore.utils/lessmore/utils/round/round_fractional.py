@@ -11,12 +11,10 @@ from decimal import (
 )
 from typing import Union
 
-import numpy as np
-
-from lessmore.utils.round.round_decimal.round_decimal import round_decimal
+from lessmore.utils.round.round_decimal import round_decimal
 
 
-def relative_round(
+def round_fractional(
     a: Union[float, int, str],
     b: Union[float, int, str],
     rounding: str = ROUND_HALF_EVEN,
@@ -26,7 +24,7 @@ def relative_round(
     # - Pre round
 
     if pre_round_precision:
-        a = relative_round(
+        a = round_fractional(
             a=a,
             b=b,
             rounding=ROUND_HALF_DOWN,
@@ -45,8 +43,8 @@ def relative_round(
 
 
 def test():
-    assert relative_round(a=3.1, b=0.5) == 3
-    assert relative_round(a=3.5, b=0.5) == 3.5
+    assert round_fractional(a=3.1, b=0.5) == 3
+    assert round_fractional(a=3.5, b=0.5) == 3.5
 
 
 if __name__ == "__main__":
