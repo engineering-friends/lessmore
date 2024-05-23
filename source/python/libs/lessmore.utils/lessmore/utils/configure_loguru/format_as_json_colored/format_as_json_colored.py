@@ -9,7 +9,7 @@ from loguru import logger
 
 from lessmore.utils.configure_loguru.format_as_json_colored._add_color_tags_to_json import _add_color_tags_to_json
 from lessmore.utils.configure_loguru.get_stack import get_stack
-from lessmore.utils.to_anything.to_datetime import to_datetime_str
+from lessmore.utils.to_anything.to_datetime import to_datetime
 
 
 try:
@@ -34,7 +34,7 @@ def format_as_json_colored(record: Record):
     record_dic = {
         "message": record["message"],
         "module": record["module"],
-        "ts": to_datetime_str(record["time"], pattern="%Y-%m-%d %H:%M:%S.%f")[:-3],  # 2023-03-26 13:04:09.512
+        "ts": to_datetime(record["time"]).strftime("%Y-%m-%d %H:%M:%S.%f")[:-3],  # 2023-03-26 13:04:09.512
         "source": record["extra"].get("source", ""),
     }
 

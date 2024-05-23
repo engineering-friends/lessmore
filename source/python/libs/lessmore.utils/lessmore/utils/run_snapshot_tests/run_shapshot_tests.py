@@ -12,7 +12,7 @@ from lessmore.utils.file_utils.write_file import write_file
 from lessmore.utils.get_frame_path.get_frame_path import get_parent_frame_path
 
 
-def run_inline_tests(
+def run_snapshot_tests(
     path: Optional[str] = None,
     mode: Literal["assert", "create_missing", "fix_broken", "update_all"] = "create_missing",
 ):
