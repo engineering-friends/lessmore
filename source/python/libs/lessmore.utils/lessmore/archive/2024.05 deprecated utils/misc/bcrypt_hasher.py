@@ -2,7 +2,7 @@ from typing import Union
 
 import bcrypt
 
-from lessmore.utils.to_anything import unified_bytes
+from lessmore.utils.to_anything import to_bytes
 
 
 class BCryptHasher:

@@ -10,8 +10,8 @@ import humanize
 import pytest
 
 from lessmore.utils.round_datetime import round_datetime
-from lessmore.utils.to_anything import unified_datetime
-from lessmore.utils.to_anything.unified_datetime import to_datetime_str
+from lessmore.utils.to_anything import to_datetime
+from lessmore.utils.to_anything.to_datetime import to_datetime_str
 
 
 @dataclass

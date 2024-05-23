@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from loguru import logger
 
-from lessmore.utils.to_anything import unified_timedelta
+from lessmore.utils.to_anything import to_timedelta
 
 
 def start_tracking_progress(transaction_manager, total=None, period="60s"):

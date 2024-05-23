@@ -6,7 +6,7 @@ import argon2
 
 from argon2.low_level import hash_secret
 
-from lessmore.utils.to_anything.unified_bytes import to_bytes
+from lessmore.utils.to_anything.to_bytes import to_bytes
 
 
 def hash_with_argon(secret: Union[bytes, str], salt: Union[bytes, str]):

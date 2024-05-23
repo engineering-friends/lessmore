@@ -9,7 +9,7 @@ from loguru import logger
 
 from lessmore.utils.configure_loguru.format_as_json_colored._add_color_tags_to_json import _add_color_tags_to_json
 from lessmore.utils.configure_loguru.get_stack import get_stack
-from lessmore.utils.to_anything.unified_datetime import to_datetime_str
+from lessmore.utils.to_anything.to_datetime import to_datetime_str
 
 
 try:

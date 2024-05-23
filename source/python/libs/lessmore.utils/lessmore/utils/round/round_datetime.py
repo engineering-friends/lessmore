@@ -1,8 +1,8 @@
 from decimal import ROUND_DOWN
 
 from lessmore.utils.round.round_fractional import round_fractional
-from lessmore.utils.to_anything.unified_datetime import to_datetime, to_timestamp
-from lessmore.utils.to_anything.unified_timedelta import to_seconds, to_timedelta
+from lessmore.utils.to_anything.to_datetime import to_datetime, to_timestamp
+from lessmore.utils.to_anything.to_timedelta import to_seconds, to_timedelta
 
 
 def round_datetime(dt_obj, td_obj, rounding=ROUND_DOWN):
