@@ -10,7 +10,7 @@ def get_python_filenames(root_dir):
 
     # - Get dirs and python_files
 
-    python_filenames = list_files(path=root_dir, filter_pattern="*.py")
+    python_filenames = list_files(path=root_dir, pattern="*.py")
 
     # - Filter non-system directories
 

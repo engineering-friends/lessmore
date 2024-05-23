@@ -16,7 +16,7 @@ def run_tests(
     # - Get all python files
 
     path = Path(path)
-    filenames = list_files(path, filter_pattern="*.py")
+    filenames = list_files(path, pattern="*.py")
     filenames = [
         filename for filename in filenames if all(excluded_dir not in filename for excluded_dir in excluded_dirs)
     ]

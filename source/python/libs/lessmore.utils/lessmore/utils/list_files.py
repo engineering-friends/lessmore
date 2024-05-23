@@ -6,15 +6,14 @@ from typing import Callable, Union
 
 
 def list_files(
-    path,
-    filter_pattern: Union[None, str, Callable[[str], bool]] = "*",
-    recursive=True,
+    path: str,
+    pattern: Union[None, str, Callable[[str], bool]] = None,
+    recursive: bool = True,
 ):
     # - Get list of files
 
     if not recursive:
-        filenames = os.listdir(path)
-        filenames = [filename for filename in filenames if os.path.isfile(filename)]
+        filenames = [filename for filename in os.listdir(path) if os.path.isfile(filename)]
     else:
         if os.path.isfile(path):
             filenames = [path]
@@ -26,13 +25,16 @@ def list_files(
 
     # - Set filter for string pattern
 
-    if isinstance(filter_pattern, str):
-        filter_pattern = partial(fnmatch.fnmatch, pat=filter_pattern)
+    if isinstance(pattern, str):
+        pattern = partial(fnmatch.fnmatch, pat=pattern)
 
     # - Filter
 
-    if filter_pattern:
-        filenames = [filename for filename in filenames if filter_pattern(filename)]
+    if pattern:
+        filenames = [filename for filename in filenames if pattern(filename)]
+
+    # - Return
+
     return filenames
 
 
@@ -40,7 +42,7 @@ def test():
     print(
         list_files(
             ".",
-            filter_pattern="*",
+            pattern="*",
             recursive=True,
         )
     )
