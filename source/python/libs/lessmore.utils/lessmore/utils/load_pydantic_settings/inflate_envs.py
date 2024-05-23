@@ -1,6 +1,6 @@
 import os.path
 
-from lessmore.utils.recursive_apply import apply
+from lessmore.utils.apply import apply
 
 
 def inflate_envs(envs_by_name: dict, to_upper_case: bool = True) -> None:
