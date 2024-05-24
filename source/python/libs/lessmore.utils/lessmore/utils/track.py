@@ -4,6 +4,8 @@ import time
 from datetime import datetime
 from typing import Any, Callable, Optional
 
+import pytest
+
 from tqdm import tqdm
 
 
@@ -50,16 +52,17 @@ class track:
             yield value
 
 
+@pytest.mark.slow
 def test():
     def sample_hook(i):
         if i % 100 == 0:
             print("\nThis is a hook message", i)
 
-    for x in track(
+    for _ in track(
         range(200),
         hook=sample_hook,
     ):
-        time.sleep(0.1)
+        time.sleep(0.01)
 
 
 if __name__ == "__main__":
