@@ -34,7 +34,7 @@ def load_pydantic_settings(
 
 
 def test():
-    from pydantic import BaseSettings
+    from pydantic_settings import BaseSettings
 
     class Config(BaseSettings):
         a: int
@@ -49,7 +49,7 @@ def test():
                 "b": "foo",
             },
         },
-    ) == {"a": 1, "b": "foo"}
+    ) == Config(a=1, b="foo")
 
 
 if __name__ == "__main__":

@@ -7,9 +7,9 @@ import requests
 
 from inline_snapshot import snapshot
 
-from lessmore.utils.dictionary.merge_dicts import merge_dicts
-from lessmore.utils.encoding.decode_from_yaml import decode_from_yaml
 from lessmore.utils.load_pydantic_settings.config_source_like import ConfigSourceLike
+from lessmore.utils.load_pydantic_settings.load_config_source.decode_from_yaml import decode_from_yaml
+from lessmore.utils.load_pydantic_settings.load_config_source.merge_dicts import merge_dicts
 from lessmore.utils.load_pydantic_settings.load_config_source.read_config_file import read_config_file
 
 
