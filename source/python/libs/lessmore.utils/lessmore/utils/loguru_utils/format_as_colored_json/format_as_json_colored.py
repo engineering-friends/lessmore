@@ -19,7 +19,7 @@ except ImportError:
     Record = Any
 
 
-def format_as_json_colored(append_non_json_traceback: bool = True):
+def format_as_colored_json(append_non_json_traceback: bool = True):
     def _format_as_json_colored(record: Record):
         # - Validate record
 
@@ -89,5 +89,5 @@ def test():
 
 if __name__ == "__main__":
     logger.remove()
-    logger.add(sys.stdout, format=format_as_json_colored(append_non_json_traceback=True))
+    logger.add(sys.stdout, format=format_as_colored_json(append_non_json_traceback=True))
     test()
