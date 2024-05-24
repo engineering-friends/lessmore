@@ -1,16 +1,14 @@
 import os.path
 
-from typing import Optional, Union
+from typing import Union
 
 import anyconfig
 import requests
 
-from box import Box
 from dotenv import load_dotenv
 
-from lessmore.utils.apply import apply
 from lessmore.utils.files.write_file import write_file
-from lessmore.utils.load_pydantic_settings.read_config.merge_dicts import merge_dicts
+from lessmore.utils.read_config.merge_dicts import merge_dicts
 from lessmore.utils.resolve_placeholders import resolve_placeholders
 
 
@@ -39,7 +37,6 @@ def read_config(
 
     elif isinstance(source, dict):
         result = source
-
     elif isinstance(source, str):
         if source == "env":
             load_dotenv()
@@ -52,22 +49,22 @@ def read_config(
             write_file("/tmp/config.yaml", requests.get(source).text)
             result = anyconfig.load("/tmp/config.yaml")
         else:
-            raise ValueError(f"Unexpected source type: {type(source)}")
+            raise ValueError(f"Config not found: {type(source)}")
     else:
         raise ValueError(f"Unexpected source type: {type(source)}")
 
-    # - Insert place holders for all strings in the config
+    # - Resolve placeholders for all strings in the config
 
     result = resolve_placeholders(result)
+
+    # - Return result
 
     return result
 
 
 def test():
-    with open("/tmp/test.yaml", "w") as file:
-        file.write("a: 1\nb: '{a}'")
-    with open("/tmp/test.json", "w") as file:
-        file.write('{"a": 10}')
+    write_file(data="a: 1\nb: '{a}'", filename="/tmp/test.yaml")
+    write_file(data='{"a": 10}', filename="/tmp/test.json")
 
     print(read_config(["/tmp/test.yaml", "/tmp/test.json"]))
 
