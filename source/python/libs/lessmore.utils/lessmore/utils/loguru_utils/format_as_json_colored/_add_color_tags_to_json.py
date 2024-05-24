@@ -18,7 +18,7 @@ def _add_color_tags_to_json(record_dic: dict, record: Any = None):
             "module": "cyan",
             "message": "level",
             "error": "red",
-            "stack": "red",
+            "traceback": "red",
         }.get(key, "yellow")
 
         # - Dump to json

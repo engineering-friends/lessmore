@@ -1,7 +1,7 @@
 import sys
 
 
-def get_stack(exception, engine="better_exceptions"):
+def get_traceback(exception, engine="better_exceptions"):
     assert engine in ["stackprinter", "better_exceptions"]
 
     if engine == "better_exceptions":
@@ -18,8 +18,8 @@ def test():
     try:
         raise Exception("test")
     except Exception as e:
-        print(get_stack(exception=sys.exc_info(), engine="stackprinter"))
-        print(get_stack(exception=sys.exc_info(), engine="better_exceptions"))
+        print(get_traceback(exception=sys.exc_info(), engine="stackprinter"))
+        print(get_traceback(exception=sys.exc_info(), engine="better_exceptions"))
 
 
 if __name__ == "__main__":

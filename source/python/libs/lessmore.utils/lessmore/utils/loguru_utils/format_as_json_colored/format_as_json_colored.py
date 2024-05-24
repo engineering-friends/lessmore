@@ -8,7 +8,7 @@ from typing import Any
 from loguru import logger
 
 from lessmore.utils.loguru_utils.format_as_json_colored._add_color_tags_to_json import _add_color_tags_to_json
-from lessmore.utils.loguru_utils.get_stack import get_stack
+from lessmore.utils.loguru_utils.get_stack import get_traceback
 from lessmore.utils.to_anything.to_datetime import to_datetime
 
 
@@ -39,8 +39,8 @@ def format_as_json_colored(record: Record):
     }
 
     if record["exception"]:
-        record_dic["stack"] = get_stack(exception=record["exception"])
-        record_dic["error"] = record_dic["stack"].split("\n")[-1]
+        record_dic["traceback"] = get_traceback(exception=record["exception"])
+        record_dic["error"] = record_dic["traceback"].strip().split("\n")[-1]
 
     record_dic = {k: v for k, v in record_dic.items() if v}
     record_dic.update(extra)
@@ -57,7 +57,7 @@ def format_as_json_colored(record: Record):
                 "source": 3,
                 "extra": 4,
                 "error": 5,
-                "stack": 6,
+                "traceback": 6,
                 "level": 7,
             }.get(
                 kv[0], 4
