@@ -1,63 +1,43 @@
 import json
 
 from datetime import date, datetime
-from typing import Any, Callable, Optional, Union
+from typing import Callable
 
 
-def json_serializer(value):
+def printy_serializer(value):
     if isinstance(value, (date, datetime)):
         return value.isoformat()
     elif isinstance(value, (dict, list, set, tuple)):
         return json.dumps(value, default=str, ensure_ascii=False, sort_keys=True)
+    elif isinstance(value, str):
+        return value
     else:
-        return value
+        return str(value)
 
 
-DEFAULT_SERIALIZER = "DEFAULT_SERIALIZER"
+def printy(
+    value,
+    clip: bool = False,
+    serializer: Callable = printy_serializer,
+) -> str:
+    # - Serialize
 
+    value = serializer(value)
 
-class Printy:
-    def __init__(
-        self,
-        serializer: Optional[Callable] = json_serializer,
-    ):
-        self.serializer = serializer
+    # - Clip
 
-    def __call__(
-        self,
-        value: Any,
-        clip: bool = False,
-        serializer: Union[None, Callable, DEFAULT_SERIALIZER] = DEFAULT_SERIALIZER,
-    ):
-        # - Get serializer
+    if clip:
+        import pyperclip
 
-        if serializer == DEFAULT_SERIALIZER:
-            serializer = self.serializer
-        elif serializer is None:
-            serializer = lambda x: x
+        pyperclip.copy(value)
 
-        # - Serialize
+    # - Print
 
-        value = serializer(value)
+    print(value)
 
-        # - Clip
+    # - Return
 
-        if clip:
-            import pyperclip
-
-            pyperclip.copy(value)
-
-        # - Print
-
-        print(value)
-
-        # - Return
-
-        return value
-
-
-# global instance
-printy = Printy()
+    return value
 
 
 def test():
