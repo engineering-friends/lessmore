@@ -7,7 +7,7 @@ from typing import Callable, Union
 
 def list_files(
     path: str,
-    pattern: Union[None, str, Callable[[str], bool]] = None,
+    pattern: Union[None, str, Callable] = None,
     recursive: bool = True,
 ):
     # - Get list of files

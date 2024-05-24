@@ -12,6 +12,7 @@ from loguru import logger
 from telethon import TelegramClient
 
 from lessmore.utils.loguru_utils.format_as_colored_json.format_as_colored_json import format_as_colored_json
+from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.read_config.read_config import read_config
 
 
@@ -26,8 +27,10 @@ def init_deps(env: Literal["test", "prod"] = "test", log_level="DEBUG") -> Deps:
 
     # - Init logger
 
-    logger.remove()
-    logger.add(sink=sys.stdout, level=log_level, format=format_as_colored_json(append_non_json_traceback=env == "Test"))
+    setup_json_loguru(
+        append_non_json_traceback=(env == "Test"),
+        level=log_level,
+    )
 
     # - Get data path
 

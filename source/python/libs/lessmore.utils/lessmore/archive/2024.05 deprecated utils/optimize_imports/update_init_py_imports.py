@@ -57,7 +57,7 @@ def update_init_py_imports(dir):
 
 
 def test():
-    from lessmore.utils.loguru_utils import configure_loguru
+    from lessmore.utils.loguru_utils import setup_json_loguru
 
     configure_loguru(level="DEBUG")
 

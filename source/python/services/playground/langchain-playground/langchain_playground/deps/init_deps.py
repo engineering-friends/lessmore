@@ -9,7 +9,8 @@ from langchain_playground.config.config import Config
 from langchain_playground.deps.deps import Deps
 from loguru import logger
 
-from lessmore.utils.configure_loguru.format_as_json_colored.format_as_json_colored import format_as_json_colored
+from lessmore.utils.loguru_utils.format_as_colored_json.format_as_colored_json import format_as_colored_json
+from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.read_config.read_config import read_config
 
 
@@ -20,8 +21,7 @@ def init_deps(log_level="DEBUG") -> Deps:
 
     # - Init logger
 
-    logger.remove()
-    logger.add(sink=sys.stdout, level=log_level, format=format_as_json_colored)
+    setup_json_loguru(level=log_level)
 
     # - Set langchain
 

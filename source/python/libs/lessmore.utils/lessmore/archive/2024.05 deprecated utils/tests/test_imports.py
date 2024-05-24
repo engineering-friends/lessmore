@@ -39,7 +39,7 @@ def _import_module(path):
 
 
 def run_imports_test(path):
-    from lessmore.utils.loguru_utils import configure_loguru
+    from lessmore.utils.loguru_utils import setup_json_loguru
 
     configure_loguru("debug")
 

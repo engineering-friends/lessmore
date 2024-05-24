@@ -1,7 +1,7 @@
 from inline_snapshot import external, outsource, snapshot
 from loguru import logger
 
-from lessmore.utils.run_inline_tests.run_inline_tests import run_inline_tests
+from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
 
 
 def test():
@@ -34,4 +34,4 @@ def test_fail():
 
 
 if __name__ == "__main__":
-    run_inline_tests()
+    run_snapshot_tests()

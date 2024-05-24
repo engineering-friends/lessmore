@@ -1,15 +1,18 @@
 import logging
 import os
+import sys
 
 from typing import Literal, Optional
 
 import inline_snapshot
 import pytest
 
-from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
-from lessmore.utils.file_utils.read_file import read_file
-from lessmore.utils.file_utils.write_file import write_file
+from loguru import logger
+
+from lessmore.utils.file_primitives.read_file import read_file
+from lessmore.utils.file_primitives.write_file import write_file
 from lessmore.utils.get_frame_path.get_frame_path import get_parent_frame_path
+from lessmore.utils.loguru_utils.format_as_colored_json.format_as_colored_json import format_as_colored_json
 
 
 def run_snapshot_tests(
@@ -32,7 +35,8 @@ def run_snapshot_tests(
 
     # - Configure loguru
 
-    configure_loguru()
+    logger.remove()
+    logger.add(sink=sys.stdout, level="DEBUG", format=format_as_colored_json(append_non_json_traceback=True))
 
     # - Collect flags
 

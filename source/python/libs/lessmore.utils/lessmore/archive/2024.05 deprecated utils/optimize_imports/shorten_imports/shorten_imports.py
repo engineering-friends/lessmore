@@ -126,7 +126,7 @@ Some other text
 
 
 if __name__ == "__main__":
-    from lessmore.utils.loguru_utils import configure_loguru
+    from lessmore.utils.loguru_utils import setup_json_loguru
 
     configure_loguru(level="debug")
 
