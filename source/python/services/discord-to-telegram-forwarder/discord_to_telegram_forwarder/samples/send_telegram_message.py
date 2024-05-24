@@ -1,4 +1,5 @@
 import asyncio
+import json
 
 from pathlib import Path
 
@@ -6,18 +7,14 @@ import keyring
 
 from telethon import TelegramClient
 
-from lessmore.utils.encoding.decode_from_json import decode_from_json
-
 
 async def main():
     # - Init client
 
     telegram_client = TelegramClient(
         session=str(Path(__file__).parent / "telegram.session"),
-        api_id=decode_from_json(keyring.get_password(service_name="telegram", username="channeled-sharing-bot"))[
-            "api_id"
-        ],
-        api_hash=decode_from_json(keyring.get_password(service_name="telegram", username="channeled-sharing-bot"))[
+        api_id=json.loads(keyring.get_password(service_name="telegram", username="channeled-sharing-bot"))["api_id"],
+        api_hash=json.loads(keyring.get_password(service_name="telegram", username="channeled-sharing-bot"))[
             "api_hash"
         ],
     )
@@ -25,7 +22,7 @@ async def main():
     # - Login
 
     await telegram_client.start(
-        bot_token=decode_from_json(keyring.get_password(service_name="telegram", username="channeled-sharing-bot"))[
+        bot_token=json.loads(keyring.get_password(service_name="telegram", username="channeled-sharing-bot"))[
             "bot_token"
         ]
     )

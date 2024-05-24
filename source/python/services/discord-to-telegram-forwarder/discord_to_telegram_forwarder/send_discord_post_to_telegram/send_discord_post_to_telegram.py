@@ -33,7 +33,7 @@ from PIL import Image
 from pymaybe import maybe
 from retry import retry
 
-from lessmore.utils.file_utils.write_file import write_file
+from lessmore.utils.file_primitives.write_file import write_file
 
 
 MENTION_CHAR_PLACEHOLDER = "ç"
@@ -206,7 +206,7 @@ async def send_discord_post_to_telegram(
             # - Save to tmp file and add to files
 
             filename = f"/tmp/{uuid.uuid4()}.png"
-            write_file(data=image_contents, path=filename, as_bytes=True)
+            write_file(data=image_contents, filename=filename, as_bytes=True)
             files = [filename]
         except Exception as e:
             logger.error("Failed to generate image", e=e)

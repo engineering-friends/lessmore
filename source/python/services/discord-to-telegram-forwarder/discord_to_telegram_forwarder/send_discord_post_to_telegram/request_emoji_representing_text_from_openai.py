@@ -5,7 +5,7 @@ import emoji
 
 from openai import OpenAI
 
-from lessmore.utils.skip_duplicates import skip_duplicates
+from lessmore.utils.functional.skip_duplicates import skip_duplicates
 
 
 def request_emoji_representing_text_from_openai(text: str, limit: int = 1) -> str:
@@ -67,7 +67,7 @@ def request_emoji_representing_text_from_openai(text: str, limit: int = 1) -> st
 
     # - Remove duplicates
 
-    emojis = skip_duplicates(emojis)
+    emojis = list(skip_duplicates(emojis))
 
     # - Return the first one
 
