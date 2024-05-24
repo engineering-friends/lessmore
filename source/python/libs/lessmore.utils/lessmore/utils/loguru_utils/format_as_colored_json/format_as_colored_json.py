@@ -7,8 +7,8 @@ from typing import Any
 
 from loguru import logger
 
-from lessmore.utils.loguru_utils.format_as_json_colored._add_color_tags_to_json import _add_color_tags_to_json
-from lessmore.utils.loguru_utils.get_stack import get_traceback
+from lessmore.utils.loguru_utils.format_as_colored_json._add_color_tags_to_json import _add_color_tags_to_json
+from lessmore.utils.loguru_utils.get_traceback import get_traceback
 from lessmore.utils.to_anything.to_datetime import to_datetime
 
 

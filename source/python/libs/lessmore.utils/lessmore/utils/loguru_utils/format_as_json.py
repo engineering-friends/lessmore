@@ -4,7 +4,7 @@ import sys
 
 from loguru import logger
 
-from lessmore.utils.loguru_utils.get_stack import get_traceback
+from lessmore.utils.loguru_utils.get_traceback import get_traceback
 
 
 def format_as_json(record):
