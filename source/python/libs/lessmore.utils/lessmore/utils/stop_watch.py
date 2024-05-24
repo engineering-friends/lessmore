@@ -1,7 +1,7 @@
 import time
 
 from dataclasses import dataclass
-from typing import Literal, Optional
+from typing import Callable, Literal, Optional
 
 import pandas as pd
 import pytest
@@ -19,13 +19,12 @@ class StopWatch:
     def __init__(
         self,
         max_laps_per_key: int = 100_000,
-        timing_target: Literal["precision", "prettiness"] = "precision",
+        time_func: Callable = time.perf_counter,
     ):
         self.max_laps_per_key = max_laps_per_key
         self.laps_by_key: dict[str, list[Lap]] = {}
         self.enabled = True
-        self.time_func = time.time if timing_target == "prettiness" else time.perf_counter
-        assert timing_target in ["precision", "prettiness"]
+        self.time_func = time_func
 
     def enable(self):
         self.enabled = True

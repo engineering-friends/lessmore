@@ -43,7 +43,15 @@ def printy(
 
 def test():
     printy({"a": 1, "b": 2})
-    printy(printy)
+    v = printy({"a": 1, "b": 2}, clip=True)
+    assert (
+        v
+        == """\
+{
+ "a": 1,
+ "b": 2
+}"""
+    )
 
 
 if __name__ == "__main__":

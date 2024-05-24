@@ -6,7 +6,7 @@ def write_file(
     filename: str,
     as_bytes: bool = False,
     writer: Callable = lambda data, file: file.write(data),
-    **kwargs,
+    open_kwargs: dict = {},
 ) -> Any:
     """Write data to file_filename using writer function.
 
@@ -20,8 +20,10 @@ def write_file(
         Whether to write as bytes, by default False
     writer : Callable, optional
         Writer function, by default lambda f, data: f.write(data)
+    open_kwargs
+        Additional arguments for open function.
     """
-    with open(filename, "wb" if as_bytes else "w", **kwargs) as file:
+    with open(filename, "wb" if as_bytes else "w", **open_kwargs) as file:
         return writer(data, file)
 
 

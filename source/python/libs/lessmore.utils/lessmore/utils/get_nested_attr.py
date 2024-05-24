@@ -23,13 +23,7 @@ def test():
 
     print(get_nested_attr(np, expression="random"))
     print(get_nested_attr(np, expression="random.choice"))
-    print(get_nested_attr(np, expression="random.choice"))
-    print(get_nested_attr(np, expression="rand.choice", default="Default"))
-
-    try:
-        print(get_nested_attr(np, expression="rand.choice"))
-    except:
-        print("Attribute not found")
+    print(get_nested_attr(np, expression="non.existent", default="some_default"))
 
 
 if __name__ == "__main__":
