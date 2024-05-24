@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 from lessmore.utils.file_primitives.write_file import write_file
 from lessmore.utils.read_config.merge_dicts import merge_dicts
-from lessmore.utils.resolve_placeholders import resolve_placeholders
+from lessmore.utils.read_config.resolve_placeholders import resolve_placeholders
 
 
 SUPPORTED_EXTENSIONS = [".json", ".yaml"]
