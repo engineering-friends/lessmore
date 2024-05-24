@@ -2,8 +2,8 @@ import sys
 
 from loguru import logger
 
-from lessmore.utils.configure_loguru.format_with_trace._exception_formatter import _exception_formatter
-from lessmore.utils.configure_loguru.format_with_trace._extra_formatter import _extra_formatter
+from lessmore.utils.loguru_utils.format_with_trace._exception_formatter import _exception_formatter
+from lessmore.utils.loguru_utils.format_with_trace._extra_formatter import _extra_formatter
 
 
 def format_with_trace(

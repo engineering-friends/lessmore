@@ -3,8 +3,6 @@ import pytest
 from loguru import logger
 from retry import retry
 
-from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
-
 
 class LoguruRetryLogger:
     @staticmethod
@@ -21,5 +19,4 @@ def test():
 
 
 if __name__ == "__main__":
-    configure_loguru()
     test()

@@ -7,8 +7,8 @@ from typing import Any
 
 from loguru import logger
 
-from lessmore.utils.configure_loguru.format_as_json_colored._add_color_tags_to_json import _add_color_tags_to_json
-from lessmore.utils.configure_loguru.get_stack import get_stack
+from lessmore.utils.loguru_utils.format_as_json_colored._add_color_tags_to_json import _add_color_tags_to_json
+from lessmore.utils.loguru_utils.get_stack import get_stack
 from lessmore.utils.to_anything.to_datetime import to_datetime
 
 
@@ -82,5 +82,5 @@ def test():
 
 if __name__ == "__main__":
     logger.remove()
-    logger.add(sys.stderr, format=format_as_json_colored)
+    logger.add(sys.stdout, format=format_as_json_colored)
     test()

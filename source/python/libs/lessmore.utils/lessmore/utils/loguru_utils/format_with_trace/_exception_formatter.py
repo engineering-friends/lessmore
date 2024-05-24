@@ -1,4 +1,4 @@
-from lessmore.utils.configure_loguru.get_stack import get_stack
+from lessmore.utils.loguru_utils.get_stack import get_stack
 
 
 def _exception_formatter(record):
