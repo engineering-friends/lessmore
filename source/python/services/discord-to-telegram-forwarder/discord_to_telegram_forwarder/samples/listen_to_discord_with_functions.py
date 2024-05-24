@@ -5,8 +5,6 @@ from discord import Client
 from loguru import logger
 from pymaybe import maybe
 
-from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
-
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -65,7 +63,6 @@ async def on_thread_create(thread):
 
 
 if __name__ == "__main__":
-    configure_loguru()
     from discord_to_telegram_forwarder.deps.init_deps import init_deps
 
     deps = init_deps(env="test")

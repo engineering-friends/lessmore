@@ -6,8 +6,6 @@ import keyring
 from loguru import logger
 from pymaybe import maybe
 
-from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
-
 
 class MyClient(discord.Client):
     async def on_ready(self):
@@ -39,7 +37,6 @@ class MyClient(discord.Client):
 
 
 if __name__ == "__main__":
-    configure_loguru()
     intents = discord.Intents.default()
     intents.message_content = True
     intents.members = True
