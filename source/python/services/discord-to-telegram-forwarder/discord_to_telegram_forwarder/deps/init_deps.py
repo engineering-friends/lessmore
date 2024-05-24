@@ -18,7 +18,7 @@ from lessmore.utils.read_config.read_config import read_config
 def init_deps(env: Literal["test", "prod"] = "test", log_level="DEBUG") -> Deps:
     # - Init config
 
-    config = Config(**read_config(f"{str(Path(__file__).parent / '../config')}/config.secrets.{env}.yaml"))
+    config = Config(**read_config(str(Path(__file__).parent / f"../config/config.secrets.{env}.yaml")))
 
     # - Configure openai
 
