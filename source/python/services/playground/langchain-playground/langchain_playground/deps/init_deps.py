@@ -9,7 +9,6 @@ from langchain_playground.config.config import Config
 from langchain_playground.deps.deps import Deps
 from loguru import logger
 
-from lessmore.utils.loguru_utils.format_as_colored_json.format_as_colored_json import format_as_colored_json
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.read_config.read_config import read_config
 
