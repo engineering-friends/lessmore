@@ -25,4 +25,7 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    # test()
+    import anyconfig
+
+    print(anyconfig.load("config.yaml"))
