@@ -3,7 +3,11 @@ import json
 from typing import Any
 
 
-def _add_color_tags_to_json(record_dic: dict, record: Any = None):
+def _add_color_tags_to_json(
+    record_dic: dict,
+    record: Any = None,  # will be modified!
+    append_non_json_traceback: bool = True,
+) -> str:
     # - Get json
 
     output = json.dumps(record_dic, default=str, ensure_ascii=False).replace("{", "{{").replace("}", "}}")
@@ -34,12 +38,23 @@ def _add_color_tags_to_json(record_dic: dict, record: Any = None):
 
         # - Add key and value to record, from where loguru will get them
 
-        # INPURE
         if record:
             record["extra"][f"_extra_{2 * i}"] = key
             record["extra"][f"_extra_{2 * i + 1}"] = json.dumps(value, default=str)
 
-    return "<white>" + output + "\n" + "</white>"
+    # - Add traceback on new line
+
+    if append_non_json_traceback and "traceback" in record_dic:
+        record["extra"][f"_extra_traceback"] = record_dic["traceback"]
+        output += f"\n<red>{{extra[_extra_traceback]}}</red>"
+
+    # - Add white color for the whole output
+
+    result = "<white>" + output + "\n" + "</white>"
+
+    # - Return result
+
+    return result
 
 
 def test():
