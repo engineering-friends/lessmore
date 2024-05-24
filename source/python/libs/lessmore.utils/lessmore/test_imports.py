@@ -11,6 +11,7 @@ from loguru import logger
 from lessmore.utils.file_primitives.list_files import list_files
 from lessmore.utils.loguru_utils.format_as_colored_json.format_as_colored_json import format_as_colored_json
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
+from lessmore.utils.track import track
 
 
 # - Utils
@@ -31,7 +32,7 @@ def _import_module(path):
 
 def test_imports(path):
     # import all files and make sure there is no import errors
-    for fn in tqdm.tqdm(
+    for fn in track(
         list_files(
             path,
             pattern=lambda filename: filename.endswith(".py")
@@ -46,23 +47,5 @@ def test_imports(path):
 if __name__ == "__main__":
     setup_json_loguru()
 
-    # logger.info('Start testing imports')
-    # test_imports('utils/')
-
-    import time
-
-    from tqdm import tqdm
-
-    def process_items(items):
-        for item in tqdm(items, desc="Processing items"):
-            tqdm.write(f"Current value: {item}")
-            time.sleep(0.1)  # Simulate some processing time
-            yield item
-
-    def main():
-        items = [1, 2, 3, 4, 5]
-        for item in process_items(items):
-            pass  # Do something with each item if needed
-
-    if __name__ == "__main__":
-        main()
+    logger.info("Start testing imports")
+    test_imports("utils/")
