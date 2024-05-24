@@ -1,8 +1,7 @@
 import os
 import re
 
-from lessmore.utils.list_files import list_files
-from lessmore.utils.optimize_imports.functions.iter_between_dirs import iter_between_dirs
+from lessmore.utils.file_primitives.list_files import list_files
 
 
 def get_python_filenames(root_dir):

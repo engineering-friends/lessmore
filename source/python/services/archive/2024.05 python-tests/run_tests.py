@@ -5,7 +5,7 @@ import pytest
 
 from pytest import ExitCode
 
-from lessmore.utils.list_files import list_files
+from lessmore.utils.file_primitives.list_files import list_files
 
 
 def run_tests(

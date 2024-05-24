@@ -3,7 +3,7 @@ import os.path
 
 from loguru import logger
 
-from lessmore.utils.list_files import list_files
+from lessmore.utils.file_primitives.list_files import list_files
 from lessmore.utils.optimize_imports.functions.get_init_py_filenames import get_init_py_filenames
 
 

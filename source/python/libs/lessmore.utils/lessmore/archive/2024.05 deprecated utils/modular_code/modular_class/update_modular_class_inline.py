@@ -3,7 +3,7 @@ import re
 
 from loguru import logger
 
-from lessmore.utils.list_files import list_files
+from lessmore.utils.file_primitives.list_files import list_files
 from lessmore.utils.modular_code.modular_class._build_class_file_content import _build_class_file_content
 from lessmore.utils.modular_code.modular_class._get_caller_filename import _get_caller_filename
 from lessmore.utils.modular_code.modular_class._get_self_functions_from_module._get_self_functions_from_module import (

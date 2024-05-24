@@ -41,7 +41,7 @@ def list_files(
 def test():
     print(
         list_files(
-            ".",
+            "..",
             pattern="*",
             recursive=True,
         )
