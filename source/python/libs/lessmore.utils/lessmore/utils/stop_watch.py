@@ -1,7 +1,7 @@
 import time
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Callable, Literal, Optional
 
 import pandas as pd
 import pytest
@@ -14,16 +14,17 @@ class Lap:
 
 
 class StopWatch:
-    """Time measurement of any code piece."""
+    """Simple profiler with stop watch mechanism"""
 
     def __init__(
         self,
-        max_laps_per_key=100_000,
+        max_laps_per_key: int = 100_000,
+        time_func: Callable = time.perf_counter,
     ):
         self.max_laps_per_key = max_laps_per_key
-        self.laps_by_key = {}  #  # {key: [(start_time, end_time), ...]}
-
+        self.laps_by_key: dict[str, list[Lap]] = {}
         self.enabled = True
+        self.time_func = time_func
 
     def enable(self):
         self.enabled = True
@@ -34,33 +35,33 @@ class StopWatch:
     def reset(self):
         self.laps_by_key = {}
 
-    def start(self, key: str = "default") -> "StopWatch":
+    def start(self, key: str = "") -> "StopWatch":
         # - Return if disabled
 
         if not self.enabled:
             return self
 
-        # - Start key
+        # - Init key with empty list if not exists
 
-        t = time.time()
+        self.laps_by_key.setdefault(key, [])
 
-        if key in self.laps_by_key.keys():
-            if self.laps_by_key[key][-1].stop_at is None:
-                raise Exception(f"Clock {key} is already running")
-            else:
-                # - Add new lap
+        # - Start new lap if last lap is stopped or not exists
 
-                self.laps_by_key[key].append(Lap(start_at=t))
+        if not self.laps_by_key[key] or self.laps_by_key[key][-1].stop_at is not None:
+            self.laps_by_key[key].append(Lap(start_at=self.time_func()))
 
-                # - Remove old laps if needed
+        # - Remove oldest laps if max_laps_per_key is reached
 
-                self.laps_by_key[key] = self.laps_by_key[key][-self.max_laps_per_key :]
-        else:
-            self.laps_by_key[key] = [Lap(start_at=t)]
+        self.laps_by_key[key] = self.laps_by_key[key][-self.max_laps_per_key :]
+
+        # - Return
 
         return self
 
-    def stop(self, key: Optional[str] = None) -> "StopWatch":
+    def stop(
+        self,
+        key: Optional[str] = None,  # stop all if None
+    ) -> "StopWatch":
         # - Return if disabled
 
         if not self.enabled:
@@ -69,34 +70,31 @@ class StopWatch:
         # - Stop all if key is None and return
 
         if key is None:
-            for key in self.laps_by_key.keys():
-                self.stop(key)
+            for laps in self.laps_by_key.values():
+                if laps[-1].stop_at is None:
+                    laps[-1].stop_at = self.time_func()
             return self
 
-        # - Stop non-None key
+        # - Return if not started
 
-        t = time.time()
-
-        if key not in self.laps_by_key:
+        if key not in self.laps_by_key or self.laps_by_key[key][-1].stop_at is not None:
             # not started
-
             return self
-        elif self.laps_by_key[key][-1].stop_at is None:
-            # stop last lap
 
-            self.laps_by_key[key][-1] = Lap(
-                start_at=self.laps_by_key[key][-1].start_at,
-                stop_at=t,
-            )
+        # - Stop last lap
+
+        self.laps_by_key[key][-1].stop_at = self.time_func()
+
+        # - Return
 
         return self
 
     def stats(self) -> pd.DataFrame:
-        # - Stop
+        # - Stop all
 
-        self.stop()
+        self.stop(key=None)
 
-        # - Empty clock
+        # - Empty stop_watch
 
         if not self.laps_by_key:
             return pd.DataFrame(index=["count", "mean", "sum", "max", "min"])
@@ -112,49 +110,21 @@ class StopWatch:
             axis=1,
         )
         df.columns = self.laps_by_key.keys()
-        stats_df = df.agg(["count", "mean", "sum", "max", "min"])
-        return stats_df
-
-    def __getitem__(self, item):
-        return self.stats().T["sum"][item]
+        return df.agg(["count", "mean", "sum", "max", "min"])
 
 
-# global clock instance
-clock = StopWatch()
+# global stop_watch instance
+stop_watch = StopWatch()
 
 
 @pytest.mark.slow
 def test():
-    # Usage 1
-    clock = StopWatch()
-
-    print(clock.stats())
-
-    # Start clock
-    clock.start("first")
-    time.sleep(0.1)
-
-    # Stop clock
-    clock.stop("first")
-
-    clock.start("second")
-    time.sleep(0.2)
-    clock.stop("second")
-
-    # This will add statistics to the 'first' key
-    clock.start("first")
-    time.sleep(0.1)
-    clock.stop("first")
-
-    print(clock.stats())
-
-    # Check max laps
-    clock = StopWatch(max_laps_per_key=3)
+    stop_watch = StopWatch()
     for i in range(10):
-        clock.start("a")
-        time.sleep(0.01 * i)
-        clock.stop("a")
-    print(clock.stats())
+        stop_watch.start(key=str(i % 2))
+        time.sleep(0.01)
+        stop_watch.stop(key=str(i % 2))
+    print(stop_watch.stats())
 
 
 if __name__ == "__main__":

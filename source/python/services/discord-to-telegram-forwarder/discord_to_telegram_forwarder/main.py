@@ -13,8 +13,6 @@ from discord_to_telegram_forwarder.update_comments_counter.update_comments_count
 from loguru import logger
 from pymaybe import maybe
 
-from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
-
 
 async def main(env: Literal["test", "prod"] = "test"):
     logger.info("Starting discord-to-telegram-forwarder", env=env)
@@ -61,5 +59,4 @@ async def main(env: Literal["test", "prod"] = "test"):
 
 
 if __name__ == "__main__":
-    configure_loguru()
     asyncio.run(main())

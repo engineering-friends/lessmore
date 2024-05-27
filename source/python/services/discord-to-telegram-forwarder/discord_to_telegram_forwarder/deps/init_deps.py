@@ -11,28 +11,15 @@ from discord_to_telegram_forwarder.deps.deps import Deps
 from loguru import logger
 from telethon import TelegramClient
 
-from lessmore.utils.configure_loguru.format_as_json_colored.format_as_json_colored import format_as_json_colored
-from lessmore.utils.load_pydantic_settings.load_pydantic_settings import load_pydantic_settings
+from lessmore.utils.loguru_utils.format_as_colored_json.format_as_colored_json import format_as_colored_json
+from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
+from lessmore.utils.read_config.read_config import read_config
 
 
 def init_deps(env: Literal["test", "prod"] = "test", log_level="DEBUG") -> Deps:
     # - Init config
 
-    config = load_pydantic_settings(
-        pydantic_class=Config,
-        config_source=[
-            {
-                "type": "file",
-                "is_required": False,
-                "value": "{root}/config.secrets.{env}.yaml",
-            },
-            # "environment_variables",
-        ],
-        context={
-            "root": str(Path(__file__).parent / "../config"),
-            "env": env,
-        },
-    )
+    config = Config(**read_config(str(Path(__file__).parent / f"../config/config.secrets.{env}.yaml")))
 
     # - Configure openai
 
@@ -40,8 +27,10 @@ def init_deps(env: Literal["test", "prod"] = "test", log_level="DEBUG") -> Deps:
 
     # - Init logger
 
-    logger.remove()
-    logger.add(sink=sys.stdout, level=log_level, format=format_as_json_colored)
+    setup_json_loguru(
+        append_non_json_traceback=(env == "Test"),
+        level=log_level,
+    )
 
     # - Get data path
 

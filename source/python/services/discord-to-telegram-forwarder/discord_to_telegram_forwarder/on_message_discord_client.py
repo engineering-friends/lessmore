@@ -7,8 +7,6 @@ import discord
 from discord_to_telegram_forwarder.deps.init_deps import init_deps
 from loguru import logger
 
-from lessmore.utils.configure_loguru.configure_loguru import configure_loguru
-
 
 # - Init discord client
 
@@ -62,5 +60,4 @@ async def test():
 
 
 if __name__ == "__main__":
-    configure_loguru()
     asyncio.run(test())

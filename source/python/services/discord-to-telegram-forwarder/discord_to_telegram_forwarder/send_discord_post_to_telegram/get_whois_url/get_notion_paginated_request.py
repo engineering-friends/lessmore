@@ -1,7 +1,5 @@
 from discord_to_telegram_forwarder.deps.init_deps import init_deps
 
-from lessmore.utils.easy_printing.print_json import print_json
-
 
 def get_notion_paginated_request(method, **kwargs):
     # - Init
@@ -29,7 +27,9 @@ def test():
     client = Client(
         auth=get_connection("notion-etl-python")["password"],
     )
-    print_json(
+    from lessmore.utils.printy import printy
+
+    printy(
         get_notion_paginated_request(
             method=client.databases.query,
             database_id="a4f6eaf88dbc4402a8232ab56484ee03",

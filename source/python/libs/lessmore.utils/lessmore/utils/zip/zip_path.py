@@ -1,8 +1,10 @@
 import os
 import zipfile
 
+from typing import Optional
 
-def zip_path(path, output_filename=None):
+
+def zip_path(path: str, output_filename: Optional[str] = None) -> str:
     """Creates a zip archive from the given path (file or folder)."""
 
     # If no output filename is given, use the base name of the input path
@@ -22,6 +24,7 @@ def zip_path(path, output_filename=None):
                     # - Add file to zip archive with its relative path
 
                     archive.write(file_path, arcname=os.path.relpath(file_path, path))
+    return output_filename
 
 
 def test():

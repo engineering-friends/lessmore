@@ -4,10 +4,11 @@ import zipfile
 from pathlib import Path
 
 
-def zip_files(filenames, output_filename):
+def zip_files(filenames: list[str], output_filename: str) -> None:
     with zipfile.ZipFile(output_filename, mode="w", compression=zipfile.ZIP_DEFLATED) as archive:
         for filename in filenames:
             archive.write(filename, arcname=os.path.basename(filename))
+    return output_filename
 
 
 def test():

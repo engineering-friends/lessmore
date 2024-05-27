@@ -5,7 +5,7 @@ description = ""
 authors = ["marklidenberg <marklidenberg@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "3.11.7"
+python = "3.11.*"
 aiohttp = "3.9.3"
 cachetools = "5.2.0"
 loguru = "0.6.0"
