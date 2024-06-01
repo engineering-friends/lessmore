@@ -26,12 +26,16 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.is_discord_chan
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_emoji_representing_text_from_openai import (
     request_emoji_representing_text_from_openai,
 )
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_reaction_emoijs_from_openai import (
+    request_reaction_emojis_from_openai,
+)
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.to_png import to_png
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.utils.cache_on_disk import cache_on_disk
 from loguru import logger
 from PIL import Image
 from pymaybe import maybe
 from retry import retry
+from telethon import functions, types
 
 from lessmore.utils.file_primitives.write_file import write_file
 
@@ -316,7 +320,9 @@ async def send_discord_post_to_telegram(
             # - Undownloaded videos and gifs can ONLY be sent as single files
 
             for _message_text, _files in message_text_and_files:
-                await deps.telegram_bot_client.send_message(
+                # - Send message
+
+                message = await deps.telegram_bot_client.send_message(
                     entity=telegram_chat,
                     file=_files[0]
                     if len(_files) == 1
@@ -325,6 +331,25 @@ async def send_discord_post_to_telegram(
                     parse_mode="md",
                     link_preview=False,
                 )
+
+                # - Send reactions
+
+                emojis = request_reaction_emojis_from_openai(f"{title} {body}")
+
+                logger.debug("Emojis from openai", emojis=emojis)
+
+                try:
+                    await deps.telegram_user_client(
+                        functions.messages.SendReactionRequest(
+                            peer=message.peer_id,
+                            msg_id=message.id,
+                            big=True,
+                            add_to_recent=True,
+                            reaction=[types.ReactionEmoji(emoticon=emoji) for emoji in reversed(emojis)],
+                        )
+                    )
+                except Exception as e:
+                    logger.error("Failed to send reaction", e=e)
 
 
 async def test():
@@ -335,6 +360,7 @@ async def test():
     # - Start telegram bots
 
     await deps.telegram_bot_client.start(bot_token=deps.config.telegram_bot_token)
+    await deps.telegram_user_client.start()
 
     # - Send message
 
@@ -347,11 +373,7 @@ async def test():
                     "parent": {"name": "parent_channel_name"},
                     # 'applied_tags': [Box({'name': 'tag1'}), Box({'name': 'tag2'})],
                 },
-                "content": """1) На скриншоте - исследование про генетическую чувствительность к разным эффектам кофе.
-TL;DR строго индивидуально
-2) Статья - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8070495/
-tl;dr Кофе снижает смертность от всех причин
-Mark Lidenberg На счет того пить или не пить и что для кого правильно :)""",
+                "content": """Я устроился на новую работу!""",
                 "author": {"display_name": "Mark Lidenberg"},
                 "jump_url": "https://discord.com/channels/1106702799938519211/1106702799938519213/913095424225706005",
                 "attachments": [],
