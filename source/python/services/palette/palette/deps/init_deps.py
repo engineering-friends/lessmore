@@ -16,7 +16,7 @@ from lessmore.utils.read_config.read_config import read_config
 def init_deps(log_level="DEBUG") -> Deps:
     # - Init config
 
-    config = Config(**read_config([f'{str(Path(__file__).parent / "../config")}/config.secrets.yaml']))
+    config = Config(**read_config([f'{str(Path(__file__).parent / "../config")}/secrets.yaml']))
 
     # - Init logger
 
