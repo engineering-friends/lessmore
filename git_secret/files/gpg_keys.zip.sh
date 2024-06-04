@@ -1,1 +1,0 @@
-zip -r -e gpg_keys.zip gpg_keys/

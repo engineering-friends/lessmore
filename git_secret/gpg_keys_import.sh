@@ -2,6 +2,10 @@
 
 cd ${0%/*}
 
+# - Init git secret if not already done
+
+git secret init
+
 # - Get the keys from enrcyped file. Ask admin for the password
 
 unzip files/gpg_keys.zip

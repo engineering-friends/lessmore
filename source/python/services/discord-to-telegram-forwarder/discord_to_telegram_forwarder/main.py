@@ -18,6 +18,7 @@ async def main(env: Literal["test", "prod"] = "test"):
     logger.info("Starting discord-to-telegram-forwarder", env=env)
 
     # - Init deps
+
     deps = init_deps(env=env)
 
     # - Define process_message function
@@ -29,8 +30,8 @@ async def main(env: Literal["test", "prod"] = "test"):
             deps=deps,
             message=message,
             telegram_chat_to_filter={
-                deps.config.telegram_ef_channel: lambda message: "sessions"
-                not in maybe(message).channel.parent.name.or_else("")
+                deps.config.telegram_ef_channel: lambda message: "dont_forward_to_tg"
+                not in [tag.name for tag in maybe(message).channel.applied_tags.or_else([])]
                 and message.guild.name == deps.config.guild_name,
             },
         )
