@@ -8,7 +8,7 @@
 
 - Secrets are all `.secret` files
 - `decrypt_secrets.sh` will decrypt all `.secret` files and put them in the same directory
-- `encrypt_secrets.sh` will go over all `.secret` files and encrypt files that exist in the same directory
-- `decrypt_secrets.sh` and `encrypt_secrets.sh` keep all git-secret secrets in sync with `.secret` files 
+- `encrypt_secrets.sh` will go over all `.secret` files without suffix `.secret` and encrypt them into `.secret` files
+- `decrypt_secrets.sh` and `encrypt_secrets.sh` keep all `git-secret` catalog in sync with `.secret` files 
 - To create a secret, copy your file to a new file with `.secret` extension and run `encrypt_secrets.sh`
 - To delete a secret, just delete `.secret` file.
