@@ -7,7 +7,25 @@ cd ${0%/*}/..
 
 find . -type f -name "*.secret" | while read -r filename; do
   echo "Adding secret :${filename%.secret}"
-  git secret add "${filename%.secret}"
+
+  # - Create a stub file if ${filename%.secret} does not exist
+
+  created_stub=false
+  if [ ! -f "${filename%.secret}" ]; then
+    touch "${filename%.secret}"
+    created_stub=true
+  fi
+
+  # - Add the secret to git secret
+
+  git secret add "${filename%.secret}" 2>&1 | grep -v "git-secret: abort: file not found" >&2 # silence the "file not found" error
+
+  # - Remove stub file if it was created by the script
+
+  if [ "$created_stub" = true ]; then
+    rm "${filename%.secret}"
+  fi
+
 done
 
 # - Find all missing .secret files and remove them from git secret
@@ -38,6 +56,7 @@ do
     rm "$filename.secret"
 
     # - Restore the backup of $filename if it exists
+
     if [ -f "$filename.bak" ]; then
       mv "$filename.bak" "$filename"
     fi
