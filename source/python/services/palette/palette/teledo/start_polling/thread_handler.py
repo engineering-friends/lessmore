@@ -1,14 +1,6 @@
-import asyncio
+from typing import Any, Callable
 
-from asyncio import Future
-from typing import Any, Callable, Coroutine, Optional
-
-from aiogram import Bot, Dispatcher
-from aiogram.client.default import DefaultBotProperties
-from aiogram.enums import ParseMode
-from aiogram.filters import Command
-from aiogram.types import CallbackQuery, Message
-from loguru import logger
+from aiogram.types import Message
 from palette.teledo.context import context
 
 
@@ -22,8 +14,6 @@ def thread_handler(handler: Callable) -> Callable:
 
         # - Start thread
 
-        logger.info("Started a new thread!")
-
         context.thread_messages = [message]
 
         # - Do the thread
@@ -33,8 +23,6 @@ def thread_handler(handler: Callable) -> Callable:
         # - Close thread
 
         context.thread_messages = []
-
-        logger.info("Closed the thread!")
 
         # - Return result
 
