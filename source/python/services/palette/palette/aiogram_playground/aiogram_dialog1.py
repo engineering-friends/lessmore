@@ -27,16 +27,11 @@ def when_checked(data: Dict, widget, manager: SubManager) -> bool:
     return check.is_checked()
 
 
-async def data_getter(*args, **kwargs):
+async def _data_getter(*args, **kwargs):
     return {
         "fruits": ["mango", "papaya", "kiwi"],
         "colors": ["blue", "pink"],
     }
-
-
-async def start(message: Message, dialog_manager: DialogManager):
-    # it is important to reset stack because user wants to restart everything
-    await dialog_manager.start(DialogSG.greeting, mode=StartMode.RESET_STACK)
 
 
 dialog = Dialog(
@@ -65,10 +60,14 @@ dialog = Dialog(
             items=["apple", "orange", "pear"],
         ),
         state=DialogSG.greeting,
-        getter=data_getter,
+        getter=_data_getter,
     ),
     launch_mode=LaunchMode.SINGLE_TOP,
 )
+
+
+async def start(message: Message, dialog_manager: DialogManager):
+    await dialog_manager.start(DialogSG.greeting, mode=StartMode.RESET_STACK)
 
 
 async def main():
