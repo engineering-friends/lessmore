@@ -36,7 +36,12 @@ class ButtonElement(Element):
 
     def render(self) -> RenderedElement:
         keyboard = InlineKeyboardBuilder()
+
         state["callbacks"]["button"] = self.callback
+
+        state["root"] = self
+        state["node"] = self
+
         keyboard.button(text=self.text, callback_data="button")
         return RenderedElement(text="Button text", reply_markup=keyboard.as_markup())
 

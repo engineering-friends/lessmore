@@ -15,6 +15,8 @@ state = {
     "thread_messages": [],
     "callbacks": {},
     "telegram_interaction": Future(),  # will be set in main
+    "root": None,
+    "node": None,
 }
 
 
@@ -55,10 +57,12 @@ async def global_callback_handler(callback_query: CallbackQuery) -> None:
     # - Get callback from data
 
     callback = state["callbacks"][callback_query.data]
+    root = state["root"]
+    node = state["node"]
 
     # - Add callback to telegram_interaction future
 
-    state["telegram_interaction"].set_result(callback(callback_query))
+    state["telegram_interaction"].set_result(callback(callback_query=callback_query, root=root, node=node))
 
 
 async def start_polling(

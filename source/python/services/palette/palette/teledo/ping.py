@@ -1,26 +1,25 @@
 import asyncio
 
-from aiogram.types import Message
+from aiogram.types import CallbackQuery, Message
 from palette.deps.init_deps import init_deps
-from palette.teledo.elements import ButtonElement, run_element
+from palette.teledo.elements import ButtonElement, Element, run_element
 from palette.teledo.start_polling import start_polling
 
 
 async def start(message: Message) -> None:
     await message.answer(f"Hello, Mark Lidenberg!")
 
-    button = ButtonElement(text="0", callback=None)
-
-    async def _callback(callback_query):
-        button.text = str(int(button.text) + 1)
-        await message.answer("Button clicked!")
-        return await run_element(element=button, message=callback_query.message)
-
-    button.callback = _callback
+    async def _callback(callback_query: CallbackQuery, root: Element, node: Element):
+        node.text = str(int(node.text) + 1)
+        return await run_element(element=root, message=callback_query.message)
 
     print(
         "Result",
-        await run_element(element=button, message=message, inplace=False),
+        await run_element(
+            element=ButtonElement(text="0", callback=_callback),
+            message=message,
+            inplace=False,
+        ),
     )
 
 
