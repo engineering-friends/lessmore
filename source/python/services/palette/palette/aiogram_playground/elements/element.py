@@ -4,7 +4,6 @@ from typing import Optional
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from palette.aiogram_playground.elements.merge_keyboards import test
-from palette.teledo.start_polling import state
 
 
 callbacks = {}
