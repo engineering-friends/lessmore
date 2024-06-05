@@ -1,3 +1,5 @@
+import asyncio
+
 from asyncio import Future
 from typing import Any, Callable, Coroutine, Optional
 
@@ -12,7 +14,7 @@ from loguru import logger
 state = {
     "thread_messages": [],
     "callbacks": {},
-    "telegram_interaction": Future(),
+    "telegram_interaction": Future(),  # will be set in main
 }
 
 
@@ -68,6 +70,10 @@ async def start_polling(
     # - Init dispatcher
 
     dp = Dispatcher()
+
+    # - Init future
+
+    state["telegram_interaction"] = asyncio.get_running_loop().create_future()
 
     # - Register handlers
 
