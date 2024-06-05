@@ -8,17 +8,12 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import CallbackQuery, Message
-from loguru import logger
 from palette.teledo.context import Context
 from palette.teledo.context_middleware import ContextMiddleware
 from palette.teledo.thread_handler import thread_handler
 
 
 async def global_callback_handler(callback_query: CallbackQuery, context: Context) -> None:
-    logger.debug("Global callback handler called", callback_data=callback_query.data)
-
-    # - Add callback to telegram_interaction future
-
     context.telegram_interaction.set_result(callback_query.data)
 
 
@@ -43,6 +38,7 @@ async def start_polling(
     # - Register context middleware (it will pass context to all handlers)
 
     dp.message.middleware(ContextMiddleware(context=context))
+    dp.callback_query.middleware(ContextMiddleware(context=context))
 
     # - Register handlers
 
