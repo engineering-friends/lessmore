@@ -7,6 +7,7 @@ from palette.teledo.start_polling import start_polling
 
 async def start(message: Message) -> None:
     await message.answer(f"Hello, Mark Lidenberg!")
+    await asyncio.sleep(3)
 
 
 async def echo(message: Message) -> None:

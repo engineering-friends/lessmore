@@ -1,9 +1,45 @@
-from typing import Callable, Optional
+from typing import Any, Callable, Coroutine, Optional
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
+from aiogram.types import Message
+from loguru import logger
+
+
+state = {"thread_messages": []}
+
+
+def thread_handler(async_func: Callable) -> Callable:
+    async def wrapper(message: Message) -> Any:
+        # - Check if thread is already started
+
+        if state["thread_messages"]:
+            await message.answer("Another thread is already started!")
+            return
+
+        # - Start thread
+
+        logger.info("Started a new thread!")
+
+        state["thread_messages"] = [message]
+
+        # - Do the thread
+
+        result = await async_func(message)
+
+        # - Close thread
+
+        state["thread_messages"] = []
+
+        logger.info("Closed the thread!")
+
+        # - Return result
+
+        return result
+
+    return wrapper
 
 
 async def start_polling(
@@ -19,10 +55,10 @@ async def start_polling(
     # - Register handlers
 
     for command, handler in command_handlers.items():
-        dp.message.register(handler, Command(command))
+        dp.message.register(thread_handler(handler), Command(command))
 
     if message_handler:
-        dp.message.register(message_handler)
+        dp.message.register(thread_handler(message_handler))
 
     # - Init bot from token if needed
 
