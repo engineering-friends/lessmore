@@ -3,9 +3,10 @@ import asyncio
 from aiogram.types import CallbackQuery, Message
 from palette.deps.init_deps import init_deps
 from palette.teledo.context import Context
-from palette.teledo.elements import ButtonElement, Element
-from palette.teledo.run_element import run_element
-from palette.teledo.start_polling import start_polling
+from palette.teledo.elements.element import Element
+from palette.teledo.elements.lib.button_element import ButtonElement
+from palette.teledo.elements.run_element import run_element
+from palette.teledo.start_polling.start_polling import start_polling
 
 
 async def start(message: Message) -> None:
