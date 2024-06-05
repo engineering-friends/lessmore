@@ -50,6 +50,9 @@ async def main() -> None:
     dp.callback_query.register(print_foobar_handler, F.data == "print_foobar")
     dp.callback_query.register(go_to_level_1_handler, F.data == "go_to_level_1")
 
+    keyboard = InlineKeyboardBuilder()
+    keyboard.button(text="Go to Level 2", callback_data="go_to_level_2")
+    print(keyboard.as_markup())
     # - Start polling
 
     await dp.start_polling(
