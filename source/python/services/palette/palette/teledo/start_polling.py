@@ -56,14 +56,14 @@ async def global_callback_handler(callback_query: CallbackQuery) -> None:
 
     # - Add callback to telegram_interaction future
 
-    state["telegram_interaction"].set_result(callback)
+    state["telegram_interaction"].set_result(callback(callback_query))
 
 
 async def start_polling(
     bot: Bot | str,
     command_handlers: dict,
     message_handler: Optional[Callable] = None,
-    default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.MARKDOWN),
+    default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
 ) -> None:
     # - Init dispatcher
 

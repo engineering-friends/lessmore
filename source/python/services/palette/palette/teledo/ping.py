@@ -44,23 +44,24 @@ class ButtonElement(Element):
 async def run_element(element: Element, message: Message):
     # - Render element and edit message
 
-    await message.edit_text(**element.render().__dict__)
+    await message.answer(**element.render().__dict__)
 
     # - Wait for interaction
 
-    callback = await state["telegram_interaction"]
+    callback_coroutine = await state["telegram_interaction"]
 
     # - Run callback
 
-    return await callback()
+    return await callback_coroutine
 
 
 async def start(message: Message) -> None:
     await message.answer(f"Hello, Mark Lidenberg!")
-    await asyncio.sleep(3)
 
-    async def callback():
+    async def callback(callback_query):
         await message.answer("Button clicked!")
+
+    print("Result", await run_element(ButtonElement(text="Click me", callback=callback), message=message))
 
 
 async def echo(message: Message) -> None:
