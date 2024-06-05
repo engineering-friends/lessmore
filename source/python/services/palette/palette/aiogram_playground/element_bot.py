@@ -12,6 +12,8 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from palette.deps.init_deps import init_deps
 
 
+# todo later: fix, this one doesn't work yet
+
 callbacks = {}
 
 
