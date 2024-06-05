@@ -97,7 +97,7 @@ async def main():
     # real main
     logging.basicConfig(level=logging.INFO)
     storage = MemoryStorage()
-    bot = Bot(token=os.getenv("BOT_TOKEN"))
+    bot = Bot(token=init_deps().config.telegram_bot_token)
     dp = Dispatcher(storage=storage, events_isolation=SimpleEventIsolation())
     dp.include_router(dialog)
 

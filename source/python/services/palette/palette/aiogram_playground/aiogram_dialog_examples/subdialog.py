@@ -14,9 +14,10 @@ from aiogram_dialog.tools import render_preview, render_transitions
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Back, Button, Cancel, Group, Next, Row, Start
 from aiogram_dialog.widgets.text import Const, Format, Multi
+from palette.deps.init_deps import init_deps
 
 
-API_TOKEN = os.getenv("BOT_TOKEN")
+API_TOKEN = init_deps().config.telegram_bot_token
 
 
 # name input dialog

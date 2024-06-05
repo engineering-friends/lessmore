@@ -20,7 +20,10 @@ from redis.asyncio.client import Redis
 
 src_dir = os.path.normpath(os.path.join(__file__, os.path.pardir))
 
-API_TOKEN = os.getenv("BOT_TOKEN")
+from palette.deps.init_deps import init_deps
+
+
+API_TOKEN = init_deps().config.telegram_bot_token
 
 
 class DialogSG(StatesGroup):

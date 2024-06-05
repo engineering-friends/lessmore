@@ -20,7 +20,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 src_dir = os.path.normpath(os.path.join(__file__, os.path.pardir))
 
-API_TOKEN = os.getenv("BOT_TOKEN")
+API_TOKEN = init_deps().config.telegram_bot_token
 CUSTOM_URL_PREFIX = "my://"
 
 

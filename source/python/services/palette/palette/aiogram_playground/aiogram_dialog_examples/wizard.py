@@ -114,7 +114,9 @@ async def start(message: Message, dialog_manager: DialogManager):
 async def main():
     # real main
     logging.basicConfig(level=logging.INFO)
-    bot = Bot(token=os.getenv("BOT_TOKEN"))
+    from palette.deps.init_deps import init_deps
+
+    bot = Bot(token=init_deps().config.telegram_bot_token)
     dp = Dispatcher()
     dp.include_router(dialog)
     dp.message.register(start, CommandStart())
