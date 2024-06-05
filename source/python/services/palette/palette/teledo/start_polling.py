@@ -1,14 +1,19 @@
+from asyncio import Future
 from typing import Any, Callable, Coroutine, Optional
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
-from aiogram.types import Message
+from aiogram.types import CallbackQuery, Message
 from loguru import logger
 
 
-state = {"thread_messages": []}
+state = {
+    "thread_messages": [],
+    "callbacks": {},
+    "telegram_interaction": Future(),
+}
 
 
 def thread_handler(async_func: Callable) -> Callable:
@@ -42,6 +47,18 @@ def thread_handler(async_func: Callable) -> Callable:
     return wrapper
 
 
+async def global_callback_handler(callback_query: CallbackQuery) -> None:
+    logger.debug("Global callback handler called", callback_data=callback_query.data)
+
+    # - Get callback from data
+
+    callback = state["callbacks"][callback_query.data]
+
+    # - Add callback to telegram_interaction future
+
+    state["telegram_interaction"].set_result(callback)
+
+
 async def start_polling(
     bot: Bot | str,
     command_handlers: dict,
@@ -59,6 +76,8 @@ async def start_polling(
 
     if message_handler:
         dp.message.register(thread_handler(message_handler))
+
+    dp.callback_query.register(global_callback_handler)
 
     # - Init bot from token if needed
 
