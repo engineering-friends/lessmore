@@ -53,9 +53,9 @@ async def on_unknown_intent(event: ErrorEvent, dialog_manager: DialogManager):
 
 dialog_router = Router()
 dialog_router.include_routers(
-    layouts_dialog,
-    scroll_dialog,
     main_dialog,
+    scroll_dialog,
+    layouts_dialog,
     # calendar_dialog,
     selects_dialog,
     counter_dialog,

@@ -414,6 +414,48 @@ files = [
 ]
 
 [[package]]
+name = "fluent"
+version = "0.10.0"
+description = "Localization library for expressive translations."
+optional = false
+python-versions = "*"
+files = [
+    {file = "fluent-0.10.0.tar.gz", hash = "sha256:b5a270e6e4425cdf140ea10d1a7d9c1af713dd00d61b0412f05cd22e1ff84324"},
+]
+
+[[package]]
+name = "fluent-runtime"
+version = "0.4.0"
+description = "Localization library for expressive translations."
+optional = false
+python-versions = "*"
+files = [
+    {file = "fluent.runtime-0.4.0-py2.py3-none-any.whl", hash = "sha256:51fd02582c2363e1106d7051642967a1b7f406dd9c317bd4600a73ede40c5146"},
+    {file = "fluent.runtime-0.4.0.tar.gz", hash = "sha256:cb5ef96a58a3f67acaaca046d1201d202a1ebf2823e5e664370f359bae20574d"},
+]
+
+[package.dependencies]
+attrs = "*"
+babel = "*"
+"fluent.syntax" = ">=0.17,<0.20"
+pytz = "*"
+typing-extensions = ">=3.7,<5"
+
+[[package]]
+name = "fluent-syntax"
+version = "0.19.0"
+description = "Localization library for expressive translations."
+optional = false
+python-versions = "*"
+files = [
+    {file = "fluent.syntax-0.19.0-py2.py3-none-any.whl", hash = "sha256:b352b3475fac6c6ed5f06527921f432aac073d764445508ee5218aeccc7cc5c4"},
+    {file = "fluent.syntax-0.19.0.tar.gz", hash = "sha256:920326d7f46864b9758f0044e9968e3112198bc826acee16ddd8f11d359004fd"},
+]
+
+[package.dependencies]
+typing-extensions = ">=3.7,<5"
+
+[[package]]
 name = "frozenlist"
 version = "1.4.1"
 description = "A list-like structure which implements collections.abc.MutableSequence"
@@ -1229,6 +1271,17 @@ files = [
 cli = ["click (>=5.0)"]
 
 [[package]]
+name = "pytz"
+version = "2024.1"
+description = "World timezone definitions, modern and historical"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pytz-2024.1-py2.py3-none-any.whl", hash = "sha256:328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319"},
+    {file = "pytz-2024.1.tar.gz", hash = "sha256:2a29735ea9c18baf14b448846bde5a48030ed267578472d8955cd0e7443a9812"},
+]
+
+[[package]]
 name = "pyyaml"
 version = "6.0.1"
 description = "YAML parser and emitter for Python"
@@ -1559,4 +1612,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.*"
-content-hash = "3e965068cd0fd1e31f6bbf0e43cec360a08aeba34a4ca315691b9d1b65c248dd"
+content-hash = "19e0eba7ec25e95f7f7836f7adf5ee97e486d3b7383c36eb9066f55f3c9301ce"

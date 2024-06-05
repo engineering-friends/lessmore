@@ -23,57 +23,55 @@ BUTTON = Button(
     id="btn",
 )
 
-menu_window = Window(
-    Const("Different keyboard layouts."),
-    SwitchTo(
-        text=Const("↔️ Row"),
-        id="row",
+layouts_dialog = Dialog(
+    Window(
+        Const("Select and Button inside `Row`"),
+        Row(
+            SELECT,
+            BUTTON,
+        ),
+        LAYOUTS_MAIN_MENU_BUTTON,
         state=states.Layouts.ROW,
     ),
-    SwitchTo(
-        text=Const("↕️ Column"),
-        id="column",
+    Window(
+        Const("Select and Button inside `Column`"),
+        Column(
+            SELECT,
+            BUTTON,
+        ),
+        LAYOUTS_MAIN_MENU_BUTTON,
         state=states.Layouts.COLUMN,
     ),
-    SwitchTo(
-        text=Const("↩️ Group"),
-        id="group",
+    # Group with width=2
+    Window(
+        Const("Select and Button inside `Group` with width=2"),
+        Group(
+            SELECT,
+            BUTTON,
+            width=2,
+        ),
+        LAYOUTS_MAIN_MENU_BUTTON,
         state=states.Layouts.GROUP,
     ),
-    MAIN_MENU_BUTTON,
-    state=states.Layouts.MAIN,
-)
-row_window = Window(
-    Const("Select and Button inside `Row`"),
-    Row(
-        SELECT,
-        BUTTON,
+    # Main menu
+    Window(
+        Const("Different keyboard layouts."),
+        SwitchTo(
+            text=Const("↔️ Row"),
+            id="row",
+            state=states.Layouts.ROW,
+        ),
+        SwitchTo(
+            text=Const("↕️ Column"),
+            id="column",
+            state=states.Layouts.COLUMN,
+        ),
+        SwitchTo(
+            text=Const("↩️ Group"),
+            id="group",
+            state=states.Layouts.GROUP,
+        ),
+        MAIN_MENU_BUTTON,
+        state=states.Layouts.MAIN,
     ),
-    LAYOUTS_MAIN_MENU_BUTTON,
-    state=states.Layouts.ROW,
-)
-column_window = Window(
-    Const("Select and Button inside `Column`"),
-    Column(
-        SELECT,
-        BUTTON,
-    ),
-    LAYOUTS_MAIN_MENU_BUTTON,
-    state=states.Layouts.COLUMN,
-)
-group_window = Window(
-    Const("Select and Button inside `Group` with width=2"),
-    Group(
-        SELECT,
-        BUTTON,
-        width=2,
-    ),
-    LAYOUTS_MAIN_MENU_BUTTON,
-    state=states.Layouts.GROUP,
-)
-layouts_dialog = Dialog(
-    row_window,
-    column_window,
-    group_window,
-    menu_window,
 )

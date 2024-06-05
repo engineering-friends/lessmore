@@ -18,6 +18,7 @@ from aiogram_dialog.widgets.kbd import Button, Cancel, Row
 from fluent.runtime import FluentLocalization, FluentResourceLoader
 from i18n_format import I18NFormat
 from i18n_middleware import I18nMiddleware
+from palette.deps.init_deps import init_deps
 
 
 class DialogSG(StatesGroup):
@@ -73,7 +74,6 @@ async def start(message: Message, dialog_manager: DialogManager):
 
 async def main():
     # real main
-    logging.basicConfig(level=logging.INFO)
     dp = Dispatcher()
 
     i18n_middleware = make_i18n_middleware()
@@ -84,7 +84,7 @@ async def main():
     dp.message.register(start, CommandStart())
     setup_dialogs(dp)
 
-    bot = Bot(token=os.getenv("BOT_TOKEN"))
+    bot = Bot(token=init_deps().config.telegram_bot_token)
     await dp.start_polling(bot)
 
 
