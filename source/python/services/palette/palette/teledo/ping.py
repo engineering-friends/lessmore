@@ -9,19 +9,18 @@ from palette.teledo.start_polling import start_polling
 async def start(message: Message) -> None:
     await message.answer(f"Hello, Mark Lidenberg!")
 
-    async def callback(callback_query):
+    button = ButtonElement(text="0", callback=None)
+
+    async def _callback(callback_query):
+        button.text = str(int(button.text) + 1)
         await message.answer("Button clicked!")
-        return "Success!"
+        return await run_element(element=button, message=callback_query.message)
+
+    button.callback = _callback
 
     print(
         "Result",
-        await run_element(
-            ButtonElement(
-                text="Click me",
-                callback=callback,
-            ),
-            message=message,
-        ),
+        await run_element(element=button, message=message, inplace=False),
     )
 
 

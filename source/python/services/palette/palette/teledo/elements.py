@@ -41,14 +41,18 @@ class ButtonElement(Element):
         return RenderedElement(text="Button text", reply_markup=keyboard.as_markup())
 
 
-async def run_element(element: Element, message: Message):
+async def run_element(element: Element, message: Message, inplace: bool = True):
     # - Render element and edit message
 
-    await message.answer(**element.render().__dict__)
+    if inplace:
+        await message.edit_text(**element.render().__dict__)
+    else:
+        await message.answer(**element.render().__dict__)
 
     # - Wait for interaction
 
     callback_coroutine = await state["telegram_interaction"]
+    state["telegram_interaction"] = asyncio.get_running_loop().create_future()
 
     # - Run callback
 
