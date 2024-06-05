@@ -1,26 +1,60 @@
 import asyncio
 
+from dataclasses import dataclass
+from typing import Optional
+
 from aiogram import Bot, Dispatcher, html
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, InlineKeyboardMarkup, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from palette.aiogram_playground.elements.element import ButtonElement, callbacks
 from palette.deps.init_deps import init_deps
 
 
+callbacks = {}
+
+
+@dataclass
+class RenderedElement:
+    text: str = ""
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+
+
+class EmptyElement:
+    def render(self) -> RenderedElement:
+        return RenderedElement()
+
+
+class ButtonElement:
+    def __init__(self, text: str):
+        self.text = text
+
+    def render(self) -> RenderedElement:
+        keyboard = InlineKeyboardBuilder()
+
+        def _button_callback():
+            self.text = str(int(self.text) + 1)
+            return self.render()
+
+        callbacks["button"] = _button_callback
+        keyboard.button(text=self.text, callback_data="button")
+        return RenderedElement(text="0", reply_markup=keyboard.as_markup())
+
+
 async def command_start_handler(message: Message) -> None:
+    print("Command start handler!")
     message_kwargs = ButtonElement("I'm a button!").render().__dict__
     message_kwargs["text"] = message_kwargs.get("text") or "-"
     await message.answer(**message_kwargs)
 
 
-async def global_handler(callback_query: CallbackQuery) -> None:
+async def callback_handler(callback_query: CallbackQuery) -> None:
+    print("Global handler!")
     message_kwargs = callbacks[callback_query.callback_data]().render().__dict__
     message_kwargs["text"] = message_kwargs.get("text") or "-"
     await callback_query.message.edit_text(**message_kwargs)
-    await callback_query.answer()
+    # await callback_query.answer()
 
 
 async def main() -> None:
@@ -35,7 +69,7 @@ async def main() -> None:
     # - Register handlers
 
     dp.message.register(command_start_handler, CommandStart())
-    dp.message.register(global_handler)
+    dp.message.register(callback_handler, lambda callback_query: True)
 
     # - Start polling
 
