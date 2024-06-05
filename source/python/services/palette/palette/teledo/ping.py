@@ -8,17 +8,16 @@ from palette.teledo.run_element import run_element
 from palette.teledo.start_polling import start_polling
 
 
-async def start(message: Message, context: Context) -> None:
+async def start(message: Message) -> None:
     await message.answer(f"Hello, Mark Lidenberg!")
 
     async def _callback(message: Message, root: Element, element: ButtonElement):
         element.text = str(int(element.text) + 1)
-        return await run_element(element=root, message=message, context=context)
+        return await run_element(element=root, message=message)
 
     await run_element(
         element=ButtonElement(text="0", callback=_callback),
         message=message,
-        context=context,
         inplace=False,
     )
 

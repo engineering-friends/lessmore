@@ -9,10 +9,10 @@ from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import CallbackQuery, Message
 from loguru import logger
-from palette.teledo.context import Context
+from palette.teledo.context import context
 
 
-def thread_handler(handler: Callable, context: Context) -> Callable:
+def thread_handler(handler: Callable) -> Callable:
     async def wrapper(message: Message) -> Any:
         # - Check if thread is already started
 
@@ -28,10 +28,7 @@ def thread_handler(handler: Callable, context: Context) -> Callable:
 
         # - Do the thread
 
-        result = await handler(
-            message=message,
-            context=context,
-        )
+        result = await handler(message=message)
 
         # - Close thread
 

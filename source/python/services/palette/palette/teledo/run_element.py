@@ -1,19 +1,18 @@
 import asyncio
 
 from aiogram.types import Message
-from palette.teledo.context import Context
+from palette.teledo.context import Context, context
 from palette.teledo.elements import Element
 
 
-async def run_element(element: Element, message: Message, context: Context, inplace: bool = True):
+async def run_element(element: Element, message: Message, inplace: bool = True):
     # - Render element and edit message
 
     if inplace:
-        message = await message.edit_text(**element.render(context=context).__dict__)
+        message = await message.edit_text(**element.render().__dict__)
     else:
-        message = await message.answer(**element.render(context=context).__dict__)
+        message = await message.answer(**element.render().__dict__)
 
-    print(message)
     # - Wait for interaction and get callback_info
 
     _id = await context.telegram_interaction

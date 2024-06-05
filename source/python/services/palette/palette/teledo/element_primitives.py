@@ -18,5 +18,5 @@ class RenderedElement:
 
 class Element(ABC):
     @abstractmethod
-    def render(self, context: Context) -> RenderedElement:
+    def render(self) -> RenderedElement:
         pass

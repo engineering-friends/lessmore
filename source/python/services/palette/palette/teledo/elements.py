@@ -16,7 +16,7 @@ from palette.teledo.register_callback import register_callback
 
 
 class EmptyElement(Element):
-    def render(self, context: Context) -> RenderedElement:
+    def render(self) -> RenderedElement:
         return RenderedElement()
 
 
@@ -25,14 +25,10 @@ class ButtonElement(Element):
         self.text = text
         self.callback = callback  # will receive callback_query
 
-    def render(self, context: Context) -> RenderedElement:
+    def render(self) -> RenderedElement:
         keyboard = InlineKeyboardBuilder()
         keyboard.button(
             text=self.text,
-            callback_data=register_callback(
-                element=self,
-                callback=self.callback,
-                context=context,
-            ),
+            callback_data=register_callback(element=self, callback=self.callback),
         )
         return RenderedElement(text="Button text", reply_markup=keyboard.as_markup())

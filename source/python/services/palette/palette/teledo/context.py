@@ -9,3 +9,6 @@ class Context:
     thread_messages: list = field(default_factory=list)
     callbacks_infos: dict = field(default_factory=dict)
     telegram_interaction: Future = field(default_factory=asyncio.Future)
+
+
+context = Context()
