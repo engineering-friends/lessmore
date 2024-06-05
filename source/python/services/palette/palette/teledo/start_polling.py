@@ -54,15 +54,9 @@ def thread_handler(async_func: Callable) -> Callable:
 async def global_callback_handler(callback_query: CallbackQuery) -> None:
     logger.debug("Global callback handler called", callback_data=callback_query.data)
 
-    # - Get callback from data
-
-    callback = state["callbacks"][callback_query.data]
-    root = state["root"]
-    node = state["node"]
-
     # - Add callback to telegram_interaction future
 
-    state["telegram_interaction"].set_result(callback(callback_query=callback_query, root=root, node=node))
+    state["telegram_interaction"].set_result(callback_query.data)
 
 
 async def start_polling(

@@ -1,4 +1,5 @@
 import asyncio
+import uuid
 
 from abc import ABC, abstractmethod
 from asyncio import Future
@@ -8,8 +9,7 @@ from typing import Callable, Optional
 from aiogram.types import InlineKeyboardMarkup, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from palette.aiogram_playground.elements.element import RenderedElement
-from palette.deps.init_deps import init_deps
-from palette.teledo.start_polling import start_polling, state
+from palette.teledo.start_polling import state
 
 
 @dataclass
@@ -29,6 +29,18 @@ class EmptyElement(Element):
         return RenderedElement()
 
 
+@dataclass
+class CallbackInfo:
+    callback: Callable
+    element: Optional[Element]
+
+
+def register_callback(element: Element, callback: Callable):
+    _id = str(uuid.uuid4())
+    state["callbacks_infos"][_id] = CallbackInfo(callback=callback, element=element)
+    return _id
+
+
 class ButtonElement(Element):
     def __init__(self, text: str, callback: Callable):
         self.text = text
@@ -36,13 +48,13 @@ class ButtonElement(Element):
 
     def render(self) -> RenderedElement:
         keyboard = InlineKeyboardBuilder()
-
-        state["callbacks"]["button"] = self.callback
-
-        state["root"] = self
-        state["node"] = self
-
-        keyboard.button(text=self.text, callback_data="button")
+        keyboard.button(
+            text=self.text,
+            callback_data=register_callback(
+                element=self,
+                callback=self.callback,
+            ),
+        )
         return RenderedElement(text="Button text", reply_markup=keyboard.as_markup())
 
 
@@ -54,9 +66,14 @@ async def run_element(element: Element, message: Message, inplace: bool = True):
     else:
         await message.answer(**element.render().__dict__)
 
-    # - Wait for interaction
+    # - Wait for interaction and get callback_info
 
-    callback_coroutine = await state["telegram_interaction"]
+    _id = await state["telegram_interaction"]
+    callback_info = state["callback_infos"][_id]
+    callback_coroutine = callback_info.callback(message=message, root=element, element=callback_info.element)
+
+    # - Reset interaction
+
     state["telegram_interaction"] = asyncio.get_running_loop().create_future()
 
     # - Run callback
