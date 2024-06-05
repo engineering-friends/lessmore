@@ -15,13 +15,13 @@ async def run_element(element: Element, message: Message, inplace: bool = True):
 
     # - Wait for interaction and get callback_info
 
-    _id = await context.telegram_interaction
+    _id = await context.callback_id_future
     callback_info = context.callbacks_infos[_id]
     callback_coroutine = callback_info.callback(message=message, root=element, element=callback_info.element)
 
     # - Reset interaction
 
-    context.telegram_interaction = asyncio.get_running_loop().create_future()
+    context.callback_id_future = asyncio.get_running_loop().create_future()
 
     # - Run callback
 

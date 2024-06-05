@@ -13,7 +13,7 @@ from palette.teledo.thread_handler import thread_handler
 
 
 async def global_callback_handler(callback_query: CallbackQuery) -> None:
-    context.telegram_interaction.set_result(callback_query.data)
+    context.callback_id_future.set_result(callback_query.data)
 
 
 async def start_polling(
@@ -28,7 +28,7 @@ async def start_polling(
 
     # - Init future
 
-    context.telegram_interaction = asyncio.get_running_loop().create_future()
+    context.callback_id_future = asyncio.get_running_loop().create_future()
 
     # - Register handlers
 
