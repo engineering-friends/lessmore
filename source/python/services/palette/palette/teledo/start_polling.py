@@ -9,54 +9,17 @@ from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import CallbackQuery, Message
 from loguru import logger
+from palette.teledo.context import Context
+from palette.teledo.context_middleware import ContextMiddleware
+from palette.teledo.thread_handler import thread_handler
 
 
-state = {
-    "thread_messages": [],
-    "callbacks": {},
-    "telegram_interaction": Future(),  # will be set in main
-    "root": None,
-    "node": None,
-}
-
-
-def thread_handler(async_func: Callable) -> Callable:
-    async def wrapper(message: Message) -> Any:
-        # - Check if thread is already started
-
-        if state["thread_messages"]:
-            await message.answer("Another thread is already started!")
-            return
-
-        # - Start thread
-
-        logger.info("Started a new thread!")
-
-        state["thread_messages"] = [message]
-
-        # - Do the thread
-
-        result = await async_func(message)
-
-        # - Close thread
-
-        state["thread_messages"] = []
-
-        logger.info("Closed the thread!")
-
-        # - Return result
-
-        return result
-
-    return wrapper
-
-
-async def global_callback_handler(callback_query: CallbackQuery) -> None:
+async def global_callback_handler(callback_query: CallbackQuery, context: Context) -> None:
     logger.debug("Global callback handler called", callback_data=callback_query.data)
 
     # - Add callback to telegram_interaction future
 
-    state["telegram_interaction"].set_result(callback_query.data)
+    context.telegram_interaction.set_result(callback_query.data)
 
 
 async def start_polling(
@@ -69,17 +32,30 @@ async def start_polling(
 
     dp = Dispatcher()
 
+    # - Init context
+
+    context = Context()
+
     # - Init future
 
-    state["telegram_interaction"] = asyncio.get_running_loop().create_future()
+    context.telegram_interaction = asyncio.get_running_loop().create_future()
+
+    # - Register context middleware (it will pass context to all handlers)
+
+    dp.message.middleware(ContextMiddleware(context=context))
 
     # - Register handlers
 
     for command, handler in command_handlers.items():
-        dp.message.register(thread_handler(handler), Command(command))
+        dp.message.register(
+            thread_handler(handler=handler, context=context),
+            Command(command),
+        )
 
     if message_handler:
-        dp.message.register(thread_handler(message_handler))
+        dp.message.register(
+            thread_handler(handler=message_handler, context=context),
+        )
 
     dp.callback_query.register(global_callback_handler)
 
