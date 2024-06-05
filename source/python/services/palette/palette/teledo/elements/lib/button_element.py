@@ -1,23 +1,9 @@
-import asyncio
-import uuid
+from typing import Callable
 
-from abc import ABC, abstractmethod
-from asyncio import Future
-from dataclasses import dataclass
-from typing import Callable, Optional
-
-from aiogram.types import InlineKeyboardMarkup, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from palette.aiogram_playground.elements.element import RenderedElement
-from palette.teledo.callback_info import CallbackInfo
-from palette.teledo.context import Context
-from palette.teledo.element_primitives import Element
+from palette.aiogram_playground.element_bot import RenderedElement
+from palette.teledo.elements.element import Element
 from palette.teledo.register_callback import register_callback
-
-
-class EmptyElement(Element):
-    def render(self) -> RenderedElement:
-        return RenderedElement()
 
 
 class ButtonElement(Element):

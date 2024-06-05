@@ -9,7 +9,7 @@ from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import CallbackQuery, Message
 from palette.teledo.context import context
-from palette.teledo.thread_handler import thread_handler
+from palette.teledo.start_polling.thread_handler import thread_handler
 
 
 async def global_callback_handler(callback_query: CallbackQuery) -> None:

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Callable, Optional
 
-from palette.teledo.element_primitives import Element
+from palette.teledo.elements.element import Element
 
 
 @dataclass

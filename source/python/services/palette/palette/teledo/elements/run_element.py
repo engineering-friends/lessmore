@@ -2,7 +2,7 @@ import asyncio
 
 from aiogram.types import Message
 from palette.teledo.context import Context, context
-from palette.teledo.elements import Element
+from palette.teledo.elements.element import Element
 
 
 async def run_element(element: Element, message: Message, inplace: bool = True):

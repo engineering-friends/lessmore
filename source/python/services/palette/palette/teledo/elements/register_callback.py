@@ -4,7 +4,7 @@ from typing import Callable, Optional
 
 from palette.teledo.callback_info import CallbackInfo
 from palette.teledo.context import context
-from palette.teledo.element_primitives import Element
+from palette.teledo.elements.element import Element
 
 
 def register_callback(element: Element, callback: Callable):
