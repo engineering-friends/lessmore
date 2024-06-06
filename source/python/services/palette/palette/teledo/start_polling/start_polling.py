@@ -1,9 +1,10 @@
 import asyncio
 
 from asyncio import Future
+from datetime import datetime
 from typing import Any, Callable, Coroutine, Optional
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, types
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
@@ -18,7 +19,7 @@ async def global_callback_handler(callback_query: CallbackQuery) -> None:
 
 async def start_polling(
     bot: Bot | str,
-    command_handlers: dict,
+    command_handlers: dict = {},
     message_handler: Optional[Callable] = None,
     default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
 ) -> None:

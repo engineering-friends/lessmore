@@ -37,3 +37,7 @@ class Element(ABC):
         # - Run callback
 
         return await callback_coroutine
+
+    @property
+    def __name__(self) -> str:
+        return "Element"
