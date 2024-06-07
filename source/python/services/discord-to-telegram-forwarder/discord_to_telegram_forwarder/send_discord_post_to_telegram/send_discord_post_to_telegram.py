@@ -352,6 +352,33 @@ async def send_discord_post_to_telegram(
                     logger.error("Failed to send reaction", e=e)
 
 
+async def test_real():
+    # - Init deps
+
+    deps = init_deps(env="prod")
+
+    # - Start telegram bots
+
+    await deps.telegram_bot_client.start(bot_token=deps.config.telegram_bot_token)
+    await deps.telegram_user_client.start()
+
+    # - Get discord client
+
+    class CustomDiscordClient(discord.Client):
+        def on_ready(self):
+            print("Logged on as", self.user)
+            # - Get message with name "Про 3D Printing" from channel "🗒│posts"
+            forum_channel = self.get_channel(1106702799938519213)
+            print("123")
+            print(forum_channel)
+
+    # - Start discord client
+
+    client = CustomDiscordClient(intents=discord.Intents.all())
+    async with client:
+        await client.start(token=deps.config.discord_token)
+
+
 async def test():
     # - Init deps
 
@@ -386,4 +413,4 @@ async def test():
 
 
 if __name__ == "__main__":
-    asyncio.run(test())
+    asyncio.run(test_real())
