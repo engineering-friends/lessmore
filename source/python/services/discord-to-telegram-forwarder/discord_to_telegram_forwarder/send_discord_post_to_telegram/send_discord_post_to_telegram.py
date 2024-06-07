@@ -445,11 +445,11 @@ async def test():
 
 
 if __name__ == "__main__":
-    asyncio.run(
-        test_send_real_message_from_discord(
-            forum_name="🗒│posts",
-            title_contains="Про 3D Printing",
-        )
-    )
+    # asyncio.run(
+    #     test_send_real_message_from_discord(
+    #         forum_name="🗒│posts",
+    #         title_contains="Про 3D Printing",
+    #     )
+    # )
 
-    # asyncio.run(test())
+    asyncio.run(test())
