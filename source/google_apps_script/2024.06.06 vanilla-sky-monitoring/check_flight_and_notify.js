@@ -17,36 +17,35 @@ function checkFlightAndNotify() {
   var json = JSON.parse(response.getContentText());
 
   var toDates = json.to;
+  var fromDates = json.from;
+
+  var allDates = toDates.concat(fromDates);
 
   var properties = PropertiesService.getScriptProperties();
   var sentNotification = properties.getProperty("sentNotification") === "true";
 
-  // Check if the set of "to" dates has changed and if notification hasn't been sent yet
-  if (!setsEqual(toDates, expectedDates) && !sentNotification) {
+  // Check if there are new dates and if notification hasn't been sent yet
+  if (newDatesPresent(allDates, expectedDates) && !sentNotification) {
     sendNotification();
     properties.setProperty("sentNotification", "true");
-    console.log("Dates changed, sent notification!");
+    console.log("New dates found, sent notification!");
   }
 
   if (sentNotification) {
     console.log("Already sent!");
   } else {
-    console.log("Dates didn't change");
+    console.log("No new dates found");
   }
 }
 
-function setsEqual(arr1, arr2) {
-  if (arr1.length !== arr2.length) {
-    return false;
-  }
-  var set1 = new Set(arr1);
-  var set2 = new Set(arr2);
-  for (let item of set1) {
-    if (!set2.has(item)) {
-      return false;
+function newDatesPresent(allDates, expectedDates) {
+  var setExpected = new Set(expectedDates);
+  for (let date of allDates) {
+    if (!setExpected.has(date)) {
+      return true;
     }
   }
-  return true;
+  return false;
 }
 
 function sendNotification() {
