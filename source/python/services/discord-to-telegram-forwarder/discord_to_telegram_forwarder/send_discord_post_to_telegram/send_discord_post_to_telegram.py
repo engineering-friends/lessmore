@@ -84,18 +84,16 @@ async def send_discord_post_to_telegram(
     files = []
     for attachment in message.attachments:
         if maybe(attachment).url.or_else(None) and maybe(attachment).filename.or_else(None):
-            if attachment.filename.lower().endswith((".mp4", ".avi", ".mov")) and len(message.attachments) > 1:
-                # - Need to download videos
-
-                temp_path = _download_as_temp_file(attachment.url, attachment.filename)
-                files.append(temp_path)
-            elif attachment.filename.lower().endswith((".webp", ".bmp")):
+            if attachment.filename.lower().endswith((".webp", ".bmp")):
                 # common image formats, not supported by telegram
-                temp_path = _download_as_temp_file(attachment.url, attachment.filename)
+                temp_path = _download_as_temp_file(attachment.url, extension=os.path.splitext(attachment.filename)[1])
                 png_temp_path = to_png(temp_path)
                 files.append(png_temp_path)
             else:
-                files.append(attachment.url)
+                # - Need to download videos
+
+                temp_path = _download_as_temp_file(attachment.url, extension=os.path.splitext(attachment.filename)[1])
+                files.append(temp_path)
 
     # - Get discord_alias_to_telegram_username
 
@@ -324,9 +322,9 @@ async def send_discord_post_to_telegram(
 
                 message = await deps.telegram_bot_client.send_message(
                     entity=telegram_chat,
-                    file=_files[0]
-                    if len(_files) == 1
-                    else _files or None,  # todo later: if >1 files - pick out gifs and send separately [@marklidenberg]
+                    file=(
+                        _files[0] if len(_files) == 1 else _files or None
+                    ),  # todo later: if >1 files - pick out gifs and send separately [@marklidenberg]
                     message=_message_text,
                     parse_mode="md",
                     link_preview=False,
@@ -352,7 +350,7 @@ async def send_discord_post_to_telegram(
                     logger.error("Failed to send reaction", e=e)
 
 
-async def test_real():
+async def test_send_real_message_from_discord(forum_name: str, title_contains: str):
     # - Init deps
 
     deps = init_deps(env="prod")
@@ -365,12 +363,46 @@ async def test_real():
     # - Get discord client
 
     class CustomDiscordClient(discord.Client):
-        def on_ready(self):
+        async def on_ready(self):
             print("Logged on as", self.user)
-            # - Get message with name "Про 3D Printing" from channel "🗒│posts"
-            forum_channel = self.get_channel(1106702799938519213)
-            print("123")
-            print(forum_channel)
+
+            # - Get channel
+
+            channels = sum([list(guild.channels) for guild in self.guilds], [])
+            posts_channel = next((channel for channel in channels if channel.name == forum_name), None)
+            if not posts_channel:
+                print("No posts channel found")
+                return
+
+            thread = next((thread for thread in posts_channel.threads if title_contains in thread.name), None)
+
+            if not thread:
+                print("No thread found")
+                return
+
+            messages = []
+            async for message in thread.history(limit=200):
+                messages.append(message)
+
+            if not messages:
+                print("No messages found")
+                return
+
+            message = messages[0]
+
+            # - Send message
+
+            try:
+                await send_discord_post_to_telegram(
+                    deps=deps,
+                    message=message,
+                    telegram_chat_to_filter={deps.config.telegram_ef_channel: lambda message: True},
+                    filter_forum_post_messages=False,
+                )
+            except Exception as e:
+                import traceback
+
+                traceback.print_exc()
 
     # - Start discord client
 
@@ -407,10 +439,17 @@ async def test():
             }
         ),
         add_inner_shortened_url=True,
-        telegram_chat_to_filter={deps.config.telegram_ef_discussions: lambda message: True},
+        telegram_chat_to_filter={deps.config.telegram_ef_channel: lambda message: True},
         filter_forum_post_messages=False,
     )
 
 
 if __name__ == "__main__":
-    asyncio.run(test_real())
+    asyncio.run(
+        test_send_real_message_from_discord(
+            forum_name="🗒│posts",
+            title_contains="Про 3D Printing",
+        )
+    )
+
+    # asyncio.run(test())
