@@ -79,7 +79,7 @@ async def send_discord_post_to_telegram(
                     logger.info("Channel is private, skipping", channel_id=channel_candidate.id)
                     return
 
-    # - Get image attachments
+    # - Download attachments
 
     files = []
     for attachment in message.attachments:
@@ -90,8 +90,6 @@ async def send_discord_post_to_telegram(
                 png_temp_path = to_png(temp_path)
                 files.append(png_temp_path)
             else:
-                # - Need to download videos
-
                 temp_path = _download_as_temp_file(attachment.url, extension=os.path.splitext(attachment.filename)[1])
                 files.append(temp_path)
 
