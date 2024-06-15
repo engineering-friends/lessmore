@@ -2,7 +2,7 @@ repos:
   # - check-added-large-files
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.6.0
     hooks:
       - id: check-added-large-files
         args: ['--maxkb=2000']
@@ -13,14 +13,14 @@ repos:
   # - do-not-submit
 
   - repo: https://github.com/jlebar/pre-commit-hooks
-    rev: 62ca83ba4958da48ea44d9f24cd0aa58633376c7 # pragma: allowlist secret
+    rev: f2d115a052860b09b2888b4f104be614bf3b4779 # pragma: allowlist secret
     hooks:
       - id: do-not-submit # Forbids the string "do not submit".upper()
 
   # - detect-secrets
 
   - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.4.0
+    rev: v1.5.0
     hooks:
     -   id: detect-secrets
         name: Detect secrets
@@ -33,7 +33,7 @@ repos:
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.4.4
+    rev: v0.4.9
     hooks:
       # Run the linter.
       - id: ruff

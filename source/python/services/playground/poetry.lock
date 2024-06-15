@@ -181,6 +181,44 @@ html5lib = ["html5lib"]
 lxml = ["lxml"]
 
 [[package]]
+name = "boto3"
+version = "1.34.127"
+description = "The AWS SDK for Python"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "boto3-1.34.127-py3-none-any.whl", hash = "sha256:d370befe4fb7aea5bc383057d7dad18dda5d0cf3cd3295915bcc8c8c4191905c"},
+    {file = "boto3-1.34.127.tar.gz", hash = "sha256:58ccdeae3a96811ecc9d5d866d8226faadbd0ee1891756e4a04d5186e9a57a64"},
+]
+
+[package.dependencies]
+botocore = ">=1.34.127,<1.35.0"
+jmespath = ">=0.7.1,<2.0.0"
+s3transfer = ">=0.10.0,<0.11.0"
+
+[package.extras]
+crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
+
+[[package]]
+name = "botocore"
+version = "1.34.127"
+description = "Low-level, data-driven core of boto 3."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "botocore-1.34.127-py3-none-any.whl", hash = "sha256:e14fa28c8bb141de965e700f88b196d17c67a703c7f0f5c7e14f7dd1cf636011"},
+    {file = "botocore-1.34.127.tar.gz", hash = "sha256:a377871742c40603d559103f19acb7bc93cfaf285e68f21b81637ec396099877"},
+]
+
+[package.dependencies]
+jmespath = ">=0.7.1,<2.0.0"
+python-dateutil = ">=2.1,<3.0.0"
+urllib3 = {version = ">=1.25.4,<2.2.0 || >2.2.0,<3", markers = "python_version >= \"3.10\""}
+
+[package.extras]
+crt = ["awscrt (==0.20.11)"]
+
+[[package]]
 name = "certifi"
 version = "2024.2.2"
 description = "Python package for providing Mozilla's CA Bundle."
@@ -328,6 +366,17 @@ files = [
 ]
 
 [[package]]
+name = "et-xmlfile"
+version = "1.1.0"
+description = "An implementation of lxml.xmlfile for the standard library"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "et_xmlfile-1.1.0-py3-none-any.whl", hash = "sha256:a2ba85d1d6a74ef63837eed693bcb89c3f752169b0e3e7ae5b16ca5e1b3deada"},
+    {file = "et_xmlfile-1.1.0.tar.gz", hash = "sha256:8eb9e2bc2f8c97e37a2dc85a09ecdcdec9d8a396530a6d5a33b30b9a92da0c5c"},
+]
+
+[[package]]
 name = "evdev"
 version = "1.7.1"
 description = "Bindings to the Linux input handling subsystem"
@@ -460,6 +509,20 @@ files = [
     {file = "frozenlist-1.4.1-py3-none-any.whl", hash = "sha256:04ced3e6a46b4cfffe20f9ae482818e34eba9b5fb0ce4056e4cc9b6e212d09b7"},
     {file = "frozenlist-1.4.1.tar.gz", hash = "sha256:c037a86e8513059a2613aaba4d817bb90b9d9b6b69aace3ce9c877e8c8ed402b"},
 ]
+
+[[package]]
+name = "ftfy"
+version = "6.2.0"
+description = "Fixes mojibake and other problems with Unicode, after the fact"
+optional = false
+python-versions = ">=3.8,<4"
+files = [
+    {file = "ftfy-6.2.0-py3-none-any.whl", hash = "sha256:f94a2c34b76e07475720e3096f5ca80911d152406fbde66fdb45c4d0c9150026"},
+    {file = "ftfy-6.2.0.tar.gz", hash = "sha256:5e42143c7025ef97944ca2619d6b61b0619fc6654f98771d39e862c1424c75c0"},
+]
+
+[package.dependencies]
+wcwidth = ">=0.2.12,<0.3.0"
 
 [[package]]
 name = "greenlet"
@@ -597,6 +660,17 @@ python-versions = ">=3.5"
 files = [
     {file = "idna-3.7-py3-none-any.whl", hash = "sha256:82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0"},
     {file = "idna-3.7.tar.gz", hash = "sha256:028ff3aadf0609c1fd278d8ea3089299412a7a8b9bd005dd08b9f8285bcb5cfc"},
+]
+
+[[package]]
+name = "jmespath"
+version = "1.0.1"
+description = "JSON Matching Expressions"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "jmespath-1.0.1-py3-none-any.whl", hash = "sha256:02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980"},
+    {file = "jmespath-1.0.1.tar.gz", hash = "sha256:90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe"},
 ]
 
 [[package]]
@@ -779,6 +853,16 @@ win32-setctime = {version = ">=1.0.0", markers = "sys_platform == \"win32\""}
 
 [package.extras]
 dev = ["Sphinx (==7.2.5)", "colorama (==0.4.5)", "colorama (==0.4.6)", "exceptiongroup (==1.1.3)", "freezegun (==1.1.0)", "freezegun (==1.2.2)", "mypy (==v0.910)", "mypy (==v0.971)", "mypy (==v1.4.1)", "mypy (==v1.5.1)", "pre-commit (==3.4.0)", "pytest (==6.1.2)", "pytest (==7.4.0)", "pytest-cov (==2.12.1)", "pytest-cov (==4.1.0)", "pytest-mypy-plugins (==1.9.3)", "pytest-mypy-plugins (==3.0.0)", "sphinx-autobuild (==2021.3.14)", "sphinx-rtd-theme (==1.3.0)", "tox (==3.27.1)", "tox (==4.11.0)"]
+
+[[package]]
+name = "mailchecker"
+version = "6.0.5"
+description = "Cross-language email validation. Backed by a database of thousands throwable email providers."
+optional = false
+python-versions = "*"
+files = [
+    {file = "mailchecker-6.0.5.tar.gz", hash = "sha256:8dd71ec1724ef08f37cef00a6f851b2a6b900b84946ed4b91fe4661434cdc1c2"},
+]
 
 [[package]]
 name = "marshmallow"
@@ -978,6 +1062,20 @@ typing-extensions = ">=4.7,<5"
 datalib = ["numpy (>=1)", "pandas (>=1.2.3)", "pandas-stubs (>=1.1.0.11)"]
 
 [[package]]
+name = "openpyxl"
+version = "3.1.4"
+description = "A Python library to read/write Excel 2010 xlsx/xlsm files"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "openpyxl-3.1.4-py2.py3-none-any.whl", hash = "sha256:ec17f6483f2b8f7c88c57e5e5d3b0de0e3fb9ac70edc084d28e864f5b33bbefd"},
+    {file = "openpyxl-3.1.4.tar.gz", hash = "sha256:8d2c8adf5d20d6ce8f9bca381df86b534835e974ed0156dacefa76f68c1d69fb"},
+]
+
+[package.dependencies]
+et-xmlfile = "*"
+
+[[package]]
 name = "orjson"
 version = "3.10.3"
 description = "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy"
@@ -1141,6 +1239,17 @@ tzdata = ">=2020.1"
 
 [package.extras]
 test = ["time-machine (>=2.6.0)"]
+
+[[package]]
+name = "phonenumbers"
+version = "8.13.39"
+description = "Python version of Google's common library for parsing, formatting, storing and validating international phone numbers."
+optional = false
+python-versions = "*"
+files = [
+    {file = "phonenumbers-8.13.39-py2.py3-none-any.whl", hash = "sha256:3ad2d086fa71e7eef409001b9195ac54bebb0c6e3e752209b558ca192c9229a0"},
+    {file = "phonenumbers-8.13.39.tar.gz", hash = "sha256:db7ca4970d206b2056231105300753b1a5b229f43416f8c2b3010e63fbb68d77"},
+]
 
 [[package]]
 name = "pydantic"
@@ -4066,6 +4175,44 @@ pyobjc-core = ">=10.3"
 pyobjc-framework-Cocoa = ">=10.3"
 
 [[package]]
+name = "python-benedict"
+version = "0.33.2"
+description = "python-benedict is a dict subclass with keylist/keypath/keyattr support, normalized I/O operations (base64, csv, ini, json, pickle, plist, query-string, toml, xls, xml, yaml) and many utilities... for humans, obviously."
+optional = false
+python-versions = "*"
+files = [
+    {file = "python-benedict-0.33.2.tar.gz", hash = "sha256:662de43bffb4e127da2056447f8ddd7f6f5c89b72dd66d289cf9abd1cc2720c8"},
+    {file = "python_benedict-0.33.2-py3-none-any.whl", hash = "sha256:50a69b601b34d4ad7b67fe94e3266ec05046bc547a4132fe43fd8fbd41aeefaa"},
+]
+
+[package.dependencies]
+beautifulsoup4 = {version = ">=4.12.0,<5.0.0", optional = true, markers = "extra == \"html\""}
+boto3 = {version = ">=1.24.89,<2.0.0", optional = true, markers = "extra == \"s3\""}
+ftfy = {version = ">=6.0.0,<7.0.0", optional = true, markers = "extra == \"parse\""}
+mailchecker = {version = ">=4.1.0,<7.0.0", optional = true, markers = "extra == \"parse\""}
+openpyxl = {version = ">=3.0.0,<4.0.0", optional = true, markers = "extra == \"xls\""}
+phonenumbers = {version = ">=8.12.0,<9.0.0", optional = true, markers = "extra == \"parse\""}
+python-dateutil = {version = ">=2.8.0,<3.0.0", optional = true, markers = "extra == \"parse\""}
+python-fsutil = ">=0.9.3,<1.0.0"
+python-slugify = ">=7.0.0,<9.0.0"
+pyyaml = {version = ">=6.0,<7.0", optional = true, markers = "extra == \"yaml\""}
+requests = ">=2.26.0,<3.0.0"
+toml = {version = ">=0.10.2,<1.0.0", optional = true, markers = "extra == \"toml\""}
+xlrd = {version = ">=2.0.0,<3.0.0", optional = true, markers = "extra == \"xls\""}
+xmltodict = {version = ">=0.12.0,<1.0.0", optional = true, markers = "extra == \"xml\""}
+
+[package.extras]
+all = ["python-benedict[io,parse,s3]"]
+html = ["beautifulsoup4 (>=4.12.0,<5.0.0)", "python-benedict[xml]"]
+io = ["python-benedict[html,toml,xls,xml,yaml]"]
+parse = ["ftfy (>=6.0.0,<7.0.0)", "mailchecker (>=4.1.0,<7.0.0)", "phonenumbers (>=8.12.0,<9.0.0)", "python-dateutil (>=2.8.0,<3.0.0)"]
+s3 = ["boto3 (>=1.24.89,<2.0.0)"]
+toml = ["toml (>=0.10.2,<1.0.0)"]
+xls = ["openpyxl (>=3.0.0,<4.0.0)", "xlrd (>=2.0.0,<3.0.0)"]
+xml = ["xmltodict (>=0.12.0,<1.0.0)"]
+yaml = ["pyyaml (>=6.0,<7.0)"]
+
+[[package]]
 name = "python-dateutil"
 version = "2.9.0.post0"
 description = "Extensions to the standard Python datetime module"
@@ -4092,6 +4239,34 @@ files = [
 
 [package.extras]
 cli = ["click (>=5.0)"]
+
+[[package]]
+name = "python-fsutil"
+version = "0.14.1"
+description = "high-level file-system operations for lazy devs."
+optional = false
+python-versions = "*"
+files = [
+    {file = "python-fsutil-0.14.1.tar.gz", hash = "sha256:8fb204fa8059f37bdeee8a1dc0fff010170202ea47c4225ee71bb3c26f3997be"},
+    {file = "python_fsutil-0.14.1-py3-none-any.whl", hash = "sha256:0d45e623f0f4403f674bdd8ae7aa7d24a4b3132ea45c65416bd2865e6b20b035"},
+]
+
+[[package]]
+name = "python-slugify"
+version = "8.0.4"
+description = "A Python slugify application that also handles Unicode"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "python-slugify-8.0.4.tar.gz", hash = "sha256:59202371d1d05b54a9e7720c5e038f928f45daaffe41dd10822f3907b937c856"},
+    {file = "python_slugify-8.0.4-py2.py3-none-any.whl", hash = "sha256:276540b79961052b66b7d116620b36518847f52d5fd9e3a70164fc8c50faa6b8"},
+]
+
+[package.dependencies]
+text-unidecode = ">=1.3"
+
+[package.extras]
+unidecode = ["Unidecode (>=1.1.1)"]
 
 [[package]]
 name = "python-xlib"
@@ -4276,6 +4451,23 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
+name = "s3transfer"
+version = "0.10.1"
+description = "An Amazon S3 Transfer Manager"
+optional = false
+python-versions = ">= 3.8"
+files = [
+    {file = "s3transfer-0.10.1-py3-none-any.whl", hash = "sha256:ceb252b11bcf87080fb7850a224fb6e05c8a776bab8f2b64b7f25b969464839d"},
+    {file = "s3transfer-0.10.1.tar.gz", hash = "sha256:5683916b4c724f799e600f41dd9e10a9ff19871bf87623cc8f491cb4f5fa0a19"},
+]
+
+[package.dependencies]
+botocore = ">=1.33.2,<2.0a.0"
+
+[package.extras]
+crt = ["botocore[crt] (>=1.33.2,<2.0a.0)"]
+
+[[package]]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -4411,6 +4603,17 @@ doc = ["reno", "sphinx"]
 test = ["pytest", "tornado (>=4.5)", "typeguard"]
 
 [[package]]
+name = "text-unidecode"
+version = "1.3"
+description = "The most basic Text::Unidecode port"
+optional = false
+python-versions = "*"
+files = [
+    {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
+    {file = "text_unidecode-1.3-py2.py3-none-any.whl", hash = "sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8"},
+]
+
+[[package]]
 name = "tiktoken"
 version = "0.7.0"
 description = "tiktoken is a fast BPE tokeniser for use with OpenAI's models"
@@ -4461,6 +4664,17 @@ requests = ">=2.26.0"
 
 [package.extras]
 blobfile = ["blobfile (>=2)"]
+
+[[package]]
+name = "toml"
+version = "0.10.2"
+description = "Python Library for Tom's Obvious, Minimal Language"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+files = [
+    {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
+    {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
+]
 
 [[package]]
 name = "tqdm"
@@ -4548,6 +4762,17 @@ files = [
 ]
 
 [[package]]
+name = "wcwidth"
+version = "0.2.13"
+description = "Measures the displayed width of unicode strings in a terminal"
+optional = false
+python-versions = "*"
+files = [
+    {file = "wcwidth-0.2.13-py2.py3-none-any.whl", hash = "sha256:3da69048e4540d84af32131829ff948f1e022c1c6bdb8d6102117aac784f6859"},
+    {file = "wcwidth-0.2.13.tar.gz", hash = "sha256:72ea0c06399eb286d978fdedb6923a9eb47e1c486ce63e9b4e64fc18303972b5"},
+]
+
+[[package]]
 name = "win32-setctime"
 version = "1.1.0"
 description = "A small Python utility to set file creation time on Windows"
@@ -4560,6 +4785,33 @@ files = [
 
 [package.extras]
 dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
+
+[[package]]
+name = "xlrd"
+version = "2.0.1"
+description = "Library for developers to extract data from Microsoft Excel (tm) .xls spreadsheet files"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
+files = [
+    {file = "xlrd-2.0.1-py2.py3-none-any.whl", hash = "sha256:6a33ee89877bd9abc1158129f6e94be74e2679636b8a205b43b85206c3f0bbdd"},
+    {file = "xlrd-2.0.1.tar.gz", hash = "sha256:f72f148f54442c6b056bf931dbc34f986fd0c3b0b6b5a58d013c9aef274d0c88"},
+]
+
+[package.extras]
+build = ["twine", "wheel"]
+docs = ["sphinx"]
+test = ["pytest", "pytest-cov"]
+
+[[package]]
+name = "xmltodict"
+version = "0.13.0"
+description = "Makes working with XML feel like you are working with JSON"
+optional = false
+python-versions = ">=3.4"
+files = [
+    {file = "xmltodict-0.13.0-py2.py3-none-any.whl", hash = "sha256:aa89e8fd76320154a40d19a0df04a4695fb9dc5ba977cbb68ab3e4eb225e7852"},
+    {file = "xmltodict-0.13.0.tar.gz", hash = "sha256:341595a488e3e01a85a9d8911d8912fd922ede5fecc4dce437eb4b6c8d037e56"},
+]
 
 [[package]]
 name = "yarl"
@@ -4667,4 +4919,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.3"
-content-hash = "855b394de664c621e5ed54eddc44ed6b79088ef16864369c306b70461d0fe65c"
+content-hash = "327b9cb2c921b32f787cc6ad82cea4793cb9810772f1c7154bcabe31593d6a61"
