@@ -1,10 +1,49 @@
-[tool.isort]
-profile = "black"
-line_length = 120
-include_trailing_comma = "True"
-lines_after_imports = 2
-lines_between_types = 1
-known_lessmore = "lessmore"
-combine_as_imports = "True"
-known_first_party = []
-sections = "FUTURE,STDLIB,THIRDPARTY,LESSMORE,FIRSTPARTY,LOCALFOLDER"
+[tool.ruff]
+line-length = 120
+fix = true
+extend-include = ["*.py", "*.pyi", "*.ipynb"]
+exclude = [
+    "node_modules",
+    "venv",
+    "env",
+    ".git",
+    "archive",
+    "*.zip",
+    "*.md",
+    "*.json",
+    "*.yml",
+    "*.yaml",
+    "*.csv",
+    "*.txt",
+    "*.log",
+    "*.html",
+    "*.xml",
+    "*.png",
+    "*.jpg",
+    "*.jpeg",
+    "*.gif"
+]
+
+[tool.ruff.lint]
+extend-select = ["I"]
+ignore = [
+    "F401", # отключение неиспользуемых импортов
+    "F403", # отключение ошибок типа '`from typing import *` used; unable to detect undefined names'
+    "E722", # отключение ошибок типа 'do not use bare `except`'
+    "E402", # отключение ошибок типа 'module level import not at top of file'
+    "E712", # отключение ошибок типа 'comparison to True should be 'if cond is True:' or 'if cond:'
+    "E731", # отключение ошибок типа 'do not assign a lambda expression, use a def'
+]
+
+[tool.ruff.lint.isort]
+length-sort = false
+force-wrap-aliases = true
+combine-as-imports = true
+known-first-party = ["airflow_etl", "pyflink_etl"]
+known-local-folder = ["deeplay"]
+lines-after-imports = 2
+lines-between-types = 1
+split-on-trailing-comma = true
+no-sections = false
+order-by-type = true
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]

@@ -1,41 +1,23 @@
-# originally taken from https://github.com/python-poetry/poetry/blob/master/.pre-commit-config.yaml
 repos:
+  # - check-added-large-files
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
       - id: check-added-large-files
         args: ['--maxkb=2000']
-#        exclude: ^.*\.egg-info/
       - id: check-merge-conflict
       - id: check-case-conflict
       - id: debug-statements
+
+  # - do-not-submit
 
   - repo: https://github.com/jlebar/pre-commit-hooks
     rev: 62ca83ba4958da48ea44d9f24cd0aa58633376c7 # pragma: allowlist secret
     hooks:
       - id: do-not-submit # Forbids the string "do not submit".upper()
-  - repo: https://github.com/pre-commit/pygrep-hooks
-    rev: v1.10.0
-    hooks:
-      - id: python-use-type-annotations
 
-  - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-        name: "isort (python)"
-        types: [python]
-        args: [ "--settings-path", "pyproject.toml" ]
-      - id: isort
-        name: "isort (pyi)"
-        types: [pyi]
-        args: [ "--settings-path", "pyproject.toml" ]
-
-  - repo: https://github.com/psf/black
-    rev: 23.7.0
-    hooks:
-      - id: black
-        args: [ '--line-length', '120' ]
+  # - detect-secrets
 
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.4.0
@@ -46,3 +28,18 @@ repos:
         entry: detect-secrets-hook
         args: ["--baseline", ".secrets.baseline"]
         exclude: '\.gitsecret.+'
+
+  # - ruff
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.4.4
+    hooks:
+      # Run the linter.
+      - id: ruff
+        types_or: [ python, pyi, jupyter ]
+        args: [ "--fix", "--config", "pyproject.toml" ]
+      # Run the formatter.
+      - id: ruff-format
+        types_or: [ python, pyi, jupyter ]
+        args: [ "--config", "pyproject.toml" ]
