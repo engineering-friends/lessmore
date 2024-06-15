@@ -1,2 +1,3 @@
-# lessmore
+# About 
+
 Mark Lidenberg personal monorepo. 
