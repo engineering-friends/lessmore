@@ -35,6 +35,7 @@ sed -i '' "s/\(name = \"\)[^\"]*\(\".*\)/\1$project_name\2/" pyproject.toml
 # poetry version major
 # poetry version minor
 poetry version patch
+VERSION=$( poetry version --short )
 
 # - Iterate over all <git_root>/source/python/libs/* directories and set dependencies in pyproject.toml for current commits
 
@@ -68,3 +69,9 @@ for lib_dir in $(find $git_root/source/python/libs -maxdepth 1 -mindepth 1 -type
     echo "\"$lib_name\" = {git = \"$lib_git_url\", rev = \"$lib_rev\", subdirectory = \"$lib_subdirectory\"} # commited_at: \"$lib_commited_at\"" >> pyproject.toml
 
 done
+
+# - Commit and push
+
+git add pyproject.toml
+git commit --message "chore($project_name): release-$VERSION"
+git push
