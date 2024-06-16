@@ -1,6 +1,11 @@
 #!/bin/bash
 
-# Function to recursively rename files and directories
+# - Go to scripts directory
+
+cd ${0%/*}
+
+# - Rename recursively
+
 rename_recursively() {
     local dir="$1"
 
@@ -20,5 +25,4 @@ rename_recursively() {
     done
 }
 
-# Start renaming from the provided directory
 rename_recursively "."

@@ -1,3 +1,7 @@
+# - Go to current directory
+
+
+
 # - Remove old memray files if exist
 
 rm memray_report.bin
