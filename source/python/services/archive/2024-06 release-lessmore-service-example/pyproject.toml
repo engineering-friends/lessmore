@@ -27,4 +27,4 @@ pytest = "^8.2.2"
 memray = "^1.12.0"
 python-benedict = {extras = ["all"], version = "^0.33.2"}
 
-"lessmore.utils" = {git = "https://github.com/engineering-friends/lessmore.git", rev = "d4bc2759e52fb5fe9c66648c5265196308d3a1c7", subdirectory = "source/python/libs/lessmore.utils"}
+"lessmore.utils" = {git = "https://github.com/engineering-friends/lessmore.git", rev = "5ae5bbbbbff33d12284d12620452d4e6ffc6078d", subdirectory = "source/python/libs/lessmore.utils"}

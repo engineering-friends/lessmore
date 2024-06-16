@@ -10,7 +10,7 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.9"
 tqdm = "^4.64.0"
-loguru = "^0.6.0"
+loguru = "^0.7.0"
 numpy = "^1.26.1"
 pandas = "^1.0"
 protobuf = "^3.0"
