@@ -10,7 +10,7 @@ git rev-parse --abbrev-ref HEAD | grep '^master$' > /dev/null || { echo "Current
 
 # - Exit if there are staged changes
 
-git diff --cached --name-only && { echo "There are staged changes. Exiting."; exit 1; }
+git diff --cached --name-only | grep -q . && { echo "There are staged changes. Exiting."; exit 1; }
 
 # - Exit if there are unpulled commits
 
