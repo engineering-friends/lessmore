@@ -1,4 +1,4 @@
-# Bump version and set lessmore dependencies to current commit
+# Bump version and set lessmore dependencies to the current commit
 
 # - Go to script directory
 
@@ -48,10 +48,11 @@ for lib_dir in $(find $git_root/source/python/libs -maxdepth 1 -mindepth 1 -type
     lib_git_url="https://github.com/engineering-friends/lessmore.git"
     lib_rev=$(git rev-parse HEAD)
     lib_subdirectory="source/python/libs/$lib_name"
+    lib_commited_at=$(TZ=UTC0 git show --quiet --date='format-local:%Y-%m-%d %H:%M:%S' --format="%cd")
 
     # - Add dependencies in pyproject.toml
 
-    # format: "lessmore.utils" = {git = "https://github.com/engineering-friends/lessmore.git", rev = "...", subdirectory = "source/python/libs/lessmore.utils"}
-    echo "\"$lib_name\" = {git = \"$lib_git_url\", rev = \"$lib_rev\", subdirectory = \"$lib_subdirectory\"}" >> pyproject.toml
+    # format: "lessmore.utils" = {git = "https://github.com/engineering-friends/lessmore.git", rev = "...", subdirectory = "source/python/libs/lessmore.utils"} # commited_at: "2024-06-16 15:12:39"
+    echo "\"$lib_name\" = {git = \"$lib_git_url\", rev = \"$lib_rev\", subdirectory = \"$lib_subdirectory\"} # commited_at: \"$lib_commited_at\"" >> pyproject.toml
 
 done
