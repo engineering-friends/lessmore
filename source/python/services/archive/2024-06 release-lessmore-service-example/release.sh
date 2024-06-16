@@ -4,6 +4,18 @@
 
 cd ${0%/*}
 
+# - Exit if not on master branch
+
+git rev-parse --abbrev-ref HEAD | grep '^master$' > /dev/null || { echo "Current branch is not 'master'. Exiting."; exit 1; }
+
+# - Exit if there are staged changes
+
+git diff --staged --quiet || { echo "There are staged changes. Exiting."; exit 1; }
+
+# - Exit if there are unpulled commits
+
+git fetch origin && git diff --quiet HEAD origin/master ||  { echo "There are some unpulled commits. Exiting."; exit 1; }
+
 # - Fix project name
 
 # -- Get directory name
