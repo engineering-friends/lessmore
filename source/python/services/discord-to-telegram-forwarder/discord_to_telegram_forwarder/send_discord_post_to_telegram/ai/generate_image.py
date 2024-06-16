@@ -4,6 +4,8 @@ import requests
 
 from box import Box
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.ask import ask
+from lessmore.utils.file_primitives.write_file import write_file
+from lessmore.utils.system.open_in_os import open_in_os
 from openai import OpenAI
 
 
@@ -51,10 +53,7 @@ def test():
     image_contents = generate_image(
         prompt="Continuous lines very easy, very thin outline, clean and minimalist, black outline only, a cat with a beard."
     )
-    with open("/tmp/image.png", "wb") as f:
-        f.write(image_contents)
-    from lessmore.utils.system.open_in_os import open_in_os
-
+    write_file(data=image_contents, filename="/tmp/image.png", as_bytes=True)
     open_in_os("/tmp/image.png")
 
 

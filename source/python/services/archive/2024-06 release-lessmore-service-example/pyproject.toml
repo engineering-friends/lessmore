@@ -1,0 +1,14 @@
+[build-system]
+requires = [ "poetry-core",]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "release-lessmore-service-example"
+version = "0.1.14"
+description = ""
+authors = [ "marklidenberg <marklidenberg@gmail.com>",]
+
+[tool.poetry.dependencies]
+python = "3.12.3"
+
+"lessmore.utils" = {git = "https://github.com/engineering-friends/lessmore.git", rev = "7f23db7762617aeb09f317b014f3c774f1269b39", subdirectory = "source/python/libs/lessmore.utils"} # commited_at: "2024-06-16 15:12:39"

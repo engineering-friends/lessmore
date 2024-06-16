@@ -42,6 +42,7 @@ def get_whois_url(
     ]
 
     # - Filter filled pages
+
     pages = [page for page in pages if page["filled"]]
 
     # - Ask gpt the link for the page with the name

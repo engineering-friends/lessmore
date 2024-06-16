@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "palette"
+version = "0.1.0"
+description = ""
+authors = ["marklidenberg <marklidenberg@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.12.*"
+aiogram = "^3.7.0"
+openai = "^1.31.0"
+pydantic-settings = "^2.3.0"
+loguru = "^0.7.2"
+pendulum = "^3.0.0"
+anyconfig = {extras = ["yaml"], version = "^0.14.0"}
+requests = "^2.32.3"
+aiogram-dialog = "^2.1.0"
+diagrams = "^0.23.4"
+babel = "^2.15.0"
+opencv-python = "^4.10.0.82"
+pillow = "^10.3.0"
+fluent = "^0.10.0"
+fluent-runtime = "^0.4.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
