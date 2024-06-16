@@ -1,3 +1,4 @@
+# Encrypts all secrets, e.g. for all pairs `a`, `a.secret` overwrites `a.secret` with the new decrypted content of `a`
 
 # - Got to the root of the repository
 

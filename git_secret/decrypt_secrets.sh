@@ -1,9 +1,8 @@
-# Decrypt of *.secret files in the repository. This will create the decrypted files in the same directory with the same name but without the .secret extension.
+# Decrypts all secrets, e.g. for all `a.secret` files, it creates a `a` file with the decrypted content.
 
 # - Go to repo root
 
 cd ${0%/*}/..
-
 
 # - Find all .secret files and add them to the git secret
 
