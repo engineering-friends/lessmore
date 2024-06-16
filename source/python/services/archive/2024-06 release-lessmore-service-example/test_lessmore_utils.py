@@ -2,7 +2,7 @@
 from lessmore.utils.slugify import slugify
 
 def test():
-    print(slugify('Hello World!'))
+    assert slugify('Hello World!') == 'hello-world'
 
 if __name__ == '__main__':
     test()
