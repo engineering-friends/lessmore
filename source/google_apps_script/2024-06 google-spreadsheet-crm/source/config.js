@@ -1,5 +1,5 @@
-const WHAPI_ADMIN_TOKEN = "lC34vJRlOEMAh3bAprliM9pujfpDw4RC";
-const WHAPI_ADMIN2_TOKEN = "IOdPDCsh4ByBUdtGmogSUtNeacbusFv4"; // used to create new accounts
+const WHAPI_ADMIN_TOKEN = "<whapi_token1>";
+const WHAPI_ADMIN2_TOKEN = "<whapi_token2>"; // used to create new accounts
 
 const DiffTimeZoneHours = 7;
 
