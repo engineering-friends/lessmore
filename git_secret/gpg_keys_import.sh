@@ -10,10 +10,10 @@ git secret init
 
 #[keyboxd]
 #---------
-#pub   ed25519 2023-08-11 [SC]
+#pub   ed25519 2024-06-16 [SC]
 #      AE448D555EF175712DBBBFCCABF36667ED4DED6E
-#uid           [ unknown] Mark Lidenberg (lessmore-repo) <marklidenberg@gmail.com>
-#sub   cv25519 2023-08-11 [E]
+#uid           [ unknown] Mark Lidenberg <marklidenberg@gmail.com>
+#sub   cv25519 2024-06-16 [E]
 
 if gpg --list-keys | grep -q AE448D555EF175712DBBBFCCABF36667ED4DED6E; then
     echo "GPG keys already imported"
