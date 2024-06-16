@@ -91,3 +91,5 @@
 !git_secret/**/*
 git_secret/files/test_git_secret
 
+source/other/macos-poweruser/ssh/keys/id_ed25519
+source/other/macos-poweruser/ssh/keys/known_hosts
