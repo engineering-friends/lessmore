@@ -1,6 +1,6 @@
 # - Go to current directory
 
-
+cd ${0%/*}
 
 # - Remove old memray files if exist
 
