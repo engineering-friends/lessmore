@@ -8,17 +8,17 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 tqdm = "^4.64.0"
 loguru = "^0.6.0"
-numpy = "^1.14.3"
+numpy = "^1.26.1"
 pandas = "^1.0"
 protobuf = "^3.0"
 python-box = {extras = ["ruamel.yaml", "toml", "msgpack"], version = "^6.0.2"}
 fire = "^0.4.0"
 sortedcontainers = "^2.4.0"
 ujson = "^5.5.0"
-pendulum = "^2.1.2"
+pendulum = "^3.0.0"
 PyYAML = "^6.0"
 argon2-cffi = "^21.3.0"
 bcrypt = "^4.0.1"

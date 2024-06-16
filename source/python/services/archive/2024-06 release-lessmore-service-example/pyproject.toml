@@ -3,7 +3,7 @@ requires = [ "poetry-core",]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "playground"
+name = "release-lessmore-service-example"
 version = "0.1.0"
 description = ""
 authors = [ "marklidenberg <marklidenberg@gmail.com>",]
@@ -25,7 +25,6 @@ pynput = "^1.7.7"
 yadisk = "^2.1.0"
 pytest = "^8.2.2"
 memray = "^1.12.0"
+python-benedict = {extras = ["all"], version = "^0.33.2"}
 
-[tool.poetry.dependencies.python-benedict]
-extras = [ "all",]
-version = "^0.33.2"
+"lessmore.utils" = {git = "https://github.com/engineering-friends/lessmore.git", rev = "d4bc2759e52fb5fe9c66648c5265196308d3a1c7", subdirectory = "source/python/libs/lessmore.utils"}
