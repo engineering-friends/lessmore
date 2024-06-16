@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["marklidenberg <marklidenberg@gmail.com>"]
 packages = [
-    { include = "deeplay" },
+    { include = "lessmore" },
 ]
 
 [tool.poetry.dependencies]

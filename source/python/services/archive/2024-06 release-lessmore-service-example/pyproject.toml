@@ -11,20 +11,5 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.12.3"
-langchain = "^0.2"
-langchain-openai = "^0.1.7"
-openai = "^1.30.1"
-pydantic-settings = "^2.2.1"
-loguru = "^0.7.2"
-pendulum = "^3.0.0"
-beautifulsoup4 = "^4.12.3"
-faiss-cpu = "^1.8.0"
-langgraph = "^0.0.55"
-keyboard = "^0.13.5"
-pynput = "^1.7.7"
-yadisk = "^2.1.0"
-pytest = "^8.2.2"
-memray = "^1.12.0"
-python-benedict = {extras = ["all"], version = "^0.33.2"}
 
-"lessmore.utils" = {git = "https://github.com/engineering-friends/lessmore.git", rev = "e4d2edd1115df8ce677f37f89ce3d79244603834", subdirectory = "source/python/libs/lessmore.utils"}
+"lessmore.utils" = {git = "https://github.com/engineering-friends/lessmore.git", rev = "d4fed66ced59e529c9ff3a2a3b420074f186318d", subdirectory = "source/python/libs/lessmore.utils"}
