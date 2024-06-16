@@ -1,9 +1,8 @@
 import os
 import re
+import time
 
 import yadisk
-
-from lessmore.utils.track import track
 
 
 # Function to authenticate with Yandex Disk
@@ -36,6 +35,10 @@ def rename_recursively(disk, path):
             print(f"Renamed: {item_path} -> {new_path}")
             item_path = new_path  # Update item_path to the new path after renaming
 
+            # wait a bit, sometimes it fails because file has not been moved yet for next recursion step
+
+            time.sleep(0.2)
+
         if item.type == "dir":
             rename_recursively(disk, item_path)
 
@@ -45,7 +48,7 @@ def test():
     disk = authenticate_yadisk()
 
     # Specify the root directory of your Yandex Disk
-    root_directory = "/Apps"
+    root_directory = "/Apps/Архив"
 
     # Start renaming process
     rename_recursively(disk, root_directory)
