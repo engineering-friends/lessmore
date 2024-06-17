@@ -1,6 +1,6 @@
 import os
 
-import fire
+import typer
 
 from lessmore.utils.file_primitives.list_files import list_files
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
@@ -45,7 +45,7 @@ def format_file(filename: str) -> None:
             )
 
 
-def main(*sources) -> None:
+def main(sources: list[str]) -> None:
     assert len(sources) > 0, "Specify sources"
     for source in sources:
         for filename in list_files(source):
@@ -54,4 +54,4 @@ def main(*sources) -> None:
 
 if __name__ == "__main__":
     setup_json_loguru()
-    fire.Fire(main)
+    typer.run(main)
