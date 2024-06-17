@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "2021-fund"
+name = "family-fund"
 version = "0.1.0"
 description = ""
 authors = ["marklidenberg <marklidenberg@gmail.com>"]
