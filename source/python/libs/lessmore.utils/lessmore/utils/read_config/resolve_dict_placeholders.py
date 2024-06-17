@@ -2,7 +2,7 @@ import copy
 import re
 
 
-def resolve_placeholders(dic):
+def resolve_dict_placeholders(dic):
     """Resolve string self-placeholders in a dictionary recursively"""
 
     # - Copy the dictionary to avoid modifying the original
@@ -44,7 +44,7 @@ def resolve_placeholders(dic):
 
 
 def test():
-    assert resolve_placeholders(
+    assert resolve_dict_placeholders(
         {
             "a": 1,
             "h": "{{b}}",
