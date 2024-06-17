@@ -93,3 +93,8 @@ git_secret/files/test_git_secret
 
 source/other/macos-poweruser/ssh/keys/id_ed25519
 source/other/macos-poweruser/ssh/keys/known_hosts
+source/python/services/archive/2024-06\ family-fund/token.json
+source/python/services/archive/2024-06\ family-fund/runners/token.json
+source/python/services/archive/2024-06\ family-fund/credentials/client_secret.json
+source/python/services/archive/2024-06\ family-fund/credentials/service_account_secret.json
+source/python/services/archive/2024-06\ family-fund/credentials/token.json

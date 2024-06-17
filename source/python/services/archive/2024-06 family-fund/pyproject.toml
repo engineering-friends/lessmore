@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "2021-fund"
+version = "0.1.0"
+description = ""
+authors = ["marklidenberg <marklidenberg@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+pandas = "^1.4.3"
+scipy = "^1.8.1"
+httpx = "^0.23.0"
+cache-to-disk = "^2.0.0"
+pycbrf = "^1.1.0"
+gspread = "^5.4.0"
+google-api-python-client = "^2.53.0"
+loguru = "^0.6.0"
+stackprinter = "^0.2.6"
+notifiers = "^1.3.3"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

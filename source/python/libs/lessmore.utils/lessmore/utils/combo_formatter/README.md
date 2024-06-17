@@ -13,6 +13,7 @@ Run ```python <path_to_combo_formatter_directory> <path1> <path2> ... <pathn>```
 # How to configure external tool in IntelliJ IDEA
 
 ## Create an external tool 
+
 Go to: `File` -> `Settings` -> `Tools` -> `External Tools` -> `+`
 
 Name: combo_formatter

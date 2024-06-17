@@ -9,7 +9,9 @@ from lessmore.utils.system.run_system_command import run_system_command
 from loguru import logger
 
 
-config = read_config(source="config.yaml")
+config = read_config(
+    source=os.path.join(os.path.dirname(__file__), "config.yaml"),
+)
 
 
 def format_file(filename: str) -> None:
