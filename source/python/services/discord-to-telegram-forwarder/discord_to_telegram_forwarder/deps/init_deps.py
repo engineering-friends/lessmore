@@ -8,18 +8,17 @@ import openai
 
 from discord_to_telegram_forwarder.config.config import Config
 from discord_to_telegram_forwarder.deps.deps import Deps
-from loguru import logger
-from telethon import TelegramClient
-
 from lessmore.utils.loguru_utils.format_as_colored_json.format_as_colored_json import format_as_colored_json
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.read_config.read_config import read_config
+from loguru import logger
+from telethon import TelegramClient
 
 
 def init_deps(env: Literal["test", "prod"] = "test", log_level="DEBUG") -> Deps:
     # - Init config
 
-    config = Config(**read_config(str(Path(__file__).parent / f"../config/config.secrets.{env}.yaml")))
+    config = Config(**read_config(str(Path(__file__).parent / f"../config/config.{env}.yaml")))
 
     # - Configure openai
 
@@ -50,7 +49,7 @@ def init_deps(env: Literal["test", "prod"] = "test", log_level="DEBUG") -> Deps:
             api_hash=config.telegram_api_hash,
         ),
         telegram_user_client=TelegramClient(
-            session=str(Path(local_files_dir) / f"telegram_user.session"),
+            session=str(Path(local_files_dir) / "telegram_user.session"),
             api_id=int(config.telegram_api_id),
             api_hash=config.telegram_api_hash,
         ),

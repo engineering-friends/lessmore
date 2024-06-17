@@ -5,17 +5,16 @@ from pathlib import Path
 
 import openai
 
-from palette.config.config import Config
-from palette.deps.deps import Deps
-
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.read_config.read_config import read_config
+from palette.config.config import Config
+from palette.deps.deps import Deps
 
 
 def init_deps(log_level="DEBUG") -> Deps:
     # - Init config
 
-    config = Config(**read_config([f'{str(Path(__file__).parent / "../config")}/secrets.yaml']))
+    config = Config(**read_config([f'{str(Path(__file__).parent / "../config")}/config.yaml']))
 
     # - Init logger
 
