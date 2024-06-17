@@ -2,7 +2,9 @@ import os
 
 
 def get_file_type(filename):
-    if "Dockerfile" in filename:
+    if os.path.basename(filename).startswith("."):
+        return os.path.basename(filename)
+    elif "Dockerfile" in filename:
         return "Dockerfile"
     else:
         return os.path.splitext(filename)[-1]
@@ -18,7 +20,20 @@ type_config = {
         "wise_comments_config": {"single_comments": ("//",), "multi_comments": [("/*", "*/")]},
     },
     "bash-like": {
-        "file_types": ["Dockerfile", ".sh"],
+        "file_types": [
+            "Dockerfile",
+            ".sh",
+            ".gitignore",
+            ".gitattributes",
+            ".airflowignore",
+            ".dockerignore",
+            ".zshrc",
+            ".bashrc",
+            ".bash_profile",
+            ".yaml",
+            ".yml",
+            ".toml",
+        ],
         "wise_comments_config": {"single_comments": ("#",)},
     },
 }

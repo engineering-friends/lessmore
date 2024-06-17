@@ -17,10 +17,14 @@ config = read_config(
 def format_file(filename: str) -> None:
     # - Get file type
 
-    if "Dockerfile" in filename:
+    if os.path.basename(filename).startswith("."):
+        file_type = os.path.basename(filename)
+    elif "Dockerfile" in filename:
         file_type = "Dockerfile"
     else:
         file_type = os.path.splitext(filename)[-1]
+
+    logger.debug("Formatting file", filename=filename, file_type=file_type)
 
     # - Apply formatters
 
