@@ -49,7 +49,7 @@ def get_global_message_handler(
             )
 
             if interaction:
-                interaction.pending_question.callback_future.set_result(CallbackEvent(message=message))
+                interaction.question.callback_future.set_result(CallbackEvent(message=message))
                 return
 
         # - If there is an interaction for latest question message id: send to corresponding interaction
@@ -66,7 +66,7 @@ def get_global_message_handler(
                 default=None,
             )
             if interaction:
-                interaction.pending_question.callback_future.set_result(CallbackEvent(message=message))
+                interaction.question.callback_future.set_result(CallbackEvent(message=message))
                 return
 
         # - Start new message by default if there is a message starter

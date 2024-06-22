@@ -1,19 +1,20 @@
 import asyncio
 
 from abc import ABC, abstractmethod
+from typing import Any
 
 from loguru import logger
 
-from palette.teledo.context.interaction import Interaction
+# from palette.teledo.context.interaction import Interaction
 from palette.teledo.elements.rendered_element import RenderedElement
 
 
 class Element(ABC):
     @abstractmethod
-    def render(self, interaction: Interaction) -> RenderedElement:
+    def render(self, interaction: Any) -> RenderedElement:
         pass
 
-    async def __call__(self, interaction: Interaction, inplace: bool = True):
+    async def __call__(self, interaction: Any, inplace: bool = True):
         # - Reset question callbacks
 
         interaction.question.ui_callbacks = {}
