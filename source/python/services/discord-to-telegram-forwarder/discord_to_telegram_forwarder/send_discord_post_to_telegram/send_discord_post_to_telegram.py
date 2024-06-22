@@ -11,8 +11,7 @@ import discord
 import emoji as emoji_lib
 
 from box import Box
-from discord_to_telegram_forwarder.deps.deps import Deps
-from discord_to_telegram_forwarder.deps.init_deps import init_deps
+from discord_to_telegram_forwarder.deps import Deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.generate_image import generate_image
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.download_as_temp_file import _download_as_temp_file
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
@@ -31,13 +30,12 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_reactio
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.to_png import to_png
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.utils.cache_on_disk import cache_on_disk
+from lessmore.utils.file_primitives.write_file import write_file
 from loguru import logger
 from PIL import Image
 from pymaybe import maybe
 from retry import retry
 from telethon import functions, types
-
-from lessmore.utils.file_primitives.write_file import write_file
 
 
 MENTION_CHAR_PLACEHOLDER = "ç"
@@ -351,7 +349,7 @@ async def send_discord_post_to_telegram(
 async def test_send_real_message_from_discord(forum_name: str, title_contains: str):
     # - Init deps
 
-    deps = init_deps(env="prod")
+    deps = Deps.load(env="prod")
 
     # - Start telegram bots
 
@@ -397,7 +395,7 @@ async def test_send_real_message_from_discord(forum_name: str, title_contains: s
                     telegram_chat_to_filter={deps.config.telegram_ef_channel: lambda message: True},
                     filter_forum_post_messages=False,
                 )
-            except Exception as e:
+            except Exception:
                 import traceback
 
                 traceback.print_exc()
@@ -412,7 +410,7 @@ async def test_send_real_message_from_discord(forum_name: str, title_contains: s
 async def test():
     # - Init deps
 
-    deps = init_deps()
+    deps = Deps.load()
 
     # - Start telegram bots
 

@@ -19,7 +19,7 @@ from bot_dialogs.reply_buttons import reply_kbd_dialog
 from bot_dialogs.scrolls import scroll_dialog
 from bot_dialogs.select import selects_dialog
 from bot_dialogs.switch import switch_dialog
-from palette.deps.init_deps import init_deps
+from palette.deps import Deps
 
 
 async def start(message: Message, dialog_manager: DialogManager):
@@ -81,7 +81,7 @@ def setup_dp():
 async def main():
     # - Init deps
 
-    deps = init_deps()
+    deps = Deps.load()
 
     # real main
     bot = Bot(token=deps.config.telegram_bot_token)

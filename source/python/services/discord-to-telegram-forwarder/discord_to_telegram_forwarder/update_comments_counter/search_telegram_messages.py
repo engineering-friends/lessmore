@@ -1,5 +1,4 @@
-from discord_to_telegram_forwarder.deps.deps import Deps
-from discord_to_telegram_forwarder.deps.init_deps import init_deps
+from discord_to_telegram_forwarder.deps import Deps
 from telethon.tl.patched import Message
 
 
@@ -23,7 +22,7 @@ async def search_telegram_messages(deps: Deps, channel: str | int, query: str) -
 async def test():
     # - Init deps
 
-    deps = init_deps(log_level="TRACE")
+    deps = Deps.load(log_level="TRACE")
 
     # - Start telegram client
 

@@ -4,7 +4,7 @@ from typing import Callable
 
 import discord
 
-from discord_to_telegram_forwarder.deps.init_deps import init_deps
+from discord_to_telegram_forwarder.deps import Deps
 from loguru import logger
 
 
@@ -24,7 +24,7 @@ class OnMessageDiscordClient(discord.Client):
         )
 
     async def on_ready(self):
-        logger.info(f"Logged in", user=self.user, id=self.user.id)
+        logger.info("Logged in", user=self.user, id=self.user.id)
 
     async def on_message(self, message: discord.Message):
         try:
@@ -42,7 +42,7 @@ class OnMessageDiscordClient(discord.Client):
 async def test():
     # - Init deps
 
-    deps = init_deps()
+    deps = Deps.load()
 
     # - Define process_discord_post
 

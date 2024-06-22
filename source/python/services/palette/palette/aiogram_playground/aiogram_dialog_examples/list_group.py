@@ -12,10 +12,10 @@ from aiogram.types import Message
 from aiogram_dialog import Dialog, DialogManager, LaunchMode, StartMode, SubManager, Window, setup_dialogs
 from aiogram_dialog.widgets.kbd import Checkbox, ListGroup, ManagedCheckbox, Radio, Row
 from aiogram_dialog.widgets.text import Const, Format
-from palette.deps.init_deps import init_deps
+from palette.deps import Deps
 
 
-API_TOKEN = init_deps().config.telegram_bot_token
+API_TOKEN = Deps.load().config.telegram_bot_token
 
 
 class DialogSG(StatesGroup):

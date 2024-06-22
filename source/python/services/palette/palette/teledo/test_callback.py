@@ -6,7 +6,8 @@ from aiogram import Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import Message
-from palette.deps.init_deps import init_deps
+
+from palette.deps import Deps
 from palette.teledo.elements.lib.button_element import ButtonElement
 from palette.teledo.start_polling.start_polling import start_polling
 
@@ -19,7 +20,7 @@ def test_callback(
         # - Init bot
 
         bot = Bot(
-            token=init_deps().config.telegram_bot_token,
+            token=Deps.load().config.telegram_bot_token,
             default=DefaultBotProperties(parse_mode=ParseMode.HTML),
         )
 
@@ -46,7 +47,7 @@ def test():
         await message.answer("Test passed!")
 
     test_callback(
-        chat_id=init_deps().config.telegram_test_chat_id,
+        chat_id=Deps.load().config.telegram_test_chat_id,
         func=ButtonElement(text="Test Button", callback=callback),
     )
 

@@ -5,7 +5,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_playground.deps.init_deps import init_deps
+from langchain_playground.deps import Deps
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
@@ -15,5 +15,5 @@ def test():
 
 
 if __name__ == "__main__":
-    deps = init_deps()
+    deps = Deps.load()
     test()

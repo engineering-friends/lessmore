@@ -32,7 +32,8 @@ ignore = [
     "E722", # отключение ошибок типа 'do not use bare `except`'
     "E402", # отключение ошибок типа 'module level import not at top of file'
     "E712", # отключение ошибок типа 'comparison to True should be 'if cond is True:' or 'if cond:'
-    "E731", # отключение ошибок типа 'do not assign a lambda expression, use a def'
+    "E731", # отключение ошибок типа 'do not assign a lambda expression, use a def',
+    "F841", # отключение ошибок типа 'local variable is assigned to but never used'
 ]
 
 [tool.ruff.lint.isort]

@@ -6,7 +6,8 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import CallbackQuery, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from palette.deps.init_deps import init_deps
+
+from palette.deps import Deps
 
 
 async def command_start_handler(message: Message) -> None:
@@ -37,7 +38,7 @@ async def go_to_level_1_handler(callback_query: CallbackQuery) -> None:
 async def main() -> None:
     # - Init deps
 
-    deps = init_deps()
+    deps = Deps.load()
 
     # - Initialize Bot instance with default bot properties which will be passed to all API calls
 

@@ -1,7 +1,7 @@
 import asyncio
 
 from aiogram.types import Message
-from palette.deps.init_deps import init_deps
+from palette.deps import Deps
 from palette.teledo.elements.element import Element
 from palette.teledo.elements.lib.button_element import ButtonElement
 from palette.teledo.start_polling.start_polling import start_polling
@@ -17,7 +17,7 @@ async def start(message: Message) -> None:
 
 async def main() -> None:
     await start_polling(
-        bot=init_deps().config.telegram_bot_token,
+        bot=Deps.load().config.telegram_bot_token,
         command_handlers={
             "start": start,
         },
