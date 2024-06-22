@@ -6,9 +6,7 @@ from typing import Callable
 
 from aiogram.types import Message
 
-from palette.teledo.context.callback_info import CallbackInfo
 from palette.teledo.context.interaction import Interaction
-from palette.teledo.elements.element import Element
 
 
 @dataclass

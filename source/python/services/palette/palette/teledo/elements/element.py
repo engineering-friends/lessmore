@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 
 from loguru import logger
 
-from palette.teledo.context.context import context
 from palette.teledo.context.interaction import Interaction
 from palette.teledo.elements.rendered_element import RenderedElement
 
@@ -41,11 +40,11 @@ class Element(ABC):
 
         if callback_event.callback_id:
             # UI event
-            if callback_event.callback_id not in context.ui_callbacks:
+            if callback_event.callback_id not in interaction.pending_question.ui_callbacks:
                 logger.error("Callback not found", callback_id=callback_event.callback_id)
                 return
 
-            callback_info = context.ui_callbacks[callback_event.callback_id]
+            callback_info = interaction.pending_question.ui_callbacks[callback_event.callback_id]
             callback_coroutine = callback_info.callback(
                 message=message,
                 root=self,
@@ -58,7 +57,7 @@ class Element(ABC):
                 logger.debug("Message callback not found, skipping")
                 return
 
-            callback_info = context.ui_callbacks[callback_event.callback_id]
+            callback_info = interaction.pending_question.message_callback
             callback_coroutine = callback_info.callback(
                 message=message,
                 root=self,

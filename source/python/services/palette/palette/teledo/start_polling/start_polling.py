@@ -5,14 +5,11 @@ from typing import Callable, Optional
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-from aiogram.filters import Command
 from aiogram.types import BotCommand, Message
 
 from palette.deps import Deps
-from palette.teledo.archive.thread_handler import thread_handler
 from palette.teledo.context.context import context
 from palette.teledo.context.interaction import Interaction
-from palette.teledo.elements.lib.button_element import ButtonElement
 from palette.teledo.start_polling.global_callback_query_handler import global_callback_query_handler
 from palette.teledo.start_polling.global_message_handler import get_global_message_handler
 
@@ -70,10 +67,7 @@ def test() -> None:
         start_polling(
             message_starter=message_starter,
             command_starters={"/start": command_starter, "/new": command_starter},
-            bot=Bot(
-                token=Deps.load().config.telegram_bot_token,
-                default=DefaultBotProperties(parse_mode=ParseMode.HTML),
-            ),
+            bot=Deps.load().config.telegram_bot_token,
         )
     )
 
