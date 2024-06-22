@@ -19,9 +19,9 @@ def get_global_message_handler(
         """Global message handler
 
         - If starter command: start new interaction with command (if unknown command: skip it)
-        - If reply: send to reply interaction
-        - If no active question: start new interaction
-        - If active question: send to active question interaction
+        - If reply and replied message is a pending question: send to reply interaction
+        - If there interaction for latest question message id: send to corresponding interaction
+        - Start new message by default if there is a message starter
 
         """
         logger.trace(
@@ -90,7 +90,5 @@ def get_global_message_handler(
         new_interaction = Interaction(user_id=message.from_user.id)
         user_context.interactions.append(new_interaction)
         asyncio.create_task(message_starter(message=message, interaction=new_interaction))
-
-        return
 
     return global_message_handler
