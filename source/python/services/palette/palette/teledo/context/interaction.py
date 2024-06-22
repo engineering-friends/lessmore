@@ -14,5 +14,5 @@ class Interaction:
     user_id: int
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     state: dict = field(default_factory=dict)
-    pending_question: Question = field(default_factory=Question)
+    question: Question = field(default_factory=Question)
     sample_message: Optional[Message] = None  # used for answering to the user with in the same chat

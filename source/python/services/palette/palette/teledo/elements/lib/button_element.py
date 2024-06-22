@@ -15,7 +15,7 @@ class ButtonElement(Element):
         keyboard = InlineKeyboardBuilder()
         keyboard.button(
             text=self.text,
-            callback_data=interaction.pending_question.register_ui_callback(
+            callback_data=interaction.question.register_ui_callback(
                 callback=self.callback,
                 element=self,
             ),

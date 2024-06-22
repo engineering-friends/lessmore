@@ -47,10 +47,6 @@ async def start_polling(
 
     await bot.set_my_commands(commands=commands)
 
-    # - Set bot to context
-
-    context.bot = bot
-
     # - Start polling
 
     await dp.start_polling(bot)

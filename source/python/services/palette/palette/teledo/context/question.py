@@ -15,7 +15,6 @@ class Question:
     message: Optional[Message] = None
     ui_callbacks: dict[str, CallbackInfo] = field(default_factory=dict)
     message_callback: Optional[CallbackInfo] = None
-
     callback_future: Optional[asyncio.Future] = field(
         default_factory=lambda: asyncio.get_running_loop().create_future()
     )  # will be set with CallbackEvent from global handler (callback_query/message)

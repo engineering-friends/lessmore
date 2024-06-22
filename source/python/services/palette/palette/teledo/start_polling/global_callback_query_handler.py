@@ -26,7 +26,7 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
         [
             interaction
             for interaction in user_context.interactions
-            if interaction.pending_question.message_id == callback_query.message.message_id
+            if interaction.question.message_id == callback_query.message.message_id
         ],
         default=None,
     )
