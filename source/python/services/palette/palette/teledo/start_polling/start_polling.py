@@ -7,10 +7,12 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import Message
+
 from palette.deps import Deps
 from palette.teledo.archive.thread_handler import thread_handler
 from palette.teledo.elements.lib.button_element import ButtonElement
-from palette.teledo.start_polling.router import global_callback_query_handler, global_message_handler
+from palette.teledo.start_polling.global_callback_query_handler import global_callback_query_handler
+from palette.teledo.start_polling.global_message_handler import global_message_handler
 
 
 async def start_polling(
@@ -24,17 +26,6 @@ async def start_polling(
     dp = Dispatcher()
 
     # - Register handlers
-
-    for command, handler in command_starters.items():
-        dp.message.register(
-            thread_handler(handler=handler),
-            Command(command),
-        )
-
-    if message_starter:
-        dp.message.register(
-            thread_handler(handler=message_starter),
-        )
 
     dp.callback_query.register(global_callback_query_handler)
     dp.message.register(global_message_handler)

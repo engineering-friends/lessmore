@@ -13,3 +13,7 @@ class Interaction:
         default_factory=lambda: asyncio.get_running_loop().create_future()
     )  # this future is set when global query_handler is called with appropriate callback_id
     state: dict = field(default_factory=dict)
+
+    @property
+    def is_active(self):
+        return self.ask_message_id != ""

@@ -4,8 +4,16 @@ from palette.teledo.interaction import Interaction
 
 
 @dataclass
+class UserContext:
+    # - Interactions
+
+    # todo later: index properly [@marklidenberg]
+    interactions: list[Interaction]
+
+
+@dataclass
 class Context:
-    interactions_by_user_id: dict[str, dict[str, Interaction]] = field(default_factory=dict)
+    user_contexts: dict[str, UserContext] = field(default_factory=dict)
     callbacks: dict = field(default_factory=dict)
 
 
