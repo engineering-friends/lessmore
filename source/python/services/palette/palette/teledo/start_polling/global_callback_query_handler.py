@@ -27,7 +27,8 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
             interaction
             for interaction in user_context.interactions
             if interaction.pending_question.message_id == callback_query.message.message_id
-        ]
+        ],
+        default=None,
     )
 
     if not interaction:
@@ -37,6 +38,7 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
             message_id=callback_query.message.message_id,
             callback_id=callback_query.data,
         )
+        return
 
     # - Get callback
 
@@ -51,15 +53,6 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
         )
         return
 
-    # - Run callback
-
-    asyncio.create_task(callback(interaction=interaction))
-
     # - Set callback id to interaction future. It will be awaited in the element coroutine
 
-    interaction.pending_question.callback_future.set_result(
-        CallbackEvent(
-            type="ui",
-            callback_id=callback_query.data,
-        )
-    )
+    interaction.pending_question.callback_future.set_result(CallbackEvent(callback_id=callback_query.data))

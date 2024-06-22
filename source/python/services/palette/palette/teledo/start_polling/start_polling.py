@@ -28,7 +28,12 @@ async def start_polling(
     # - Register handlers
 
     dp.callback_query.register(global_callback_query_handler)
-    dp.message.register(get_global_message_handler())
+    dp.message.register(
+        get_global_message_handler(
+            command_starters=command_starters,
+            message_starter=message_starter,
+        )
+    )
 
     # - Init bot from token if needed
 
