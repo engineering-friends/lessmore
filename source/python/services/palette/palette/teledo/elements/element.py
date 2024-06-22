@@ -29,6 +29,12 @@ class Element(ABC):
         else:
             message = await interaction.sample_message.answer(**self.render(interaction=interaction).__dict__)
 
+            # todo later: make properly
+            from palette.teledo.context.context import context
+
+            user_context = context.get_user_context(interaction.user_id)
+            user_context.active_question_messages.append(message)
+
         # - Update pending question message
 
         interaction.question.message = message
@@ -60,7 +66,6 @@ class Element(ABC):
             callback_coroutine = callback_info.callback(
                 message=message,
                 root=self,
-                element=callback_info.element,
             )
 
         # - Reset interaction future

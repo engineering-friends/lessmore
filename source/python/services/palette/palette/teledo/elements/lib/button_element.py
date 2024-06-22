@@ -7,9 +7,10 @@ from palette.teledo.elements.rendered_element import RenderedElement
 
 
 class ButtonElement(Element):
-    def __init__(self, text: str, callback: Callable):
+    def __init__(self, text: str, callback: Callable, message_callback: Callable = None):
         self.text = text
         self.callback = callback
+        self.message_callback = message_callback
 
     def render(self, interaction: Interaction) -> RenderedElement:
         keyboard = InlineKeyboardBuilder()
@@ -20,4 +21,5 @@ class ButtonElement(Element):
                 element=self,
             ),
         )
+        interaction.question.register_message_callback(callback=self.message_callback)
         return RenderedElement(text="Button text", reply_markup=keyboard.as_markup())

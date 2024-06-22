@@ -13,7 +13,13 @@ async def command_starter(message: Message, interaction: Interaction) -> None:
         element.text = str(int(element.text) + 1)
         return await root(interaction=interaction)
 
-    await ButtonElement(text="0", callback=_callback)(interaction=interaction, inplace=False)
+    async def _message_callback(message: Message, root: Element):
+        root.text = str(int(root.text) + 10)
+        return await root(interaction=interaction)
+
+    await ButtonElement(text="0", callback=_callback, message_callback=_message_callback)(
+        interaction=interaction, inplace=False
+    )
 
 
 def test():

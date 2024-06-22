@@ -28,5 +28,5 @@ class Question:
         self.ui_callbacks[_id] = CallbackInfo(callback=callback, element=element)
         return _id
 
-    def register_message_callback(self, callback: Callable, element: Element):
-        self.message_callback = CallbackInfo(callback=callback, element=element)
+    def register_message_callback(self, callback: Callable):
+        self.message_callback = CallbackInfo(callback=callback, element=None)

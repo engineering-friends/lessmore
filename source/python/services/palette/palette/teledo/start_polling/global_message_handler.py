@@ -54,14 +54,14 @@ def get_global_message_handler(
 
         # - If there is an interaction for latest question message id: send to corresponding interaction
 
-        latest_question_message_id = last(user_context.active_question_message_ids, default=None)
+        latest_question_message = last(user_context.active_question_messages, default=None)
 
-        if latest_question_message_id:
+        if latest_question_message.message_id:
             interaction = only(
                 [
                     interaction
                     for interaction in user_context.interactions
-                    if interaction.ask_message_id == latest_question_message_id
+                    if interaction.question.message.message_id == latest_question_message.message_id
                 ],
                 default=None,
             )
