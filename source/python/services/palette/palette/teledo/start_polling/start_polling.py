@@ -21,6 +21,7 @@ async def start_polling(
     command_starters: dict[str, Callable] = {},  # {'/start': def f(message: Message): ...}
     message_starter: Optional[Callable] = None,  # def f(message: Message): ...
     default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
+    commands: list[BotCommand] = [],
 ) -> None:
     # - Init dispatcher
 
@@ -46,12 +47,7 @@ async def start_polling(
 
     # - Set commands for bot
 
-    await bot.set_my_commands(
-        commands=[
-            BotCommand(command=command, description=command_starter.__doc__)
-            for command, command_starter in command_starters.items()
-        ]
-    )
+    await bot.set_my_commands(commands=commands)
 
     # - Start polling
 
@@ -63,7 +59,6 @@ def test() -> None:
         await message.answer("Message received!")
 
     async def command_starter(message: Message, interaction: Interaction) -> None:
-        """This is a description for the command."""
         await message.answer("Command received!")
 
     asyncio.run(
