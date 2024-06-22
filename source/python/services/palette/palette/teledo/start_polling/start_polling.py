@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
-from aiogram.types import Message
+from aiogram.types import BotCommand, Message
 
 from palette.deps import Deps
 from palette.teledo.archive.thread_handler import thread_handler
@@ -44,6 +44,15 @@ async def start_polling(
             default=default_bot_properties,
         )
 
+    # - Set commands for bot
+
+    await bot.set_my_commands(
+        commands=[
+            BotCommand(command=command, description=command_starter.__doc__)
+            for command, command_starter in command_starters.items()
+        ]
+    )
+
     # - Start polling
 
     await dp.start_polling(bot)
@@ -51,11 +60,16 @@ async def start_polling(
 
 def test() -> None:
     async def message_starter(message: Message, interaction: Interaction) -> None:
-        await message.answer("Hello!")
+        await message.answer("Message received!")
+
+    async def command_starter(message: Message, interaction: Interaction) -> None:
+        """This is a description for the command."""
+        await message.answer("Command received!")
 
     asyncio.run(
         start_polling(
             message_starter=message_starter,
+            command_starters={"/start": command_starter, "/new": command_starter},
             bot=Bot(
                 token=Deps.load().config.telegram_bot_token,
                 default=DefaultBotProperties(parse_mode=ParseMode.HTML),

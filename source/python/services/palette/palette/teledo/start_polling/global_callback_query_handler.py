@@ -40,19 +40,6 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
         )
         return
 
-    # - Get callback
-
-    callback = user_context.pending_question.callbacks.get(callback_query.data)
-
-    if not callback:
-        logger.debug(
-            "Failed to find callback for callback query",
-            user_id=callback_query.from_user.id,
-            message_id=callback_query.message.message_id,
-            callback_id=callback_query.data,
-        )
-        return
-
     # - Set callback id to interaction future. It will be awaited in the element coroutine
 
     interaction.pending_question.callback_future.set_result(CallbackEvent(callback_id=callback_query.data))
