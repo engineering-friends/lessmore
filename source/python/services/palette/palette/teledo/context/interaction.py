@@ -1,34 +1,33 @@
 import asyncio
+import uuid
 
 from dataclasses import dataclass, field
 from typing import Callable, Optional
+
+from aiogram.types import Message
 
 
 @dataclass
 class CallbackEvent:
     type: str  # "ui" or "message"
-    callback_id: str
-    data: dict
+    callback_id: str = ""
+    message: Optional[Message] = None
 
 
 @dataclass
 class Question:
-    message_id: str = ""
-    ui_callbacks: dict[str, Callable] = field(default_factory=dict)  # callback_id -> callback
+    message: Message
+    ui_callbacks: dict[str, Callable] = field(default_factory=dict)
     message_callback: Optional[Callable] = None
 
-    _callback_future: Optional[asyncio.Future] = field(
+    callback_future: Optional[asyncio.Future] = field(
         default_factory=lambda: asyncio.get_running_loop().create_future()
-    )  # when new UI event or message event is received, we set the future that current interaction awaits for
+    )  # will be set with CallbackEvent from global handler (callback_query/message)
 
 
 @dataclass
 class Interaction:
-    id: str = ""
-    user_id: str = ""
+    user_id: int
+    id: str = field(default_factory=lambda: str(uuid.uuid4()))
     state: dict = field(default_factory=dict)
-    question: Optional[Question] = None
-
-    @property
-    def is_active(self):
-        return self.ask_message_id != ""
+    pending_question: Optional[Question] = None

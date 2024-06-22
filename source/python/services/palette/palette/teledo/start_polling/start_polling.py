@@ -12,7 +12,7 @@ from palette.deps import Deps
 from palette.teledo.archive.thread_handler import thread_handler
 from palette.teledo.elements.lib.button_element import ButtonElement
 from palette.teledo.start_polling.global_callback_query_handler import global_callback_query_handler
-from palette.teledo.start_polling.global_message_handler import global_message_handler
+from palette.teledo.start_polling.global_message_handler import get_global_message_handler
 
 
 async def start_polling(
@@ -28,7 +28,7 @@ async def start_polling(
     # - Register handlers
 
     dp.callback_query.register(global_callback_query_handler)
-    dp.message.register(global_message_handler)
+    dp.message.register(get_global_message_handler())
 
     # - Init bot from token if needed
 

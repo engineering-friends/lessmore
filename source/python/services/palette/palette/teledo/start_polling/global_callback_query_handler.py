@@ -2,6 +2,7 @@ from aiogram.types import CallbackQuery
 from loguru import logger
 
 from palette.teledo.context.context import context
+from palette.teledo.context.interaction import CallbackEvent
 
 
 async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
@@ -12,7 +13,7 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
         data=callback_query.data,
     )
 
-    # - get interaction
+    # - Get interaction
 
     interaction = context.user_interactions.get(callback_query.from_user.id, {}).get(callback_query.message.message_id)
 
@@ -28,4 +29,9 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
 
     # - Set callback id to interaction future. It will be awaited in the element coroutine
 
-    interaction.ui_callback_id_future.set_result(callback_query.data)
+    interaction.pending_question.callback_future.set_result(
+        CallbackEvent(
+            type="ui",
+            callback_id=callback_query.data,
+        )
+    )
