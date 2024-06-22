@@ -10,6 +10,7 @@ from aiogram.types import Message
 
 from palette.deps import Deps
 from palette.teledo.archive.thread_handler import thread_handler
+from palette.teledo.context.interaction import Interaction
 from palette.teledo.elements.lib.button_element import ButtonElement
 from palette.teledo.start_polling.global_callback_query_handler import global_callback_query_handler
 from palette.teledo.start_polling.global_message_handler import get_global_message_handler
@@ -49,12 +50,16 @@ async def start_polling(
 
 
 def test() -> None:
+    async def message_starter(message: Message, interaction: Interaction) -> None:
+        await message.answer("Hello!")
+
     asyncio.run(
         start_polling(
+            message_starter=message_starter,
             bot=Bot(
                 token=Deps.load().config.telegram_bot_token,
                 default=DefaultBotProperties(parse_mode=ParseMode.HTML),
-            )
+            ),
         )
     )
 

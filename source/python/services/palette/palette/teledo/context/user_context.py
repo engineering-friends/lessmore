@@ -29,10 +29,13 @@ class UserContext:
 
         # - Run
 
-        asyncio.create_task(callback(message=message, interaction=new_interaction))
+        async def _run_callback():
+            # - Run callback
 
+            await callback(message=message, interaction=new_interaction)
 
-@dataclass
-class Context:
-    user_contexts: dict[str, UserContext] = field(default_factory=dict)
-    callbacks: dict = field(default_factory=dict)
+            # - Remove interaction
+
+            self.interactions.remove(new_interaction)
+
+        asyncio.create_task(_run_callback())
