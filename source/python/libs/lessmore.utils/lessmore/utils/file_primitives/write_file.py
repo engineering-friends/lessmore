@@ -1,9 +1,10 @@
-from typing import Any, Callable
+from pathlib import Path
+from typing import Any, Callable, Union
 
 
 def write_file(
     data: Any,
-    filename: str,
+    filename: Union[str, Path],
     as_bytes: bool = False,
     writer: Callable = lambda data, file: file.write(data),
     open_kwargs: dict = {},
@@ -12,7 +13,7 @@ def write_file(
 
     Parameters
     ----------
-    filename : str
+    filename : Union[str, Path]
         filename to file.
     data : Any
         Data to write.
@@ -23,7 +24,7 @@ def write_file(
     open_kwargs
         Additional arguments for open function.
     """
-    with open(filename, "wb" if as_bytes else "w", **open_kwargs) as file:
+    with open(str(filename), "wb" if as_bytes else "w", **open_kwargs) as file:
         return writer(data, file)
 
 

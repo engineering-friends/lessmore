@@ -1,10 +1,11 @@
 import os.path
 
-from typing import Any, Callable
+from pathlib import Path
+from typing import Any, Callable, Union
 
 
 def read_file(
-    filename: str,
+    filename: Union[str, Path],
     as_bytes: bool = False,
     reader: Callable = lambda file: file.read(),
     default: Any = None,
@@ -25,8 +26,17 @@ def read_file(
     open_kwargs : dict, optional
         Параметры открытия файла, by default {}
     """
+
+    # - Convert Path to str
+
+    filename = str(filename)
+
+    # - Check if file exists
+
     if not os.path.exists(filename):
         return default
+
+    # - Read file
 
     with open(filename, "rb" if as_bytes else "r", **open_kwargs) as file:
         return reader(file)
