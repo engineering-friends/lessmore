@@ -43,7 +43,7 @@ def get_global_message_handler(
                 [
                     interaction
                     for interaction in user_context.interactions
-                    if interaction.question.message.id == message.reply_to_message.id
+                    if interaction.question.message.message_id == message.reply_to_message.message_id
                 ],
                 default=None,
             )
