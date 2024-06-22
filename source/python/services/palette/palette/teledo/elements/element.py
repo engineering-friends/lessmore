@@ -11,7 +11,7 @@ from palette.teledo.elements.rendered_element import RenderedElement
 
 class Element(ABC):
     @abstractmethod
-    def render(self) -> RenderedElement:
+    def render(self, interaction: Interaction) -> RenderedElement:
         pass
 
     async def __call__(self, interaction: Interaction, inplace: bool = True):
@@ -25,9 +25,11 @@ class Element(ABC):
         # todo later: return callbacks with render function instead?
 
         if inplace and interaction.pending_question:
-            message = await interaction.pending_question.message.edit_text(**self.render().__dict__)
+            message = await interaction.pending_question.message.edit_text(
+                **self.render(interaction=interaction).__dict__
+            )
         else:
-            message = await interaction.sample_message.answer(**self.render().__dict__)
+            message = await interaction.sample_message.answer(**self.render(interaction=interaction).__dict__)
 
         # - Update pending question message
 
