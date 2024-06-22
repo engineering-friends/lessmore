@@ -1,7 +1,7 @@
 from aiogram.types import CallbackQuery
 from loguru import logger
 
-from palette.teledo.context import context
+from palette.teledo.context.context import context
 
 
 async def global_callback_query_handler(callback_query: CallbackQuery) -> None:

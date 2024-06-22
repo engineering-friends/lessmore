@@ -1,14 +1,6 @@
 from dataclasses import dataclass, field
 
-from palette.teledo.interaction import Interaction
-
-
-@dataclass
-class UserContext:
-    # - Interactions
-
-    # todo later: index properly [@marklidenberg]
-    interactions: list[Interaction]
+from palette.teledo.context.user_context import UserContext
 
 
 @dataclass

@@ -1,8 +1,8 @@
 import uuid
 
-from typing import Callable, Optional
+from typing import Callable
 
-from palette.teledo.context import context
+from palette.teledo.context.context import context
 from palette.teledo.elements.callback_info import CallbackInfo
 from palette.teledo.elements.element import Element
 

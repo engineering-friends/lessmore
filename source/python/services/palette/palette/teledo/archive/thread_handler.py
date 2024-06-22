@@ -1,7 +1,7 @@
 from typing import Any, Callable
 
 from aiogram.types import Message
-from palette.teledo.context import context
+from palette.teledo.context.context import context
 
 
 def thread_handler(handler: Callable) -> Callable:
