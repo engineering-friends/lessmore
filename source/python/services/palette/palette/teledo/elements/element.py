@@ -24,7 +24,7 @@ class Element(ABC):
         # - Wait for interaction and get callback_info
 
         _id = await context.ui_callback_id_future
-        callback_info = context.callbacks[_id]
+        callback_info = context.ui_callbacks[_id]
         callback_coroutine = callback_info.callback(
             message=message,
             root=self,
