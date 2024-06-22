@@ -1,14 +1,12 @@
-import asyncio
-
-from asyncio import Future
 from dataclasses import dataclass, field
+
+from palette.teledo.interaction import Interaction
 
 
 @dataclass
 class Context:
-    thread_messages: list = field(default_factory=list)
-    callbacks_infos: dict = field(default_factory=dict)
-    callback_id_future: Future = field(default_factory=asyncio.Future)
+    interactions_by_user_id: dict[str, dict[str, Interaction]] = field(default_factory=dict)
+    callbacks: dict = field(default_factory=dict)
 
 
 context = Context()

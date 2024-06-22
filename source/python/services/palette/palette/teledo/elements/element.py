@@ -23,8 +23,8 @@ class Element(ABC):
 
         # - Wait for interaction and get callback_info
 
-        _id = await context.callback_id_future
-        callback_info = context.callbacks_infos[_id]
+        _id = await context.ui_callback_id_future
+        callback_info = context.callbacks[_id]
         callback_coroutine = callback_info.callback(
             message=message,
             root=self,
@@ -33,7 +33,7 @@ class Element(ABC):
 
         # - Reset interaction
 
-        context.callback_id_future = asyncio.get_running_loop().create_future()
+        context.ui_callback_id_future = asyncio.get_running_loop().create_future()
 
         # - Run callback
 

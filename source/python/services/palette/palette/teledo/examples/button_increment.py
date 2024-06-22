@@ -18,10 +18,10 @@ async def start(message: Message) -> None:
 async def main() -> None:
     await start_polling(
         bot=Deps.load().config.telegram_bot_token,
-        command_handlers={
+        command_starters={
             "start": start,
         },
-        message_handler=None,
+        message_starter=None,
     )
 
 

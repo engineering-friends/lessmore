@@ -1,50 +1,43 @@
 import asyncio
 
-from asyncio import Future
-from datetime import datetime
-from typing import Any, Callable, Coroutine, Optional
+from typing import Callable, Optional
 
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
-from aiogram.types import CallbackQuery, Message
-from palette.teledo.context import context
-from palette.teledo.start_polling.thread_handler import thread_handler
-
-
-async def global_callback_handler(callback_query: CallbackQuery) -> None:
-    context.callback_id_future.set_result(callback_query.data)
+from aiogram.types import Message
+from palette.deps import Deps
+from palette.teledo.archive.thread_handler import thread_handler
+from palette.teledo.elements.lib.button_element import ButtonElement
+from palette.teledo.start_polling.router import global_callback_query_handler, global_message_handler
 
 
 async def start_polling(
     bot: Bot | str,
-    command_handlers: dict = {},
-    message_handler: Optional[Callable] = None,
+    command_starters: dict[str, Callable] = {},  # {'/start': def f(message: Message): ...}
+    message_starter: Optional[Callable] = None,  # def f(message: Message): ...
     default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
 ) -> None:
     # - Init dispatcher
 
     dp = Dispatcher()
 
-    # - Init future
-
-    context.callback_id_future = asyncio.get_running_loop().create_future()
-
     # - Register handlers
 
-    for command, handler in command_handlers.items():
+    for command, handler in command_starters.items():
         dp.message.register(
             thread_handler(handler=handler),
             Command(command),
         )
 
-    if message_handler:
+    if message_starter:
         dp.message.register(
-            thread_handler(handler=message_handler),
+            thread_handler(handler=message_starter),
         )
 
-    dp.callback_query.register(global_callback_handler)
+    dp.callback_query.register(global_callback_query_handler)
+    dp.message.register(global_message_handler)
 
     # - Init bot from token if needed
 
@@ -57,3 +50,18 @@ async def start_polling(
     # - Start polling
 
     await dp.start_polling(bot)
+
+
+def test() -> None:
+    asyncio.run(
+        start_polling(
+            bot=Bot(
+                token=Deps.load().config.telegram_bot_token,
+                default=DefaultBotProperties(parse_mode=ParseMode.HTML),
+            )
+        )
+    )
+
+
+if __name__ == "__main__":
+    test()

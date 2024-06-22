@@ -12,5 +12,5 @@ def register_callback(
     element: Element,
 ):
     _id = str(uuid.uuid4())
-    context.callbacks_infos[_id] = CallbackInfo(callback=callback, element=element)
+    context.callbacks[_id] = CallbackInfo(callback=callback, element=element)
     return _id
