@@ -6,22 +6,7 @@ from typing import Callable, Optional
 
 from aiogram.types import Message
 
-
-@dataclass
-class CallbackEvent:
-    callback_id: str = ""
-    message: Optional[Message] = None
-
-
-@dataclass
-class Question:
-    message: Message
-    ui_callbacks: dict[str, Callable] = field(default_factory=dict)
-    message_callback: Optional[Callable] = None
-
-    callback_future: Optional[asyncio.Future] = field(
-        default_factory=lambda: asyncio.get_running_loop().create_future()
-    )  # will be set with CallbackEvent from global handler (callback_query/message)
+from palette.teledo.context.question import Question
 
 
 @dataclass
@@ -29,4 +14,5 @@ class Interaction:
     user_id: int
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     state: dict = field(default_factory=dict)
-    pending_question: Optional[Question] = None
+    pending_question: Question = field(default_factory=Question)
+    sample_message: Optional[Message] = None  # used for answering to the user with in the same chat

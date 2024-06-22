@@ -16,14 +16,6 @@ def get_global_message_handler(
     message_starter: Optional[Callable] = None,  # def f(message: Message): ...) -> callable:
 ) -> Callable:
     async def global_message_handler(message: Message) -> None:
-        """Global message handler
-
-        - If starter command: start new interaction with command
-        - If reply and replied message is a pending question: send to reply interaction
-        - If there interaction for latest question message id: send to corresponding interaction
-        - Start new message by default if there is a message starter
-
-        """
         logger.trace(
             "Message received",
             user_id=message.from_user.id,
@@ -59,7 +51,7 @@ def get_global_message_handler(
                 interaction.pending_question.callback_future.set_result(CallbackEvent(message=message))
                 return
 
-        # - If there interaction for latest question message id: send to corresponding interaction
+        # - If there is an interaction for latest question message id: send to corresponding interaction
 
         latest_question_message_id = last(user_context.active_question_message_ids, default=None)
 

@@ -1,11 +1,14 @@
 import asyncio
+import uuid
 
 from dataclasses import dataclass, field
 from typing import Callable
 
 from aiogram.types import Message
 
+from palette.teledo.context.callback_info import CallbackInfo
 from palette.teledo.context.interaction import Interaction
+from palette.teledo.elements.element import Element
 
 
 @dataclass
@@ -17,12 +20,11 @@ class UserContext:
     # todo later: index properly [@marklidenberg]
     interactions: list[Interaction] = field(default_factory=list)
     active_question_message_ids: list[str] = field(default_factory=list)
-    callbacks: dict = field(default_factory=dict)
 
     def start_new_interaction(self, message: Message, callback: Callable):
         # - Prepare interaction
 
-        new_interaction = Interaction(user_id=message.from_user.id)
+        new_interaction = Interaction(user_id=message.from_user.id, sample_message=message)
 
         # - Add to context
 

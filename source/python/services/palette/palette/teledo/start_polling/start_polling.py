@@ -10,6 +10,7 @@ from aiogram.types import BotCommand, Message
 
 from palette.deps import Deps
 from palette.teledo.archive.thread_handler import thread_handler
+from palette.teledo.context.context import context
 from palette.teledo.context.interaction import Interaction
 from palette.teledo.elements.lib.button_element import ButtonElement
 from palette.teledo.start_polling.global_callback_query_handler import global_callback_query_handler
@@ -48,6 +49,10 @@ async def start_polling(
     # - Set commands for bot
 
     await bot.set_my_commands(commands=commands)
+
+    # - Set bot to context
+
+    context.bot = bot
 
     # - Start polling
 
