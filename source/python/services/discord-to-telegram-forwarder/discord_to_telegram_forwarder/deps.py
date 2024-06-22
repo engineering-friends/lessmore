@@ -7,6 +7,7 @@ from typing import Literal
 import openai
 
 from discord_to_telegram_forwarder.config.config import Config
+from lessmore.utils.file_primitives.ensure_path import ensure_path
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.read_config.read_config import read_config
 from telethon import TelegramClient
@@ -39,23 +40,19 @@ class Deps:
 
         # - Get data path
 
-        local_files_dir = str(Path(__file__).parent / f"../data/dynamic/{env}")
-
-        # - Return context
-
-        os.makedirs(local_files_dir, exist_ok=True)
+        local_files_dir = ensure_path(Path(__file__).parent / f"../data/dynamic/{env}")
 
         return Deps(
             config=config,
             cache={},
             local_files_dir=local_files_dir,
             telegram_bot_client=TelegramClient(
-                session=str(Path(local_files_dir) / "telegram_bot.session"),
+                session=str(local_files_dir / "telegram_bot.session"),
                 api_id=int(config.telegram_api_id),
                 api_hash=config.telegram_api_hash,
             ),
             telegram_user_client=TelegramClient(
-                session=str(Path(local_files_dir) / "telegram_user.session"),
+                session=str(local_files_dir / "telegram_user.session"),
                 api_id=int(config.telegram_api_id),
                 api_hash=config.telegram_api_hash,
             ),
