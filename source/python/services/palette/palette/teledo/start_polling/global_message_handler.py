@@ -8,7 +8,7 @@ from loguru import logger
 from more_itertools import first, last, only
 
 from palette.teledo.context.context import context
-from palette.teledo.context.interaction import Interaction
+from palette.teledo.context.interaction import CallbackEvent, Interaction
 
 
 def get_global_message_handler(
@@ -40,9 +40,7 @@ def get_global_message_handler(
         if message.text.startswith("/"):
             command = message.text.split()[0]
             if command in command_starters:
-                new_interaction = Interaction(user_id=message.from_user.id)
-                user_context.interactions.append(new_interaction)
-                asyncio.create_task(command_starters[command](message=message, interaction=new_interaction))
+                user_context.start_new_interaction(message=message, callback=command_starters[command])
             else:
                 logger.trace("Unknown command", command=command)
 
@@ -61,7 +59,7 @@ def get_global_message_handler(
             )
 
             if interaction:
-                asyncio.create_task(message_starter(message=message, interaction=interaction))
+                interaction.pending_question.callback_future.set_result(CallbackEvent(message=message))
                 return
 
         # - If there interaction for latest question message id: send to corresponding interaction
@@ -78,7 +76,7 @@ def get_global_message_handler(
                 default=None,
             )
             if interaction:
-                asyncio.create_task(message_starter(message=message, interaction=interaction))
+                interaction.pending_question.callback_future.set_result(CallbackEvent(message=message))
                 return
 
         # - Start new message by default if there is a message starter
@@ -87,8 +85,6 @@ def get_global_message_handler(
             logger.trace("No message, skipping message")
             return
 
-        new_interaction = Interaction(user_id=message.from_user.id)
-        user_context.interactions.append(new_interaction)
-        asyncio.create_task(message_starter(message=message, interaction=new_interaction))
+        user_context.start_new_interaction(message=message, callback=message_starter)
 
     return global_message_handler

@@ -9,7 +9,6 @@ from aiogram.types import Message
 
 @dataclass
 class CallbackEvent:
-    type: str  # "ui" or "message"
     callback_id: str = ""
     message: Optional[Message] = None
 
