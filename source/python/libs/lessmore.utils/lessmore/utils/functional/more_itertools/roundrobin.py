@@ -1,4 +1,8 @@
-from more_itertools import interleave as _interleave, interleave_evenly as _interleave_evenly, roundrobin as _roundrobin
+from more_itertools import (
+    interleave as _interleave,
+    interleave_evenly as _interleave_evenly,
+    roundrobin as _roundrobin,
+)
 
 
 def test():

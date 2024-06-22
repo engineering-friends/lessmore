@@ -5,11 +5,10 @@ import sys
 from collections import OrderedDict
 from typing import Any
 
-from loguru import logger
-
 from lessmore.utils.loguru_utils.format_as_colored_json._add_color_tags_to_json import _add_color_tags_to_json
 from lessmore.utils.loguru_utils.get_traceback import get_traceback
 from lessmore.utils.to_anything.to_datetime import to_datetime
+from loguru import logger
 
 
 try:
@@ -60,9 +59,7 @@ def format_as_colored_json(append_non_json_traceback: bool = True):
                     "error": 5,
                     "traceback": 6,
                     "level": 7,
-                }.get(
-                    kv[0], 4
-                ),  # default is extra
+                }.get(kv[0], 4),  # default is extra
             )
         )
 

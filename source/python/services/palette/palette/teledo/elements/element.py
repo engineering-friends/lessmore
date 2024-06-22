@@ -3,6 +3,7 @@ import asyncio
 from abc import ABC, abstractmethod
 
 from aiogram.types import Message
+
 from palette.teledo.context import context
 from palette.teledo.elements.rendered_element import RenderedElement
 

@@ -10,7 +10,6 @@ import pandas as pd
 import PIL
 import tqdm
 
-from deeplay.utils.file_utils.read_file import read_file
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.ask import ask
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.generate_image import generate_image
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.plot_dataframe_of_images import (
@@ -18,6 +17,8 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_articl
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.utils.cache_on_disk import cache_on_disk
 from retry import retry
+
+from deeplay.utils.file_utils.read_file import read_file
 
 
 def _label(text: str, n_words: int = 1):
@@ -89,7 +90,9 @@ def test():
     grid_filename = f"data/grids/{datetime.now()}.png"
     os.makedirs("data/grids", exist_ok=True)
     plot_dataframe_of_images(df=df, output_filename=grid_filename)
-    open_file_in_os(grid_filename)
+    from lessmore.utils.system.open_in_os import open_in_os
+
+    open_in_os(grid_filename)
 
 
 if __name__ == "__main__":

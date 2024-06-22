@@ -11,7 +11,7 @@ def ask(
             messages=[
                 {"role": "user", "content": prompt.strip()},
             ],
-            **open_ai_kwargs
+            **open_ai_kwargs,
         )
         .choices[0]
         .message.content

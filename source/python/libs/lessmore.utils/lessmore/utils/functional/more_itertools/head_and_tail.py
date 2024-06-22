@@ -1,4 +1,7 @@
-from more_itertools import tail, take as head
+from more_itertools import (
+    tail,
+    take as head,
+)
 
 
 def test():

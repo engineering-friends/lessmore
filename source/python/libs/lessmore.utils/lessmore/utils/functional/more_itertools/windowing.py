@@ -1,4 +1,8 @@
-from more_itertools import stagger as _stagger, windowed as _windowed, windowed_complete
+from more_itertools import (
+    stagger as _stagger,
+    windowed as _windowed,
+    windowed_complete,
+)
 
 
 def test():

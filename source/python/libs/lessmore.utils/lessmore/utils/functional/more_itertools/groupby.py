@@ -1,7 +1,11 @@
 from collections import defaultdict
 from itertools import count
 
-from more_itertools import bucket as _bucket, groupby_transform as groupby_consecutive, map_reduce as _map_reduce
+from more_itertools import (
+    bucket as _bucket,
+    groupby_transform as groupby_consecutive,
+    map_reduce as _map_reduce,
+)
 
 
 # todo later: generalize bucket and map_reduce to group_by function [@marklidenberg]

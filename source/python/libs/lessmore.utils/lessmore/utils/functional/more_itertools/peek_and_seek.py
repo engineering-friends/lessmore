@@ -1,4 +1,8 @@
-from more_itertools import peekable as _peekable, seekable as _seekable, spy as _spy
+from more_itertools import (
+    peekable as _peekable,
+    seekable as _seekable,
+    spy as _spy,
+)
 
 
 def test():

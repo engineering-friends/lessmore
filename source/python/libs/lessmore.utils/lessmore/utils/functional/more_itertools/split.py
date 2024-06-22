@@ -1,5 +1,8 @@
-from itertools import chain, tee as replicate
-from typing import *
+from itertools import (
+    chain,
+    tee as replicate,
+)
+from typing import Iterable
 
 from more_itertools import (
     before_and_after as _before_and_after,

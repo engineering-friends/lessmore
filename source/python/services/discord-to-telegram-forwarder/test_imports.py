@@ -6,11 +6,10 @@ import sys
 
 import tqdm
 
-from loguru import logger
-
 from lessmore.utils.file_primitives.list_files import list_files
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.track import track
+from loguru import logger
 
 
 # - Utils

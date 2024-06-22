@@ -67,7 +67,9 @@ def test():
         values.append({f"image_{j}": image for j in range(5)})
     plot_dataframe_of_images(pd.DataFrame(values, index=index), output_filename="/tmp/grid.png")
 
-    open_file_in_os("/tmp/grid.png")
+    from lessmore.utils.system.open_in_os import open_in_os
+
+    open_in_os("/tmp/grid.png")
 
 
 if __name__ == "__main__":
