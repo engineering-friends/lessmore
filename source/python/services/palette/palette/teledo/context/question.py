@@ -13,8 +13,8 @@ from palette.teledo.elements.element import Element
 @dataclass
 class Question:
     message: Optional[Message] = None
-    ui_callbacks: dict[str, Callable] = field(default_factory=dict)
-    message_callback: Optional[Callable] = None
+    ui_callbacks: dict[str, CallbackInfo] = field(default_factory=dict)
+    message_callback: Optional[CallbackInfo] = None
 
     callback_future: Optional[asyncio.Future] = field(
         default_factory=lambda: asyncio.get_running_loop().create_future()
@@ -28,3 +28,6 @@ class Question:
         _id = str(uuid.uuid4())
         self.ui_callbacks[_id] = CallbackInfo(callback=callback, element=element)
         return _id
+
+    def register_message_callback(self, callback: Callable, element: Element):
+        self.message_callback = CallbackInfo(callback=callback, element=element)
