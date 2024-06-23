@@ -26,7 +26,7 @@ async def start_polling(
 
     # - Init crowd
 
-    crowd = Crowd(on_late_event=on_late_event)
+    crowd = Crowd(on_late_response=on_late_event)
 
     # - Register handlers
 

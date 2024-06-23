@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Callable, Optional
 from aiogram.types import Message
 from loguru import logger
 
-from palette.teletalk.crowd.callback_event import CallbackEvent
+from palette.teletalk.crowd.response import Response
 from palette.teletalk.crowd.talk.callback_info import CallbackInfo
 from palette.teletalk.query.query import Query
 
@@ -62,7 +62,7 @@ class Talk:
 
         self._old_question_callbacks = dict(self.question_callbacks)
 
-    async def wait_for_question_event(self) -> CallbackEvent:
+    async def wait_for_response(self) -> Response:
         # - Wait for the question event
 
         result = await self.question_event
@@ -75,24 +75,24 @@ class Talk:
 
         return result
 
-    async def respond(self, event: CallbackEvent, on_late_event: Optional[Callable] = None):
+    async def respond(self, response: Response, on_late_response: Optional[Callable] = None):
         if self.is_bot_thinking:
             # - Process late messages with on_late_message callback if specified
 
-            if on_late_event:
-                return await on_late_event(event)
+            if on_late_response:
+                return await on_late_response(response)
 
             # - Do nothing otherwise
 
-            logger.debug("Bot is thinking, ignoring event", event=event)
+            logger.debug("Bot is thinking, ignoring event", event=response)
 
             return
 
         if self.question_event.done():
-            logger.error("Question event is already done", event=event)
+            logger.error("Question event is already done", event=response)
             return
 
-        self.question_event.set_result(event)
+        self.question_event.set_result(response)
 
     async def ask(
         self,
@@ -131,7 +131,7 @@ class Talk:
         while True:
             # - Get response
 
-            callback_event = await self.wait_for_question_event()
+            callback_event = await self.wait_for_response()
 
             # - Start thinking
 

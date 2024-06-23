@@ -5,14 +5,14 @@ from aiogram.types import CallbackQuery, Message
 from loguru import logger
 from more_itertools import last
 
-from palette.teletalk.crowd.callback_event import CallbackEvent
 from palette.teletalk.crowd.chat import Chat
+from palette.teletalk.crowd.response import Response
 
 
 @dataclass
 class Crowd:
     chats: dict[int, Chat] = field(default_factory=dict)
-    on_late_event: Optional[Callable] = None
+    on_late_response: Optional[Callable] = None
 
     def get_chat(self, user_id: int) -> Chat:
         return self.chats.setdefault(user_id, Chat())
@@ -45,8 +45,8 @@ class Crowd:
         # - Send callback event to the coroutine
 
         await talk.respond(
-            event=CallbackEvent(callback_id=callback_query.data),
-            on_late_event=self.on_late_event,
+            response=Response(callback_id=callback_query.data),
+            on_late_response=self.on_late_response,
         )
 
     def get_global_message_handler(
@@ -81,8 +81,8 @@ class Crowd:
 
                 if talk:
                     await talk.respond(
-                        event=CallbackEvent(message=message),
-                        on_late_event=self.on_late_event,
+                        response=Response(message=message),
+                        on_late_response=self.on_late_response,
                     )
                     return
 
@@ -92,8 +92,8 @@ class Crowd:
 
             if talk:
                 await talk.respond(
-                    event=CallbackEvent(message=message),
-                    on_late_event=self.on_late_event,
+                    response=Response(message=message),
+                    on_late_response=self.on_late_response,
                 )
                 return
 
