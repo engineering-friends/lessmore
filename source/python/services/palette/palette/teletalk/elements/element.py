@@ -23,14 +23,14 @@ class Element(ABC):
 
         # - Render element and edit message (and register callbacks alongside of this process with talk.register_callback)
 
-        # todo later: return callbacks with render function instead?
+        # todo later: return callbacks with render function instead? [@marklidenberg]
 
         if inplace and talk:
             message = await talk.question.edit_text(**self.render(talk=talk).__dict__)
         else:
             message = await talk.sample_message.answer(**self.render(talk=talk).__dict__)
 
-            # todo later: make properly
+            # todo later: make properly [@marklidenberg]
             from palette.teletalk.context.context import context
 
             user_context = context.get_user_context(talk.user_id)
@@ -45,7 +45,8 @@ class Element(ABC):
         callback_event = await talk.callback_future
 
         if callback_event.callback_id:
-            # UI event
+            # - UI event
+
             if callback_event.callback_id not in talk.callbacks:
                 logger.error("Callback not found", callback_id=callback_event.callback_id)
                 return
@@ -57,7 +58,7 @@ class Element(ABC):
                 element=callback_info.element,
             )
         else:
-            # Message event
+            # - Message event
 
             if not self.message_callback:
                 logger.debug("Message callback not found, skipping")

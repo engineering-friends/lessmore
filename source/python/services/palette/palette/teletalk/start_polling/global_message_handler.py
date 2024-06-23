@@ -5,7 +5,7 @@ from typing import Callable, Optional
 
 from aiogram.types import Message
 from loguru import logger
-from more_itertools import first, last, only
+from more_itertools import first, first_true, last, only
 
 from palette.teletalk.context.callback_event import CallbackEvent
 from palette.teletalk.context.context import context
@@ -39,13 +39,9 @@ def get_global_message_handler(
         #  - If reply and replied message is a pending question: send to reply talk
 
         if message.reply_to_message:
-            talk = first(
-                [
-                    talk
-                    for talk in user_context.talks
-                    if talk.question.message_id == message.reply_to_message.message_id
-                ],
-                default=None,
+            talk = first_true(
+                user_context.talks,
+                pred=lambda talk: talk.question.message_id == message.reply_to_message.message_id,
             )
 
             if talk:
@@ -57,10 +53,11 @@ def get_global_message_handler(
         latest_question_message = last(user_context.active_question_messages, default=None)
 
         if latest_question_message.message_id:
-            talk = only(
-                [talk for talk in user_context.talks if talk.question.message_id == latest_question_message.message_id],
-                default=None,
+            talk = first_true(
+                user_context.talks,
+                pred=lambda talk: talk.question.message_id == latest_question_message.message_id,
             )
+
             if talk:
                 talk.callback_future.set_result(CallbackEvent(message=message))
                 return
