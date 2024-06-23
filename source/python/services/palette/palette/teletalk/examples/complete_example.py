@@ -19,6 +19,7 @@ async def command_starter(talk: Talk, message: Message) -> None:
         query: Button,
     ):
         # - Simulate some processing time
+
         await asyncio.sleep(1)
 
         # - Write a message for the user
@@ -29,7 +30,7 @@ async def command_starter(talk: Talk, message: Message) -> None:
 
         # - Increment button state by 1
 
-        root_query.text = str(int(root_query.text) + 1)
+        query.label_text = str(int(query.label_text) + 1)
 
         # - Spawn another talk in parallel (just for fun)
 
@@ -41,7 +42,13 @@ async def command_starter(talk: Talk, message: Message) -> None:
 
     # - Create a button
 
-    await talk.ask(query=Button(text="0", callback=increment))
+    await talk.ask(
+        query=Button(
+            button_text="Increment!",
+            label_text="0",
+            callback=increment,
+        )
+    )
 
 
 def test():
