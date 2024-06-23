@@ -12,14 +12,14 @@ class ButtonElement(Element):
         self.callback = callback
         self.message_callback = message_callback
 
-    def render(self, interaction: Talk) -> RenderedElement:
+    def render(self, talk: Talk) -> RenderedElement:
         keyboard = InlineKeyboardBuilder()
         keyboard.button(
             text=self.text,
-            callback_data=interaction.question.register_ui_callback(
+            callback_data=talk.question.register_ui_callback(
                 callback=self.callback,
                 element=self,
             ),
         )
-        interaction.question.register_message_callback(callback=self.message_callback)
+        talk.question.register_message_callback(callback=self.message_callback)
         return RenderedElement(text="Button text", reply_markup=keyboard.as_markup())

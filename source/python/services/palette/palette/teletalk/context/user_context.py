@@ -20,7 +20,7 @@ class UserContext:
     active_question_messages: list[Message] = field(default_factory=list)
 
     def start_new_interaction(self, message: Message, callback: Callable):
-        # - Prepare interaction
+        # - Prepare talk
 
         new_interaction = Talk(user_id=message.from_user.id, sample_message=message)
 
@@ -33,9 +33,9 @@ class UserContext:
         async def _run_callback():
             # - Run callback
 
-            await callback(message=message, interaction=new_interaction)
+            await callback(message=message, talk=new_interaction)
 
-            # - Remove interaction
+            # - Remove talk
 
             self.talks.remove(new_interaction)
 

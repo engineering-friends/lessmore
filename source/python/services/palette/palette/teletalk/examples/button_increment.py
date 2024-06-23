@@ -8,20 +8,18 @@ from palette.teletalk.elements.lib.button_element import ButtonElement
 from palette.teletalk.start_polling.start_polling import start_polling
 
 
-async def command_starter(message: Message, interaction: Talk) -> None:
+async def command_starter(message: Message, talk: Talk) -> None:
     async def _callback(message: Message, root: Element, element: ButtonElement):
         element.text = str(int(element.text) + 1)
         await message.answer("Incremented by 1")
-        return await root(interaction=interaction)
+        return await root(talk=talk)
 
     async def _message_callback(message: Message, root: Element):
         root.text = str(int(root.text) + 10)
         await message.answer("Incremented by 10")
-        return await root(interaction=interaction)
+        return await root(talk=talk)
 
-    await ButtonElement(text="0", callback=_callback, message_callback=_message_callback)(
-        interaction=interaction, inplace=False
-    )
+    await ButtonElement(text="0", callback=_callback, message_callback=_message_callback)(talk=talk, inplace=False)
 
 
 def test():

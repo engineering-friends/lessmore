@@ -28,7 +28,7 @@ def get_global_message_handler(
 
         user_context = context.get_user_context(message.from_user.id)
 
-        # - If starter command: start new interaction with command
+        # - If starter command: start new talk with command
 
         if message.text.startswith("/"):
             command = message.text.split()[0]
@@ -36,37 +36,37 @@ def get_global_message_handler(
                 user_context.start_new_interaction(message=message, callback=command_starters[command])
                 return
 
-        #  - If reply and replied message is a pending question: send to reply interaction
+        #  - If reply and replied message is a pending question: send to reply talk
 
         if message.reply_to_message:
-            interaction = first(
+            talk = first(
                 [
-                    interaction
-                    for interaction in user_context.talks
-                    if interaction.question.message.message_id == message.reply_to_message.message_id
+                    talk
+                    for talk in user_context.talks
+                    if talk.question.message.message_id == message.reply_to_message.message_id
                 ],
                 default=None,
             )
 
-            if interaction:
-                interaction.question.callback_future.set_result(CallbackEvent(message=message))
+            if talk:
+                talk.question.callback_future.set_result(CallbackEvent(message=message))
                 return
 
-        # - If there is an interaction for latest question message id: send to corresponding interaction
+        # - If there is an talk for latest question message id: send to corresponding talk
 
         latest_question_message = last(user_context.active_question_messages, default=None)
 
         if latest_question_message.message_id:
-            interaction = only(
+            talk = only(
                 [
-                    interaction
-                    for interaction in user_context.talks
-                    if interaction.question.message.message_id == latest_question_message.message_id
+                    talk
+                    for talk in user_context.talks
+                    if talk.question.message.message_id == latest_question_message.message_id
                 ],
                 default=None,
             )
-            if interaction:
-                interaction.question.callback_future.set_result(CallbackEvent(message=message))
+            if talk:
+                talk.question.callback_future.set_result(CallbackEvent(message=message))
                 return
 
         # - Start new message by default if there is a message starter

@@ -5,51 +5,51 @@ from typing import Any
 
 from loguru import logger
 
-# from palette.teledo.context.talk import Interaction
+# from palette.teledo.context.talk import talk
 from palette.teletalk.elements.rendered_element import RenderedElement
 
 
 class Element(ABC):
     @abstractmethod
-    def render(self, interaction: Any) -> RenderedElement:
+    def render(self, talk: Any) -> RenderedElement:
         pass
 
-    async def __call__(self, interaction: Any, inplace: bool = True):
+    async def __call__(self, talk: Any, inplace: bool = True):
         # - Reset question callbacks
 
-        interaction.question.ui_callbacks = {}
-        interaction.question.message_callback = None
+        talk.question.ui_callbacks = {}
+        talk.question.message_callback = None
 
-        # - Render element and edit message (and register callbacks alongside of this process with interaction.register_callback)
+        # - Render element and edit message (and register callbacks alongside of this process with talk.register_callback)
 
         # todo later: return callbacks with render function instead?
 
-        if inplace and interaction.question:
-            message = await interaction.question.message.edit_text(**self.render(interaction=interaction).__dict__)
+        if inplace and talk.question:
+            message = await talk.question.message.edit_text(**self.render(talk=talk).__dict__)
         else:
-            message = await interaction.sample_message.answer(**self.render(interaction=interaction).__dict__)
+            message = await talk.sample_message.answer(**self.render(talk=talk).__dict__)
 
             # todo later: make properly
             from palette.teletalk.context.context import context
 
-            user_context = context.get_user_context(interaction.user_id)
+            user_context = context.get_user_context(talk.user_id)
             user_context.active_question_messages.append(message)
 
         # - Update pending question message
 
-        interaction.question.message = message
+        talk.question.message = message
 
-        # - Wait for interaction and get callback_info
+        # - Wait for talk and get callback_info
 
-        callback_event = await interaction.question.callback_future
+        callback_event = await talk.question.callback_future
 
         if callback_event.callback_id:
             # UI event
-            if callback_event.callback_id not in interaction.question.ui_callbacks:
+            if callback_event.callback_id not in talk.question.ui_callbacks:
                 logger.error("Callback not found", callback_id=callback_event.callback_id)
                 return
 
-            callback_info = interaction.question.ui_callbacks[callback_event.callback_id]
+            callback_info = talk.question.ui_callbacks[callback_event.callback_id]
             callback_coroutine = callback_info.callback(
                 message=message,
                 root=self,
@@ -58,19 +58,19 @@ class Element(ABC):
         else:
             # Message event
 
-            if not interaction.question.message_callback:
+            if not talk.question.message_callback:
                 logger.debug("Message callback not found, skipping")
                 return
 
-            callback_info = interaction.question.message_callback
+            callback_info = talk.question.message_callback
             callback_coroutine = callback_info.callback(
                 message=message,
                 root=self,
             )
 
-        # - Reset interaction future
+        # - Reset talk future
 
-        interaction.question.callback_future = asyncio.get_running_loop().create_future()
+        talk.question.callback_future = asyncio.get_running_loop().create_future()
 
         # - Run callback
 

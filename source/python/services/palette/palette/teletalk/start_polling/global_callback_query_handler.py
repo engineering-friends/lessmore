@@ -20,26 +20,22 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
 
     user_context = context.get_user_context(callback_query.from_user.id)
 
-    # - Get interaction
+    # - Get talk with the same message id
 
-    interaction = first(
-        [
-            interaction
-            for interaction in user_context.talks
-            if interaction.question.message.message_id == callback_query.message.message_id
-        ],
+    talk = first(
+        [talk for talk in user_context.talks if talk.question.message.message_id == callback_query.message.message_id],
         default=None,
     )
 
-    if not interaction:
+    if not talk:
         logger.error(
-            "Failed to find interaction for callback query",
+            "Failed to find talk for callback query",
             user_id=callback_query.from_user.id,
             message_id=callback_query.message.message_id,
             callback_id=callback_query.data,
         )
         return
 
-    # - Set callback id to interaction future. It will be awaited in the element coroutine
+    # - Send callback event to the coroutine
 
-    interaction.question.callback_future.set_result(CallbackEvent(callback_id=callback_query.data))
+    talk.question.callback_future.set_result(CallbackEvent(callback_id=callback_query.data))
