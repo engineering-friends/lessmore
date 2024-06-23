@@ -72,3 +72,12 @@ class Talk:
             return
 
         self.question_event.set_result(event)
+
+    # - Syntax sugar
+
+    async def ask(
+        self,
+        query: Query,
+        inplace: bool = True,
+    ):
+        return await self.chat.ask(talk=self, query=query, inplace=inplace)

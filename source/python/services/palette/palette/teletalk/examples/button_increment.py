@@ -20,11 +20,11 @@ async def command_starter(talk: Talk, message: Message) -> None:
     ):
         await asyncio.sleep(5)
         root_query.text = str(int(root_query.text) + 1)
-        return await talk.chat.ask(talk=talk, query=root_query)  # run the query again
+        return await talk.ask(query=root_query)  # run the query again
 
     # - Create a button
 
-    await talk.chat.ask(talk=talk, query=Button(text="0", callback=increment))
+    await talk.ask(query=Button(text="0", callback=increment))
 
 
 def test():
