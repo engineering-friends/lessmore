@@ -2,7 +2,7 @@ import asyncio
 
 from asyncio import Task
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 from aiogram.types import Message
 
@@ -11,7 +11,7 @@ from palette.teletalk.crowd.talk import Talk
 
 @dataclass
 class Talker:
-    talks: list[Talk] = field(default_factory=list)
+    talks: list[Talk] = field(default_factory=list)  # circular import
     active_question_messages: list[Message] = field(default_factory=list)
 
     def start_new_talk(self, starter_message: Message, callback: Callable) -> Task:
@@ -36,7 +36,7 @@ class Talker:
 
         return asyncio.create_task(_run_talk())
 
-    def get_talk(self, question_message: Message, default: Any = None) -> Talk:
+    def get_talk(self, question_message: Message, default: Any = None) -> "Talk":
         return next(
             (
                 talk

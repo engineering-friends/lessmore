@@ -18,12 +18,11 @@ async def command_starter(talk: Talk, message: Message) -> None:
         element: Button,
     ):
         root.text = str(int(root.text) + 1)
-        await message.answer("Incremented by 1")
-        return await root(talk=talk)
+        return await root(talk=talk)  # run the element again
 
     # - Create a button
 
-    await Button(text="0", callback=_callback)(talk=talk, inplace=False)
+    await Button(text="0", callback=_callback)(talk=talk)
 
 
 def test():

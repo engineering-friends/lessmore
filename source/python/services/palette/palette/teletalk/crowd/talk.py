@@ -2,20 +2,22 @@ import asyncio
 import uuid
 
 from dataclasses import dataclass, field
-from typing import Callable, Optional
+from typing import TYPE_CHECKING, Callable, Optional
 
 from aiogram.types import Message
-
-import palette.teletalk.crowd.talker
 
 from palette.teletalk.crowd.callback_event import CallbackEvent
 from palette.teletalk.crowd.callback_info import CallbackInfo
 from palette.teletalk.elements.element import Element
 
 
+if TYPE_CHECKING:
+    from palette.teletalk.crowd.talker import Talker
+
+
 @dataclass
 class Talk:
-    talker: palette.teletalk.crowd.talker.Talker  # circular import, so we use the module name
+    talker: "Talker"  # circular import
     starter_message: Optional[Message] = None
     question_message: Optional[Message] = None
     question_callbacks: dict[str, CallbackInfo] = field(default_factory=dict)

@@ -1,5 +1,5 @@
-from recursive_imports.using_strings.parent import Parent
-from recursive_imports.using_strings.child import Child
+from recursive_imports.using_generic_import.parent import Parent
+from recursive_imports.using_generic_import.child import Child
 
 def test():
     parent = Parent()
