@@ -1,5 +1,5 @@
-from palette.aiogram_playground.elements.element import RenderedElement
 from palette.teletalk.elements.element import Element
+from palette.teletalk.elements.rendered_element import RenderedElement
 
 
 class EmptyElement(Element):

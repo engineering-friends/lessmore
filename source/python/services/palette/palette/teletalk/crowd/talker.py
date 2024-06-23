@@ -1,8 +1,8 @@
 import asyncio
-import uuid
 
+from asyncio import Task
 from dataclasses import dataclass, field
-from typing import Callable
+from typing import Any, Callable
 
 from aiogram.types import Message
 
@@ -11,11 +11,10 @@ from palette.teletalk.crowd.talk import Talk
 
 @dataclass
 class Talker:
-    user_id: int
     talks: list[Talk] = field(default_factory=list)
     active_question_messages: list[Message] = field(default_factory=list)
 
-    def start_new_talk(self, starter_message: Message, callback: Callable):
+    def start_new_talk(self, starter_message: Message, callback: Callable) -> Task:
         # - Prepare talk
 
         new_talk = Talk(starter_message=starter_message)
@@ -35,9 +34,9 @@ class Talker:
 
             self.talks.remove(new_talk)
 
-        asyncio.create_task(_run_talk())
+        return asyncio.create_task(_run_talk())
 
-    def get_talk(self, question_message: Message, default=None) -> Talk:
+    def get_talk(self, question_message: Message, default: Any = None) -> Talk:
         return next(
             (
                 talk

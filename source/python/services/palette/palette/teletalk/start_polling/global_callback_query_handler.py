@@ -1,8 +1,5 @@
-import asyncio
-
 from aiogram.types import CallbackQuery
 from loguru import logger
-from more_itertools import first, first_true
 
 from palette.teletalk.crowd.callback_event import CallbackEvent
 from palette.teletalk.crowd.crowd import crowd

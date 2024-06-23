@@ -1,15 +1,11 @@
-import asyncio
-import uuid
-
 from typing import Callable, Optional
 
 from aiogram.types import Message
 from loguru import logger
-from more_itertools import first, first_true, last, only
+from more_itertools import last
 
 from palette.teletalk.crowd.callback_event import CallbackEvent
 from palette.teletalk.crowd.crowd import crowd
-from palette.teletalk.crowd.talk import Talk
 
 
 def get_global_message_handler(
