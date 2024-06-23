@@ -11,17 +11,14 @@ from palette.teletalk.context.talk import Talk
 
 @dataclass
 class Talker:
-    # - Interactions
-
     user_id: int
-    # todo later: index properly [@marklidenberg]
     talks: list[Talk] = field(default_factory=list)
     active_question_messages: list[Message] = field(default_factory=list)
 
-    def start_new_talk(self, message: Message, callback: Callable):
+    def start_new_talk(self, starter_message: Message, callback: Callable):
         # - Prepare talk
 
-        new_talk = Talk(sample_message=message)
+        new_talk = Talk(starter_message=starter_message)
 
         # - Add to context
 
@@ -32,7 +29,7 @@ class Talker:
         async def _run_talk():
             # - Run callback
 
-            await callback(message=message, talk=new_talk)
+            await callback(message=starter_message, talk=new_talk)
 
             # - Remove talk
 

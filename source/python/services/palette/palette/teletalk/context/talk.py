@@ -12,10 +12,7 @@ from palette.teletalk.elements.element import Element
 
 @dataclass
 class Talk:
-    sample_message: Optional[Message] = None  # used for answering to the user with in the same chat
-
-    # - Question
-
+    starter_message: Optional[Message] = None  # used for answering to the user with in the same chat
     question_message: Optional[Message] = None
     callbacks: dict[str, CallbackInfo] = field(default_factory=dict)
 
