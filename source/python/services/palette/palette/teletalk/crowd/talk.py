@@ -48,10 +48,17 @@ class Talk:
         self.is_bot_thinking = is_bot_thinking
 
     def set_question_message(self, message: Message):
+        # - Set the question message
         self.question_message = message
+
+        # - Set new callbacks, exclude all callbacks as outdated
+
         self.question_callbacks = {
             k: v for k, v in self.question_callbacks.items() if k not in self._old_question_callbacks.keys()
         }
+
+        # - Refresh snapshot of old callbacks
+
         self._old_question_callbacks = dict(self.question_callbacks)
 
     async def wait_for_question_event(self) -> CallbackEvent:

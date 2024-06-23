@@ -7,4 +7,4 @@ from palette.teletalk.query.query import Query
 @dataclass
 class CallbackInfo:
     callback: Callable
-    query: Optional[Query]
+    query: Query

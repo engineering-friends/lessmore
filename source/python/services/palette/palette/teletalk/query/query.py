@@ -10,7 +10,3 @@ class Query(ABC):
     @abstractmethod
     def render(self, talk: Any) -> RenderedQuery:
         pass
-
-    @property
-    def __name__(self) -> str:
-        return "Query"
