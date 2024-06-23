@@ -38,7 +38,7 @@ def get_global_message_handler(
             talk = chat.get_talk(question_message=message.reply_to_message)
 
             if talk:
-                talk.respond(event=CallbackEvent(message=message))
+                await talk.respond(event=CallbackEvent(message=message))
                 return
 
         # - If there is an talk for latest question message id: send to corresponding talk
@@ -46,7 +46,7 @@ def get_global_message_handler(
         talk = last(chat.talks, default=None)
 
         if talk:
-            talk.respond(event=CallbackEvent(message=message))
+            await talk.respond(event=CallbackEvent(message=message))
             return
 
         # - Start new message by default if there is a message starter

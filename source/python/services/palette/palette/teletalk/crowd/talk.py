@@ -75,9 +75,13 @@ class Talk:
 
         return result
 
-    def respond(self, event: CallbackEvent):
+    async def respond(self, event: CallbackEvent):
         if self.is_bot_thinking:
             logger.debug("Bot is thinking, ignoring event", event=event)
+            return
+
+        if self.question_event.done():
+            logger.error("Question event is already done", event=event)
             return
 
         self.question_event.set_result(event)
