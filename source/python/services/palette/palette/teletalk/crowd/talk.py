@@ -6,6 +6,7 @@ from typing import Callable, Optional
 
 from aiogram.types import Message
 
+from palette.teletalk.crowd.callback_event import CallbackEvent
 from palette.teletalk.crowd.callback_info import CallbackInfo
 from palette.teletalk.elements.element import Element
 
@@ -27,3 +28,23 @@ class Talk:
         _id = str(uuid.uuid4())
         self.question_callbacks[_id] = CallbackInfo(callback=callback, element=element)
         return _id
+
+    def set_question_message(self, message: Message):
+        self.question_message = message
+
+    def reset_question_message(self):
+        self.question_message = None
+        self.question_callbacks = {}
+
+    async def wait_for_question_event(self) -> CallbackEvent:
+        # - Wait for the question event
+
+        result = await self.question_event
+
+        # - Reset the future
+
+        self.question_event = asyncio.get_running_loop().create_future()
+
+        # - Return the result
+
+        return result

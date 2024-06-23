@@ -17,13 +17,7 @@ class Element(ABC):
         pass
 
     async def __call__(self, talk: Any, inplace: bool = True):
-        # - Reset question callbacks
-
-        talk.question_callbacks = {}
-
         # - Render element and edit message (and register callbacks alongside of this process with talk.register_callback)
-
-        # todo later: return callbacks with render function instead? [@marklidenberg]
 
         if inplace and talk:
             message = await talk.question_message.edit_text(**self.render(talk=talk).__dict__)
@@ -38,11 +32,11 @@ class Element(ABC):
 
         # - Update pending question message
 
-        talk.question_message = message
+        talk.set_question_message(message)
 
         # - Wait for talk and get callback_info
 
-        callback_event = await talk.question_event
+        callback_event = await talk.wait_for_question_event()
 
         if callback_event.callback_id:
             # - UI event
@@ -69,10 +63,6 @@ class Element(ABC):
                 root=self,
                 element=self,
             )
-
-        # - Reset talk future
-
-        talk.question_event = asyncio.get_running_loop().create_future()
 
         # - Run callback
 

@@ -33,6 +33,10 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
         )
         return
 
+    # - Reset question
+
+    talk.reset_question_message()
+
     # - Send callback event to the coroutine
 
-    talk.event.set_result(CallbackEvent(callback_id=callback_query.data))
+    talk.question_event.set_result(CallbackEvent(callback_id=callback_query.data))
