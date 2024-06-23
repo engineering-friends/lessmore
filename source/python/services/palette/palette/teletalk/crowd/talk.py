@@ -108,7 +108,7 @@ class Talk:
             if inplace and self.question_message:
                 message = await self.question_message.edit_text(**rendered_message.to_dict())
             else:
-                message = await self.message.answer(**rendered_message.to_dict())
+                message = await self.starter_message.answer(**rendered_message.to_dict())
 
             # - Update pending question message
 

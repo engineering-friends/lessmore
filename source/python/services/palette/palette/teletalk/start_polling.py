@@ -58,11 +58,9 @@ async def start_polling(
 
 def test() -> None:
     async def message_starter(message: Message, talk: Talk) -> None:
-        "Start with a message"
         await message.answer("Message received!")
 
     async def command_starter(message: Message, talk: Talk) -> None:
-        """Start with a command"""
         await message.answer("Command received!")
 
     asyncio.run(
