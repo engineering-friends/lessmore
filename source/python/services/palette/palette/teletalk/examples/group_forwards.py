@@ -7,7 +7,7 @@ from aiogram.types import Message
 from lessmore.utils.to_anything.to_datetime import to_datetime
 from palette.deps import Deps
 from palette.teletalk.crowd.talk import Talk
-from palette.teletalk.start_polling.start_polling import start_polling
+from palette.teletalk.start_polling import start_polling
 
 
 class Grouper:
