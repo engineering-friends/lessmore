@@ -18,7 +18,7 @@ async def start_polling(
     message_starter: Optional[Callable] = None,  # def f(message: Message): ...
     default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
     commands: Optional[list[BotCommand]] = None,  # description of commands
-    on_early_response: Optional[Callable] = None,
+    on_early_response: Optional[Callable] = None,  # todo later: very unsure about this one
 ) -> None:
     # - Init dispatcher
 
