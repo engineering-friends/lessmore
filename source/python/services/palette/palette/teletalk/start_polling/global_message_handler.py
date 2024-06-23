@@ -45,7 +45,7 @@ def get_global_message_handler(
             )
 
             if talk:
-                talk.callback_future.set_result(CallbackEvent(message=message))
+                talk.event.set_result(CallbackEvent(message=message))
                 return
 
         # - If there is an talk for latest question message id: send to corresponding talk
@@ -59,7 +59,7 @@ def get_global_message_handler(
             )
 
             if talk:
-                talk.callback_future.set_result(CallbackEvent(message=message))
+                talk.event.set_result(CallbackEvent(message=message))
                 return
 
         # - Start new message by default if there is a message starter

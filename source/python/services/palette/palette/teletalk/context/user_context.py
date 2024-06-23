@@ -21,7 +21,7 @@ class UserContext:
     def start_talk(self, message: Message, callback: Callable):
         # - Prepare talk
 
-        new_talk = Talk(user_id=message.from_user.id, sample_message=message)
+        new_talk = Talk(sample_message=message)
 
         # - Add to context
 

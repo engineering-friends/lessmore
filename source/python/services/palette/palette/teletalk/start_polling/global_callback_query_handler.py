@@ -38,4 +38,4 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
 
     # - Send callback event to the coroutine
 
-    talk.callback_future.set_result(CallbackEvent(callback_id=callback_query.data))
+    talk.event.set_result(CallbackEvent(callback_id=callback_query.data))
