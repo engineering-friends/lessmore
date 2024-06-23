@@ -39,10 +39,7 @@ def get_global_message_handler(
         #  - If reply and replied message is a pending question: send to reply talk
 
         if message.reply_to_message:
-            talk = first_true(
-                talker.talks,
-                pred=lambda talk: talk.question_message.message_id == message.reply_to_message.message_id,
-            )
+            talk = talker.get_talk(question_message=message.reply_to_message)
 
             if talk:
                 talk.event.set_result(CallbackEvent(message=message))
@@ -53,10 +50,7 @@ def get_global_message_handler(
         latest_question_message = last(talker.active_question_messages, default=None)
 
         if latest_question_message.message_id:
-            talk = first_true(
-                talker.talks,
-                pred=lambda talk: talk.question_message.message_id == latest_question_message.message_id,
-            )
+            talk = talker.get_talk(latest_question_message.message_id)
 
             if talk:
                 talk.event.set_result(CallbackEvent(message=message))

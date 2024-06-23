@@ -36,3 +36,9 @@ class Talker:
             self.talks.remove(new_talk)
 
         asyncio.create_task(_run_talk())
+
+    def get_talk(self, question_message: Message, default=None) -> Talk:
+        return next(
+            (talk for talk in self.talks if talk.starter_message.message_id == question_message.message_id),
+            default,
+        )

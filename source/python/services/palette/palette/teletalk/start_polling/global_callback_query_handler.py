@@ -22,10 +22,7 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
 
     # - Get talk with the same message id
 
-    talk = first_true(
-        talker.talks,
-        pred=lambda talk: talk.question_message.message_id == callback_query.message.message_id,
-    )
+    talk = talker.get_talk(question_message=callback_query.message)
 
     if not talk:
         logger.error(
