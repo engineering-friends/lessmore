@@ -16,9 +16,13 @@ class Talk:
     starter_message: Optional[Message] = None
     question_message: Optional[Message] = None
     question_callbacks: dict[str, CallbackInfo] = field(default_factory=dict)
+    question_event: Optional[asyncio.Future] = field(
+        default_factory=lambda: asyncio.get_running_loop().create_future()
+    )  # will be set with CallbackEvent from global handler (callback_query/message)
 
-    # will be set with CallbackEvent from global handler (callback_query/message)
-    question_event: Optional[asyncio.Future] = field(default_factory=lambda: asyncio.get_running_loop().create_future())
+    # - Internal
+
+    _old_question_callbacks: dict[str, CallbackInfo] = field(default_factory=dict)  # used to clean up old callbacks
 
     def register_question_callback(
         self,
@@ -31,8 +35,10 @@ class Talk:
 
     def set_question_message(self, message: Message):
         self.question_message = message
-        self.question_message = None
-        self.question_callbacks = {}
+        self.question_callbacks = {
+            k: v for k, v in self.question_callbacks.items() if k not in self._old_question_callbacks.keys()
+        }
+        self._old_question_callbacks = dict(self.question_callbacks)
 
     async def wait_for_question_event(self) -> CallbackEvent:
         # - Wait for the question event
