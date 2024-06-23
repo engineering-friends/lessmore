@@ -6,6 +6,8 @@ from typing import Callable, Optional
 
 from aiogram.types import Message
 
+import palette.teletalk.crowd.talker
+
 from palette.teletalk.crowd.callback_event import CallbackEvent
 from palette.teletalk.crowd.callback_info import CallbackInfo
 from palette.teletalk.elements.element import Element
@@ -13,6 +15,7 @@ from palette.teletalk.elements.element import Element
 
 @dataclass
 class Talk:
+    talker: palette.teletalk.crowd.talker.Talker  # ruff: ignore
     starter_message: Optional[Message] = None
     question_message: Optional[Message] = None
     question_callbacks: dict[str, CallbackInfo] = field(default_factory=dict)

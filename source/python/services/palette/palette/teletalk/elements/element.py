@@ -3,7 +3,7 @@ from typing import Any, Callable, Optional
 
 from loguru import logger
 
-# from palette.teledo.crowd.talk import talk
+# from palette.teletalk.crowd.talk import Talk
 from palette.teletalk.elements.rendered_element import RenderedElement
 
 
