@@ -1,6 +1,7 @@
 import asyncio
 import uuid
 
+from asyncio import Task
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Callable, Optional
 
@@ -81,3 +82,13 @@ class Talk:
         inplace: bool = True,
     ):
         return await self.chat.ask(talk=self, query=query, inplace=inplace)
+
+    @property
+    def message(self):  # for quick communication
+        return self.starter_message
+
+    def start_new_talk(self, callback: Callable, starter_message: Optional[Message] = None) -> Task:
+        return self.chat.start_new_talk(
+            starter_message=starter_message or self.starter_message,
+            callback=callback,
+        )

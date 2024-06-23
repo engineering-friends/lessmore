@@ -18,9 +18,26 @@ async def command_starter(talk: Talk, message: Message) -> None:
         root_query: Query,
         query: Button,
     ):
-        await asyncio.sleep(5)
+        # - Simulate some processing time
+        await asyncio.sleep(1)
+
+        # - Write a message for the user
+
+        await talk.message.answer(
+            text="I'm incrementing the number by 1, buddy! Also I'll spawn another talk in parallel, just for fun"
+        )
+
+        # - Increment button state by 1
+
         root_query.text = str(int(root_query.text) + 1)
-        return await talk.ask(query=root_query)  # run the query again
+
+        # - Spawn another talk in parallel (just for fun)
+
+        talk.start_new_talk(callback=command_starter)
+
+        # - Ask the query again with updated state
+
+        return await talk.ask(query=root_query)
 
     # - Create a button
 
