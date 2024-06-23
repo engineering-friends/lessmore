@@ -85,6 +85,7 @@ class Talk:
     async def ask(
         self,
         query: Optional[Query] = None,
+        message_callback: Optional[Callable] = None,
         inplace: bool = True,
     ):
         # - Update question with query if provided
@@ -105,7 +106,7 @@ class Talk:
 
             self.set_question_message(message)
 
-        # - Set bot to thinking
+        # - Set thinking to false
 
         self.set_bot_thinking(False)
 
@@ -128,28 +129,23 @@ class Talk:
                     continue
 
                 callback_info = self.question_callbacks[callback_event.callback_id]
-                callback_coroutine = callback_info.callback(
+
+                return await callback_info.callback(
                     talk=self,
                     root_query=query,
                     query=callback_info.query,
                 )
-                break
             else:
                 # - Message event
 
-                if not query.message_callback:
+                if not message_callback:
                     logger.debug("Message callback not found, skipping")
                     continue
 
-                callback_coroutine = query.message_callback(
+                return await message_callback(
                     talk=self,
                     message=callback_event.message,
                 )
-                break
-
-        # - Run callback
-
-        return await callback_coroutine
 
     # - Syntax sugar
 
