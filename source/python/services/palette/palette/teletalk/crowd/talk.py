@@ -84,23 +84,29 @@ class Talk:
 
     async def ask(
         self,
-        query: Query,
+        query: Optional[Query] = None,
         inplace: bool = True,
     ):
-        # - Render message (and register callbacks alongside of this process with talk.register_callback)
+        # - Update question with query if provided
 
-        rendered_message = query.render(talk=self)
+        if query:
+            # - Render message (and register callbacks alongside of this process with talk.register_callback)
 
-        # - Render query and edit message (and register callbacks alongside of this process with talk.register_callback)
+            rendered_message = query.render(talk=self)
 
-        if inplace and self.question_message:
-            message = await self.question_message.edit_text(**rendered_message.__dict__)
-        else:
-            message = await self.starter_message.answer(**rendered_message.__dict__)
+            # - Render query and edit message (and register callbacks alongside of this process with talk.register_callback)
 
-        # - Update pending question message
+            if inplace and self.question_message:
+                message = await self.question_message.edit_text(**rendered_message.__dict__)
+            else:
+                message = await self.starter_message.answer(**rendered_message.__dict__)
 
-        self.set_question_message(message)
+            # - Update pending question message
+
+            self.set_question_message(message)
+
+        # - Set bot to thinking
+
         self.set_bot_thinking(False)
 
         # - Wait for talk and get callback_info
