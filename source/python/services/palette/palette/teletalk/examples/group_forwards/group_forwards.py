@@ -1,0 +1,72 @@
+import asyncio
+
+from datetime import datetime
+from typing import Optional
+
+from aiogram.types import Message
+from lessmore.utils.to_anything.to_datetime import to_datetime
+from palette.deps import Deps
+from palette.teletalk.crowd.talk import Talk
+from palette.teletalk.query.query import Query
+from palette.teletalk.query.zoo.button import Button
+from palette.teletalk.start_polling.start_polling import start_polling
+
+
+class Grouper:
+    def __init__(self, window_seconds: float = 1):
+        self.messages: list[Message] = []
+        self.window_seconds = window_seconds
+
+    def append(self, message: Message):
+        self.messages.append(message)
+
+    async def group(self):
+        if not self.messages:
+            return
+
+        if (datetime.now() - to_datetime(self.messages[-1].date)).total_seconds() > self.window_seconds:
+            # - Create a copy of messages because we want to clear the list before sending the message
+
+            messages_copy = list(self.messages)
+
+            # - Clear messages
+
+            self.messages = []
+
+            # - Send the message
+
+            await messages_copy[-1].answer(
+                text="Grouped messages: \n" + "\n".join([message.text for message in messages_copy])
+            )
+
+
+grouper = Grouper()
+
+
+async def message_starter(talk: Talk, message: Message) -> None:
+    # - Add message
+
+    grouper.append(message)
+
+    # - Spawn a task to group messages in grouper window_seconds + 5%
+
+    async def _group():
+        await asyncio.sleep(grouper.window_seconds * 1.05)
+        await grouper.group()
+
+    # - Create task
+
+    asyncio.create_task(_group())
+
+
+def test():
+    asyncio.run(
+        start_polling(
+            message_starter=message_starter,
+            bot=Deps.load().config.telegram_bot_token,
+        )
+    )
+
+
+if __name__ == "__main__":
+    test()
