@@ -17,7 +17,7 @@ class Talker:
     def start_new_talk(self, starter_message: Message, callback: Callable) -> Task:
         # - Prepare talk
 
-        new_talk = Talk(starter_message=starter_message)
+        new_talk = Talk(talker=self, starter_message=starter_message)
 
         # - Add to context
 

@@ -15,7 +15,7 @@ from palette.teletalk.elements.element import Element
 
 @dataclass
 class Talk:
-    talker: palette.teletalk.crowd.talker.Talker  # ruff: ignore
+    talker: palette.teletalk.crowd.talker.Talker  # circular import, so we use the module name
     starter_message: Optional[Message] = None
     question_message: Optional[Message] = None
     question_callbacks: dict[str, CallbackInfo] = field(default_factory=dict)
