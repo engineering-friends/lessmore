@@ -12,13 +12,16 @@ from palette.teletalk.elements.element import Element
 
 
 if TYPE_CHECKING:
-    from palette.teletalk.crowd.talker import Talker
+    from palette.teletalk.crowd.chat import Chat
 
 
 @dataclass
 class Talk:
-    talker: "Talker"  # circular import
+    chat: "Chat"  # circular import
     starter_message: Optional[Message] = None
+
+    # - Question
+
     question_message: Optional[Message] = None
     question_callbacks: dict[str, CallbackInfo] = field(default_factory=dict)
     question_event: Optional[asyncio.Future] = field(

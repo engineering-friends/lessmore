@@ -22,20 +22,20 @@ def get_global_message_handler(
 
         # - Get user context
 
-        talker = crowd.get_talker(user_id=message.from_user.id)
+        chat = crowd.get_chat(user_id=message.from_user.id)
 
         # - If starter command: start new talk with command
 
         if message.text.startswith("/"):
             command = message.text.split()[0]
             if command in command_starters:
-                talker.start_new_talk(starter_message=message, callback=command_starters[command])
+                chat.start_new_talk(starter_message=message, callback=command_starters[command])
                 return
 
         #  - If reply and replied message is a pending question: send to reply talk
 
         if message.reply_to_message:
-            talk = talker.get_talk(question_message=message.reply_to_message)
+            talk = chat.get_talk(question_message=message.reply_to_message)
 
             if talk:
                 talk.question_event.set_result(CallbackEvent(message=message))
@@ -43,10 +43,10 @@ def get_global_message_handler(
 
         # - If there is an talk for latest question message id: send to corresponding talk
 
-        latest_question_message = last(talker.active_question_messages, default=None)
+        latest_question_message = last(chat.question_messages, default=None)
 
         if latest_question_message.message_id:
-            talk = talker.get_talk(latest_question_message)
+            talk = chat.get_talk(latest_question_message)
 
             if talk:
                 talk.question_event.set_result(CallbackEvent(message=message))
@@ -63,6 +63,6 @@ def get_global_message_handler(
             )
             return
 
-        talker.start_new_talk(starter_message=message, callback=message_starter)
+        chat.start_new_talk(starter_message=message, callback=message_starter)
 
     return global_message_handler

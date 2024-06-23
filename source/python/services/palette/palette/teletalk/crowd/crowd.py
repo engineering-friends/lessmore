@@ -1,14 +1,14 @@
 from dataclasses import dataclass, field
 
-from palette.teletalk.crowd.talker import Talker
+from palette.teletalk.crowd.chat import Chat
 
 
 @dataclass
 class Crowd:
-    talkers: dict[int, Talker] = field(default_factory=dict)
+    chats: dict[int, Chat] = field(default_factory=dict)
 
-    def get_talker(self, user_id: int) -> Talker:
-        return self.talkers.setdefault(user_id, Talker())
+    def get_chat(self, user_id: int) -> Chat:
+        return self.chats.setdefault(user_id, Chat())
 
 
 crowd = Crowd()

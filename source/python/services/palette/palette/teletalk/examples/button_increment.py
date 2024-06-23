@@ -19,11 +19,11 @@ async def command_starter(talk: Talk, message: Message) -> None:
         element: Button,
     ):
         root.text = str(int(root.text) + 1)
-        return await root(talk=talk)  # run the element again
+        return await talk.chat.ask(talk=talk, element=root)  # run the element again
 
     # - Create a button
 
-    await Button(text="0", callback=increment)(talk=talk)
+    await talk.chat.ask(talk=talk, element=Button(text="0", callback=increment))
 
 
 def test():
