@@ -7,10 +7,13 @@ from palette.teletalk.query.rendered_query import RenderedQuery
 
 
 class Button(Query):
-    def __init__(self, label_text: str, button_text: str, callback: Callable):
+    def __init__(
+        self, label_text: str, button_text: str, callback: Callable, message_callback: Optional[Callable] = None
+    ):
         self.label_text = label_text
         self.button_text = button_text
         self.callback = callback
+        self.message_callback = message_callback
 
     def render(self, talk: Talk) -> RenderedQuery:
         keyboard = InlineKeyboardBuilder()

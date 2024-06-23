@@ -88,6 +88,10 @@ class Talk:
         message_callback: Optional[Callable] = None,
         inplace: bool = True,
     ):
+        # - Set message callback
+
+        message_callback = message_callback or query.message_callback
+
         # - Update question with query if provided
 
         if query:
@@ -100,7 +104,7 @@ class Talk:
             if inplace and self.question_message:
                 message = await self.question_message.edit_text(**rendered_message.__dict__)
             else:
-                message = await self.starter_message.answer(**rendered_message.__dict__)
+                message = await self.message.answer(**rendered_message.__dict__)
 
             # - Update pending question message
 
@@ -145,6 +149,8 @@ class Talk:
                 return await message_callback(
                     talk=self,
                     message=callback_event.message,
+                    root_query=query,
+                    query=query,
                 )
 
     # - Syntax sugar

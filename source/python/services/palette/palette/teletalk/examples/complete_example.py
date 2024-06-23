@@ -40,6 +40,17 @@ async def command_starter(talk: Talk, message: Message) -> None:
 
         return await talk.ask(query=root_query)
 
+    async def quit(
+        talk: Talk,
+        message: Message,
+        root_query: Query,
+        query: Button,
+    ):
+        query.label_text = "You was supposed to press me! Bye!"
+        await talk.question_message.edit_text(**root_query.render(talk=talk).__dict__)
+        await asyncio.sleep(2)
+        await talk.question_message.delete()
+
     # - Create a button
 
     await talk.ask(
@@ -47,7 +58,8 @@ async def command_starter(talk: Talk, message: Message) -> None:
             button_text="Increment!",
             label_text="0",
             callback=increment,
-        )
+            message_callback=quit,
+        ),
     )
 
 
