@@ -49,6 +49,7 @@ class Talk:
 
     def set_question_message(self, message: Message):
         # - Set the question message
+
         self.question_message = message
 
         # - Set new callbacks, exclude all callbacks as outdated
@@ -81,14 +82,70 @@ class Talk:
 
         self.question_event.set_result(event)
 
-    # - Syntax sugar
-
     async def ask(
         self,
         query: Query,
         inplace: bool = True,
     ):
-        return await self.chat.ask(talk=self, query=query, inplace=inplace)
+        # - Render message (and register callbacks alongside of this process with talk.register_callback)
+
+        rendered_message = query.render(talk=self)
+
+        # - Render query and edit message (and register callbacks alongside of this process with talk.register_callback)
+
+        if inplace and self.question_message:
+            message = await self.question_message.edit_text(**rendered_message.__dict__)
+        else:
+            message = await self.starter_message.answer(**rendered_message.__dict__)
+
+        # - Update pending question message
+
+        self.set_question_message(message)
+        self.set_bot_thinking(False)
+
+        # - Wait for talk and get callback_info
+
+        while True:
+            # - Get response
+
+            callback_event = await self.wait_for_question_event()
+
+            # - Start thinking
+
+            self.set_bot_thinking(True)
+
+            if callback_event.callback_id:
+                # - UI event
+
+                if callback_event.callback_id not in self.question_callbacks:
+                    logger.error("Callback not found", callback_id=callback_event.callback_id)
+                    continue
+
+                callback_info = self.question_callbacks[callback_event.callback_id]
+                callback_coroutine = callback_info.callback(
+                    talk=self,
+                    root_query=query,
+                    query=callback_info.query,
+                )
+                break
+            else:
+                # - Message event
+
+                if not query.message_callback:
+                    logger.debug("Message callback not found, skipping")
+                    continue
+
+                callback_coroutine = query.message_callback(
+                    talk=self,
+                    message=callback_event.message,
+                )
+                break
+
+        # - Run callback
+
+        return await callback_coroutine
+
+    # - Syntax sugar
 
     @property
     def message(self):  # for quick communication
