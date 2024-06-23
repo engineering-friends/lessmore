@@ -64,6 +64,10 @@ class Element(ABC):
                 element=self,
             )
 
+        # - Reset question
+
+        # talk.reset_question_message()
+
         # - Run callback
 
         return await callback_coroutine

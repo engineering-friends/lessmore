@@ -42,7 +42,7 @@ def get_global_message_handler(
             talk = talker.get_talk(question_message=message.reply_to_message)
 
             if talk:
-                talk.event.set_result(CallbackEvent(message=message))
+                talk.question_event.set_result(CallbackEvent(message=message))
                 return
 
         # - If there is an talk for latest question message id: send to corresponding talk
@@ -50,10 +50,10 @@ def get_global_message_handler(
         latest_question_message = last(talker.active_question_messages, default=None)
 
         if latest_question_message.message_id:
-            talk = talker.get_talk(latest_question_message.message_id)
+            talk = talker.get_talk(latest_question_message)
 
             if talk:
-                talk.event.set_result(CallbackEvent(message=message))
+                talk.question_event.set_result(CallbackEvent(message=message))
                 return
 
         # - Start new message by default if there is a message starter

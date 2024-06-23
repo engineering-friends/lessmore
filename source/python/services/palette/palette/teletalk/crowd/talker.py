@@ -39,6 +39,10 @@ class Talker:
 
     def get_talk(self, question_message: Message, default=None) -> Talk:
         return next(
-            (talk for talk in self.talks if talk.starter_message.message_id == question_message.message_id),
+            (
+                talk
+                for talk in self.talks
+                if talk.question_message and talk.question_message.message_id == question_message.message_id
+            ),
             default,
         )
