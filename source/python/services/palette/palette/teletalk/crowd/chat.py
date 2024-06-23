@@ -5,10 +5,8 @@ from dataclasses import dataclass, field
 from typing import Any, Callable
 
 from aiogram.types import Message
-from loguru import logger
 
-from palette.teletalk.crowd.talk import Talk
-from palette.teletalk.query.query import Query
+from palette.teletalk.crowd.talk.talk import Talk
 
 
 @dataclass

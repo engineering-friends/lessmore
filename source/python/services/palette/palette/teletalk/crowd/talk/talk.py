@@ -9,7 +9,7 @@ from aiogram.types import Message
 from loguru import logger
 
 from palette.teletalk.crowd.callback_event import CallbackEvent
-from palette.teletalk.crowd.callback_info import CallbackInfo
+from palette.teletalk.crowd.talk.callback_info import CallbackInfo
 from palette.teletalk.query.query import Query
 
 

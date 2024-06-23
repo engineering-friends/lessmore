@@ -1,13 +1,12 @@
 import asyncio
 
 from datetime import datetime
-from typing import Optional
 
 from aiogram.types import Message
 from lessmore.utils.to_anything.to_datetime import to_datetime
 from palette.deps import Deps
 from palette.teletalk.crowd.callback_event import CallbackEvent
-from palette.teletalk.crowd.talk import Talk
+from palette.teletalk.crowd.talk.talk import Talk
 from palette.teletalk.start_polling import start_polling
 
 

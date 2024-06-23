@@ -9,7 +9,7 @@ from aiogram.types import BotCommand, Message
 
 from palette.deps import Deps
 from palette.teletalk.crowd.crowd import Crowd
-from palette.teletalk.crowd.talk import Talk
+from palette.teletalk.crowd.talk.talk import Talk
 
 
 async def start_polling(

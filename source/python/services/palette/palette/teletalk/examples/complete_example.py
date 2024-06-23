@@ -1,10 +1,8 @@
 import asyncio
 
-from typing import Optional
-
 from aiogram.types import Message
 from palette.deps import Deps
-from palette.teletalk.crowd.talk import Talk
+from palette.teletalk.crowd.talk.talk import Talk
 from palette.teletalk.query.query import Query
 from palette.teletalk.query.zoo.button import Button
 from palette.teletalk.start_polling import start_polling

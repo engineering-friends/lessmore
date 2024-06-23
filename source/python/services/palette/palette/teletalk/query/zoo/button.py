@@ -1,7 +1,7 @@
 from typing import Callable, Optional
 
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from palette.teletalk.crowd.talk import Talk
+from palette.teletalk.crowd.talk.talk import Talk
 from palette.teletalk.query.query import Query
 from palette.teletalk.query.rendered_query import RenderedQuery
 
