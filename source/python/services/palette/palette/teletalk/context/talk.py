@@ -22,7 +22,7 @@ class Talk:
     # will be set with CallbackEvent from global handler (callback_query/message)
     event: Optional[asyncio.Future] = field(default_factory=lambda: asyncio.get_running_loop().create_future())
 
-    def register_ui_callback(
+    def register_callback(
         self,
         callback: Callable,
         element: Element,
