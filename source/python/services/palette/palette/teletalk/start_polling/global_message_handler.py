@@ -41,7 +41,7 @@ def get_global_message_handler(
         if message.reply_to_message:
             talk = first_true(
                 user_context.talks,
-                pred=lambda talk: talk.question.message_id == message.reply_to_message.message_id,
+                pred=lambda talk: talk.question_message.message_id == message.reply_to_message.message_id,
             )
 
             if talk:
@@ -55,7 +55,7 @@ def get_global_message_handler(
         if latest_question_message.message_id:
             talk = first_true(
                 user_context.talks,
-                pred=lambda talk: talk.question.message_id == latest_question_message.message_id,
+                pred=lambda talk: talk.question_message.message_id == latest_question_message.message_id,
             )
 
             if talk:

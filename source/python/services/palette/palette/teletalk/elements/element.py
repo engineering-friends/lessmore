@@ -26,23 +26,23 @@ class Element(ABC):
         # todo later: return callbacks with render function instead? [@marklidenberg]
 
         if inplace and talk:
-            message = await talk.question.edit_text(**self.render(talk=talk).__dict__)
+            message = await talk.question_message.edit_text(**self.render(talk=talk).__dict__)
         else:
             message = await talk.sample_message.answer(**self.render(talk=talk).__dict__)
 
             # todo later: make properly [@marklidenberg]
             from palette.teletalk.context.context import context
 
-            user_context = context.get_user_context(talk.user_id)
+            user_context = context.get_user_context(talk.sample_message.from_user.id)
             user_context.active_question_messages.append(message)
 
         # - Update pending question message
 
-        talk.question = message
+        talk.question_message = message
 
         # - Wait for talk and get callback_info
 
-        callback_event = await talk.callback_future
+        callback_event = await talk.event
 
         if callback_event.callback_id:
             # - UI event
@@ -72,7 +72,7 @@ class Element(ABC):
 
         # - Reset talk future
 
-        talk.callback_future = asyncio.get_running_loop().create_future()
+        talk.event = asyncio.get_running_loop().create_future()
 
         # - Run callback
 

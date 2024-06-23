@@ -24,7 +24,7 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
 
     talk = first_true(
         user_context.talks,
-        pred=lambda talk: talk.question.message_id == callback_query.message.message_id,
+        pred=lambda talk: talk.question_message.message_id == callback_query.message.message_id,
     )
 
     if not talk:
