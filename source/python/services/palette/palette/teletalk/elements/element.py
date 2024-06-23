@@ -5,7 +5,7 @@ from typing import Any
 
 from loguru import logger
 
-# from palette.teledo.context.interaction import Interaction
+# from palette.teledo.context.talk import Interaction
 from palette.teletalk.elements.rendered_element import RenderedElement
 
 

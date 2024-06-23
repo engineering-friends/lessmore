@@ -9,7 +9,7 @@ from aiogram.types import BotCommand, Message
 
 from palette.deps import Deps
 from palette.teletalk.context.context import context
-from palette.teletalk.context.interaction import Talk
+from palette.teletalk.context.talk import Talk
 from palette.teletalk.start_polling.global_callback_query_handler import global_callback_query_handler
 from palette.teletalk.start_polling.global_message_handler import get_global_message_handler
 

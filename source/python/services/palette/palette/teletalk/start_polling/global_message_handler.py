@@ -9,7 +9,7 @@ from more_itertools import first, last, only
 
 from palette.teletalk.context.callback_event import CallbackEvent
 from palette.teletalk.context.context import context
-from palette.teletalk.context.interaction import Talk
+from palette.teletalk.context.talk import Talk
 
 
 def get_global_message_handler(
@@ -42,7 +42,7 @@ def get_global_message_handler(
             interaction = first(
                 [
                     interaction
-                    for interaction in user_context.interactions
+                    for interaction in user_context.talks
                     if interaction.question.message.message_id == message.reply_to_message.message_id
                 ],
                 default=None,
@@ -60,7 +60,7 @@ def get_global_message_handler(
             interaction = only(
                 [
                     interaction
-                    for interaction in user_context.interactions
+                    for interaction in user_context.talks
                     if interaction.question.message.message_id == latest_question_message.message_id
                 ],
                 default=None,

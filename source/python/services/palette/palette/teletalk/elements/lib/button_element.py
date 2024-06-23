@@ -1,7 +1,7 @@
 from typing import Callable
 
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from palette.teletalk.context.interaction import Talk
+from palette.teletalk.context.talk import Talk
 from palette.teletalk.elements.element import Element
 from palette.teletalk.elements.rendered_element import RenderedElement
 

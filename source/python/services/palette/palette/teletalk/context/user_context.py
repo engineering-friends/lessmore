@@ -6,7 +6,7 @@ from typing import Callable
 
 from aiogram.types import Message
 
-from palette.teletalk.context.interaction import Talk
+from palette.teletalk.context.talk import Talk
 
 
 @dataclass
@@ -26,7 +26,7 @@ class UserContext:
 
         # - Add to context
 
-        self.interactions.append(new_interaction)
+        self.talks.append(new_interaction)
 
         # - Run
 
@@ -37,6 +37,6 @@ class UserContext:
 
             # - Remove interaction
 
-            self.interactions.remove(new_interaction)
+            self.talks.remove(new_interaction)
 
         asyncio.create_task(_run_callback())

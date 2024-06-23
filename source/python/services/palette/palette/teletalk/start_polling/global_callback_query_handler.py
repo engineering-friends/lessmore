@@ -25,7 +25,7 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
     interaction = first(
         [
             interaction
-            for interaction in user_context.interactions
+            for interaction in user_context.talks
             if interaction.question.message.message_id == callback_query.message.message_id
         ],
         default=None,
