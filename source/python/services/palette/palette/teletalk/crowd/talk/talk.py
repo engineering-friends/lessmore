@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Callable, Optional
 from aiogram.types import Message
 from loguru import logger
 
-from palette.teletalk.crowd.raw_response import RawResponse
+from palette.teletalk.crowd.response import Response
 from palette.teletalk.crowd.talk.callback_info import CallbackInfo
 from palette.teletalk.query.query import Query
 
@@ -62,7 +62,7 @@ class Talk:
 
         self._old_question_callbacks = dict(self.question_callbacks)
 
-    async def wait_for_response(self) -> RawResponse:
+    async def wait_for_response(self) -> Response:
         # - Wait for the question event
 
         result = await self.question_event
@@ -75,7 +75,9 @@ class Talk:
 
         return result
 
-    async def respond(self, response: RawResponse, on_late_response: Optional[Callable] = None):
+    async def respond(self, response: Response, on_late_response: Optional[Callable] = None):
+        # - Check if bot is thinking
+
         if self.is_bot_thinking:
             # - Process late messages with on_late_message callback if specified
 
@@ -131,36 +133,40 @@ class Talk:
         while True:
             # - Get response
 
-            raw_response = await self.wait_for_response()
+            response = await self.wait_for_response()
 
             # - Start thinking
 
             self.set_bot_thinking(True)
 
-            if raw_response.callback_id:
-                # - UI event
+            if response.callback_id:
+                # UI event
 
-                if raw_response.callback_id not in self.question_callbacks:
-                    logger.error("Callback not found", callback_id=raw_response.callback_id)
+                if response.callback_id not in self.question_callbacks:
+                    logger.error("Callback not found", callback_id=response.callback_id)
                     continue
 
-                callback_info = self.question_callbacks[raw_response.callback_id]
+                callback_info = self.question_callbacks[response.callback_id]
 
                 return await callback_info.callback(
-                    talk=self,
-                    root_query=query,
-                    query=callback_info.query,
+                    response=Response(
+                        **{k: v for k, v in response.__dict__.items() if v},
+                        talk=self,
+                        root_query=query,
+                        query=callback_info.query,
+                    )
                 )
             else:
-                # - Message event
+                # Message event
 
                 if not message_callback:
                     logger.debug("Message callback not found, skipping")
                     continue
 
                 return await message_callback(
+                    **{k: v for k, v in response.__dict__.items() if v},
                     talk=self,
-                    message=raw_response.message,
+                    message=response.message,
                     root_query=query,
                     query=query,
                 )

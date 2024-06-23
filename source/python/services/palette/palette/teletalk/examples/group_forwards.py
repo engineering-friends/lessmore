@@ -5,7 +5,7 @@ from datetime import datetime
 from aiogram.types import Message
 from lessmore.utils.to_anything.to_datetime import to_datetime
 from palette.deps import Deps
-from palette.teletalk.crowd.callback_event import CallbackEvent
+from palette.teletalk.crowd.response import Response
 from palette.teletalk.crowd.talk.talk import Talk
 from palette.teletalk.start_polling import start_polling
 
@@ -15,8 +15,8 @@ class Grouper:
         self.messages: list[Message] = []
         self.window_seconds = window_seconds
 
-    async def __call__(self, talk: Talk, message: Message) -> None:
-        asyncio.create_task(self.group(message=message))
+    async def __call__(self, response: Response) -> None:
+        asyncio.create_task(self.group(message=response.message))
 
     async def group(self, message: Message):
         # - Append message
@@ -57,11 +57,11 @@ def test():
 
     # - Define callback for late events (forwards are usually late)
 
-    async def on_late_event(event: CallbackEvent):
-        if event.callback_id:
+    async def on_late_event(response: Response):
+        if response.callback_id:
             return
 
-        await grouper.group(message=event.message)
+        await grouper.group(message=response.message)
 
     # - Start polling
 

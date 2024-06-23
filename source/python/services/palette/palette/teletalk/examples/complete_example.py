@@ -2,6 +2,7 @@ import asyncio
 
 from aiogram.types import Message
 from palette.deps import Deps
+from palette.teletalk.crowd.response import Response
 from palette.teletalk.crowd.talk.talk import Talk
 from palette.teletalk.query.query import Query
 from palette.teletalk.query.zoo.button import Button
@@ -11,11 +12,7 @@ from palette.teletalk.start_polling import start_polling
 async def command_starter(talk: Talk, message: Message) -> None:
     # - Main callback function
 
-    async def increment(
-        talk: Talk,
-        root_query: Query,
-        query: Button,
-    ):
+    async def increment(response: Response):
         # - Simulate some processing time
 
         await asyncio.sleep(1)
@@ -28,7 +25,7 @@ async def command_starter(talk: Talk, message: Message) -> None:
 
         # - Increment button state by 1
 
-        query.label_text = str(int(query.label_text) + 1)
+        response.query.label_text = str(int(response.query.label_text) + 1)
 
         # - Spawn another talk in parallel (just for fun)
 
@@ -36,16 +33,11 @@ async def command_starter(talk: Talk, message: Message) -> None:
 
         # - Ask the query again with updated state
 
-        return await talk.ask(query=root_query)
+        return await talk.ask(query=response.root_query)
 
-    async def quit(
-        talk: Talk,
-        message: Message,
-        root_query: Query,
-        query: Button,
-    ):
-        query.label_text = "You was supposed to press me! Bye!"
-        await talk.question_message.edit_text(**root_query.render(talk=talk).to_dict())
+    async def quit(response: Response):
+        response.query.label_text = "You was supposed to press me! Bye!"
+        await talk.question_message.edit_text(**response.root_query.render(talk=talk).to_dict())
         await asyncio.sleep(2)
         await talk.question_message.delete()
 

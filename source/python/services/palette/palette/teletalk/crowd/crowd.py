@@ -6,7 +6,7 @@ from loguru import logger
 from more_itertools import last
 
 from palette.teletalk.crowd.chat import Chat
-from palette.teletalk.crowd.raw_response import RawResponse
+from palette.teletalk.crowd.response import Response
 
 
 @dataclass
@@ -45,7 +45,7 @@ class Crowd:
         # - Send callback event to the coroutine
 
         await talk.respond(
-            response=RawResponse(callback_id=callback_query.data),
+            response=Response(callback_id=callback_query.data),
             on_late_response=self.on_late_response,
         )
 
@@ -81,7 +81,7 @@ class Crowd:
 
                 if talk:
                     await talk.respond(
-                        response=RawResponse(message=message),
+                        response=Response(message=message),
                         on_late_response=self.on_late_response,
                     )
                     return
@@ -92,7 +92,7 @@ class Crowd:
 
             if talk:
                 await talk.respond(
-                    response=RawResponse(message=message),
+                    response=Response(message=message),
                     on_late_response=self.on_late_response,
                 )
                 return
