@@ -9,7 +9,7 @@ from more_itertools import first, last, only
 
 from palette.teletalk.context.callback_event import CallbackEvent
 from palette.teletalk.context.context import context
-from palette.teletalk.context.interaction import Interaction
+from palette.teletalk.context.interaction import Talk
 
 
 def get_global_message_handler(

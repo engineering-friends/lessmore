@@ -2,13 +2,13 @@ import asyncio
 
 from aiogram.types import Message
 from palette.deps import Deps
-from palette.teletalk.context.interaction import Interaction
+from palette.teletalk.context.interaction import Talk
 from palette.teletalk.elements.element import Element
 from palette.teletalk.elements.lib.button_element import ButtonElement
 from palette.teletalk.start_polling.start_polling import start_polling
 
 
-async def command_starter(message: Message, interaction: Interaction) -> None:
+async def command_starter(message: Message, interaction: Talk) -> None:
     async def _callback(message: Message, root: Element, element: ButtonElement):
         element.text = str(int(element.text) + 1)
         await message.answer("Incremented by 1")

@@ -6,7 +6,7 @@ from typing import Callable
 
 from aiogram.types import Message
 
-from palette.teletalk.context.interaction import Interaction
+from palette.teletalk.context.interaction import Talk
 
 
 @dataclass
@@ -16,13 +16,13 @@ class UserContext:
     user_id: int
 
     # todo later: index properly [@marklidenberg]
-    interactions: list[Interaction] = field(default_factory=list)
+    interactions: list[Talk] = field(default_factory=list)
     active_question_messages: list[Message] = field(default_factory=list)
 
     def start_new_interaction(self, message: Message, callback: Callable):
         # - Prepare interaction
 
-        new_interaction = Interaction(user_id=message.from_user.id, sample_message=message)
+        new_interaction = Talk(user_id=message.from_user.id, sample_message=message)
 
         # - Add to context
 

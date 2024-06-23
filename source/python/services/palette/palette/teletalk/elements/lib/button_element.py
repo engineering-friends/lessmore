@@ -1,7 +1,7 @@
 from typing import Callable
 
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from palette.teletalk.context.interaction import Interaction
+from palette.teletalk.context.interaction import Talk
 from palette.teletalk.elements.element import Element
 from palette.teletalk.elements.rendered_element import RenderedElement
 
@@ -12,7 +12,7 @@ class ButtonElement(Element):
         self.callback = callback
         self.message_callback = message_callback
 
-    def render(self, interaction: Interaction) -> RenderedElement:
+    def render(self, interaction: Talk) -> RenderedElement:
         keyboard = InlineKeyboardBuilder()
         keyboard.button(
             text=self.text,

@@ -10,7 +10,7 @@ from palette.teletalk.context.question import Question
 
 
 @dataclass
-class Interaction:
+class Talk:
     user_id: int
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     state: dict = field(default_factory=dict)

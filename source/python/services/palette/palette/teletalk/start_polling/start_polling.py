@@ -9,7 +9,7 @@ from aiogram.types import BotCommand, Message
 
 from palette.deps import Deps
 from palette.teletalk.context.context import context
-from palette.teletalk.context.interaction import Interaction
+from palette.teletalk.context.interaction import Talk
 from palette.teletalk.start_polling.global_callback_query_handler import global_callback_query_handler
 from palette.teletalk.start_polling.global_message_handler import get_global_message_handler
 
@@ -53,10 +53,10 @@ async def start_polling(
 
 
 def test() -> None:
-    async def message_starter(message: Message, interaction: Interaction) -> None:
+    async def message_starter(message: Message, interaction: Talk) -> None:
         await message.answer("Message received!")
 
-    async def command_starter(message: Message, interaction: Interaction) -> None:
+    async def command_starter(message: Message, interaction: Talk) -> None:
         await message.answer("Command received!")
 
     asyncio.run(
