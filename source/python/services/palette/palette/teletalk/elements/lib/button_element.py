@@ -16,7 +16,7 @@ class ButtonElement(Element):
         keyboard = InlineKeyboardBuilder()
         keyboard.button(
             text=self.text,
-            callback_data=talk.register_callback(
+            callback_data=talk.register_question_callback(
                 callback=self.callback,
                 element=self,
             ),
