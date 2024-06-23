@@ -12,12 +12,12 @@ from palette.teletalk.elements.element import Element
 
 @dataclass
 class Talk:
-    starter_message: Optional[Message] = None  # used for answering to the user with in the same chat
+    starter_message: Optional[Message] = None
     question_message: Optional[Message] = None
-    callbacks: dict[str, CallbackInfo] = field(default_factory=dict)
+    question_callbacks: dict[str, CallbackInfo] = field(default_factory=dict)
 
     # will be set with CallbackEvent from global handler (callback_query/message)
-    event: Optional[asyncio.Future] = field(default_factory=lambda: asyncio.get_running_loop().create_future())
+    question_event: Optional[asyncio.Future] = field(default_factory=lambda: asyncio.get_running_loop().create_future())
 
     def register_callback(
         self,
@@ -25,5 +25,5 @@ class Talk:
         element: Element,
     ):
         _id = str(uuid.uuid4())
-        self.callbacks[_id] = CallbackInfo(callback=callback, element=element)
+        self.question_callbacks[_id] = CallbackInfo(callback=callback, element=element)
         return _id

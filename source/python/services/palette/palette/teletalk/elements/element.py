@@ -19,7 +19,7 @@ class Element(ABC):
     async def __call__(self, talk: Any, inplace: bool = True):
         # - Reset question callbacks
 
-        talk.callbacks = {}
+        talk.question_callbacks = {}
 
         # - Render element and edit message (and register callbacks alongside of this process with talk.register_callback)
 
@@ -42,16 +42,16 @@ class Element(ABC):
 
         # - Wait for talk and get callback_info
 
-        callback_event = await talk.event
+        callback_event = await talk.question_event
 
         if callback_event.callback_id:
             # - UI event
 
-            if callback_event.callback_id not in talk.callbacks:
+            if callback_event.callback_id not in talk.question_callbacks:
                 logger.error("Callback not found", callback_id=callback_event.callback_id)
                 return
 
-            callback_info = talk.callbacks[callback_event.callback_id]
+            callback_info = talk.question_callbacks[callback_event.callback_id]
             callback_coroutine = callback_info.callback(
                 message=message,
                 root=self,
@@ -72,7 +72,7 @@ class Element(ABC):
 
         # - Reset talk future
 
-        talk.event = asyncio.get_running_loop().create_future()
+        talk.question_event = asyncio.get_running_loop().create_future()
 
         # - Run callback
 
