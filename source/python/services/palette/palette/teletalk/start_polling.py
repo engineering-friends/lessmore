@@ -26,15 +26,18 @@ async def start_polling(
 
     # - Init crowd
 
-    crowd = Crowd(on_early_response=on_early_response)
+    crowd = Crowd()
 
     # - Register handlers
 
-    dp.callback_query.register(crowd.global_callback_query_handler)
+    dp.callback_query.register(
+        crowd.global_callback_query_handler
+    )  # assume no early response can come from callback query
     dp.message.register(
         crowd.get_global_message_handler(
             command_starters=command_starters,
             message_starter=message_starter,
+            on_early_response=on_early_response,
         )
     )
 

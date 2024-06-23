@@ -12,7 +12,6 @@ from palette.teletalk.crowd.response import Response
 @dataclass
 class Crowd:
     chats: dict[int, Chat] = field(default_factory=dict)
-    on_early_response: Optional[Callable] = None
 
     def get_chat(self, user_id: int) -> Chat:
         return self.chats.setdefault(user_id, Chat())
@@ -44,15 +43,13 @@ class Crowd:
 
         # - Send callback event to the coroutine
 
-        await talk.respond(
-            response=Response(callback_id=callback_query.data),
-            on_early_response=self.on_early_response,
-        )
+        await talk.respond(response=Response(callback_id=callback_query.data))
 
     def get_global_message_handler(
         self,
-        command_starters: dict[str, Callable] = {},  # {'/start': def f(message: Message): ...}
-        message_starter: Optional[Callable] = None,  # def f(message: Message): ...) -> callable:
+        command_starters: dict[str, Callable] = {},  # {'/start': def f(response: Response): ...}
+        message_starter: Optional[Callable] = None,  # def f(response: Response): ...) -> callable:
+        on_early_response: Optional[Callable] = None,  # def f(response: Response): ...
     ) -> Callable:
         async def global_message_handler(message: Message) -> None:
             logger.debug(
@@ -82,7 +79,7 @@ class Crowd:
                 if talk:
                     await talk.respond(
                         response=Response(message=message),
-                        on_early_response=self.on_early_response,
+                        on_early_response=on_early_response,
                     )
                     return
 
@@ -93,7 +90,7 @@ class Crowd:
             if talk:
                 await talk.respond(
                     response=Response(message=message),
-                    on_early_response=self.on_early_response,
+                    on_early_response=on_early_response,
                 )
                 return
 
