@@ -20,4 +20,7 @@ class Button(Element):
                 element=self,
             ),
         )
-        return RenderedElement(text="Button text", reply_markup=keyboard.as_markup())
+        return RenderedElement(
+            text="Button text",
+            reply_markup=keyboard.as_markup(),
+        )

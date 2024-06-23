@@ -1,5 +1,7 @@
 import asyncio
 
+from typing import Optional
+
 from aiogram.types import Message
 from palette.deps import Deps
 from palette.teletalk.crowd.talk import Talk
@@ -13,7 +15,6 @@ async def command_starter(talk: Talk, message: Message) -> None:
 
     async def _callback(
         talk: Talk,
-        message: Message,
         root: Element,
         element: Button,
     ):
@@ -26,7 +27,12 @@ async def command_starter(talk: Talk, message: Message) -> None:
 
 
 def test():
-    asyncio.run(start_polling(command_starters={"/start": command_starter}, bot=Deps.load().config.telegram_bot_token))
+    asyncio.run(
+        start_polling(
+            command_starters={"/start": command_starter},
+            bot=Deps.load().config.telegram_bot_token,
+        )
+    )
 
 
 if __name__ == "__main__":

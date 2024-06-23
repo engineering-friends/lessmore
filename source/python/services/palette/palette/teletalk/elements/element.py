@@ -47,7 +47,6 @@ class Element(ABC):
                 callback_info = talk.question_callbacks[callback_event.callback_id]
                 callback_coroutine = callback_info.callback(
                     talk=talk,
-                    message=message,
                     root=self,
                     element=callback_info.element,
                 )
@@ -61,9 +60,7 @@ class Element(ABC):
 
                 callback_coroutine = self.message_callback(
                     talk=talk,
-                    message=message,
-                    root=self,
-                    element=self,
+                    message=callback_event.message,
                 )
                 break
 
