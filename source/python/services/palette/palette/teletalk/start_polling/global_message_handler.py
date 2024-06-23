@@ -40,7 +40,11 @@ def get_global_message_handler(
 
         if message.reply_to_message:
             talk = first(
-                [talk for talk in user_context.talks if talk.message.message_id == message.reply_to_message.message_id],
+                [
+                    talk
+                    for talk in user_context.talks
+                    if talk.question.message_id == message.reply_to_message.message_id
+                ],
                 default=None,
             )
 
@@ -54,7 +58,7 @@ def get_global_message_handler(
 
         if latest_question_message.message_id:
             talk = only(
-                [talk for talk in user_context.talks if talk.message.message_id == latest_question_message.message_id],
+                [talk for talk in user_context.talks if talk.question.message_id == latest_question_message.message_id],
                 default=None,
             )
             if talk:

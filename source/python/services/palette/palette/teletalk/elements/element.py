@@ -1,7 +1,7 @@
 import asyncio
 
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Callable, Optional
 
 from loguru import logger
 
@@ -10,6 +10,8 @@ from palette.teletalk.elements.rendered_element import RenderedElement
 
 
 class Element(ABC):
+    message_callback: Optional[Callable] = None
+
     @abstractmethod
     def render(self, talk: Any) -> RenderedElement:
         pass
@@ -17,15 +19,14 @@ class Element(ABC):
     async def __call__(self, talk: Any, inplace: bool = True):
         # - Reset question callbacks
 
-        talk.ui_callbacks = {}
-        talk.message_callback = None
+        talk.callbacks = {}
 
         # - Render element and edit message (and register callbacks alongside of this process with talk.register_callback)
 
         # todo later: return callbacks with render function instead?
 
         if inplace and talk:
-            message = await talk.message.edit_text(**self.render(talk=talk).__dict__)
+            message = await talk.question.edit_text(**self.render(talk=talk).__dict__)
         else:
             message = await talk.sample_message.answer(**self.render(talk=talk).__dict__)
 
@@ -37,7 +38,7 @@ class Element(ABC):
 
         # - Update pending question message
 
-        talk.message = message
+        talk.question = message
 
         # - Wait for talk and get callback_info
 
@@ -45,11 +46,11 @@ class Element(ABC):
 
         if callback_event.callback_id:
             # UI event
-            if callback_event.callback_id not in talk.ui_callbacks:
+            if callback_event.callback_id not in talk.callbacks:
                 logger.error("Callback not found", callback_id=callback_event.callback_id)
                 return
 
-            callback_info = talk.ui_callbacks[callback_event.callback_id]
+            callback_info = talk.callbacks[callback_event.callback_id]
             callback_coroutine = callback_info.callback(
                 message=message,
                 root=self,
@@ -58,14 +59,14 @@ class Element(ABC):
         else:
             # Message event
 
-            if not talk.message_callback:
+            if not self.message_callback:
                 logger.debug("Message callback not found, skipping")
                 return
 
-            callback_info = talk.message_callback
-            callback_coroutine = callback_info.callback(
+            callback_coroutine = self.message_callback(
                 message=message,
                 root=self,
+                element=self,
             )
 
         # - Reset talk future

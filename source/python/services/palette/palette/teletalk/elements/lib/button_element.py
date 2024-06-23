@@ -21,5 +21,4 @@ class ButtonElement(Element):
                 element=self,
             ),
         )
-        talk.register_message_callback(callback=self.message_callback)
         return RenderedElement(text="Button text", reply_markup=keyboard.as_markup())
