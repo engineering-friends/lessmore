@@ -2,7 +2,7 @@ import asyncio
 
 from aiogram.types import CallbackQuery
 from loguru import logger
-from more_itertools import first
+from more_itertools import first, first_true
 
 from palette.teletalk.context.callback_event import CallbackEvent
 from palette.teletalk.context.context import context
@@ -22,9 +22,9 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
 
     # - Get talk with the same message id
 
-    talk = first(
-        [talk for talk in user_context.talks if talk.question.message.message_id == callback_query.message.message_id],
-        default=None,
+    talk = first_true(
+        user_context.talks,
+        pred=lambda talk: talk.question.message.message_id == callback_query.message.message_id,
     )
 
     if not talk:
