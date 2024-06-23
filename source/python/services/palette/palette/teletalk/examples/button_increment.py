@@ -8,10 +8,15 @@ from palette.teletalk.elements.zoo.button import Button
 from palette.teletalk.start_polling.start_polling import start_polling
 
 
-async def command_starter(message: Message, talk: Talk) -> None:
+async def command_starter(talk: Talk, message: Message) -> None:
     # - Main callback function
 
-    async def _callback(message: Message, talk: Talk, root: Element, element: Button):
+    async def _callback(
+        talk: Talk,
+        message: Message,
+        root: Element,
+        element: Button,
+    ):
         root.text = str(int(root.text) + 1)
         await message.answer("Incremented by 1")
         return await root(talk=talk)
