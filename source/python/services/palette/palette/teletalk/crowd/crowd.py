@@ -55,7 +55,7 @@ class Crowd:
         message_starter: Optional[Callable] = None,  # def f(message: Message): ...) -> callable:
     ) -> Callable:
         async def global_message_handler(message: Message) -> None:
-            logger.trace(
+            logger.debug(
                 "Message received",
                 user_id=message.from_user.id,
                 message_id=message.message_id,

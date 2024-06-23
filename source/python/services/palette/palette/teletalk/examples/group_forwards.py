@@ -4,6 +4,7 @@ from datetime import datetime
 
 from aiogram.types import Message
 from lessmore.utils.to_anything.to_datetime import to_datetime
+from loguru import logger
 from palette.deps import Deps
 from palette.teletalk.crowd.response import Response
 from palette.teletalk.crowd.talk.talk import Talk
@@ -17,13 +18,17 @@ class Grouper:
 
     async def __call__(self, response: Response) -> None:
         if response.message:
-            asyncio.create_task(self.group(message=response.message))
+            # - Append message
 
-    async def group(self, message: Message):
-        # - Append message
+            self.messages.append(response.message)
 
-        self.messages.append(message)
+            logger.debug(f"Message appended: {response.message.text}")
 
+            # - Group
+
+            asyncio.create_task(self.group())
+
+    async def group(self):
         # - Wait
 
         await asyncio.sleep(self.window_seconds)
@@ -44,6 +49,10 @@ class Grouper:
 
             self.messages = []
 
+            # - Sort messages
+
+            messages_copy = sorted(messages_copy, key=lambda message: message.message_id)
+
             # - Send the message
 
             await messages_copy[-1].answer(
@@ -56,20 +65,12 @@ def test():
 
     grouper = Grouper()
 
-    # - Define callback for late events (forwards are usually late)
-
-    async def on_early_response(response: Response):
-        if response.callback_id:
-            return
-
-        await grouper.group(message=response.message)
-
     # - Start polling
 
     asyncio.run(
         start_polling(
             message_starter=grouper,
-            on_early_response=on_early_response,
+            on_early_response=grouper,
             bot=Deps.load().config.telegram_bot_token,
         )
     )
