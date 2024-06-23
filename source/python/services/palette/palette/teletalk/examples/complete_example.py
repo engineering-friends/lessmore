@@ -9,7 +9,7 @@ from palette.teletalk.query.zoo.button import Button
 from palette.teletalk.start_polling import start_polling
 
 
-async def command_starter(talk: Talk, message: Message) -> None:
+async def command_starter(response: Response) -> None:
     # - Main callback function
 
     async def increment(response: Response):
@@ -19,7 +19,7 @@ async def command_starter(talk: Talk, message: Message) -> None:
 
         # - Write a message for the user
 
-        await talk.message.answer(
+        await response.tell.answer(
             text="I'm incrementing the number by 1, buddy! Also I'll spawn another talk in parallel, just for fun"
         )
 
@@ -29,21 +29,21 @@ async def command_starter(talk: Talk, message: Message) -> None:
 
         # - Spawn another talk in parallel (just for fun)
 
-        talk.start_new_talk(callback=command_starter)
+        response.start_new_talk(callback=command_starter)
 
         # - Ask the query again with updated state
 
-        return await talk.ask(query=response.root_query)
+        return await response.ask(query=response.root_query)
 
     async def quit(response: Response):
         response.query.label_text = "You was supposed to press me! Bye!"
-        await talk.question_message.edit_text(**response.root_query.render(talk=talk).to_dict())
+        await response.question_message.edit_text(**response.root_query.render(talk=response.talk).to_dict())
         await asyncio.sleep(2)
-        await talk.question_message.delete()
+        await response.question_message.delete()
 
     # - Create a button
 
-    await talk.ask(
+    await response.ask(
         query=Button(
             button_text="Increment!",
             label_text="0",

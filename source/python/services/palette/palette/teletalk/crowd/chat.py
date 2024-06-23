@@ -6,6 +6,7 @@ from typing import Any, Callable
 
 from aiogram.types import Message
 
+from palette.teletalk.crowd.response import Response
 from palette.teletalk.crowd.talk.talk import Talk
 
 
@@ -31,7 +32,7 @@ class Chat:
         async def _run_talk():
             # - Run callback
 
-            await callback(talk=new_talk, message=starter_message)
+            await callback(response=Response(talk=new_talk, message=starter_message))
 
             # - Set bot thinking to false (not really necessary, just for the sake of cleaning up the talk)
 

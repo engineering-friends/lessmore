@@ -12,7 +12,7 @@ from palette.teletalk.crowd.response import Response
 @dataclass
 class Crowd:
     chats: dict[int, Chat] = field(default_factory=dict)
-    on_late_response: Optional[Callable] = None
+    on_early_response: Optional[Callable] = None
 
     def get_chat(self, user_id: int) -> Chat:
         return self.chats.setdefault(user_id, Chat())
@@ -46,7 +46,7 @@ class Crowd:
 
         await talk.respond(
             response=Response(callback_id=callback_query.data),
-            on_late_response=self.on_late_response,
+            on_early_response=self.on_early_response,
         )
 
     def get_global_message_handler(
@@ -82,7 +82,7 @@ class Crowd:
                 if talk:
                     await talk.respond(
                         response=Response(message=message),
-                        on_late_response=self.on_late_response,
+                        on_early_response=self.on_early_response,
                     )
                     return
 
@@ -93,7 +93,7 @@ class Crowd:
             if talk:
                 await talk.respond(
                     response=Response(message=message),
-                    on_late_response=self.on_late_response,
+                    on_early_response=self.on_early_response,
                 )
                 return
 

@@ -75,14 +75,14 @@ class Talk:
 
         return result
 
-    async def respond(self, response: Response, on_late_response: Optional[Callable] = None):
+    async def respond(self, response: Response, on_early_response: Optional[Callable] = None):
         # - Check if bot is thinking
 
         if self.is_bot_thinking:
-            # - Process late messages with on_late_message callback if specified
+            # - Process early messages
 
-            if on_late_response:
-                return await on_late_response(response)
+            if on_early_response:
+                return await on_early_response(response)
 
             # - Do nothing otherwise
 
@@ -171,15 +171,3 @@ class Talk:
                         query=query,
                     )
                 )
-
-    # - Syntax sugar
-
-    @property
-    def message(self):  # for quick communication
-        return self.starter_message
-
-    def start_new_talk(self, callback: Callable, starter_message: Optional[Message] = None) -> Task:
-        return self.chat.start_new_talk(
-            starter_message=starter_message or self.starter_message,
-            callback=callback,
-        )

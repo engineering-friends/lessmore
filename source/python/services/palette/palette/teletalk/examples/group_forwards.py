@@ -16,7 +16,8 @@ class Grouper:
         self.window_seconds = window_seconds
 
     async def __call__(self, response: Response) -> None:
-        asyncio.create_task(self.group(message=response.message))
+        if response.message:
+            asyncio.create_task(self.group(message=response.message))
 
     async def group(self, message: Message):
         # - Append message
@@ -57,7 +58,7 @@ def test():
 
     # - Define callback for late events (forwards are usually late)
 
-    async def on_late_event(response: Response):
+    async def on_early_response(response: Response):
         if response.callback_id:
             return
 
@@ -68,7 +69,7 @@ def test():
     asyncio.run(
         start_polling(
             message_starter=grouper,
-            on_late_event=on_late_event,
+            on_early_response=on_early_response,
             bot=Deps.load().config.telegram_bot_token,
         )
     )
