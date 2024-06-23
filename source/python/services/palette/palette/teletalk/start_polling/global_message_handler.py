@@ -26,7 +26,7 @@ def get_global_message_handler(
 
         # - Get user context
 
-        talker = crowd.get_talker(message.from_user.id)
+        talker = crowd.get_talker(user_id=message.from_user.id)
 
         # - If starter command: start new talk with command
 
@@ -59,7 +59,6 @@ def get_global_message_handler(
         # - Start new message by default if there is a message starter
 
         if not message_starter:
-            # no message starter
             logger.debug(
                 "No message starter",
                 user_id=message.from_user.id,

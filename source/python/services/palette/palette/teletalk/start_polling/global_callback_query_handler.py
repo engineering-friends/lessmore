@@ -18,7 +18,7 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
 
     # - Get user context
 
-    talker = crowd.get_talker(callback_query.from_user.id)
+    talker = crowd.get_talker(user_id=callback_query.from_user.id)
 
     # - Get talk with the same message id
 
