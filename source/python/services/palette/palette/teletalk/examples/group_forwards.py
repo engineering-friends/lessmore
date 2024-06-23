@@ -17,12 +17,21 @@ class Grouper:
         self.messages: list[Message] = []
         self.window_seconds = window_seconds
 
-    def append(self, message: Message):
+    async def group(self, message):
+        # - Append message
+
         self.messages.append(message)
 
-    async def group(self):
+        # - Wait
+
+        await asyncio.sleep(self.window_seconds)
+
+        # - Check if we have any messages
+
         if not self.messages:
             return
+
+        # - Check if the last message is within the window
 
         if (datetime.now() - to_datetime(self.messages[-1].date)).total_seconds() > self.window_seconds:
             # - Create a copy of messages because we want to clear the list before sending the message
@@ -44,19 +53,7 @@ grouper = Grouper()
 
 
 async def message_starter(talk: Talk, message: Message) -> None:
-    # - Add message
-
-    grouper.append(message)
-
-    # - Spawn a task to group messages in grouper window_seconds + 5%
-
-    async def _group():
-        await asyncio.sleep(grouper.window_seconds * 1.05)
-        await grouper.group()
-
-    # - Create task
-
-    asyncio.create_task(_group())
+    asyncio.create_task(grouper.group(message=message))
 
 
 def test():
