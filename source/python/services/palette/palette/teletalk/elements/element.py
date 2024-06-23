@@ -34,35 +34,38 @@ class Element(ABC):
 
         # - Wait for talk and get callback_info
 
-        callback_event = await talk.wait_for_question_event()
+        while True:
+            callback_event = await talk.wait_for_question_event()
 
-        if callback_event.callback_id:
-            # - UI event
+            if callback_event.callback_id:
+                # - UI event
 
-            if callback_event.callback_id not in talk.question_callbacks:
-                logger.error("Callback not found", callback_id=callback_event.callback_id)
-                return
+                if callback_event.callback_id not in talk.question_callbacks:
+                    logger.error("Callback not found", callback_id=callback_event.callback_id)
+                    continue
 
-            callback_info = talk.question_callbacks[callback_event.callback_id]
-            callback_coroutine = callback_info.callback(
-                talk=talk,
-                message=message,
-                root=self,
-                element=callback_info.element,
-            )
-        else:
-            # - Message event
+                callback_info = talk.question_callbacks[callback_event.callback_id]
+                callback_coroutine = callback_info.callback(
+                    talk=talk,
+                    message=message,
+                    root=self,
+                    element=callback_info.element,
+                )
+                break
+            else:
+                # - Message event
 
-            if not self.message_callback:
-                logger.debug("Message callback not found, skipping")
-                return
+                if not self.message_callback:
+                    logger.debug("Message callback not found, skipping")
+                    continue
 
-            callback_coroutine = self.message_callback(
-                talk=talk,
-                message=message,
-                root=self,
-                element=self,
-            )
+                callback_coroutine = self.message_callback(
+                    talk=talk,
+                    message=message,
+                    root=self,
+                    element=self,
+                )
+                break
 
         # - Run callback
 
