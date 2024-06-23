@@ -6,7 +6,7 @@ from typing import Callable
 
 from aiogram.types import Message
 
-from palette.teletalk.context.talk import Talk
+from palette.teletalk.crowd.talk import Talk
 
 
 @dataclass

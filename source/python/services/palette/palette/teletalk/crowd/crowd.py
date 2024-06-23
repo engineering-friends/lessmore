@@ -1,7 +1,7 @@
 from collections import defaultdict
 from dataclasses import dataclass, field
 
-from palette.teletalk.context.talker import Talker
+from palette.teletalk.crowd.talker import Talker
 
 
 @dataclass

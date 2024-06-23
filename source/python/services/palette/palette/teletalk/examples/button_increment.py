@@ -2,7 +2,7 @@ import asyncio
 
 from aiogram.types import Message
 from palette.deps import Deps
-from palette.teletalk.context.talk import Talk
+from palette.teletalk.crowd.talk import Talk
 from palette.teletalk.elements.element import Element
 from palette.teletalk.elements.lib.button_element import ButtonElement
 from palette.teletalk.start_polling.start_polling import start_polling

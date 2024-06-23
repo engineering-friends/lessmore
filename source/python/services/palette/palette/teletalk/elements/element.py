@@ -5,7 +5,7 @@ from typing import Any, Callable, Optional
 
 from loguru import logger
 
-# from palette.teledo.context.talk import talk
+# from palette.teledo.crowd.talk import talk
 from palette.teletalk.elements.rendered_element import RenderedElement
 
 
@@ -31,10 +31,10 @@ class Element(ABC):
             message = await talk.starter_message.answer(**self.render(talk=talk).__dict__)
 
             # todo later: make properly [@marklidenberg]
-            from palette.teletalk.context.context import context
+            from palette.teletalk.crowd.crowd import crowd
 
-            user_context = context.get_talker(talk.starter_message.from_user.id)
-            user_context.active_question_messages.append(message)
+            talker = crowd.get_talker(talk.starter_message.from_user.id)
+            talker.active_question_messages.append(message)
 
         # - Update pending question message
 

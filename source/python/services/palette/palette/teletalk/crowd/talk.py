@@ -6,7 +6,7 @@ from typing import Callable, Optional
 
 from aiogram.types import Message
 
-from palette.teletalk.context.callback_info import CallbackInfo
+from palette.teletalk.crowd.callback_info import CallbackInfo
 from palette.teletalk.elements.element import Element
 
 

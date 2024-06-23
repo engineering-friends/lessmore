@@ -4,8 +4,8 @@ from aiogram.types import CallbackQuery
 from loguru import logger
 from more_itertools import first, first_true
 
-from palette.teletalk.context.callback_event import CallbackEvent
-from palette.teletalk.context.context import context
+from palette.teletalk.crowd.callback_event import CallbackEvent
+from palette.teletalk.crowd.crowd import crowd
 
 
 async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
@@ -18,12 +18,12 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
 
     # - Get user context
 
-    user_context = context.get_talker(callback_query.from_user.id)
+    talker = crowd.get_talker(callback_query.from_user.id)
 
     # - Get talk with the same message id
 
     talk = first_true(
-        user_context.talks,
+        talker.talks,
         pred=lambda talk: talk.question_message.message_id == callback_query.message.message_id,
     )
 
