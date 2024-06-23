@@ -23,7 +23,7 @@ class Response:
 
     root_query: Optional[Query] = None
     query: Optional[Query] = None
-    talk: Optional["Talk"] = None  # recursive import
+    talk: Optional["Talk"] = None  # circular import
 
     # - Syntax sugar
 

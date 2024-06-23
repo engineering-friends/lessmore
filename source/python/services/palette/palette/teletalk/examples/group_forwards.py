@@ -22,8 +22,6 @@ class Grouper:
 
             self.messages.append(response.message)
 
-            logger.debug(f"Message appended: {response.message.text}")
-
             # - Group
 
             asyncio.create_task(self.group())
