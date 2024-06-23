@@ -15,7 +15,7 @@ class Grouper:
         self.messages: list[Message] = []
         self.window_seconds = window_seconds
 
-    async def message_starter(self, talk: Talk, message: Message) -> None:
+    async def __call__(self, talk: Talk, message: Message) -> None:
         asyncio.create_task(self.group(message=message))
 
     async def group(self, message):
@@ -53,7 +53,7 @@ class Grouper:
 def test():
     asyncio.run(
         start_polling(
-            message_starter=Grouper().message_starter,
+            message_starter=Grouper(),
             bot=Deps.load().config.telegram_bot_token,
         )
     )
