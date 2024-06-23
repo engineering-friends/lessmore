@@ -10,7 +10,7 @@ from palette.teletalk.context.talk import Talk
 
 
 @dataclass
-class UserContext:
+class Talker:
     # - Interactions
 
     user_id: int
@@ -18,7 +18,7 @@ class UserContext:
     talks: list[Talk] = field(default_factory=list)
     active_question_messages: list[Message] = field(default_factory=list)
 
-    def start_talk(self, message: Message, callback: Callable):
+    def start_new_talk(self, message: Message, callback: Callable):
         # - Prepare talk
 
         new_talk = Talk(sample_message=message)
@@ -29,7 +29,7 @@ class UserContext:
 
         # - Run
 
-        async def _run_callback():
+        async def _run_talk():
             # - Run callback
 
             await callback(message=message, talk=new_talk)
@@ -38,4 +38,4 @@ class UserContext:
 
             self.talks.remove(new_talk)
 
-        asyncio.create_task(_run_callback())
+        asyncio.create_task(_run_talk())

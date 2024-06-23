@@ -33,7 +33,7 @@ def get_global_message_handler(
         if message.text.startswith("/"):
             command = message.text.split()[0]
             if command in command_starters:
-                user_context.start_talk(message=message, callback=command_starters[command])
+                user_context.start_new_talk(message=message, callback=command_starters[command])
                 return
 
         #  - If reply and replied message is a pending question: send to reply talk
@@ -74,6 +74,6 @@ def get_global_message_handler(
             )
             return
 
-        user_context.start_talk(message=message, callback=message_starter)
+        user_context.start_new_talk(message=message, callback=message_starter)
 
     return global_message_handler
