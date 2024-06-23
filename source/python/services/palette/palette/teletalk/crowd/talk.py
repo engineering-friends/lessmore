@@ -31,8 +31,6 @@ class Talk:
 
     def set_question_message(self, message: Message):
         self.question_message = message
-
-    def reset_question_message(self):
         self.question_message = None
         self.question_callbacks = {}
 

@@ -19,7 +19,7 @@ class Element(ABC):
     async def __call__(self, talk: Any, inplace: bool = True):
         # - Render element and edit message (and register callbacks alongside of this process with talk.register_callback)
 
-        if inplace and talk:
+        if inplace and talk.question_message:
             message = await talk.question_message.edit_text(**self.render(talk=talk).__dict__)
         else:
             message = await talk.starter_message.answer(**self.render(talk=talk).__dict__)
@@ -63,10 +63,6 @@ class Element(ABC):
                 root=self,
                 element=self,
             )
-
-        # - Reset question
-
-        # talk.reset_question_message()
 
         # - Run callback
 
