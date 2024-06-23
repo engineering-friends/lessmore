@@ -28,7 +28,7 @@ class Talker:
         async def _run_talk():
             # - Run callback
 
-            await callback(message=starter_message, talk=new_talk)
+            await callback(talk=new_talk, message=starter_message)
 
             # - Remove talk
 
