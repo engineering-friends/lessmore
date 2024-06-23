@@ -38,18 +38,18 @@ def get_global_message_handler(
             talk = chat.get_talk(question_message=message.reply_to_message)
 
             if talk:
-                talk.question_event.set_result(CallbackEvent(message=message))
+                talk.respond(event=CallbackEvent(message=message))
                 return
 
         # - If there is an talk for latest question message id: send to corresponding talk
 
         latest_question_message = last(chat.question_messages, default=None)
 
-        if latest_question_message.message_id:
+        if latest_question_message:
             talk = chat.get_talk(latest_question_message)
 
             if talk:
-                talk.question_event.set_result(CallbackEvent(message=message))
+                talk.respond(event=CallbackEvent(message=message))
                 return
 
         # - Start new message by default if there is a message starter

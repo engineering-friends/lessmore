@@ -19,7 +19,11 @@ class Chat:
     def start_new_talk(self, starter_message: Message, callback: Callable) -> Task:
         # - Prepare talk
 
-        new_talk = Talk(chat=self, starter_message=starter_message)
+        new_talk = Talk(
+            chat=self,
+            starter_message=starter_message,
+            is_bot_thinking=True,
+        )
 
         # - Add talk
 
@@ -31,6 +35,10 @@ class Chat:
             # - Run callback
 
             await callback(talk=new_talk, message=starter_message)
+
+            # - Set bot thinking to false (not really necessary, just for the sake of cleaning up the talk)
+
+            new_talk.set_bot_thinking(False)
 
             # - Remove talk
 
@@ -52,7 +60,7 @@ class Chat:
         self,
         talk: Talk,
         query: Query,
-        inplace: bool = False,
+        inplace: bool = True,
     ):
         # - Render message (and register callbacks alongside of this process with talk.register_callback)
 
@@ -69,11 +77,18 @@ class Chat:
         # - Update pending question message
 
         talk.set_question_message(message)
+        talk.set_bot_thinking(False)
 
         # - Wait for talk and get callback_info
 
         while True:
+            # - Get response
+
             callback_event = await talk.wait_for_question_event()
+
+            # - Start thinking
+
+            talk.set_bot_thinking(True)
 
             if callback_event.callback_id:
                 # - UI event

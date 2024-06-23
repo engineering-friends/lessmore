@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Callable, Optional
 
 from aiogram.types import Message
+from loguru import logger
 
 from palette.teletalk.crowd.callback_event import CallbackEvent
 from palette.teletalk.crowd.callback_info import CallbackInfo
@@ -19,6 +20,7 @@ if TYPE_CHECKING:
 class Talk:
     chat: "Chat"  # circular import
     starter_message: Optional[Message] = None
+    is_bot_thinking: bool = False  # will be set to True when making a response to a user message
 
     # - Question
 
@@ -41,6 +43,9 @@ class Talk:
         self.question_callbacks[_id] = CallbackInfo(callback=callback, query=query)
         return _id
 
+    def set_bot_thinking(self, is_bot_thinking: bool):
+        self.is_bot_thinking = is_bot_thinking
+
     def set_question_message(self, message: Message):
         self.question_message = message
         self.question_callbacks = {
@@ -60,3 +65,10 @@ class Talk:
         # - Return the result
 
         return result
+
+    def respond(self, event: CallbackEvent):
+        if self.is_bot_thinking:
+            logger.debug("Bot is thinking, ignoring event", event=event)
+            return
+
+        self.question_event.set_result(event)
