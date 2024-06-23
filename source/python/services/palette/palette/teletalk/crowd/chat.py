@@ -48,13 +48,22 @@ class Chat:
             default,
         )
 
-    async def ask(self, talk: Talk, query: Query, inplace: bool = True):
+    async def ask(
+        self,
+        talk: Talk,
+        query: Query,
+        inplace: bool = False,
+    ):
+        # - Render message (and register callbacks alongside of this process with talk.register_callback)
+
+        rendered_message = query.render(talk=talk)
+
         # - Render query and edit message (and register callbacks alongside of this process with talk.register_callback)
 
         if inplace and talk.question_message:
-            message = await talk.question_message.edit_text(**query.render(talk=talk).__dict__)
+            message = await talk.question_message.edit_text(**rendered_message.__dict__)
         else:
-            message = await talk.starter_message.answer(**query.render(talk=talk).__dict__)
+            message = await talk.starter_message.answer(**rendered_message.__dict__)
             self.question_messages.append(message)
 
         # - Update pending question message

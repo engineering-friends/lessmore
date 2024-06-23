@@ -18,7 +18,7 @@ async def start_polling(
     command_starters: dict[str, Callable] = {},  # {'/start': def f(message: Message): ...}
     message_starter: Optional[Callable] = None,  # def f(message: Message): ...
     default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
-    commands: list[BotCommand] = [],
+    commands: Optional[list[BotCommand]] = None,  # description of commands
 ) -> None:
     # - Init dispatcher
 
@@ -44,7 +44,9 @@ async def start_polling(
 
     # - Set commands for bot
 
-    await bot.set_my_commands(commands=commands)
+    # it's possible take from command_starter docs, but `bot_set_my_commands` might takes a while (like ~1s). For not waiting every test, it's just easier to pass it as an argument directly and omit it for tests
+    if commands is not None:
+        await bot.set_my_commands(commands=commands)
 
     # - Start polling
 
@@ -53,9 +55,11 @@ async def start_polling(
 
 def test() -> None:
     async def message_starter(message: Message, talk: Talk) -> None:
+        "Start with a message"
         await message.answer("Message received!")
 
     async def command_starter(message: Message, talk: Talk) -> None:
+        """Start with a command"""
         await message.answer("Command received!")
 
     asyncio.run(
