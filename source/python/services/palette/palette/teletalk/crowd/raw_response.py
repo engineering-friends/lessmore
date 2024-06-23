@@ -5,6 +5,6 @@ from aiogram.types import Message
 
 
 @dataclass
-class Response:
+class RawResponse:
     callback_id: str = ""
     message: Optional[Message] = None

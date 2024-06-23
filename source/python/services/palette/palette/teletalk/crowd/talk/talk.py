@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Callable, Optional
 from aiogram.types import Message
 from loguru import logger
 
-from palette.teletalk.crowd.response import Response
+from palette.teletalk.crowd.raw_response import RawResponse
 from palette.teletalk.crowd.talk.callback_info import CallbackInfo
 from palette.teletalk.query.query import Query
 
@@ -62,7 +62,7 @@ class Talk:
 
         self._old_question_callbacks = dict(self.question_callbacks)
 
-    async def wait_for_response(self) -> Response:
+    async def wait_for_response(self) -> RawResponse:
         # - Wait for the question event
 
         result = await self.question_event
@@ -75,7 +75,7 @@ class Talk:
 
         return result
 
-    async def respond(self, response: Response, on_late_response: Optional[Callable] = None):
+    async def respond(self, response: RawResponse, on_late_response: Optional[Callable] = None):
         if self.is_bot_thinking:
             # - Process late messages with on_late_message callback if specified
 
@@ -131,20 +131,20 @@ class Talk:
         while True:
             # - Get response
 
-            callback_event = await self.wait_for_response()
+            raw_response = await self.wait_for_response()
 
             # - Start thinking
 
             self.set_bot_thinking(True)
 
-            if callback_event.callback_id:
+            if raw_response.callback_id:
                 # - UI event
 
-                if callback_event.callback_id not in self.question_callbacks:
-                    logger.error("Callback not found", callback_id=callback_event.callback_id)
+                if raw_response.callback_id not in self.question_callbacks:
+                    logger.error("Callback not found", callback_id=raw_response.callback_id)
                     continue
 
-                callback_info = self.question_callbacks[callback_event.callback_id]
+                callback_info = self.question_callbacks[raw_response.callback_id]
 
                 return await callback_info.callback(
                     talk=self,
@@ -160,7 +160,7 @@ class Talk:
 
                 return await message_callback(
                     talk=self,
-                    message=callback_event.message,
+                    message=raw_response.message,
                     root_query=query,
                     query=query,
                 )
