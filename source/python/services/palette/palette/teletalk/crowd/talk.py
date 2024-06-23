@@ -102,9 +102,9 @@ class Talk:
             # - Render query and edit message (and register callbacks alongside of this process with talk.register_callback)
 
             if inplace and self.question_message:
-                message = await self.question_message.edit_text(**rendered_message.__dict__)
+                message = await self.question_message.edit_text(**rendered_message.to_dict())
             else:
-                message = await self.message.answer(**rendered_message.__dict__)
+                message = await self.message.answer(**rendered_message.to_dict())
 
             # - Update pending question message
 

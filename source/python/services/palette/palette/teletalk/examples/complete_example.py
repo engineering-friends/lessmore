@@ -47,7 +47,7 @@ async def command_starter(talk: Talk, message: Message) -> None:
         query: Button,
     ):
         query.label_text = "You was supposed to press me! Bye!"
-        await talk.question_message.edit_text(**root_query.render(talk=talk).__dict__)
+        await talk.question_message.edit_text(**root_query.render(talk=talk).to_dict())
         await asyncio.sleep(2)
         await talk.question_message.delete()
 
