@@ -16,7 +16,7 @@ class UserContext:
     user_id: int
 
     # todo later: index properly [@marklidenberg]
-    interactions: list[Talk] = field(default_factory=list)
+    talks: list[Talk] = field(default_factory=list)
     active_question_messages: list[Message] = field(default_factory=list)
 
     def start_new_interaction(self, message: Message, callback: Callable):
