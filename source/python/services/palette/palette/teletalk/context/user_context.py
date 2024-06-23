@@ -14,7 +14,6 @@ class UserContext:
     # - Interactions
 
     user_id: int
-
     # todo later: index properly [@marklidenberg]
     talks: list[Talk] = field(default_factory=list)
     active_question_messages: list[Message] = field(default_factory=list)

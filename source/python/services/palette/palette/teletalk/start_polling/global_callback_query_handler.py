@@ -24,7 +24,7 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
 
     talk = first_true(
         user_context.talks,
-        pred=lambda talk: talk.question.message.message_id == callback_query.message.message_id,
+        pred=lambda talk: talk.message.message_id == callback_query.message.message_id,
     )
 
     if not talk:
@@ -38,4 +38,4 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
 
     # - Send callback event to the coroutine
 
-    talk.question.callback_future.set_result(CallbackEvent(callback_id=callback_query.data))
+    talk.callback_future.set_result(CallbackEvent(callback_id=callback_query.data))

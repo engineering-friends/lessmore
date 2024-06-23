@@ -16,10 +16,10 @@ class ButtonElement(Element):
         keyboard = InlineKeyboardBuilder()
         keyboard.button(
             text=self.text,
-            callback_data=talk.question.register_ui_callback(
+            callback_data=talk.register_ui_callback(
                 callback=self.callback,
                 element=self,
             ),
         )
-        talk.question.register_message_callback(callback=self.message_callback)
+        talk.register_message_callback(callback=self.message_callback)
         return RenderedElement(text="Button text", reply_markup=keyboard.as_markup())

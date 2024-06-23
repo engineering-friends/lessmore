@@ -40,16 +40,12 @@ def get_global_message_handler(
 
         if message.reply_to_message:
             talk = first(
-                [
-                    talk
-                    for talk in user_context.talks
-                    if talk.question.message.message_id == message.reply_to_message.message_id
-                ],
+                [talk for talk in user_context.talks if talk.message.message_id == message.reply_to_message.message_id],
                 default=None,
             )
 
             if talk:
-                talk.question.callback_future.set_result(CallbackEvent(message=message))
+                talk.callback_future.set_result(CallbackEvent(message=message))
                 return
 
         # - If there is an talk for latest question message id: send to corresponding talk
@@ -58,15 +54,11 @@ def get_global_message_handler(
 
         if latest_question_message.message_id:
             talk = only(
-                [
-                    talk
-                    for talk in user_context.talks
-                    if talk.question.message.message_id == latest_question_message.message_id
-                ],
+                [talk for talk in user_context.talks if talk.message.message_id == latest_question_message.message_id],
                 default=None,
             )
             if talk:
-                talk.question.callback_future.set_result(CallbackEvent(message=message))
+                talk.callback_future.set_result(CallbackEvent(message=message))
                 return
 
         # - Start new message by default if there is a message starter
