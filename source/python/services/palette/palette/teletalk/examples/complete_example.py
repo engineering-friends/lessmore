@@ -7,7 +7,7 @@ from palette.deps import Deps
 from palette.teletalk.crowd.talk import Talk
 from palette.teletalk.query.query import Query
 from palette.teletalk.query.zoo.button import Button
-from palette.teletalk.start_polling.start_polling import start_polling
+from palette.teletalk.start_polling import start_polling
 
 
 async def command_starter(talk: Talk, message: Message) -> None:

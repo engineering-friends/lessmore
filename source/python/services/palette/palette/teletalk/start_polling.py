@@ -8,9 +8,8 @@ from aiogram.enums import ParseMode
 from aiogram.types import BotCommand, Message
 
 from palette.deps import Deps
+from palette.teletalk.crowd.crowd import Crowd
 from palette.teletalk.crowd.talk import Talk
-from palette.teletalk.start_polling.global_callback_query_handler import global_callback_query_handler
-from palette.teletalk.start_polling.global_message_handler import get_global_message_handler
 
 
 async def start_polling(
@@ -24,11 +23,15 @@ async def start_polling(
 
     dp = Dispatcher()
 
+    # - Init crowd
+
+    crowd = Crowd()
+
     # - Register handlers
 
-    dp.callback_query.register(global_callback_query_handler)
+    dp.callback_query.register(crowd.global_callback_query_handler)
     dp.message.register(
-        get_global_message_handler(
+        crowd.get_global_message_handler(
             command_starters=command_starters,
             message_starter=message_starter,
         )
