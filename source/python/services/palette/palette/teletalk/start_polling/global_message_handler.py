@@ -26,7 +26,7 @@ def get_global_message_handler(
 
         # - Get user context
 
-        user_context = context.get_user_context(message.from_user.id)
+        user_context = context.get_talker(message.from_user.id)
 
         # - If starter command: start new talk with command
 

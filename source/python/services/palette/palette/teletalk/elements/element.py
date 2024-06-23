@@ -33,7 +33,7 @@ class Element(ABC):
             # todo later: make properly [@marklidenberg]
             from palette.teletalk.context.context import context
 
-            user_context = context.get_user_context(talk.starter_message.from_user.id)
+            user_context = context.get_talker(talk.starter_message.from_user.id)
             user_context.active_question_messages.append(message)
 
         # - Update pending question message
