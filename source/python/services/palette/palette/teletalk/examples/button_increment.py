@@ -13,7 +13,7 @@ from palette.teletalk.start_polling.start_polling import start_polling
 async def command_starter(talk: Talk, message: Message) -> None:
     # - Main callback function
 
-    async def _callback(
+    async def increment(
         talk: Talk,
         root: Element,
         element: Button,
@@ -23,7 +23,7 @@ async def command_starter(talk: Talk, message: Message) -> None:
 
     # - Create a button
 
-    await Button(text="0", callback=_callback)(talk=talk)
+    await Button(text="0", callback=increment)(talk=talk)
 
 
 def test():
