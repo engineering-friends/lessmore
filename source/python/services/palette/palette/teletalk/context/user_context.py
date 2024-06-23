@@ -18,24 +18,24 @@ class UserContext:
     talks: list[Talk] = field(default_factory=list)
     active_question_messages: list[Message] = field(default_factory=list)
 
-    def start_new_interaction(self, message: Message, callback: Callable):
+    def start_talk(self, message: Message, callback: Callable):
         # - Prepare talk
 
-        new_interaction = Talk(user_id=message.from_user.id, sample_message=message)
+        new_talk = Talk(user_id=message.from_user.id, sample_message=message)
 
         # - Add to context
 
-        self.talks.append(new_interaction)
+        self.talks.append(new_talk)
 
         # - Run
 
         async def _run_callback():
             # - Run callback
 
-            await callback(message=message, talk=new_interaction)
+            await callback(message=message, talk=new_talk)
 
             # - Remove talk
 
-            self.talks.remove(new_interaction)
+            self.talks.remove(new_talk)
 
         asyncio.create_task(_run_callback())
