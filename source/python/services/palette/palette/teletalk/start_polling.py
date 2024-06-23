@@ -18,6 +18,7 @@ async def start_polling(
     message_starter: Optional[Callable] = None,  # def f(message: Message): ...
     default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
     commands: Optional[list[BotCommand]] = None,  # description of commands
+    on_late_event: Optional[Callable] = None,
 ) -> None:
     # - Init dispatcher
 
@@ -25,7 +26,7 @@ async def start_polling(
 
     # - Init crowd
 
-    crowd = Crowd()
+    crowd = Crowd(on_late_event=on_late_event)
 
     # - Register handlers
 

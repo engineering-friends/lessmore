@@ -75,9 +75,17 @@ class Talk:
 
         return result
 
-    async def respond(self, event: CallbackEvent):
+    async def respond(self, event: CallbackEvent, on_late_event: Optional[Callable] = None):
         if self.is_bot_thinking:
+            # - Process late messages with on_late_message callback if specified
+
+            if on_late_event:
+                return await on_late_event(event)
+
+            # - Do nothing otherwise
+
             logger.debug("Bot is thinking, ignoring event", event=event)
+
             return
 
         if self.question_event.done():

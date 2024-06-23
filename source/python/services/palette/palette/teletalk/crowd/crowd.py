@@ -12,6 +12,7 @@ from palette.teletalk.crowd.chat import Chat
 @dataclass
 class Crowd:
     chats: dict[int, Chat] = field(default_factory=dict)
+    on_late_event: Optional[Callable] = None
 
     def get_chat(self, user_id: int) -> Chat:
         return self.chats.setdefault(user_id, Chat())
@@ -43,7 +44,10 @@ class Crowd:
 
         # - Send callback event to the coroutine
 
-        await talk.respond(event=CallbackEvent(callback_id=callback_query.data))
+        await talk.respond(
+            event=CallbackEvent(callback_id=callback_query.data),
+            on_late_event=self.on_late_event,
+        )
 
     def get_global_message_handler(
         self,
@@ -76,7 +80,10 @@ class Crowd:
                 talk = chat.get_talk(question_message=message.reply_to_message)
 
                 if talk:
-                    await talk.respond(event=CallbackEvent(message=message))
+                    await talk.respond(
+                        event=CallbackEvent(message=message),
+                        on_late_event=self.on_late_event,
+                    )
                     return
 
             # - If there is an talk for latest question message id: send to corresponding talk
@@ -84,7 +91,10 @@ class Crowd:
             talk = last(chat.talks, default=None)
 
             if talk:
-                await talk.respond(event=CallbackEvent(message=message))
+                await talk.respond(
+                    event=CallbackEvent(message=message),
+                    on_late_event=self.on_late_event,
+                )
                 return
 
             # - Start new message by default if there is a message starter

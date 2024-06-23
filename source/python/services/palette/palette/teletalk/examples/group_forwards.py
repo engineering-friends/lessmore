@@ -6,6 +6,7 @@ from typing import Optional
 from aiogram.types import Message
 from lessmore.utils.to_anything.to_datetime import to_datetime
 from palette.deps import Deps
+from palette.teletalk.crowd.callback_event import CallbackEvent
 from palette.teletalk.crowd.talk import Talk
 from palette.teletalk.start_polling import start_polling
 
@@ -18,7 +19,7 @@ class Grouper:
     async def __call__(self, talk: Talk, message: Message) -> None:
         asyncio.create_task(self.group(message=message))
 
-    async def group(self, message):
+    async def group(self, message: Message):
         # - Append message
 
         self.messages.append(message)
@@ -51,9 +52,24 @@ class Grouper:
 
 
 def test():
+    # - Init grouper
+
+    grouper = Grouper()
+
+    # - Define callback for late events (forwards are usually late)
+
+    async def on_late_event(event: CallbackEvent):
+        if event.callback_id:
+            return
+
+        await grouper.group(message=event.message)
+
+    # - Start polling
+
     asyncio.run(
         start_polling(
-            message_starter=Grouper(),
+            message_starter=grouper,
+            on_late_event=on_late_event,
             bot=Deps.load().config.telegram_bot_token,
         )
     )
