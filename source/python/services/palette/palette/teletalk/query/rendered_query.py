@@ -5,6 +5,6 @@ from aiogram.types import InlineKeyboardMarkup
 
 
 @dataclass
-class RenderedElement:
+class RenderedQuery:
     text: str = ""
     reply_markup: Optional[InlineKeyboardMarkup] = None

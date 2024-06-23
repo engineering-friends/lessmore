@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from typing import Callable, Optional
 
-from palette.teletalk.elements.element import Element
+from palette.teletalk.query.query import Query
 
 
 @dataclass
 class CallbackInfo:
     callback: Callable
-    element: Optional[Element]
+    query: Optional[Query]

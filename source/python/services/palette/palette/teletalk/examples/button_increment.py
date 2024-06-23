@@ -5,8 +5,8 @@ from typing import Optional
 from aiogram.types import Message
 from palette.deps import Deps
 from palette.teletalk.crowd.talk import Talk
-from palette.teletalk.elements.element import Element
-from palette.teletalk.elements.zoo.button import Button
+from palette.teletalk.query.query import Query
+from palette.teletalk.query.zoo.button import Button
 from palette.teletalk.start_polling.start_polling import start_polling
 
 
@@ -15,15 +15,15 @@ async def command_starter(talk: Talk, message: Message) -> None:
 
     async def increment(
         talk: Talk,
-        root: Element,
-        element: Button,
+        root_query: Query,
+        query: Button,
     ):
-        root.text = str(int(root.text) + 1)
-        return await talk.chat.ask(talk=talk, element=root)  # run the element again
+        root_query.text = str(int(root_query.text) + 1)
+        return await talk.chat.ask(talk=talk, query=root_query)  # run the query again
 
     # - Create a button
 
-    await talk.chat.ask(talk=talk, element=Button(text="0", callback=increment))
+    await talk.chat.ask(talk=talk, query=Button(text="0", callback=increment))
 
 
 def test():

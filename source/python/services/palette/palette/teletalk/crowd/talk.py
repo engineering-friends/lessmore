@@ -8,7 +8,7 @@ from aiogram.types import Message
 
 from palette.teletalk.crowd.callback_event import CallbackEvent
 from palette.teletalk.crowd.callback_info import CallbackInfo
-from palette.teletalk.elements.element import Element
+from palette.teletalk.query.query import Query
 
 
 if TYPE_CHECKING:
@@ -35,10 +35,10 @@ class Talk:
     def register_question_callback(
         self,
         callback: Callable,
-        element: Element,
+        query: Query,
     ):
         _id = str(uuid.uuid4())
-        self.question_callbacks[_id] = CallbackInfo(callback=callback, element=element)
+        self.question_callbacks[_id] = CallbackInfo(callback=callback, query=query)
         return _id
 
     def set_question_message(self, message: Message):

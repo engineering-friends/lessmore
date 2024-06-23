@@ -8,7 +8,7 @@ from aiogram.types import Message
 from loguru import logger
 
 from palette.teletalk.crowd.talk import Talk
-from palette.teletalk.elements.element import Element
+from palette.teletalk.query.query import Query
 
 
 @dataclass
@@ -21,7 +21,7 @@ class Chat:
 
         new_talk = Talk(chat=self, starter_message=starter_message)
 
-        # - Add to context
+        # - Add talk
 
         self.talks.append(new_talk)
 
@@ -48,13 +48,13 @@ class Chat:
             default,
         )
 
-    async def ask(self, talk: Talk, element: Element, inplace: bool = True):
-        # - Render element and edit message (and register callbacks alongside of this process with talk.register_callback)
+    async def ask(self, talk: Talk, query: Query, inplace: bool = True):
+        # - Render query and edit message (and register callbacks alongside of this process with talk.register_callback)
 
         if inplace and talk.question_message:
-            message = await talk.question_message.edit_text(**element.render(talk=talk).__dict__)
+            message = await talk.question_message.edit_text(**query.render(talk=talk).__dict__)
         else:
-            message = await talk.starter_message.answer(**element.render(talk=talk).__dict__)
+            message = await talk.starter_message.answer(**query.render(talk=talk).__dict__)
             self.question_messages.append(message)
 
         # - Update pending question message
@@ -76,18 +76,18 @@ class Chat:
                 callback_info = talk.question_callbacks[callback_event.callback_id]
                 callback_coroutine = callback_info.callback(
                     talk=talk,
-                    root=element,
-                    element=callback_info.element,
+                    root_query=query,
+                    query=callback_info.query,
                 )
                 break
             else:
                 # - Message event
 
-                if not element.message_callback:
+                if not query.message_callback:
                     logger.debug("Message callback not found, skipping")
                     continue
 
-                callback_coroutine = element.message_callback(
+                callback_coroutine = query.message_callback(
                     talk=talk,
                     message=callback_event.message,
                 )
