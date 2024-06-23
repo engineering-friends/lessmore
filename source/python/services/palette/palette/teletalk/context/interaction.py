@@ -6,7 +6,7 @@ from typing import Callable, Optional
 
 from aiogram.types import Message
 
-from palette.teledo.context.question import Question
+from palette.teletalk.context.question import Question
 
 
 @dataclass

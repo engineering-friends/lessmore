@@ -2,10 +2,10 @@ import asyncio
 
 from aiogram.types import Message
 from palette.deps import Deps
-from palette.teledo.context.interaction import Interaction
-from palette.teledo.elements.element import Element
-from palette.teledo.elements.lib.button_element import ButtonElement
-from palette.teledo.start_polling.start_polling import start_polling
+from palette.teletalk.context.interaction import Interaction
+from palette.teletalk.elements.element import Element
+from palette.teletalk.elements.lib.button_element import ButtonElement
+from palette.teletalk.start_polling.start_polling import start_polling
 
 
 async def command_starter(message: Message, interaction: Interaction) -> None:

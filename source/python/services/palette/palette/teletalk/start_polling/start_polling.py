@@ -8,10 +8,10 @@ from aiogram.enums import ParseMode
 from aiogram.types import BotCommand, Message
 
 from palette.deps import Deps
-from palette.teledo.context.context import context
-from palette.teledo.context.interaction import Interaction
-from palette.teledo.start_polling.global_callback_query_handler import global_callback_query_handler
-from palette.teledo.start_polling.global_message_handler import get_global_message_handler
+from palette.teletalk.context.context import context
+from palette.teletalk.context.interaction import Interaction
+from palette.teletalk.start_polling.global_callback_query_handler import global_callback_query_handler
+from palette.teletalk.start_polling.global_message_handler import get_global_message_handler
 
 
 async def start_polling(

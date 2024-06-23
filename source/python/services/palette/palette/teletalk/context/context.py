@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from palette.teledo.context.user_context import UserContext
+from palette.teletalk.context.user_context import UserContext
 
 
 @dataclass

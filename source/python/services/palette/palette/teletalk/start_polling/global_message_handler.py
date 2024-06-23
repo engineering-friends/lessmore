@@ -7,9 +7,9 @@ from aiogram.types import Message
 from loguru import logger
 from more_itertools import first, last, only
 
-from palette.teledo.context.callback_event import CallbackEvent
-from palette.teledo.context.context import context
-from palette.teledo.context.interaction import Interaction
+from palette.teletalk.context.callback_event import CallbackEvent
+from palette.teletalk.context.context import context
+from palette.teletalk.context.interaction import Interaction
 
 
 def get_global_message_handler(

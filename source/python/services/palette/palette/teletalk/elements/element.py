@@ -6,7 +6,7 @@ from typing import Any
 from loguru import logger
 
 # from palette.teledo.context.interaction import Interaction
-from palette.teledo.elements.rendered_element import RenderedElement
+from palette.teletalk.elements.rendered_element import RenderedElement
 
 
 class Element(ABC):
@@ -30,7 +30,7 @@ class Element(ABC):
             message = await interaction.sample_message.answer(**self.render(interaction=interaction).__dict__)
 
             # todo later: make properly
-            from palette.teledo.context.context import context
+            from palette.teletalk.context.context import context
 
             user_context = context.get_user_context(interaction.user_id)
             user_context.active_question_messages.append(message)

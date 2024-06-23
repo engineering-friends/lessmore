@@ -4,8 +4,8 @@ from aiogram.types import CallbackQuery
 from loguru import logger
 from more_itertools import first
 
-from palette.teledo.context.callback_event import CallbackEvent
-from palette.teledo.context.context import context
+from palette.teletalk.context.callback_event import CallbackEvent
+from palette.teletalk.context.context import context
 
 
 async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
@@ -32,7 +32,7 @@ async def global_callback_query_handler(callback_query: CallbackQuery) -> None:
     )
 
     if not interaction:
-        logger.debug(
+        logger.error(
             "Failed to find interaction for callback query",
             user_id=callback_query.from_user.id,
             message_id=callback_query.message.message_id,

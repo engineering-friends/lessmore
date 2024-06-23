@@ -6,8 +6,8 @@ from typing import Callable, Optional
 
 from aiogram.types import Message
 
-from palette.teledo.context.callback_info import CallbackInfo
-from palette.teledo.elements.element import Element
+from palette.teletalk.context.callback_info import CallbackInfo
+from palette.teletalk.elements.element import Element
 
 
 @dataclass

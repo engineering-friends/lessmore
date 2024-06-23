@@ -1,9 +1,9 @@
 from typing import Callable
 
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from palette.teledo.context.interaction import Interaction
-from palette.teledo.elements.element import Element
-from palette.teledo.elements.rendered_element import RenderedElement
+from palette.teletalk.context.interaction import Interaction
+from palette.teletalk.elements.element import Element
+from palette.teletalk.elements.rendered_element import RenderedElement
 
 
 class ButtonElement(Element):
