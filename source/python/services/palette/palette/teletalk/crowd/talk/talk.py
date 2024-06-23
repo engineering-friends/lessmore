@@ -164,11 +164,12 @@ class Talk:
                     continue
 
                 return await message_callback(
-                    **{k: v for k, v in response.__dict__.items() if v},
-                    talk=self,
-                    message=response.message,
-                    root_query=query,
-                    query=query,
+                    Response(
+                        **{k: v for k, v in response.__dict__.items() if v},
+                        talk=self,
+                        root_query=query,
+                        query=query,
+                    )
                 )
 
     # - Syntax sugar
