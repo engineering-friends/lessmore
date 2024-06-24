@@ -12,7 +12,7 @@ from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import Dialog, DialogManager, LaunchMode, StartMode, SubManager, Window, setup_dialogs
 from aiogram_dialog.widgets.kbd import Button, Checkbox, ListGroup, ManagedCheckbox, Radio, Row
 from aiogram_dialog.widgets.text import Const, Format
-from palette.deps.init_deps import init_deps
+from palette.deps import Deps
 
 
 class DialogSG(StatesGroup):
@@ -62,7 +62,7 @@ async def start(message: Message, dialog_manager: DialogManager):
 async def main():
     # - Init deps
 
-    deps = init_deps()
+    deps = Deps.load()
 
     # - Init dispatcher
 

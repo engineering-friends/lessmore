@@ -2,7 +2,7 @@ import asyncio
 
 import discord
 
-from discord_to_telegram_forwarder.deps.init_deps import init_deps
+from discord_to_telegram_forwarder.deps import Deps
 from loguru import logger
 
 
@@ -17,7 +17,7 @@ def is_discord_channel_private(channel: discord.abc.GuildChannel) -> bool:
 async def test():
     # - Init deps
 
-    deps = init_deps()
+    deps = Deps.load()
 
     # - Init client
 

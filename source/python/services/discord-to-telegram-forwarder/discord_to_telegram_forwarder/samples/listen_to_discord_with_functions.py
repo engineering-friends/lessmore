@@ -11,12 +11,12 @@ intents.message_content = True
 client = Client(intents=intents)
 
 
-@client.event
+@client.question_event
 async def on_ready():
-    logger.info(f"Logged in", user=client.user, id=client.user.id)
+    logger.info("Logged in", user=client.user, id=client.user.id)
 
 
-@client.event
+@client.question_event
 async def on_message(message):
     # don't respond to ourselves
     if message.author == client.user:
@@ -43,7 +43,7 @@ async def on_message(message):
 
 
 # Event handler for when a thread is created
-@client.event
+@client.question_event
 async def on_thread_create(thread):
     # Check if the thread's parent is a forum channel
     if not isinstance(thread.parent, discord.ForumChannel):
@@ -63,7 +63,7 @@ async def on_thread_create(thread):
 
 
 if __name__ == "__main__":
-    from discord_to_telegram_forwarder.deps.init_deps import init_deps
+    from discord_to_telegram_forwarder.deps import Deps
 
-    deps = init_deps(env="test")
+    deps = Deps.load(env="test")
     client.run(token=deps.config.discord_token)

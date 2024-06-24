@@ -35,9 +35,13 @@ def rename_recursively(disk, path):
             print(f"Renamed: {item_path} -> {new_path}")
             item_path = new_path  # Update item_path to the new path after renaming
 
-            # wait a bit, sometimes it fails because file has not been moved yet for next recursion step
-
-            time.sleep(0.2)
+            while True:
+                try:
+                    disk.get_meta(item_path)
+                    break
+                except yadisk.exceptions.PathNotFoundError:
+                    time.sleep(1)
+                    print('Waiting for the file to appear on the disk...')
 
         if item.type == "dir":
             rename_recursively(disk, item_path)
@@ -48,7 +52,7 @@ def test():
     disk = authenticate_yadisk()
 
     # Specify the root directory of your Yandex Disk
-    root_directory = "/Apps/Архив"
+    root_directory = "/Apps"
 
     # Start renaming process
     rename_recursively(disk, root_directory)

@@ -1,7 +1,7 @@
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
-from langchain_playground.deps.init_deps import init_deps
+from langchain_playground.deps import Deps
 
 
 def test():
@@ -35,5 +35,5 @@ def test():
 
 
 if __name__ == "__main__":
-    deps = init_deps()
+    deps = Deps.load()
     test()

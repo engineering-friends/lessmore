@@ -45,8 +45,8 @@ def _add_color_tags_to_json(
     # - Add traceback on new line
 
     if append_non_json_traceback and "traceback" in record_dic:
-        record["extra"][f"_extra_traceback"] = record_dic["traceback"]
-        output += f"\n<red>{{extra[_extra_traceback]}}</red>"
+        record["extra"]["_extra_traceback"] = record_dic["traceback"]
+        output += "\n<red>{extra[_extra_traceback]}</red>"
 
     # - Add white color for the whole output
 

@@ -1,7 +1,10 @@
 from itertools import chain
 from typing import Any, Iterable, Optional
 
-from more_itertools import stagger, windowed as _windowed
+from more_itertools import (
+    stagger,
+    windowed as _windowed,
+)
 
 
 # todo: split to separate files

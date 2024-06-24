@@ -4,7 +4,7 @@ from typing import Literal
 
 import discord
 
-from discord_to_telegram_forwarder.deps.init_deps import init_deps
+from discord_to_telegram_forwarder.deps import Deps
 from discord_to_telegram_forwarder.on_message_discord_client import OnMessageDiscordClient
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.send_discord_post_to_telegram import (
     send_discord_post_to_telegram,
@@ -19,7 +19,7 @@ async def main(env: Literal["test", "prod"] = "test"):
 
     # - Init deps
 
-    deps = init_deps(env=env)
+    deps = Deps.load(env=env)
 
     # - Define process_message function
 

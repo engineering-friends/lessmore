@@ -3,9 +3,8 @@ import time
 
 import emoji
 
-from openai import OpenAI
-
 from lessmore.utils.functional.skip_duplicates import skip_duplicates
+from openai import OpenAI
 
 
 REACTION_EMOJIS = [

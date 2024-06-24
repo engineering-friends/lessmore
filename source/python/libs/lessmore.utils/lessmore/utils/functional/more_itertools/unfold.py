@@ -1,4 +1,8 @@
-from more_itertools import one as _one, only as _only, strictly_n
+from more_itertools import (
+    one as _one,
+    only as _only,
+    strictly_n,
+)
 
 
 # todo later: make one function for one and only: unfold_one( [@marklidenberg]

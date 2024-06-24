@@ -1,4 +1,5 @@
-""" Tqdm wrapper with more functionality. """
+"""Tqdm wrapper with more functionality."""
+
 import time
 
 from datetime import datetime

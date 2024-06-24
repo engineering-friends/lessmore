@@ -36,6 +36,10 @@ do
   if [ ! -f "$filename.secret" ]; then
     echo "file $filename.secret does not exist. Removing from git secret..."
 
+    # - Create a directory if it does not exist
+
+    mkdir -p "$(dirname "$filename")"
+
     # - Create a backup of $filename if it exists
 
     if [ -f "$filename" ]; then

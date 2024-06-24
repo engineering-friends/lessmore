@@ -2,9 +2,8 @@ import json
 import math
 import sys
 
-from loguru import logger
-
 from lessmore.utils.loguru_utils.get_traceback import get_traceback
+from loguru import logger
 
 
 def format_as_json(record):

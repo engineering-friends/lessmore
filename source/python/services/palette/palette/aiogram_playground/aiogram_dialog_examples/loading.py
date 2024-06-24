@@ -10,10 +10,10 @@ from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import BaseDialogManager, Dialog, DialogManager, StartMode, Window, setup_dialogs
 from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const, Multi, Progress
-from palette.deps.init_deps import init_deps
+from palette.deps import Deps
 
 
-API_TOKEN = init_deps().config.telegram_bot_token
+API_TOKEN = Deps.load().config.telegram_bot_token
 
 
 # name input dialog

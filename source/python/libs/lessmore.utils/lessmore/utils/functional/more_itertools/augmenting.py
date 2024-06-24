@@ -1,4 +1,10 @@
-from more_itertools import adjacent as mark_neighbors, intersperse as interspersed, mark_ends, padded, replace
+from more_itertools import (
+    adjacent as mark_neighbors,
+    intersperse as interspersed,
+    mark_ends,
+    padded,
+    replace,
+)
 
 
 def test():

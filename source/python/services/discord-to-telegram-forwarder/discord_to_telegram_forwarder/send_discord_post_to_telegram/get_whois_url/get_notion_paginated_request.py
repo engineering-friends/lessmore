@@ -1,4 +1,4 @@
-from discord_to_telegram_forwarder.deps.init_deps import init_deps
+from discord_to_telegram_forwarder.deps import Deps
 
 
 def get_notion_paginated_request(method, **kwargs):
@@ -20,10 +20,10 @@ def get_notion_paginated_request(method, **kwargs):
 
 
 def test():
-    from airflow_etl.lib.get_connection import get_connection
     from notion_client import Client
 
-    deps = init_deps()
+    from airflow_etl.lib.get_connection import get_connection
+
     client = Client(
         auth=get_connection("notion-etl-python")["password"],
     )

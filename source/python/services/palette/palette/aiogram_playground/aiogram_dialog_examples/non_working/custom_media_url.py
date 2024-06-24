@@ -15,12 +15,13 @@ from aiogram_dialog.manager.message_manager import MessageManager
 from aiogram_dialog.widgets.kbd import Back, Next, Row
 from aiogram_dialog.widgets.media import StaticMedia
 from aiogram_dialog.widgets.text import Const
+from palette.deps import Deps
 from PIL import Image, ImageDraw, ImageFont
 
 
 src_dir = os.path.normpath(os.path.join(__file__, os.path.pardir))
 
-API_TOKEN = init_deps().config.telegram_bot_token
+API_TOKEN = Deps.load().config.telegram_bot_token
 CUSTOM_URL_PREFIX = "my://"
 
 
@@ -101,9 +102,9 @@ async def start(message: Message, dialog_manager: DialogManager):
 
 async def main():
     # real main
-    from palette.deps.init_deps import init_deps
+    from palette.deps import Deps
 
-    bot = Bot(token=init_deps().config.telegram_bot_token)
+    bot = Bot(token=Deps.load().config.telegram_bot_token)
 
     dp = Dispatcher()
     dp.message.register(start, CommandStart())

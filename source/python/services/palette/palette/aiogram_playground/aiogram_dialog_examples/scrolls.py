@@ -120,7 +120,7 @@ dialog = Dialog(
         Const("Scrolling group with external paging controls"),
         NumberedPager(
             scroll="scroll_no_pager",
-            page_text=Format("{target_page1}\uFE0F\u20E3"),
+            page_text=Format("{target_page1}\ufe0f\u20e3"),
             current_page_text=Format("{current_page1}"),
         ),
         NumberedPager(

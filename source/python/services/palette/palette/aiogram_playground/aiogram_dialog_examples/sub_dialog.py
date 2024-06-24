@@ -14,7 +14,7 @@ from aiogram_dialog.tools import render_preview, render_transitions
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Back, Button, Cancel, Group, Next, Row, Start
 from aiogram_dialog.widgets.text import Const, Format, Multi
-from palette.deps.init_deps import init_deps
+from palette.deps import Deps
 
 
 # name input dialog
@@ -132,7 +132,7 @@ async def start(message: Message, dialog_manager: DialogManager):
 async def main():
     # - Init deps
 
-    deps = init_deps()
+    deps = Deps.load()
 
     # - Init dispatcher
 

@@ -1,8 +1,7 @@
 import sys
 
-from loguru import logger
-
 from lessmore.utils.loguru_utils.format_as_colored_json.format_as_colored_json import format_as_colored_json
+from loguru import logger
 
 
 def setup_json_loguru(

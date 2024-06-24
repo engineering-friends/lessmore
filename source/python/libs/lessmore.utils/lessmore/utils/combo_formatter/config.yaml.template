@@ -1,0 +1,6 @@
+py:
+  file_types: ['.py'] # supports extensions and 'Dockerfile'
+  formatters:
+    - name: ruff
+      command: "ruff format \"{filename}\" --line-length 120"
+#      working_dir: "..."

@@ -1,0 +1,143 @@
+# todo later: outdated, need an update [@marklidenberg]
+
+# [Section] - this is a section example.
+
+# [[Subsection]]
+
+# [[[Sub-sub section]]]
+
+# [[[ [Sub-sub-sub section] ]]]...
+
+# [[[ [[Sub-sub-sub-... section]] ]]]...
+
+# [[[ [[[Sub-sub-sub-... section]]] ]]]...
+
+# ...
+
+# There should be exactly one new line before and after any section/subsection/...
+
+# [Basic comments]
+
+# [[Code blocks]]
+
+# code block
+a = 1
+b = 2
+
+# Multi-line comments use markdown! Always start with new line and put new line at the end of multi-line comment
+""" 
+# Multi-line block comment
+
+- a = 1
+- b = 2 
+"""
+a = 1
+b = 2
+
+# pre-comment
+a = 1
+b = 2
+# post-comment
+
+# out-of-block comment
+
+# [[Inline post-comments]]
+
+if True:  # post-comment 1
+    # same as post-comment 1
+    a = 1
+else:  # post-comment 2
+    b = 2
+
+# [Step by step commenting]
+
+# - Step 1
+
+a = 1
+b = 2
+
+c = 3
+
+# - Step 2
+
+a = 2
+
+# - Step 3
+
+# -- Step 3.a
+
+a = 1
+
+# -- Step 3.b
+
+b = 2
+
+# - Step 4
+
+# -- Step 4.1
+
+# --- Step 4.1.1
+
+# --- - Step 1.1.1.1
+
+# --- -- Step 1.1.1.1.1
+
+# --- --- Step 1.1.1.1.1.1.
+
+# --- --- - Step 1.1.1.1.1.1
+
+# there should be exactly one new line before and after a step
+
+# [Generic rules]
+
+# Multiple new lines are not allowed
+
+# [todo]
+
+# [[3 todo types]]
+
+# todo next: plan to do in near future
+# todo later: plan to do later, default
+# todo maybe: maybe will do
+
+# todo next: multiline todos are also allowed. Use extra one-line comment for better searchability.
+"""
+Some extra description title here
+
+Some extra description body here
+"""
+
+# [[todo with tags]]
+# todo next [@marklidenberg, #urgent]: @ is for user, # for tag. You can define your custom prefixes.
+
+# [About multiline code]
+
+"""
+# Multi-line code rules
+
+## Languages without multi-line comments will use single line comment replacement.
+
+Like that: 
+/* 
+Foo
+
+Bar
+*/ -> 
+
+// Foo
+// 
+// Bar
+
+## Languages with multi-line comments will be forced to use multi-line comments instead. 
+
+"""
+
+# [Misc]
+
+# There should be a new line between comment and multi-line comment.
+
+# [Tooling]
+
+# - До и после нужна ровно одна строчка строчка и начинать писать с большой буквы.
+# multiline hash comments -> multiline comments
+# ----- -> --- --

@@ -1,5 +1,4 @@
-from discord_to_telegram_forwarder.deps.deps import Deps
-from discord_to_telegram_forwarder.deps.init_deps import init_deps
+from discord_to_telegram_forwarder.deps import Deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.ask import ask
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_whois_url.get_notion_paginated_request import (
     get_notion_paginated_request,
@@ -56,7 +55,7 @@ def get_whois_url(
 
 
 def test():
-    deps = init_deps()
+    deps = Deps.load()
     print(get_whois_url("Misha Vodolagin", deps=deps))
     print(get_whois_url("Mark Vodolagin", deps=deps))
 

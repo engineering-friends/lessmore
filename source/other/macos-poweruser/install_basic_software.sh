@@ -9,7 +9,11 @@ wget -O $HOME/z.sh https://raw.githubusercontent.com/rupa/z/master/z.sh
 printf "\n\n#initialize Z (https://github.com/rupa/z) \n. ~/z.sh \n\n" >> ~/.zshrc
 source $HOME/.zshrc
 
+# - Screen
 homebrew install screen
+
+# - Apps
+
 brew install --cask hammerspoon
 brew install --cask anaconda
 brew install --cask atom

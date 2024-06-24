@@ -36,6 +36,10 @@ do
   if [ ! -f "$filename.secret" ]; then
     echo "file $filename.secret does not exist. Removing from git secret..."
 
+    # - Create a directory if it does not exist
+
+    mkdir -p "$(dirname "$filename")"
+
     # - Create a backup of $filename if it exists
 
     if [ -f "$filename" ]; then
@@ -67,5 +71,5 @@ done <<< "$(git secret list)"
 
 # - Encrypt all secrets in the repository
 
-git secret hide -F # -F forces hide to continue if a file to encrypt is missing. This will create encrypted filenames with the .secret suffix
+git secret hide -F -m # -F forces hide to continue if a file to encrypt is missing. -m encrypts only when modified. This will create encrypted filenames with the .secret suffix
 

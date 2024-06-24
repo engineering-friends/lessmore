@@ -1,3 +1,4 @@
+
 # - Ignore all files
 
 **/*.*
@@ -9,6 +10,7 @@
 
 !**/*.py
 !**/*.ipynb
+**/*.ipynb_checkpoints/**
 !**/*.pyi
 !**/*.pyx
 !**/*.yaml
@@ -37,7 +39,6 @@
 !**/*.cfg
 !**/*.gpg
 !**/*.txt
-!**/*.xml
 !**/*.lua
 
 # - Dot files
@@ -48,41 +49,30 @@
 !**/.gitignore
 !**/*.airflowignore
 
-
 # - Allow templates
+
 !*.template
 
 # - Allow requirements.txt
+
 !**/*requirements*.txt
-
-# - Forbid keywords
-**/*local*
-**/*secrets*
-
-# allow templates
-!**/*.template
-
-# allow secrets baseline
-!**/*secrets.baseline*
 
 # allow static assets
 
 !**/data/static/**/*
 
 # - Git LFS
-# ...
-
 
 !test_git_lfs.txt
 !source/python/services/discord-to-telegram-forwarder/discord_to_telegram_forwarder/send_discord_post_to_telegram/to_png_images/**
 
 # - Custom
-# ...
 
 !source/python/environments/local_pythons
 !source/python/environments/local_pythons/**/*
 
-# - Git secret
+# - Git secret (adds new files automatically)
+
 !.gitsecret/**/*
 !*.secret
 .gitsecret/keys/random_seed
@@ -91,3 +81,12 @@
 !git_secret/**/*
 git_secret/files/test_git_secret
 
+source/other/macos-poweruser/ssh/keys/id_ed25519
+source/other/macos-poweruser/ssh/keys/known_hosts
+source/python/services/archive/2024-06\ family-fund/token.json
+source/python/services/archive/2024-06\ family-fund/runners/token.json
+source/python/services/archive/2024-06\ family-fund/credentials/client_secret.json
+source/python/services/archive/2024-06\ family-fund/credentials/service_account_secret.json
+source/python/services/archive/2024-06\ family-fund/credentials/token.json
+source/python/services/archive/2024-06\ family-fund/family_fund/token.json
+source/python/services/archive/2024-06\ family-fund/family_fund/config.yaml

@@ -1,4 +1,7 @@
-from itertools import count, islice as _islice
+from itertools import (
+    count,
+    islice as _islice,
+)
 
 from more_itertools import islice_extended as iterable_slice
 

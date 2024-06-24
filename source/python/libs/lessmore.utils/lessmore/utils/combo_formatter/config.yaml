@@ -1,0 +1,30 @@
+py:
+  file_types: [".py"]
+  formatters:
+    - name: wise_comments
+      command: 'poetry run python lessmore/utils/wise_comments "{filename}"'
+    - name: ruff
+      command: 'ruff format "{filename}" --line-length 120'
+bash:
+  file_types:
+    [
+      "Dockerfile",
+      ".sh",
+      ".gitignore",
+      ".gitattributes",
+      ".airflowignore",
+      ".dockerignore",
+      ".zshrc",
+      ".bashrc",
+      ".bash_profile",
+    ]
+  formatters:
+    - name: wise_comments
+      command: 'poetry run python lessmore/utils/wise_comments "{filename}"'
+yaml_like:
+  file_types: [".yaml", ".yml", ".toml"]
+  formatters:
+    - name: wise_comments
+      command: 'poetry run python lessmore/utils/wise_comments "{filename}"'
+    - name: prettier
+      command: 'prettier --write "{filename}"'

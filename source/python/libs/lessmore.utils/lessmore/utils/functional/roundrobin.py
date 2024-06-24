@@ -1,4 +1,8 @@
-from more_itertools import interleave, interleave_evenly, roundrobin as _roundrobin
+from more_itertools import (
+    interleave,
+    interleave_evenly,
+    roundrobin as _roundrobin,
+)
 
 
 # -- Interleave: round-robing

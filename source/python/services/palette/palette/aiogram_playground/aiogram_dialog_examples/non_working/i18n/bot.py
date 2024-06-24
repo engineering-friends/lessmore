@@ -18,7 +18,7 @@ from aiogram_dialog.widgets.kbd import Button, Cancel, Row
 from fluent.runtime import FluentLocalization, FluentResourceLoader
 from i18n_format import I18NFormat
 from i18n_middleware import I18nMiddleware
-from palette.deps.init_deps import init_deps
+from palette.deps import Deps
 
 
 class DialogSG(StatesGroup):
@@ -84,7 +84,7 @@ async def main():
     dp.message.register(start, CommandStart())
     setup_dialogs(dp)
 
-    bot = Bot(token=init_deps().config.telegram_bot_token)
+    bot = Bot(token=Deps.load().config.telegram_bot_token)
     await dp.start_polling(bot)
 
 

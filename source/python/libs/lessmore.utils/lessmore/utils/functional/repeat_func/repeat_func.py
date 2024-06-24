@@ -1,8 +1,10 @@
-from typing import *
-
-from more_itertools import repeatfunc as _repeatfunc, take as head
+from typing import Any, Callable, Iterable, Optional
 
 from lessmore.utils.functional.repeat_func.kwargs_to_args import kwargs_to_args
+from more_itertools import (
+    repeatfunc as _repeatfunc,
+    take as head,
+)
 
 
 # todo later: better naming? [@marklidenberg]

@@ -1,4 +1,32 @@
-from more_itertools import *
+from more_itertools import (
+    SequenceView,
+    callback_iter,
+    consume,
+    consumer,
+    convolve,
+    countable,
+    dotproduct,
+    flatten,
+    iter_except,
+    locate,
+    longest_common_prefix,
+    make_decorator,
+    numeric_range,
+    pairwise,
+    polynomial_from_roots,
+    prepend,
+    run_length,
+    sample,
+    side_effect,
+    sieve,
+    sliding_window,
+    substrings,
+    substrings_indexes,
+    tabulate,
+    time_limited,
+    triplewise,
+    value_chain,
+)
 
 
 value_chain  # special case for collapse

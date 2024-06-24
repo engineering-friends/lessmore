@@ -3,9 +3,8 @@ import time
 
 import emoji
 
-from openai import OpenAI
-
 from lessmore.utils.functional.skip_duplicates import skip_duplicates
+from openai import OpenAI
 
 
 def request_emoji_representing_text_from_openai(text: str, limit: int = 1) -> str:

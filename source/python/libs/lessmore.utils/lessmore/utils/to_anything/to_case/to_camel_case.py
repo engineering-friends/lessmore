@@ -1,8 +1,7 @@
 from typing import Optional
 
-from more_itertools import mark_ends
-
 from lessmore.utils.to_anything.to_case.split_words import split_words
+from more_itertools import mark_ends
 
 
 def to_camel_case(string: str, upper_case_words: Optional[list] = None) -> str:

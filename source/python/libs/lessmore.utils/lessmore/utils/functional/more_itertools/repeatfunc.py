@@ -2,7 +2,11 @@ import operator
 
 from itertools import islice
 
-from more_itertools import iterate as _iterate, repeatfunc as _repeatfunc, take as head
+from more_itertools import (
+    iterate as _iterate,
+    repeatfunc as _repeatfunc,
+    take as head,
+)
 
 
 # - Repeat func: f(), f(), f(),

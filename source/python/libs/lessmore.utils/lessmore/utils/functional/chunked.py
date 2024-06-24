@@ -1,6 +1,12 @@
 from typing import Iterable, Iterator, Literal, Optional, Tuple, Union
 
-from more_itertools import chunked as chunked_from_more_itertools, chunked_even, grouper, ichunked, sliced
+from more_itertools import (
+    chunked as chunked_from_more_itertools,
+    chunked_even,
+    grouper,
+    ichunked,
+    sliced,
+)
 
 
 def chunked(

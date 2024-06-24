@@ -4,8 +4,7 @@ import re
 import discord
 
 from box import Box
-from discord_to_telegram_forwarder.deps.deps import Deps
-from discord_to_telegram_forwarder.deps.init_deps import init_deps
+from discord_to_telegram_forwarder.deps import Deps
 from discord_to_telegram_forwarder.update_comments_counter.search_telegram_messages import search_telegram_messages
 from loguru import logger
 from pymaybe import maybe
@@ -27,7 +26,7 @@ async def update_comments_counter(
     )
 
     if not telegram_messages:
-        logger.warning(f"Telegram message not found for discord message", content=message.content)
+        logger.warning("Telegram message not found for discord message", content=message.content)
         return
 
     telegram_message = telegram_messages[0]
@@ -74,7 +73,7 @@ async def update_comments_counter(
 async def test():
     # - Init hub
 
-    deps = init_deps()
+    deps = Deps.load()
 
     # - Start client
 

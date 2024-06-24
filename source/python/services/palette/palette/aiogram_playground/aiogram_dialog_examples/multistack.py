@@ -13,7 +13,7 @@ from aiogram_dialog import Dialog, DialogManager, StartMode, Window, setup_dialo
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button, Cancel, Multiselect, Start
 from aiogram_dialog.widgets.text import Const, Format
-from palette.deps.init_deps import init_deps
+from palette.deps import Deps
 
 
 class DialogSG(StatesGroup):
@@ -92,7 +92,7 @@ async def start(message: Message, dialog_manager: DialogManager):
 async def main():
     # - Init deps
 
-    deps = init_deps()
+    deps = Deps.load()
 
     # - Init dispatcher
 

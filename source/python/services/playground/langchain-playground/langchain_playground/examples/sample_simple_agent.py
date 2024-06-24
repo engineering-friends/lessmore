@@ -5,7 +5,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import create_retriever_tool
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_playground.deps.init_deps import init_deps
+from langchain_playground.deps import Deps
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langgraph.prebuilt import chat_agent_executor
 
@@ -65,5 +65,5 @@ def test():
 
 
 if __name__ == "__main__":
-    deps = init_deps()
+    deps = Deps.load()
     test()
