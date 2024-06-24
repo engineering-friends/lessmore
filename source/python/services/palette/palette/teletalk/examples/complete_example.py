@@ -9,7 +9,7 @@ from palette.teletalk.query.zoo.button import Button
 from palette.teletalk.start_polling import start_polling
 
 
-async def command_starter(response: Response) -> None:
+async def create_button(response: Response) -> None:
     # - Main callback function
 
     async def increment(response: Response):
@@ -29,7 +29,7 @@ async def command_starter(response: Response) -> None:
 
         # - Spawn another talk in parallel (just for fun)
 
-        response.start_new_talk(callback=command_starter)
+        response.start_new_talk(callback=create_button)
 
         # - Ask the query again with updated state
 
@@ -56,7 +56,7 @@ async def command_starter(response: Response) -> None:
 def test():
     asyncio.run(
         start_polling(
-            command_starters={"/start": command_starter},
+            command_starters={"/start": create_button},
             bot=Deps.load().config.telegram_bot_token,
         )
     )
