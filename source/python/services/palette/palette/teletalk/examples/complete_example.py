@@ -56,8 +56,8 @@ async def create_button(response: Response) -> None:
 def test():
     asyncio.run(
         start_polling(
-            command_starters={"/start": create_button},
             bot=Deps.load().config.telegram_bot_token,
+            command_starters={"/start": create_button},
         )
     )
 
