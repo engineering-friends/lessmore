@@ -14,7 +14,7 @@ from palette.teletalk.crowd.talk.talk import Talk
 class Chat:
     talks: list[Talk] = field(default_factory=list)
 
-    def start_new_talk(self, starter_message: Message, callback: Callable) -> Task:
+    def start_new_talk(self, starter_message: Message, starter: Callable) -> Task:
         # - Prepare talk
 
         new_talk = Talk(
@@ -32,7 +32,7 @@ class Chat:
         async def _run_talk():
             # - Run callback
 
-            await callback(response=Response(talk=new_talk, message=starter_message))
+            await starter(response=Response(talk=new_talk, message=starter_message))
 
             # - Set bot thinking to false (not really necessary, just for the sake of cleaning up the talk)
 

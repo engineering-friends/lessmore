@@ -68,7 +68,7 @@ class Crowd:
             if message.text.startswith("/"):
                 command = message.text.split()[0]
                 if command in command_starters:
-                    chat.start_new_talk(starter_message=message, callback=command_starters[command])
+                    chat.start_new_talk(starter_message=message, starter=command_starters[command])
                     return
 
             #  - If reply and replied message is a pending question: send to reply talk
@@ -105,6 +105,6 @@ class Crowd:
                 )
                 return
 
-            chat.start_new_talk(starter_message=message, callback=message_starter)
+            chat.start_new_talk(starter_message=message, starter=message_starter)
 
         return global_message_handler

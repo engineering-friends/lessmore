@@ -38,7 +38,7 @@ class Response:
     def start_new_talk(self, callback: Callable, starter_message: Optional[Message] = None) -> Task:
         return self.talk.chat.start_new_talk(
             starter_message=starter_message or self.talk.starter_message,
-            callback=callback,
+            starter=callback,
         )
 
     async def ask(
