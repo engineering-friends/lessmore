@@ -2,6 +2,7 @@ import asyncio
 import io
 import json
 import os
+import random
 import re
 import uuid
 
@@ -328,22 +329,26 @@ async def send_discord_post_to_telegram(
 
                 # - Send reactions
 
-                emojis = request_reaction_emojis_from_openai(f"{title} {body}")
-
-                logger.debug("Emojis from openai", emojis=emojis)
-
-                try:
-                    await deps.telegram_user_client(
-                        functions.messages.SendReactionRequest(
-                            peer=message.peer_id,
-                            msg_id=message.id,
-                            big=True,
-                            add_to_recent=True,
-                            reaction=[types.ReactionEmoji(emoticon=emoji) for emoji in reversed(emojis)],
-                        )
+                if random.uniform(0, 1) < 0.3:
+                    emojis = request_reaction_emojis_from_openai(
+                        f"{title} {body}",
+                        limit=random.choice([1, 2, 3]),
                     )
-                except Exception as e:
-                    logger.error("Failed to send reaction", e=e)
+
+                    logger.debug("Emojis from openai", emojis=emojis)
+
+                    try:
+                        await deps.telegram_user_client(
+                            functions.messages.SendReactionRequest(
+                                peer=message.peer_id,
+                                msg_id=message.id,
+                                big=True,
+                                add_to_recent=True,
+                                reaction=[types.ReactionEmoji(emoticon=emoji) for emoji in reversed(emojis)],
+                            )
+                        )
+                    except Exception as e:
+                        logger.error("Failed to send reaction", e=e)
 
 
 async def test_send_real_message_from_discord(forum_name: str, title_contains: str):
