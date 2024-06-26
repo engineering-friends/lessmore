@@ -15,11 +15,11 @@ class Config(BaseSettings):
 
     @field_validator("telegram_ef_channel", mode="before")
     @classmethod
-    def convert_telegram_ef_channel(cls, telegram_ef_discussions: Union[int, str]):
+    def convert_telegram_ef_channel(cls, telegram_ef_channel: Union[int, str]):
         try:
-            return int(telegram_ef_discussions)
+            return int(telegram_ef_channel)
         except:
-            return telegram_ef_discussions
+            return telegram_ef_channel
 
     # - Discord
 

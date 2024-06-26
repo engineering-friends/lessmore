@@ -60,7 +60,7 @@ class Deps:
 
 
 def test():
-    print(type(Deps.load().config.telegram_ef_discussions))
+    print(type(Deps.load().config.telegram_ef_channel))
 
 
 if __name__ == "__main__":
