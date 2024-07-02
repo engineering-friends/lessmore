@@ -5,7 +5,7 @@ from pathlib import Path
 
 import openai
 
-from langchain_playground.config.config import Config
+from learn_language_magic.config.config import Config
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.read_config.read_config import read_config
 

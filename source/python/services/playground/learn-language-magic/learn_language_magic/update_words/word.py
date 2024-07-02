@@ -42,6 +42,21 @@ class Word:
         json_template='{"answer": "/ˈlaʊfə/"}',
     )
 
+    def build_notion_properties(self):
+        return {
+            "word": {"title": [{"text": {"content": self.word}}]},
+            "origin": {"select": {"name": self.origin}},
+            "group": {"select": {"name": self.group}},
+            "translation_en": {"rich_text": [{"text": {"content": self.translation_en}}]},
+            "translation_ru": {"rich_text": [{"text": {"content": self.translation_ru}}]},
+            "example_sentence": {"rich_text": [{"text": {"content": self.example_sentence}}]},
+            "part_of_speech": {"select": {"name": self.part_of_speech}},
+            "gender": {"select": {"name": self.gender}},
+            "plural_form": {"rich_text": [{"text": {"content": self.plural_form}}]},
+            "irregular_verb": {"checkbox": self.irregular_verb},
+            "pronunciation": {"rich_text": [{"text": {"content": self.pronunciation}}]},
+        }
+
 
 def test():
     print(

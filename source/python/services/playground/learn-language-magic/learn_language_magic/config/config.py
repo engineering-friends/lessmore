@@ -9,3 +9,7 @@ class Config(BaseSettings):
     # - Langchain
 
     langchain_api_key: str
+
+    # - Notion
+
+    notion_token: str
