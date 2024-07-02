@@ -8,6 +8,7 @@ from lessmore.utils.lazy_dataclass import lazy_dataclass
 class Word:
     word: str
     origin: str
+    origin_text: str
     group: str
     translation_en: str = lambda self: ask(
         f"Translation of the german word '{self.word}' in English. Remove the trailing dot. Keep it as short as possible, preferably one word:"
@@ -20,32 +21,40 @@ class Word:
     )
     part_of_speech: str = lambda self: ask(
         f"""Part of speech of german word '{self.word}'. One of "Noun", "Verb", "Adjective", "Adverb", "Pronoun", "Preposition", "Conjunction", "Interjection" or "None".""",
-        json_template='{"answer": "Noun"}',
+        template='"Noun"',
     )
     gender: str = lambda self: ask(
         f"""Gender of the german word: '{self.word}'. One of "Masculine", "Feminine", "Neuter" or "Plural" or "None""",
-        json_template='{"answer": "Masculine"}',
+        template='"Masculine"',
     )
     plural_form: str = lambda self: ask(
         f"Plural form of the german word '{self.word}'. If not applicable, answer ''",
-        json_template='{"answer": "Hunde"}',
+        template='"Hunde"',
     )
     irregular_verb: bool = (
         lambda self: ask(
             f"Is '{self.word}' an irregular verb?",
-            json_template='{"answer": "yes"}',
+            template='"yes"',
         )
         == "yes"
     )
     pronunciation: str = lambda self: ask(
         f"Pronunciation of '{self.word}'",
-        json_template='{"answer": "/ˈlaʊfə/"}',
+        template='"/ˈlaʊfə/"',
     )
 
     cases: dict = (
         lambda self: ask(
             f"""Cases of the german word: '{self.word}' as a markdown table""",
-            json_template="""{"answer": {"columns":["Case","Irregular","Singular","Plural"],"rows":[["Nominative","x","der Mann","die Männer"],["Accusative","x","den Mann","die Männer"],["Dative","x","dem Mann","den Männern"],["Genitive","x","des Mannes","der Männer"]]}""",
+            template={
+                "columns": ["Case", "Irregular", "Singular", "Plural"],
+                "rows": [
+                    ["Nominative", "x", "der Mann", "die Männer"],
+                    ["Accusative", "x", "den Mann", "die Männer"],
+                    ["Dative", "x", "dem Mann", "den Männern"],
+                    ["Genitive", "x", "des Mannes", "der Männer"],
+                ],
+            },
         )
         if self.part_of_speech == "Noun"
         else {}
@@ -54,7 +63,7 @@ class Word:
     conjugations: dict = (
         lambda self: ask(
             f"""Conjugations of the german word: '{self.word}' as a markdown table""",
-            json_template="""{"answer": {"columns":["Tense","Irregular Form","Pronoun","Conjugation"],"rows":{"Present (Präsens)":[["x","ich","laufe"],["x","du","läufst"],["x","er/sie/es","läuft"],["","wir","laufen"],["","ihr","lauft"],["","sie/Sie","laufen"]],"Past (Präteritum)":[["x","ich","lief"],["x","du","liefst"],["x","er/sie/es","lief"],["x","wir","liefen"],["x","ihr","lieft"],["x","sie/Sie","liefen"]],"Present Perfect (Perfekt)":[["x","ich","bin gelaufen"],["x","du","bist gelaufen"],["x","er/sie/es","ist gelaufen"],["x","wir","sind gelaufen"],["x","ihr","seid gelaufen"],["x","sie/Sie","sind gelaufen"]],"Past Perfect (Plusquamperfekt)":[["x","ich","war gelaufen"],["x","du","warst gelaufen"],["x","er/sie/es","war gelaufen"],["x","wir","waren gelaufen"],["x","ihr","wart gelaufen"],["x","sie/Sie","waren gelaufen"]],"Future I (Futur I)":[["","ich","werde laufen"],["","du","wirst laufen"],["","er/sie/es","wird laufen"],["","wir","werden laufen"],["","ihr","werdet laufen"],["","sie/Sie","werden laufen"]],"Future II (Futur II)":[["","ich","werde gelaufen sein"],["","du","wirst gelaufen sein"],["","er/sie/es","wird gelaufen sein"],["","wir","werden gelaufen sein"],["","ihr","werdet gelaufen sein"],["","sie/Sie","werden gelaufen sein"]],"Conditional II (Konjunktiv II) – Present":[["x","ich","liefe"],["x","du","liefest"],["x","er/sie/es","liefe"],["x","wir","liefen"],["x","ihr","liefet"],["x","sie/Sie","liefen"]],"Conditional II (Konjunktiv II) – Past":[["x","ich","wäre gelaufen"],["x","du","wärst gelaufen"],["x","er/sie/es","wäre gelaufen"],["x","wir","wären gelaufen"],["x","ihr","wärt gelaufen"],["x","sie/Sie","wären gelaufen"]],"Subjunctive I (Konjunktiv I) – Present":[["","ich","laufe"],["","du","laufest"],["","er/sie/es","laufe"],["","wir","laufen"],["","ihr","laufet"],["","sie/Sie","laufen"]],"Subjunctive I (Konjunktiv I) – Past":[["","ich","sei gelaufen"],["","du","seiest gelaufen"],["","er/sie/es","sei gelaufen"],["","wir","seien gelaufen"],["","ihr","seiet gelaufen"],["","sie/Sie","seien gelaufen"]],"Imperative (Befehlsform)":[["","du","lauf"],["","ihr","lauft"],["","Sie","laufen Sie"]]}}}""",
+            template="""{"columns":["Tense","Irregular Form","Pronoun","Conjugation"],"rows":{"Present (Präsens)":[["x","ich","laufe"],["x","du","läufst"],["x","er/sie/es","läuft"],["","wir","laufen"],["","ihr","lauft"],["","sie/Sie","laufen"]],"Past (Präteritum)":[["x","ich","lief"],["x","du","liefst"],["x","er/sie/es","lief"],["x","wir","liefen"],["x","ihr","lieft"],["x","sie/Sie","liefen"]],"Present Perfect (Perfekt)":[["x","ich","bin gelaufen"],["x","du","bist gelaufen"],["x","er/sie/es","ist gelaufen"],["x","wir","sind gelaufen"],["x","ihr","seid gelaufen"],["x","sie/Sie","sind gelaufen"]],"Past Perfect (Plusquamperfekt)":[["x","ich","war gelaufen"],["x","du","warst gelaufen"],["x","er/sie/es","war gelaufen"],["x","wir","waren gelaufen"],["x","ihr","wart gelaufen"],["x","sie/Sie","waren gelaufen"]],"Future I (Futur I)":[["","ich","werde laufen"],["","du","wirst laufen"],["","er/sie/es","wird laufen"],["","wir","werden laufen"],["","ihr","werdet laufen"],["","sie/Sie","werden laufen"]],"Future II (Futur II)":[["","ich","werde gelaufen sein"],["","du","wirst gelaufen sein"],["","er/sie/es","wird gelaufen sein"],["","wir","werden gelaufen sein"],["","ihr","werdet gelaufen sein"],["","sie/Sie","werden gelaufen sein"]],"Conditional II (Konjunktiv II) – Present":[["x","ich","liefe"],["x","du","liefest"],["x","er/sie/es","liefe"],["x","wir","liefen"],["x","ihr","liefet"],["x","sie/Sie","liefen"]],"Conditional II (Konjunktiv II) – Past":[["x","ich","wäre gelaufen"],["x","du","wärst gelaufen"],["x","er/sie/es","wäre gelaufen"],["x","wir","wären gelaufen"],["x","ihr","wärt gelaufen"],["x","sie/Sie","wären gelaufen"]],"Subjunctive I (Konjunktiv I) – Present":[["","ich","laufe"],["","du","laufest"],["","er/sie/es","laufe"],["","wir","laufen"],["","ihr","laufet"],["","sie/Sie","laufen"]],"Subjunctive I (Konjunktiv I) – Past":[["","ich","sei gelaufen"],["","du","seiest gelaufen"],["","er/sie/es","sei gelaufen"],["","wir","seien gelaufen"],["","ihr","seiet gelaufen"],["","sie/Sie","seien gelaufen"]],"Imperative (Befehlsform)":[["","du","lauf"],["","ihr","lauft"],["","Sie","laufen Sie"]]}}""",
         )
         if self.part_of_speech == "Verb"
         else {}
@@ -77,6 +86,35 @@ class Word:
 
     def build_notion_page_children(self):
         result = []
+
+        # - Build context
+
+        if self.origin_text:
+            result += [
+                {
+                    "type": "heading_1",
+                    "heading_1": {"rich_text": [{"text": {"content": "Context"}}]},
+                }
+            ]
+
+            result += [
+                {
+                    "type": "paragraph",
+                    "paragraph": {
+                        "text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": ask(
+                                        f"""Extract a couple of context sentences of word "{self.word}" from this text: {self.origin_text}""",
+                                        template='"Mr Dursley was the director of a firm called Grunnings, which made drills"',
+                                    ),
+                                },
+                            }
+                        ]
+                    },
+                }
+            ]
 
         # - Build cases
 
@@ -180,9 +218,7 @@ class Word:
                     },
                 }
             ]
-        from lessmore.utils.printy import printy
 
-        printy(result)
         return result
 
 

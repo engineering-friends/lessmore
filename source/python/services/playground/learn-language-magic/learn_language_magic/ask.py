@@ -2,6 +2,8 @@ import json
 import os
 import textwrap
 
+from typing import Union
+
 from lessmore.utils.cache_on_disk import cache_on_disk
 from openai import OpenAI
 from openai.types.chat import completion_create_params
@@ -12,7 +14,7 @@ def ask(
     dedent: bool = True,
     open_ai_kwargs: dict = dict(model="gpt-4o"),
     cache: bool = True,
-    json_template: str = "",
+    template: str | dict = "",
 ) -> str:
     # - Copy open_ai_kwargs to avoid side effects
 
@@ -46,9 +48,9 @@ def ask(
 
     # - Process JSON
 
-    if json_template:
+    if template:
         open_ai_kwargs["response_format"] = completion_create_params.ResponseFormat(type="json_object")
-        prompt += f"\n Answer in JSON. Template: \n```{json_template}\n```"
+        prompt += f"""\n Answer in JSON. Template: \n```{json.dumps({"answer": template}) if not isinstance(template, str) else template}\n```"""
 
         return json.loads(
             _ask(
@@ -69,7 +71,7 @@ def ask(
 
 def test():
     assert ask("What is 2 + 2? Just the number") == "4"
-    assert ask("What is the capital of France?", json_template='{"answer": "London"}') == "Paris"
+    assert ask("What is the capital of France?", template='{"answer": "London"}') == "Paris"
 
 
 if __name__ == "__main__":

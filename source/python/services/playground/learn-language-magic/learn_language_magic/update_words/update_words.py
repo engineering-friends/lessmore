@@ -36,7 +36,12 @@ def update_words(word_groups: dict, notion_page_id: str):
         for word in words:
             # - Convert to dataclass
 
-            word = Word(word=word, origin=word_group_name, group=word_group_name)
+            word = Word(
+                word=word,
+                origin=word_group_name,
+                origin_text=word_group if isinstance(word_group, str) else None,
+                group=word_group_name if isinstance(word_group, list) else None,
+            )
 
             # - Try to find word in notion pages
 
@@ -50,20 +55,16 @@ def update_words(word_groups: dict, notion_page_id: str):
                 None,
             )
 
-            if not page:
-                # - Create page
+            if page:
+                # do not update existing words
+                continue
 
-                client.pages.create(
-                    parent={"database_id": notion_page_id},
-                    properties=word.build_notion_page_properties(),
-                )
-            else:
-                # - Update page with new properties
+            # - Create page
 
-                client.pages.update(
-                    page_id=page["id"],
-                    properties=word.build_notion_page_properties(),
-                )
+            client.pages.create(
+                parent={"database_id": notion_page_id},
+                properties=word.build_notion_page_properties(),
+            )
 
             # - Get children blocks
 
@@ -78,7 +79,6 @@ def update_words(word_groups: dict, notion_page_id: str):
 
             client.blocks.children.append(
                 block_id=page["id"],
-                # children=word.build_notion_page_children(),
                 children=word.build_notion_page_children(),
             )
 

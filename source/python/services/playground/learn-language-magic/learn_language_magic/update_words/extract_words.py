@@ -1,14 +1,10 @@
-import json
-
 from learn_language_magic.ask import ask
-from openai.types.chat.completion_create_params import ResponseFormat
 
 
 def extract_words(text: str):
     PROMPT = """
     [Instructions]
     - I want you to extract all words or idiomatic expressions from this text in a normalized form
-    - Return format: json list
     - Keep original language 
 
     [Example] 
@@ -18,18 +14,12 @@ def extract_words(text: str):
     [Text]
     {text}"""
 
-    return ask(
-        prompt=PROMPT.format(text=text),
-        open_ai_kwargs={
-            "response_format": ResponseFormat(type="json_object"),
-            "model": "gpt-4o",
-        },
-    )
+    return ask(prompt=PROMPT.format(text=text), template={"words": ["job", "be", "just", "a", "piece of cake"]})
 
 
 def test():
     text = "Hello, world!"
-    assert json.loads(extract_words(text)) == {"words": ["hello", "world"]}
+    assert extract_words(text) == {"words": ["hello", "world"]}
     print("All tests passed.")
 
 
