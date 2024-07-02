@@ -1,6 +1,6 @@
 import json
 
-from learn_language_magic.process_words.ask import ask
+from learn_language_magic.ask import ask
 from openai.types.chat.completion_create_params import ResponseFormat
 
 
@@ -20,7 +20,6 @@ def extract_words(text: str):
 
     return ask(
         prompt=PROMPT.format(text=text),
-        dedent=True,
         open_ai_kwargs={
             "response_format": ResponseFormat(type="json_object"),
             "model": "gpt-4o",

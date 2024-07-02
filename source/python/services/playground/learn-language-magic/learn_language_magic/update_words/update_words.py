@@ -1,4 +1,4 @@
-from learn_language_magic.process_words.extract_words import extract_words
+from learn_language_magic.update_words.extract_words import extract_words
 
 
 def process_words(word_groups: dict):
@@ -6,7 +6,9 @@ def process_words(word_groups: dict):
 
     word_groups = {k: v if isinstance(v, list) else extract_words(v) for k, v in word_groups.items()}
 
-    # - Normalize words from groups
+    # - Process words
+
+    pass
 
 
 def test():

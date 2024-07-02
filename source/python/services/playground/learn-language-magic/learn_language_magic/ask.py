@@ -5,7 +5,7 @@ from openai import OpenAI
 
 def ask(
     prompt: str,
-    dedent: bool = False,
+    dedent: bool = True,
     open_ai_kwargs: dict = dict(model="gpt-4o"),
 ) -> str:
     return (
