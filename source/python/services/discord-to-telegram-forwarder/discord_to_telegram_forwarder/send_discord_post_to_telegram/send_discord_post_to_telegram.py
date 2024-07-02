@@ -382,7 +382,7 @@ async def test_send_real_message_from_discord(forum_name: str, title_contains: s
                 return
 
             messages = []
-            async for message in thread.history(limit=200):
+            async for message in thread.history(limit=1):
                 messages.append(message)
 
             if not messages:
