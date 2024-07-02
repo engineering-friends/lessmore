@@ -5,11 +5,11 @@ import textwrap
 from typing import Union
 
 from lessmore.utils.cache_on_disk import cache_on_disk
-from openai import OpenAI
+from openai import AsyncOpenAI
 from openai.types.chat import completion_create_params
 
 
-def ask(
+async def ask(
     prompt: str,
     dedent: bool = True,
     open_ai_kwargs: dict = dict(model="gpt-4o"),
@@ -22,21 +22,22 @@ def ask(
 
     # - Init function
 
-    def _ask(
+    async def _ask(
         prompt: str,
         dedent: bool,
         open_ai_kwargs: dict,
     ) -> str:
         return (
-            OpenAI()
-            .chat.completions.create(
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt.strip() if not dedent else textwrap.dedent(prompt).strip(),
-                    },
-                ],
-                **open_ai_kwargs,
+            (
+                await AsyncOpenAI().chat.completions.create(
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": prompt.strip() if not dedent else textwrap.dedent(prompt).strip(),
+                        },
+                    ],
+                    **open_ai_kwargs,
+                )
             )
             .choices[0]
             .message.content
@@ -53,7 +54,7 @@ def ask(
         prompt += f"""\n Answer in JSON. Template: \n```{json.dumps({"answer": template}) if not isinstance(template, str) else template}\n```"""
 
         return json.loads(
-            _ask(
+            await _ask(
                 prompt=prompt,
                 dedent=dedent,
                 open_ai_kwargs=open_ai_kwargs,
