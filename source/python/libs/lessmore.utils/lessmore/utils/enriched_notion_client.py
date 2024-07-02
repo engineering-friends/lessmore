@@ -22,19 +22,21 @@ class EnrichedNotionClient(Client):
 
 
 def test():
-    from airflow_etl.lib.get_connection import get_connection
+    from learn_language_magic.deps import Deps
 
     client = EnrichedNotionClient(
-        auth=get_connection("notion-etl-python")["password"],
+        auth=Deps.load().config.notion_token,
     )
     from lessmore.utils.printy import printy
 
-    printy(
-        client.get_paginated_request(
-            method=client.databases.query,
-            database_id="a4f6eaf88dbc4402a8232ab56484ee03",
-        ),
-    )
+    # printy(
+    #     client.get_paginated_request(
+    #         method=client.databases.query,
+    #         database_id="a4f6eaf88dbc4402a8232ab56484ee03",
+    #     ),
+    # )
+
+    printy(client.blocks.retrieve(block_id="38baf009d57f41c8994a7f8fba295dc6"))
 
 
 if __name__ == "__main__":

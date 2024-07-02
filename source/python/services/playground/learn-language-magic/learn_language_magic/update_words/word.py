@@ -42,6 +42,24 @@ class Word:
         json_template='{"answer": "/ˈlaʊfə/"}',
     )
 
+    cases: dict = (
+        lambda self: ask(
+            f"""Cases of the german word: '{self.word}' as a markdown table""",
+            json_template="""{"answer": {"columns":["Case","Irregular","Singular","Plural"],"rows":[["Nominative","x","der Mann","die Männer"],["Accusative","x","den Mann","die Männer"],["Dative","x","dem Mann","den Männern"],["Genitive","x","des Mannes","der Männer"]]}""",
+        )
+        if self.part_of_speech == "Noun"
+        else {}
+    )
+
+    conjugations: dict = (
+        lambda self: ask(
+            f"""Conjugations of the german word: '{self.word}' as a markdown table""",
+            json_template="""{"answer": {"columns":["Tense","Irregular Form","Pronoun","Conjugation"],"rows":{"Present (Präsens)":[["x","ich","laufe"],["x","du","läufst"],["x","er/sie/es","läuft"],["","wir","laufen"],["","ihr","lauft"],["","sie/Sie","laufen"]],"Past (Präteritum)":[["x","ich","lief"],["x","du","liefst"],["x","er/sie/es","lief"],["x","wir","liefen"],["x","ihr","lieft"],["x","sie/Sie","liefen"]],"Present Perfect (Perfekt)":[["x","ich","bin gelaufen"],["x","du","bist gelaufen"],["x","er/sie/es","ist gelaufen"],["x","wir","sind gelaufen"],["x","ihr","seid gelaufen"],["x","sie/Sie","sind gelaufen"]],"Past Perfect (Plusquamperfekt)":[["x","ich","war gelaufen"],["x","du","warst gelaufen"],["x","er/sie/es","war gelaufen"],["x","wir","waren gelaufen"],["x","ihr","wart gelaufen"],["x","sie/Sie","waren gelaufen"]],"Future I (Futur I)":[["","ich","werde laufen"],["","du","wirst laufen"],["","er/sie/es","wird laufen"],["","wir","werden laufen"],["","ihr","werdet laufen"],["","sie/Sie","werden laufen"]],"Future II (Futur II)":[["","ich","werde gelaufen sein"],["","du","wirst gelaufen sein"],["","er/sie/es","wird gelaufen sein"],["","wir","werden gelaufen sein"],["","ihr","werdet gelaufen sein"],["","sie/Sie","werden gelaufen sein"]],"Conditional II (Konjunktiv II) – Present":[["x","ich","liefe"],["x","du","liefest"],["x","er/sie/es","liefe"],["x","wir","liefen"],["x","ihr","liefet"],["x","sie/Sie","liefen"]],"Conditional II (Konjunktiv II) – Past":[["x","ich","wäre gelaufen"],["x","du","wärst gelaufen"],["x","er/sie/es","wäre gelaufen"],["x","wir","wären gelaufen"],["x","ihr","wärt gelaufen"],["x","sie/Sie","wären gelaufen"]],"Subjunctive I (Konjunktiv I) – Present":[["","ich","laufe"],["","du","laufest"],["","er/sie/es","laufe"],["","wir","laufen"],["","ihr","laufet"],["","sie/Sie","laufen"]],"Subjunctive I (Konjunktiv I) – Past":[["","ich","sei gelaufen"],["","du","seiest gelaufen"],["","er/sie/es","sei gelaufen"],["","wir","seien gelaufen"],["","ihr","seiet gelaufen"],["","sie/Sie","seien gelaufen"]],"Imperative (Befehlsform)":[["","du","lauf"],["","ihr","lauft"],["","Sie","laufen Sie"]]}}}""",
+        )
+        if self.part_of_speech == "Verb"
+        else {}
+    )
+
     def build_notion_page_properties(self):
         return {
             "word": {"title": [{"text": {"content": self.word}}]},
@@ -58,30 +76,102 @@ class Word:
         }
 
     def build_notion_page_children(self):
-        return [
-            {
-                "object": "block",
-                "type": "paragraph",
-                "paragraph": {
-                    "rich_text": [
-                        {
-                            "type": "text",
-                            "text": {"content": "Heading 1", "link": None},
-                            "annotations": {
-                                "bold": False,
-                                "italic": False,
-                                "strikethrough": False,
-                                "underline": False,
-                                "code": False,
-                                "color": "default",
-                            },
-                            "plain_text": "Heading 1",
-                            "href": None,
-                        }
-                    ],
-                },
-            },
-        ]
+        result = []
+
+        # - Build cases
+
+        if self.cases:
+            # - Add heading "Cases"
+
+            result += [
+                {"type": "heading_1", "heading_1": {"text": [{"type": "text", "text": {"content": "Cases"}}]}},
+            ]
+
+            # - Add simple table
+
+            """
+            | Case | Irregular | Singular | Plural |
+            | --- | --- | --- | --- |
+            | Nominative | x | der Mann | die Männer |
+            | Accusative | x | den Mann | die Männer |
+            | Dative | x | dem Mann | den Männern |
+            | Genitive | x | des Mannes | der Männer |
+                """
+
+            # - Add table
+
+            result += [
+                {
+                    "type": "table",
+                    "table": {
+                        "table_width": 4,
+                        "has_column_header": True,
+                        "has_row_header": False,
+                        "children": [
+                            {
+                                "type": "table_row",
+                                "table_row": {
+                                    "cells": [
+                                        {
+                                            "type": "table_cell",
+                                            "table_cell": {"content": [{"text": {"content": cell}}]},
+                                        }
+                                        for cell in row
+                                    ]
+                                },
+                            }
+                            for row in [self.cases["columns"]] + self.cases["rows"]
+                        ],
+                    },
+                }
+            ]
+
+        # - Build conjugations
+
+        if self.conjugations:
+            # - Add heading "Conjugations"
+
+            result += [
+                {"type": "heading_1", "heading_1": {"text": [{"type": "text", "text": {"content": "Conjugations"}}]}},
+            ]
+
+            # - Add simple table
+
+            """
+            | Tense | Irregular Form | Pronoun | Conjugation |
+            | --- | --- | --- | --- |
+            | Present (Präsens) | x | ich | laufe |
+            | Present (Präsens) | x | du | läufst |
+            ...
+            """
+            result += [
+                {
+                    "type": "table",
+                    "table": {
+                        "table_width": 4,
+                        "has_column_header": True,
+                        "has_row_header": False,
+                        "children": [
+                            {
+                                "type": "table_row",
+                                "table_row": {
+                                    "cells": [
+                                        {
+                                            "type": "table_cell",
+                                            "table_cell": {"content": [{"text": {"content": cell}}]},
+                                        }
+                                        for cell in row
+                                    ]
+                                },
+                            }
+                            for row in [self.conjugations["columns"]]
+                            + [[key] + row for key, row in self.conjugations["rows"].items()]
+                        ],
+                    },
+                }
+            ]
+
+        return result
 
 
 def test():

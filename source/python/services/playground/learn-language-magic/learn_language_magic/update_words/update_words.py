@@ -78,6 +78,7 @@ def update_words(word_groups: dict, notion_page_id: str):
 
             client.blocks.children.append(
                 block_id=page["id"],
+                # children=word.build_notion_page_children(),
                 children=word.build_notion_page_children(),
             )
 
