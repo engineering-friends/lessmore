@@ -17,7 +17,15 @@ def _add_color_tags_to_json(
     for i, (key, value) in enumerate(record_dic.items()):
         # - Pick color
 
-        color = {
+        color_key = {
+            "ts": "green",
+            "module": "cyan",
+            "message": "level",
+            "error": "red",
+            "traceback": "red",
+        }.get(key, "magenta")
+
+        color_value = {
             "ts": "green",
             "module": "cyan",
             "message": "level",
@@ -33,7 +41,7 @@ def _add_color_tags_to_json(
 
         output = output.replace(
             f'"{key}": {value_str}',
-            f'<{color}>"{{extra[_extra_{2 * i}]}}": {{extra[_extra_{2 * i + 1}]}}</{color}>',
+            f'<{color_key}>"{{extra[_extra_{2 * i}]}}"</{color_key}>: <{color_value}>{{extra[_extra_{2 * i + 1}]}}</{color_value}>',
         )
 
         # - Add key and value to record, from where loguru will get them
