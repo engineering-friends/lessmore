@@ -1,9 +1,7 @@
 from discord_to_telegram_forwarder.deps import Deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.ask import ask
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_whois_url.get_notion_paginated_request import (
-    get_notion_paginated_request,
-)
 from lessmore.utils.cache_on_disk import cache_on_disk
+from lessmore.utils.enriched_notion_client import EnrichedNotionClient
 from notion_client import Client
 
 
@@ -23,11 +21,16 @@ def get_whois_url(
 ) -> str:
     # - Init notion client
 
-    client = Client(auth=deps.config.notion_token)
+    client = EnrichedNotionClient(auth=deps.config.notion_token)
 
     # - Get pages
 
-    pages = list(get_notion_paginated_request(method=client.databases.query, database_id=whois_database_id))
+    pages = list(
+        client.get_paginated_request(
+            method=client.databases.query,
+            database_id=whois_database_id,
+        )
+    )
 
     # - Keep only url, filled and title properties
 

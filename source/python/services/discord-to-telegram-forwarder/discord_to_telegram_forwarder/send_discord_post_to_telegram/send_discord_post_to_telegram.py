@@ -19,7 +19,7 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message 
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
 )
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_whois_url.get_whois_url import get_whois_url
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_whois_url import get_whois_url
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.is_discord_channel_private import (
     is_discord_channel_private,
 )
