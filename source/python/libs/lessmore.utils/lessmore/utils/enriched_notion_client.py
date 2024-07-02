@@ -1,9 +1,11 @@
-from notion_client import Client
+import asyncio
+
+from notion_client import AsyncClient
 
 
-class EnrichedNotionClient(Client):
+class EnrichedNotionClient(AsyncClient):
     @staticmethod
-    def get_paginated_request(method, **kwargs):
+    async def get_paginated_request(method, **kwargs):
         # - Init
 
         result = []
@@ -13,7 +15,7 @@ class EnrichedNotionClient(Client):
         # - Get data from notion
 
         while has_more:
-            response = method(start_cursor=start_cursor, **kwargs)
+            response = await method(start_cursor=start_cursor, **kwargs)
             result.extend(response["results"])
             start_cursor = response["next_cursor"]
             has_more = response["has_more"]
@@ -22,21 +24,22 @@ class EnrichedNotionClient(Client):
 
 
 def test():
-    from learn_language_magic.deps import Deps
+    async def main():
+        from learn_language_magic.deps import Deps
 
-    client = EnrichedNotionClient(
-        auth=Deps.load().config.notion_token,
-    )
-    from lessmore.utils.printy import printy
+        client = EnrichedNotionClient(
+            auth=Deps.load().config.notion_token,
+        )
+        from lessmore.utils.printy import printy
 
-    # printy(
-    #     client.get_paginated_request(
-    #         method=client.databases.query,
-    #         database_id="a4f6eaf88dbc4402a8232ab56484ee03",
-    #     ),
-    # )
+        printy(
+            await client.get_paginated_request(
+                method=client.databases.query,
+                database_id="a4f6eaf88dbc4402a8232ab56484ee03",
+            ),
+        )
 
-    printy(client.blocks.children.list(block_id="f19dad84-5aaf-47bf-8a55-6616bec46bf0"))
+    asyncio.run(main())
 
 
 if __name__ == "__main__":

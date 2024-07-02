@@ -158,7 +158,7 @@ async def send_discord_post_to_telegram(
     # - Get author whois url
 
     try:
-        author_whois_url = get_whois_url(name=author_name, deps=deps)
+        author_whois_url = await get_whois_url(name=author_name, deps=deps)
     except:
         logger.error("Failed to get author whois url", author_name=author_name)
         author_whois_url = ""

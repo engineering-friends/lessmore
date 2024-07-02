@@ -2,7 +2,6 @@ from discord_to_telegram_forwarder.deps import Deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.ask import ask
 from lessmore.utils.cache_on_disk import cache_on_disk
 from lessmore.utils.enriched_notion_client import EnrichedNotionClient
-from notion_client import Client
 
 
 PROMPT = """Here is a list of pages. If user {name} if present, return the url of the page. Names can differ a bit, that's ok (but not completely). Otherwise, return "None".
@@ -14,7 +13,7 @@ Just the url (like "https://google.com" or "None")
 """
 
 
-def get_whois_url(
+async def get_whois_url(
     name: str,
     deps: Deps,
     whois_database_id: str = "641eaea7c7ad4881bbed5ea096a4421a",  # ef whois in notion
@@ -26,7 +25,7 @@ def get_whois_url(
     # - Get pages
 
     pages = list(
-        client.get_paginated_request(
+        await client.get_paginated_request(
             method=client.databases.query,
             database_id=whois_database_id,
         )
@@ -58,9 +57,14 @@ def get_whois_url(
 
 
 def test():
-    deps = Deps.load()
-    print(get_whois_url("Misha Vodolagin", deps=deps))
-    print(get_whois_url("Mark Vodolagin", deps=deps))
+    async def main():
+        deps = Deps.load()
+        print(await get_whois_url("Misha Vodolagin", deps=deps))
+        print(await get_whois_url("Mark Vodolagin", deps=deps))
+
+    import asyncio
+
+    asyncio.run(main())
 
 
 if __name__ == "__main__":
