@@ -1,7 +1,9 @@
+import asyncio
+
 from learn_language_magic.ask import ask
 
 
-def extract_words(text: str):
+async def extract_words(text: str):
     PROMPT = """
     [Instructions]
     - I want you to extract all words or idiomatic expressions from this text in a normalized form
@@ -14,13 +16,17 @@ def extract_words(text: str):
     [Text]
     {text}"""
 
-    return ask(prompt=PROMPT.format(text=text), template={"words": ["job", "be", "just", "a", "piece of cake"]})
+    return await ask(prompt=PROMPT.format(text=text), template=["job", "be", "just", "a", "piece of cake"])
 
 
 def test():
-    text = "Hello, world!"
-    assert extract_words(text) == {"words": ["hello", "world"]}
-    print("All tests passed.")
+    async def main():
+        # german
+        text = "Hallo Welt"
+        assert await extract_words(text) == {"words": ["hallo", "welt"]}
+        print("All tests passed.")
+
+    asyncio.run(main())
 
 
 if __name__ == "__main__":

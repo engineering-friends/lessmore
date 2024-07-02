@@ -93,12 +93,12 @@ class Word:
         return {
             "word": {"title": [{"text": {"content": self.word}}]},
             "origin": {"select": {"name": self.origin}},
-            "group": {"select": {"name": self.group}},
+            "group": {"select": {"name": self.group}} if self.group else None,
             "translation_en": {"rich_text": [{"text": {"content": await self.get_translation_en()}}]},
             "translation_ru": {"rich_text": [{"text": {"content": await self.get_translation_ru()}}]},
             "example_sentence": {"rich_text": [{"text": {"content": await self.get_example_sentence()}}]},
             "part_of_speech": {"select": {"name": await self.get_part_of_speech()}},
-            "gender": {"select": {"name": await self.get_gender()}},
+            "gender": {"select": {"name": await self.get_gender()}} if await self.get_gender() else None,
             "plural_form": {"rich_text": [{"text": {"content": await self.get_plural_form()}}]},
             "irregular_verb": {"checkbox": await self.get_irregular_verb()},
             "pronunciation": {"rich_text": [{"text": {"content": await self.get_pronunciation()}}]},
@@ -121,9 +121,8 @@ class Word:
                 {
                     "type": "paragraph",
                     "paragraph": {
-                        "text": [
+                        "rich_text": [
                             {
-                                "type": "text",
                                 "text": {
                                     "content": await ask(
                                         f"""Extract a couple of context sentences of word "{self.word}" from this text: {self.origin_text}""",
