@@ -64,7 +64,7 @@ async def ask(
 
     # - Wrap cache if needed
 
-    _ask = _ask if not cache else cache_on_disk(directory=os.path.join(os.path.dirname(__file__), "ask_cache/"))(_ask)
+    _ask = _ask if not cache else cache_on_disk(directory=os.path.join(os.path.dirname(__file__), ".ask_cache/"))(_ask)
 
     # - Process JSON
 
