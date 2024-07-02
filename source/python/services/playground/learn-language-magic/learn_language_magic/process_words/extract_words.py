@@ -1,24 +1,36 @@
-import string
+import json
 
-import nltk
-
-from nltk.tokenize import word_tokenize
+from learn_language_magic.process_words.ask import ask
+from openai.types.chat.completion_create_params import ResponseFormat
 
 
 def extract_words(text: str):
-    # - Download required NLTK data files
+    PROMPT = """
+    [Instructions]
+    - I want you to extract all words or idiomatic expressions from this text in a normalized form
+    - Return format: json list
+    - Keep original language 
 
-    nltk.download("punkt", quiet=True)
+    [Example] 
+    Input: `Jobs are just a piece of cake`
+    Output: {{"words": ["job", "be", "just", "a", "piece of cake"]}}
+    
+    [Text]
+    {text}"""
 
-    # - Remove punctuation from the text
-
-    return [word for word in word_tokenize(text) if word not in string.punctuation]
+    return ask(
+        prompt=PROMPT.format(text=text),
+        dedent=True,
+        open_ai_kwargs={
+            "response_format": ResponseFormat(type="json_object"),
+            "model": "gpt-4o",
+        },
+    )
 
 
 def test():
     text = "Hello, world!"
-    assert extract_words(text) == ["Hello", "world"]
-
+    assert json.loads(extract_words(text)) == {"words": ["hello", "world"]}
     print("All tests passed.")
 
 
