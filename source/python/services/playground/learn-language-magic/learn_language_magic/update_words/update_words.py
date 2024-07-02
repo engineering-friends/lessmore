@@ -45,14 +45,18 @@ def update_words(word_groups: dict, notion_page_id: str):
             )
 
             if not page:
-                print("Failed to find page for word:", word.word)
+                # - Create page
+                client.pages.create(
+                    parent={"database_id": "d7a47aa34d2448e38e1a62ed7b6c6775"},
+                    properties=word.build_notion_properties(),
+                )
+            else:
+                # - Update page with new properties
 
-            # - Update page with new properties
-
-            client.pages.update(
-                page_id=page["id"],
-                properties=word.build_notion_properties(),
-            )
+                client.pages.update(
+                    page_id=page["id"],
+                    properties=word.build_notion_properties(),
+                )
 
 
 def test():
@@ -60,7 +64,7 @@ def test():
         update_words(
             word_groups={
                 # "story1": "Foo met a Bar",
-                "group_1": ["Laufen"],
+                "group_1": ["Laufen", "Hund"],
             },
             notion_page_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
         )
