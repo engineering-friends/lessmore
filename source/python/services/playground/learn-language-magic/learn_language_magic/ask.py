@@ -2,10 +2,8 @@ import json
 import os
 import textwrap
 
-from typing import Union
-
-from learn_language_magic.rate_limiter import RateLimiter
 from lessmore.utils.cache_on_disk import cache_on_disk
+from lessmore.utils.rate_limiter import RateLimiter
 from openai import AsyncOpenAI
 from openai.types.chat import completion_create_params
 
