@@ -1,90 +1,110 @@
+import asyncio
 import json
 
+from dataclasses import dataclass
+
 from learn_language_magic.ask import ask
-from lessmore.utils.lazy_dataclass import lazy_dataclass
 
 
-@lazy_dataclass
+@dataclass
 class Word:
     word: str
     origin: str
     origin_text: str
     group: str
-    translation_en: str = lambda self: ask(
-        f"Translation of the german word '{self.word}' in English. Remove the trailing dot. Keep it as short as possible, preferably one word:"
-    )
-    translation_ru: str = lambda self: ask(
-        f"Переведи немецкое слово '{self.word}' на русский язык. Без точки в конце. Объясни как можно кратче, предпочтительно одним словом:"
-    )
-    example_sentence: str = lambda self: ask(
-        f"Example sentence with the german word '{self.word}'. Remove the trailing dot. Just the sentence:"
-    )
-    part_of_speech: str = lambda self: ask(
-        f"""Part of speech of german word '{self.word}'. One of "Noun", "Verb", "Adjective", "Adverb", "Pronoun", "Preposition", "Conjunction", "Interjection" or "None".""",
-        template='"Noun"',
-    )
-    gender: str = lambda self: ask(
-        f"""Gender of the german word: '{self.word}'. One of "Masculine", "Feminine", "Neuter" or "Plural" or "None""",
-        template='"Masculine"',
-    )
-    plural_form: str = lambda self: ask(
-        f"Plural form of the german word '{self.word}'. If not applicable, answer ''",
-        template='"Hunde"',
-    )
-    irregular_verb: bool = (
-        lambda self: ask(
+
+    async def get_translation_en(self):
+        return await ask(
+            f"Translation of the german word '{self.word}' in English. Remove the trailing dot. Keep it as short as possible, preferably one word:"
+        )
+
+    async def get_translation_ru(self):
+        return await ask(
+            f"Переведи немецкое слово '{self.word}' на русский язык. Без точки в конце. Объясни как можно кратче, предпочтительно одним словом:"
+        )
+
+    async def get_example_sentence(self):
+        return await ask(
+            f"Example sentence with the german word '{self.word}'. Remove the trailing dot. Just the sentence:"
+        )
+
+    async def get_part_of_speech(self):
+        return await ask(
+            f"""Part of speech of german word '{self.word}'. One of "Noun", "Verb", "Adjective", "Adverb", "Pronoun", "Preposition", "Conjunction", "Interjection" or "None".""",
+            template="Noun",
+        )
+
+    async def get_gender(self):
+        return await ask(
+            f"""Gender of the german word: '{self.word}'. One of "Masculine", "Feminine", "Neuter" or "Plural" or "None""",
+            template="Masculine",
+        )
+
+    async def get_plural_form(self):
+        return await ask(
+            f"Plural form of the german word '{self.word}'. If not applicable, answer ''",
+            template="Hunde",
+        )
+
+    async def get_irregular_verb(self):
+        result = await ask(
             f"Is '{self.word}' an irregular verb?",
-            template='"yes"',
+            template="yes",
         )
-        == "yes"
-    )
-    pronunciation: str = lambda self: ask(
-        f"Pronunciation of '{self.word}'",
-        template='"/ˈlaʊfə/"',
-    )
+        return result == "yes"
 
-    cases: dict = (
-        lambda self: ask(
-            f"""Cases of the german word: '{self.word}' as a markdown table""",
-            template={
-                "columns": ["Case", "Irregular", "Singular", "Plural"],
-                "rows": [
-                    ["Nominative", "x", "der Mann", "die Männer"],
-                    ["Accusative", "x", "den Mann", "die Männer"],
-                    ["Dative", "x", "dem Mann", "den Männern"],
-                    ["Genitive", "x", "des Mannes", "der Männer"],
-                ],
-            },
+    async def get_pronunciation(self):
+        return await ask(
+            f"Pronunciation of '{self.word}'",
+            template="/ˈlaʊfə/",
         )
-        if self.part_of_speech == "Noun"
-        else {}
-    )
 
-    conjugations: dict = (
-        lambda self: ask(
-            f"""Conjugations of the german word: '{self.word}' as a markdown table""",
-            template="""{"columns":["Tense","Irregular Form","Pronoun","Conjugation"],"rows":{"Present (Präsens)":[["x","ich","laufe"],["x","du","läufst"],["x","er/sie/es","läuft"],["","wir","laufen"],["","ihr","lauft"],["","sie/Sie","laufen"]],"Past (Präteritum)":[["x","ich","lief"],["x","du","liefst"],["x","er/sie/es","lief"],["x","wir","liefen"],["x","ihr","lieft"],["x","sie/Sie","liefen"]],"Present Perfect (Perfekt)":[["x","ich","bin gelaufen"],["x","du","bist gelaufen"],["x","er/sie/es","ist gelaufen"],["x","wir","sind gelaufen"],["x","ihr","seid gelaufen"],["x","sie/Sie","sind gelaufen"]],"Past Perfect (Plusquamperfekt)":[["x","ich","war gelaufen"],["x","du","warst gelaufen"],["x","er/sie/es","war gelaufen"],["x","wir","waren gelaufen"],["x","ihr","wart gelaufen"],["x","sie/Sie","waren gelaufen"]],"Future I (Futur I)":[["","ich","werde laufen"],["","du","wirst laufen"],["","er/sie/es","wird laufen"],["","wir","werden laufen"],["","ihr","werdet laufen"],["","sie/Sie","werden laufen"]],"Future II (Futur II)":[["","ich","werde gelaufen sein"],["","du","wirst gelaufen sein"],["","er/sie/es","wird gelaufen sein"],["","wir","werden gelaufen sein"],["","ihr","werdet gelaufen sein"],["","sie/Sie","werden gelaufen sein"]],"Conditional II (Konjunktiv II) – Present":[["x","ich","liefe"],["x","du","liefest"],["x","er/sie/es","liefe"],["x","wir","liefen"],["x","ihr","liefet"],["x","sie/Sie","liefen"]],"Conditional II (Konjunktiv II) – Past":[["x","ich","wäre gelaufen"],["x","du","wärst gelaufen"],["x","er/sie/es","wäre gelaufen"],["x","wir","wären gelaufen"],["x","ihr","wärt gelaufen"],["x","sie/Sie","wären gelaufen"]],"Subjunctive I (Konjunktiv I) – Present":[["","ich","laufe"],["","du","laufest"],["","er/sie/es","laufe"],["","wir","laufen"],["","ihr","laufet"],["","sie/Sie","laufen"]],"Subjunctive I (Konjunktiv I) – Past":[["","ich","sei gelaufen"],["","du","seiest gelaufen"],["","er/sie/es","sei gelaufen"],["","wir","seien gelaufen"],["","ihr","seiet gelaufen"],["","sie/Sie","seien gelaufen"]],"Imperative (Befehlsform)":[["","du","lauf"],["","ihr","lauft"],["","Sie","laufen Sie"]]}}""",
-        )
-        if self.part_of_speech == "Verb"
-        else {}
-    )
+    async def get_cases(self):
+        part_of_speech = await self.get_part_of_speech()
+        if part_of_speech == "Noun":
+            return await ask(
+                f"""Cases of the german word: '{self.word}' as a markdown table""",
+                template={
+                    "columns": ["Case", "Irregular", "Singular", "Plural"],
+                    "rows": [
+                        ["Nominative", "x", "der Mann", "die Männer"],
+                        ["Accusative", "x", "den Mann", "die Männer"],
+                        ["Dative", "x", "dem Mann", "den Männern"],
+                        ["Genitive", "x", "des Mannes", "der Männer"],
+                    ],
+                },
+            )
+        else:
+            return {}
 
-    def build_notion_page_properties(self):
+    async def get_conjugations(self):
+        part_of_speech = await self.get_part_of_speech()
+        if part_of_speech == "Verb":
+            return await ask(
+                f"""Conjugations of the german word: '{self.word}' as a markdown table""",
+                template=json.loads(
+                    """{"columns":["Tense","Irregular Form","Pronoun","Conjugation"],"rows":{"Present (Präsens)":[["x","ich","laufe"],["x","du","läufst"],["x","er/sie/es","läuft"],["","wir","laufen"],["","ihr","lauft"],["","sie/Sie","laufen"]],"Past (Präteritum)":[["x","ich","lief"],["x","du","liefst"],["x","er/sie/es","lief"],["x","wir","liefen"],["x","ihr","lieft"],["x","sie/Sie","liefen"]],"Present Perfect (Perfekt)":[["x","ich","bin gelaufen"],["x","du","bist gelaufen"],["x","er/sie/es","ist gelaufen"],["x","wir","sind gelaufen"],["x","ihr","seid gelaufen"],["x","sie/Sie","sind gelaufen"]],"Past Perfect (Plusquamperfekt)":[["x","ich","war gelaufen"],["x","du","warst gelaufen"],["x","er/sie/es","war gelaufen"],["x","wir","waren gelaufen"],["x","ihr","wart gelaufen"],["x","sie/Sie","waren gelaufen"]],"Future I (Futur I)":[["","ich","werde laufen"],["","du","wirst laufen"],["","er/sie/es","wird laufen"],["","wir","werden laufen"],["","ihr","werdet laufen"],["","sie/Sie","werden laufen"]],"Future II (Futur II)":[["","ich","werde gelaufen sein"],["","du","wirst gelaufen sein"],["","er/sie/es","wird gelaufen sein"],["","wir","werden gelaufen sein"],["","ihr","werdet gelaufen sein"],["","sie/Sie","werden gelaufen sein"]],"Conditional II (Konjunktiv II) – Present":[["x","ich","liefe"],["x","du","liefest"],["x","er/sie/es","liefe"],["x","wir","liefen"],["x","ihr","liefet"],["x","sie/Sie","liefen"]],"Conditional II (Konjunktiv II) – Past":[["x","ich","wäre gelaufen"],["x","du","wärst gelaufen"],["x","er/sie/es","wäre gelaufen"],["x","wir","wären gelaufen"],["x","ihr","wärt gelaufen"],["x","sie/Sie","wären gelaufen"]],"Subjunctive I (Konjunktiv I) – Present":[["","ich","laufe"],["","du","laufest"],["","er/sie/es","laufe"],["","wir","laufen"],["","ihr","laufet"],["","sie/Sie","laufen"]],"Subjunctive I (Konjunktiv I) – Past":[["","ich","sei gelaufen"],["","du","seiest gelaufen"],["","er/sie/es","sei gelaufen"],["","wir","seien gelaufen"],["","ihr","seiet gelaufen"],["","sie/Sie","seien gelaufen"]],"Imperative (Befehlsform)":[["","du","lauf"],["","ihr","lauft"],["","Sie","laufen Sie"]]}}"""
+                ),
+            )
+        else:
+            return {}
+
+    async def build_notion_page_properties(self):
         return {
             "word": {"title": [{"text": {"content": self.word}}]},
             "origin": {"select": {"name": self.origin}},
             "group": {"select": {"name": self.group}},
-            "translation_en": {"rich_text": [{"text": {"content": self.translation_en}}]},
-            "translation_ru": {"rich_text": [{"text": {"content": self.translation_ru}}]},
-            "example_sentence": {"rich_text": [{"text": {"content": self.example_sentence}}]},
-            "part_of_speech": {"select": {"name": self.part_of_speech}},
-            "gender": {"select": {"name": self.gender}},
-            "plural_form": {"rich_text": [{"text": {"content": self.plural_form}}]},
-            "irregular_verb": {"checkbox": self.irregular_verb},
-            "pronunciation": {"rich_text": [{"text": {"content": self.pronunciation}}]},
+            "translation_en": {"rich_text": [{"text": {"content": await self.get_translation_en()}}]},
+            "translation_ru": {"rich_text": [{"text": {"content": await self.get_translation_ru()}}]},
+            "example_sentence": {"rich_text": [{"text": {"content": await self.get_example_sentence()}}]},
+            "part_of_speech": {"select": {"name": await self.get_part_of_speech()}},
+            "gender": {"select": {"name": await self.get_gender()}},
+            "plural_form": {"rich_text": [{"text": {"content": await self.get_plural_form()}}]},
+            "irregular_verb": {"checkbox": await self.get_irregular_verb()},
+            "pronunciation": {"rich_text": [{"text": {"content": await self.get_pronunciation()}}]},
         }
 
-    def build_notion_page_children(self):
+    async def build_notion_page_children(self):
         result = []
 
         # - Build context
@@ -105,9 +125,9 @@ class Word:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": ask(
+                                    "content": await ask(
                                         f"""Extract a couple of context sentences of word "{self.word}" from this text: {self.origin_text}""",
-                                        template='"Mr Dursley was the director of a firm called Grunnings, which made drills"',
+                                        template="Mr Dursley was the director of a firm called Grunnings, which made drills",
                                     ),
                                 },
                             }
@@ -118,7 +138,7 @@ class Word:
 
         # - Build cases
 
-        if self.cases:
+        if cases := await self.get_cases():
             # - Add heading "Cases"
 
             result += [
@@ -163,7 +183,7 @@ class Word:
                                     ]
                                 },
                             }
-                            for row in [self.cases["columns"]] + self.cases["rows"]
+                            for row in [cases["columns"]] + cases["rows"]
                         ],
                     },
                 }
@@ -171,7 +191,7 @@ class Word:
 
         # - Build conjugations
 
-        if self.conjugations:
+        if conjugations := await self.get_conjugations():
             # - Add heading "Conjugations"
 
             result += [
@@ -212,8 +232,8 @@ class Word:
                                     ]
                                 },
                             }
-                            for row in [self.conjugations["columns"]]
-                            + [[key] + row for key, rows in self.conjugations["rows"].items() for row in rows]
+                            for row in [conjugations["columns"]]
+                            + [[key] + row for key, rows in conjugations["rows"].items() for row in rows]
                         ],
                     },
                 }
@@ -223,17 +243,21 @@ class Word:
 
 
 def test():
-    print(
-        json.dumps(
-            Word(
-                word="hund",
-                origin="test",
-                group="test",
-            ).to_dict(),
-            indent=2,
-            ensure_ascii=False,
+    async def main():
+        print(
+            json.dumps(
+                await Word(
+                    word="hund",
+                    origin="test",
+                    origin_text="",
+                    group="test",
+                ).build_notion_page_properties(),
+                indent=2,
+                ensure_ascii=False,
+            )
         )
-    )
+
+    asyncio.run(main())
 
 
 if __name__ == "__main__":
