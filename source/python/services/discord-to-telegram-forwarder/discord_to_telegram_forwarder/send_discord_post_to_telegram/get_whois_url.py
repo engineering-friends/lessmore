@@ -1,7 +1,7 @@
 from discord_to_telegram_forwarder.deps import Deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.ask import ask
 from lessmore.utils.cache_on_disk import cache_on_disk
-from lessmore.utils.enriched_notion_client import EnrichedNotionClient
+from lessmore.utils.enriched_notion_client import EnrichedNotionAsyncClient
 
 
 PROMPT = """Here is a list of pages. If user {name} if present, return the url of the page. Names can differ a bit, that's ok (but not completely). Otherwise, return "None".
@@ -20,7 +20,7 @@ async def get_whois_url(
 ) -> str:
     # - Init notion client
 
-    client = EnrichedNotionClient(auth=deps.config.notion_token)
+    client = EnrichedNotionAsyncClient(auth=deps.config.notion_token)
 
     # - Get pages
 

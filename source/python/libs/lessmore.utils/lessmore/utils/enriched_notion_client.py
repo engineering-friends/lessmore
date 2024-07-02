@@ -3,7 +3,7 @@ import asyncio
 from notion_client import AsyncClient
 
 
-class EnrichedNotionClient(AsyncClient):
+class EnrichedNotionAsyncClient(AsyncClient):
     @staticmethod
     async def get_paginated_request(method, **kwargs):
         # - Init
@@ -27,7 +27,7 @@ def test():
     async def main():
         from learn_language_magic.deps import Deps
 
-        client = EnrichedNotionClient(
+        client = EnrichedNotionAsyncClient(
             auth=Deps.load().config.notion_token,
         )
         from lessmore.utils.printy import printy
