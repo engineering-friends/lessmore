@@ -4,6 +4,7 @@ from learn_language_magic.deps import Deps
 from learn_language_magic.notion_rate_limited_client import NotionRateLimitedClient
 from learn_language_magic.update_words.extract_words import extract_words
 from learn_language_magic.update_words.word import Word
+from lessmore.utils.functional.skip_duplicates import skip_duplicates
 from loguru import logger
 from more_itertools import first
 
@@ -46,7 +47,7 @@ async def update_words(word_groups: dict, words_database_id: str, stories_databa
                 (
                     p
                     for p in story_pages
-                    if first(p["properties"]["word"]["title"], default={}).get("plain_text", "").lower()
+                    if first(p["properties"]["Name"]["title"], default={}).get("plain_text", "").lower()
                     == word_group_name.lower()
                 ),
                 None,
@@ -77,20 +78,20 @@ async def update_words(word_groups: dict, words_database_id: str, stories_databa
                 )
 
         logger.info("Processing group", group=word_group_name, words=_words)
-        #
-        # # - Process words
-        #
-        # for _word in _words:
-        #     # - Convert to dataclass
-        #
-        #     words.append(
-        #         Word(
-        #             word=_word,
-        #             origin=word_group_name,
-        #             origin_text=word_group if isinstance(word_group, str) else None,
-        #             group=word_group_name if isinstance(word_group, list) else None,
-        #         )
-        #     )
+
+        # - Process words
+
+        for _word in _words:
+            # - Convert to dataclass
+
+            words.append(
+                Word(
+                    word=_word,
+                    origin=word_group_name,
+                    origin_text=word_group if isinstance(word_group, str) else None,
+                    group=word_group_name if isinstance(word_group, list) else None,
+                )
+            )
 
     # - Process each word
 
@@ -127,6 +128,12 @@ async def update_words(word_groups: dict, words_database_id: str, stories_databa
             children=await word.build_notion_page_children(),
         )
 
+    # - Filter unique words
+
+    words = skip_duplicates(words, key=lambda w: w.word.lower())
+
+    # - Process words
+
     await asyncio.gather(*[_process_word(word) for word in words])
 
 
@@ -137,6 +144,7 @@ def test():
                 word_groups={
                     "story1": "Mr. und Mrs. Dursley im Ligusterweg Nummer 4 waren stolz darauf, ganz und gar normal zu sein, sehr stolz sogar",
                     "group_1": ["Laufen", "Hund"],
+                    "group_2": ["Mrs."],
                 },
                 words_database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
                 stories_database_id="8d9d6643302c48649345209e18dbb0ca",  # stories

@@ -7,6 +7,7 @@ async def extract_words(text: str):
     PROMPT = """
     [Instructions]
     - I want you to extract all words or idiomatic expressions from this text in a normalized form
+    - Use just words if they convey the meaning and several verbs for idioms, phrasal verbs, etc.
     - Keep original language 
 
     [Example] 

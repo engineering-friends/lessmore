@@ -1,3 +1,4 @@
+import asyncio
 import json
 import os
 import textwrap
@@ -12,7 +13,6 @@ from openai.types.chat import completion_create_params
 RATE_LIMITER = RateLimiter(rate=5000 - 500, period=60)  # tier 3 openai rate limits 5000RPM, subtract 10% to be safe
 
 
-@async_retry(tries=5, delay=1)
 async def ask(
     prompt: str,
     dedent: bool = True,
@@ -37,7 +37,7 @@ async def ask(
 
         # - Ask
 
-        return (
+        result = (
             (
                 await AsyncOpenAI().chat.completions.create(
                     messages=[
@@ -53,6 +53,15 @@ async def ask(
             .message.content
         )
 
+        # - Validate json
+
+        if template:
+            assert "answer" in json.loads(result), f"Expected JSON with key 'answer', got: {result}"
+
+        # - Return
+
+        return result
+
     # - Wrap cache if needed
 
     _ask = _ask if not cache else cache_on_disk(directory=os.path.join(os.path.dirname(__file__), "ask_cache/"))(_ask)
@@ -61,7 +70,7 @@ async def ask(
 
     if template:
         open_ai_kwargs["response_format"] = completion_create_params.ResponseFormat(type="json_object")
-        prompt += f"""\n Answer in JSON. Template: \n```{json.dumps({"answer": template})}\n```"""
+        prompt += f"""\n Answer in JSON. Template: \n```{json.dumps({"answer": template}, ensure_ascii=False)}\n```"""
 
         return json.loads(
             await _ask(
@@ -81,8 +90,11 @@ async def ask(
 
 
 def test():
-    assert ask("What is 2 + 2? Just the number") == "4"
-    assert ask("What is the capital of France?", template='{"answer": "London"}') == "Paris"
+    async def main():
+        assert await ask("What is 2 + 2? Just the number") == "4"
+        assert await ask("What is the capital of France?", template="London") == "Paris"
+
+    asyncio.run(main())
 
 
 if __name__ == "__main__":

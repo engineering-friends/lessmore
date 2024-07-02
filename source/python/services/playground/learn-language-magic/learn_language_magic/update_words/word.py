@@ -90,7 +90,7 @@ class Word:
             return {}
 
     async def build_notion_page_properties(self):
-        return {
+        result = {
             "word": {"title": [{"text": {"content": self.word}}]},
             "origin": {"select": {"name": self.origin}},
             "group": {"select": {"name": self.group}} if self.group else None,
@@ -103,6 +103,7 @@ class Word:
             "irregular_verb": {"checkbox": await self.get_irregular_verb()},
             "pronunciation": {"rich_text": [{"text": {"content": await self.get_pronunciation()}}]},
         }
+        return {k: v for k, v in result.items() if v is not None}
 
     async def build_notion_page_children(self):
         result = []
