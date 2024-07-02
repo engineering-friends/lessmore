@@ -5,6 +5,7 @@ import json
 from functools import lru_cache, wraps
 
 from diskcache import Cache
+from lessmore.utils.file_primitives.ensure_path import ensure_path
 
 
 @lru_cache(maxsize=None)
@@ -13,12 +14,12 @@ def cache_on_disk(directory: str = "/tmp/cache_on_disk", reset: bool = False) ->
     Decorator factory that takes a directory name for storing cache data.
     Returns a decorator that caches the results of the function to disk.
 
-    # todo: handle closing the cache or using other library, this is a quick and dirty implementation
+    # todo later: handle closing the cache or using other library, this is a quick and dirty implementation [@marklidenberg]
     """
 
     # - Initialize or retrieve an existing cache object
 
-    cache = Cache(directory)
+    cache = Cache(ensure_path(directory))
 
     # - Define the decorator
 
@@ -34,6 +35,7 @@ def cache_on_disk(directory: str = "/tmp/cache_on_disk", reset: bool = False) ->
             full_kwargs = bound_arguments.arguments
 
             # -- Generate the key
+
             hasher = hashlib.sha256()
 
             # Include function name in the hash
