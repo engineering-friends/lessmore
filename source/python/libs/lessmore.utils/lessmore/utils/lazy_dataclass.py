@@ -22,7 +22,11 @@ def lazy_dataclass(cls):
             setattr(self, item, value)
         return value
 
+    def to_dict(self):
+        return {k: getattr(self, k) for k in self.__annotations__}
+
     cls.__getattribute__ = __getattribute__
+    cls.to_dict = to_dict
     return cls
 
 
