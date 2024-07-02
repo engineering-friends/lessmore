@@ -84,7 +84,10 @@ class Word:
             # - Add heading "Cases"
 
             result += [
-                {"type": "heading_1", "heading_1": {"text": [{"type": "text", "text": {"content": "Cases"}}]}},
+                {
+                    "type": "heading_1",
+                    "heading_1": {"rich_text": [{"text": {"content": "Cases"}}]},
+                }
             ]
 
             # - Add simple table
@@ -112,10 +115,12 @@ class Word:
                                 "type": "table_row",
                                 "table_row": {
                                     "cells": [
-                                        {
-                                            "type": "table_cell",
-                                            "table_cell": {"content": [{"text": {"content": cell}}]},
-                                        }
+                                        [
+                                            {
+                                                "type": "text",
+                                                "text": {"content": cell},
+                                            }
+                                        ]
                                         for cell in row
                                     ]
                                 },
@@ -132,7 +137,10 @@ class Word:
             # - Add heading "Conjugations"
 
             result += [
-                {"type": "heading_1", "heading_1": {"text": [{"type": "text", "text": {"content": "Conjugations"}}]}},
+                {
+                    "type": "heading_1",
+                    "heading_1": {"rich_text": [{"text": {"content": "Conjugations"}}]},
+                }
             ]
 
             # - Add simple table
@@ -156,21 +164,25 @@ class Word:
                                 "type": "table_row",
                                 "table_row": {
                                     "cells": [
-                                        {
-                                            "type": "table_cell",
-                                            "table_cell": {"content": [{"text": {"content": cell}}]},
-                                        }
+                                        [
+                                            {
+                                                "type": "text",
+                                                "text": {"content": cell},
+                                            }
+                                        ]
                                         for cell in row
                                     ]
                                 },
                             }
                             for row in [self.conjugations["columns"]]
-                            + [[key] + row for key, row in self.conjugations["rows"].items()]
+                            + [[key] + row for key, rows in self.conjugations["rows"].items() for row in rows]
                         ],
                     },
                 }
             ]
+        from lessmore.utils.printy import printy
 
+        printy(result)
         return result
 
 

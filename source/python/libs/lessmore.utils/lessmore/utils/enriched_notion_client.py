@@ -36,7 +36,7 @@ def test():
     #     ),
     # )
 
-    printy(client.blocks.retrieve(block_id="38baf009d57f41c8994a7f8fba295dc6"))
+    printy(client.blocks.children.list(block_id="f19dad84-5aaf-47bf-8a55-6616bec46bf0"))
 
 
 if __name__ == "__main__":
