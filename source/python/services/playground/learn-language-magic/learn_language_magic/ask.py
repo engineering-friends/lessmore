@@ -3,11 +3,7 @@ import textwrap
 from openai import OpenAI
 
 
-def ask(
-    prompt: str,
-    dedent: bool = True,
-    open_ai_kwargs: dict = dict(model="gpt-4o"),
-) -> str:
+def ask(prompt: str, dedent: bool = True, open_ai_kwargs: dict = dict(model="gpt-4o"), cache: bool = True) -> str:
     return (
         OpenAI()
         .chat.completions.create(

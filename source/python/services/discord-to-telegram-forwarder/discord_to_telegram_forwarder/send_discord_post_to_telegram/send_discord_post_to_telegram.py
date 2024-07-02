@@ -30,7 +30,7 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_reactio
     request_reaction_emojis_from_openai,
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.to_png import to_png
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.utils.cache_on_disk import cache_on_disk
+from lessmore.utils.cache_on_disk import cache_on_disk
 from lessmore.utils.file_primitives.write_file import write_file
 from loguru import logger
 from PIL import Image

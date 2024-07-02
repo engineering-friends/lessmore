@@ -3,7 +3,7 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.ask import a
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_whois_url.get_notion_paginated_request import (
     get_notion_paginated_request,
 )
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.utils.cache_on_disk import cache_on_disk
+from lessmore.utils.cache_on_disk import cache_on_disk
 from notion_client import Client
 
 
