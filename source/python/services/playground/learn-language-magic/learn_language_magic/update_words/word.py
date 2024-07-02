@@ -42,7 +42,7 @@ class Word:
         json_template='{"answer": "/ˈlaʊfə/"}',
     )
 
-    def build_notion_properties(self):
+    def build_notion_page_properties(self):
         return {
             "word": {"title": [{"text": {"content": self.word}}]},
             "origin": {"select": {"name": self.origin}},
@@ -56,6 +56,32 @@ class Word:
             "irregular_verb": {"checkbox": self.irregular_verb},
             "pronunciation": {"rich_text": [{"text": {"content": self.pronunciation}}]},
         }
+
+    def build_notion_page_children(self):
+        return [
+            {
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {
+                    "rich_text": [
+                        {
+                            "type": "text",
+                            "text": {"content": "Heading 1", "link": None},
+                            "annotations": {
+                                "bold": False,
+                                "italic": False,
+                                "strikethrough": False,
+                                "underline": False,
+                                "code": False,
+                                "color": "default",
+                            },
+                            "plain_text": "Heading 1",
+                            "href": None,
+                        }
+                    ],
+                },
+            },
+        ]
 
 
 def test():

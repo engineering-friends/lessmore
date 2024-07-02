@@ -3,6 +3,7 @@ from learn_language_magic.update_words.extract_words import extract_words
 from learn_language_magic.update_words.word import Word
 from lessmore.utils.enriched_notion_client import EnrichedNotionClient
 from lessmore.utils.printy import printy
+from more_itertools import first
 
 
 def update_words(word_groups: dict, notion_page_id: str):
@@ -14,7 +15,7 @@ def update_words(word_groups: dict, notion_page_id: str):
 
     pages = client.get_paginated_request(
         method=client.databases.query,
-        database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
+        database_id=notion_page_id,  # words
     )  # [{"archived":false,"cover":null,"created_by":{"id":"bdb47407-ca48-4745-9aff-74763ad1bae0","object":"user"},"created_time":"2024-07-02T16:09:00.000Z","icon":null,"id":"bf276664-4098-4a54-bfd7-31fed6145134","in_trash":false,"last_edited_by":{"id":"bdb47407-ca48-4745-9aff-74763ad1bae0","object":"user"},"last_edited_time":"2024-07-02T17:14:00.000Z","object":"page","parent":{"database_id":"d7a47aa3-4d24-48e3-8e1a-62ed7b6c6775","type":"database_id"},"properties":{"Example Sentence":{"id":"f%7D%3B%7C","rich_text":[],"type":"rich_text"},"Gender":{"id":"aKhX","select":null,"type":"select"},"Group":{"id":"x%7BiC","select":null,"type":"select"},"Irregular Verb":{"checkbox":false,"id":"pXTo","type":"checkbox"},"Notes":{"id":"H%7DHx","rich_text":[],"type":"rich_text"},"Origin":{"id":"oYdr","select":null,"type":"select"},"Part of speech":{"id":"%3DSCD","rich_text":[],"type":"rich_text"},"Plural Form":{"id":"_skw","rich_text":[],"type":"rich_text"},"Pronunciation":{"id":"hA%3F%60","rich_text":[],"type":"rich_text"},"Translation (en)":{"id":"e%3EjT","rich_text":[],"type":"rich_text"},"Translation (ru) ":{"id":"%3BA_Q","rich_text":[],"type":"rich_text"},"Word":{"id":"title","title":[{"annotations":{"bold":false,"code":false,"color":"default","italic":false,"strikethrough":false,"underline":false},"href":null,"plain_text":"Word","text":{"content":"Word","link":null},"type":"text"}],"type":"title"}},"public_url":null,"url":"https://www.notion.so/Word-bf27666440984a54bfd731fed6145134"}, ...]
 
     for word_group_name, word_group in word_groups.items():
@@ -40,23 +41,45 @@ def update_words(word_groups: dict, notion_page_id: str):
             # - Try to find word in notion pages
 
             page = next(
-                (p for p in pages if p["properties"]["word"]["title"][0]["plain_text"].lower() == word.word.lower()),
+                (
+                    p
+                    for p in pages
+                    if first(p["properties"]["word"]["title"], default={}).get("plain_text", "").lower()
+                    == word.word.lower()
+                ),
                 None,
             )
 
             if not page:
                 # - Create page
+
                 client.pages.create(
-                    parent={"database_id": "d7a47aa34d2448e38e1a62ed7b6c6775"},
-                    properties=word.build_notion_properties(),
+                    parent={"database_id": notion_page_id},
+                    properties=word.build_notion_page_properties(),
                 )
             else:
                 # - Update page with new properties
 
                 client.pages.update(
                     page_id=page["id"],
-                    properties=word.build_notion_properties(),
+                    properties=word.build_notion_page_properties(),
                 )
+
+            # - Get children blocks
+
+            children = client.blocks.children.list(block_id=page["id"])
+
+            # - Delete old children blocks
+
+            for child in children["results"]:
+                client.blocks.delete(block_id=child["id"])
+
+            # - Create new blocks
+
+            client.blocks.children.append(
+                block_id=page["id"],
+                children=word.build_notion_page_children(),
+            )
 
 
 def test():
