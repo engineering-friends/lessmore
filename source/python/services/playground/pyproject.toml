@@ -34,6 +34,7 @@ pytube = "^15.0.0"
 pydub = "^0.25.1"
 google-api-python-client = "^2.136.0"
 pillow = "^10.4.0"
+imgurpython = "^1.1.7"
 
 
 [build-system]

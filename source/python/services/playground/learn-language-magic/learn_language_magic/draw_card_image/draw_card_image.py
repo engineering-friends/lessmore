@@ -1,7 +1,11 @@
 import io
+import os.path
 import uuid
 
+from learn_language_magic.deps import Deps
+from learn_language_magic.draw_card_image import upload_image
 from learn_language_magic.draw_card_image.generate_image import generate_image
+from learn_language_magic.draw_card_image.upload_image import upload_image_to_imgur
 from lessmore.utils.asynchronous.async_retry import async_retry
 from lessmore.utils.file_primitives.write_file import write_file
 from PIL import Image
@@ -9,8 +13,8 @@ from PIL import Image
 
 async def draw_card_image(word: str):
     image_contents = await async_retry(tries=5, delay=1)(generate_image)(
-        prompt=f"Illustrate german word `{word}`",
-        style="Continuous lines very easy, very thin outline, clean and minimalist, black outline only: {prompt}",
+        prompt=f"Illustrate german `{word}`",
+        style="Continuous lines very easy, clean and minimalist, colorful: {prompt}",
     )
 
     # - Resize image to 1280x731 (telegram max size)
@@ -23,7 +27,12 @@ async def draw_card_image(word: str):
 
     # - Save to tmp file and add to files
 
-    filename = f"/tmp/{uuid.uuid4()}.png"
+    filename = os.path.join(os.path.dirname(__file__), f"images/{word}.png")
     write_file(data=image_contents, filename=filename, as_bytes=True)
 
-    return filename
+    # - Upload to imgur
+
+    return await upload_image_to_imgur(
+        image_path=filename,
+        client_id=Deps.load().config.imgur_client_id,
+    )

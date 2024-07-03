@@ -1026,6 +1026,19 @@ files = [
 ]
 
 [[package]]
+name = "imgurpython"
+version = "1.1.7"
+description = "Official Imgur python library with OAuth2 and samples"
+optional = false
+python-versions = "*"
+files = [
+    {file = "imgurpython-1.1.7.tar.gz", hash = "sha256:3ac28501c2f699a78f93a4ab34df7443cebd39a170c9de4adecf0f3852cbdc33"},
+]
+
+[package.dependencies]
+requests = "*"
+
+[[package]]
 name = "iniconfig"
 version = "2.0.0"
 description = "brain-dead simple config-ini parsing"
@@ -6975,4 +6988,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.4"
-content-hash = "cc2a4f6916eda7bb154be960b79e602e7d1af0cb9416637bf0322a1e539f5b1b"
+content-hash = "4b392a57ed206421c88a3da85173d45e5e4952366e57753e749bca67b5f3d5e5"

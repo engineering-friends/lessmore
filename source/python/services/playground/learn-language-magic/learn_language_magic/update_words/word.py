@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 from benedict import benedict
 from learn_language_magic.ask import ask
+from learn_language_magic.draw_card_image.draw_card_image import draw_card_image
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property
 from lessmore.utils.asynchronous.gather_nested import gather_nested
 from lessmore.utils.read_config.merge_dicts import merge_dicts
@@ -90,6 +91,10 @@ class Word:
             return {}
 
     @async_cached_property
+    async def image_url(self):
+        return await draw_card_image(word=self.word)
+
+    @async_cached_property
     async def conjugations(self):
         if await self.part_of_speech == "Verb":
             return await ask(
@@ -102,7 +107,7 @@ class Word:
             return {}
 
     async def has_changed(self, old_notion_page_properties: dict):
-        # todo maybe: make more elegant, just merge recursively old and new properties and compare (deep merge neede, with list merging)
+        # todo maybe: make more elegant, just merge recursively old and new properties and compare (deep merge neede, with list merging) [@marklidenberg]
         old_simplified_properties = {
             "word": {
                 "title": [{"text": {"content": old_notion_page_properties["word"]["title"][0]["text"]["content"]}}]
@@ -194,6 +199,18 @@ class Word:
     @async_cached_property
     async def notion_page_children(self):
         result = []
+
+        # - Add image
+
+        result += [
+            {
+                "type": "image",
+                "image": {
+                    "type": "external",
+                    "external": {"url": await self.image_url},
+                },
+            }
+        ]
 
         # - Build context
 

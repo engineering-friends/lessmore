@@ -13,3 +13,8 @@ class Config(BaseSettings):
     # - Notion
 
     notion_token: str
+
+    # - Imgur
+
+    imgur_client_id: str
+    imgur_client_secret: str

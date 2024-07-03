@@ -89,7 +89,7 @@ async def generate_image(
 def test():
     async def main():
         image_contents = await generate_image(
-            prompt="Continuous lines very easy, very thin outline, clean and minimalist, black outline only. Illustrate german word 'laufen'"
+            prompt="Continuous lines very easy, clean and minimalist, colorful. Illustrate german 'laufen'"
         )
         write_file(data=image_contents, filename="/tmp/image.png", as_bytes=True)
         open_in_os("/tmp/image.png")
