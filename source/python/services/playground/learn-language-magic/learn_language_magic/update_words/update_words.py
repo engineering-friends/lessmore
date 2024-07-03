@@ -4,6 +4,7 @@ from learn_language_magic.deps import Deps
 from learn_language_magic.notion_rate_limited_client import NotionRateLimitedClient
 from learn_language_magic.update_words.extract_words import extract_words
 from learn_language_magic.update_words.word import Word
+from learn_language_magic.update_words.word_groups import word_groups
 from lessmore.utils.asynchronous.async_cached_property import prefetch_all_cached_properties
 from lessmore.utils.functional.skip_duplicates import skip_duplicates
 from loguru import logger
@@ -178,89 +179,7 @@ def test():
     async def main():
         print(
             await update_words(
-                word_groups={'test': 'laufen'},
-#                 word_groups={
-#                     "basics1": [
-#                     # Nouns
-#                     "Haus", "Baum", "Auto", "Tisch", "Stuhl", "Buch", "Hund", "Katze",
-#                     "Freund", "Kind", "Wasser", "Brot", "Apfel", "Schule", "Arbeit",
-#                     "Stadt", "Straße", "Zimmer", "Tag", "Jahr", "Mutter", "Vater",
-#                     "Schwester", "Bruder", "Zeit",
-#
-#                     # Verbs
-#                     "sein", "haben", "gehen", "kommen", "sehen", "hören", "sprechen",
-#                     "essen", "trinken", "schlafen", "lesen", "schreiben", "lernen",
-#                     "arbeiten", "spielen", "laufen", "fahren", "kaufen", "verkaufen",
-#                     "nehmen", "geben", "finden", "fragen", "antworten", "wohnen"
-# ],
-#                     "ver-verbs": [
-#     "kaufen", "verkaufen",
-#     "mieten", "vermieten",
-#     "binden", "verbinden",
-#     "brennen", "verbrennen",
-#     "brauchen", "verbrauchen",
-#     "teilen", "verteilen",
-#     "geben", "vergeben",
-#     "suchen", "versuchen",
-#     "stehen", "verstehen",
-#     "ändern", "verändern",
-#     "meiden", "vermeiden",
-#     "schwinden", "verschwinden",
-#     "sammeln", "versammeln",
-#     "wenden", "verwenden",
-#     "langen", "verlangen",
-#     "folgen", "verfolgen",
-#     "bleiben", "verbleiben",
-#     "treiben", "vertreiben",
-#     "schaffen", "verschaffen",
-#     "leihen", "verleihen",
-#     "leiten", "verleiten",
-#     "stehen", "verstehen",
-#     "ziehen", "verziehen",
-#     "arbeiten", "verarbeiten",
-#     "führen", "verführen",
-#     "halten", "verhalten",
-#     "lernen", "verlernen",
-#     "passen", "verpassen",
-#     "schreiben", "verschreiben",
-#     "zeihen", "verzeihen"
-# ],
-#                     "travel": ["gehen", "fahren", "laufen", "fliegen", "reisen", "wandern", "marschieren", "schwimmen", "reiten", "ziehen"],
-#                     'communication': ["fragen", "antworten", "sagen", "sprechen", "erzählen", "diskutieren", "erklären", "reden", "melden", "berichten"],
-#                     "english-like": [
-#     "finden", "Haus", "Mutter", "Vater", "Katze", "Hund", "Apfel", "Name",
-#     "Buch", "Brot", "Wasser", "Hand", "Finger", "Telefon", "Musik", "Lampe",
-#     "Auto", "Kind", "Maus", "Glas", "Garten", "Milch", "Zucker", "Tee",
-#     "Salz", "Fisch", "Bier", "Schule", "Stuhl", "Tür", "Sonne", "Mond",
-#     "Stern", "Wolke", "Regen", "Schnee", "Wind", "Kalt", "Heiß", "Blau",
-#     "Grün", "Rot", "Braun", "Gelb", "Orange", "Zimmer", "Küche", "Bett",
-#     "Tisch", "Stadt", "Bus", "Taxi", "Flugzeug", "Schiff", "Fahrrad",
-#     "Motorrad", "Straße", "Park", "Bank", "Hotel", "Restaurant", "Supermarkt",
-#     "Polizei", "Feuerwehr", "Krankenhaus", "Museum", "Theater", "Konzert",
-#     "Sport", "Tennis", "Fußball", "Basketball", "Golf", "Schwimmen", "Yoga",
-#     "Tanzen", "Film", "Literatur", "Computer", "Internet", "Telefon",
-#     "Fernsehen", "Radio", "Magazin", "trinken", 'lernen', "sprechen", "schlafen"
-# ],
-#                    "russian-like": [
-#     "Kamera", "Radio", "Telefon", "Computer", "Museum", "Restaurant",
-#     "Universität", "Hotel", "Theater", "Büro", "Doktor", "Oper", "Bank",
-#     "Park", "Zirkus", "Schule", "Bibliothek", "Student", "Studentin",
-#     "Professor", "Konferenz", "Musik", "Instrument", "Programm", "Politik",
-#     "Katastrophe", "Journalist", "Reporter", "Spezialist", "Pianist",
-#     "Artist", "Tourist", "Chef", "Ingenieur", "Technik", "Maschine", "Motor",
-#     "Kompetenz", "Funktion", "Organisation", "Information", "Diskussion",
-#     "Projekt", "System", "Labor", "Analyse", "Methode", "Statistik",
-#     "Strategie", "Taktik", "Disziplin", "Konzept", "Objekt", "Subjekt",
-#     "Struktur", "Prozess", "Mechanismus", "Prinzip", "Philosophie",
-#     "Psychologie", "Sociologie", "Biologie", "Chemie", "Physik", "Geologie",
-#     "Mathematik", "Technologie", "Ökologie", "Medizin", "Anästhesie",
-#     "Chirurgie", "Diagnose", "Therapie", "Immunität", "Allergie", "Vitamin",
-#     "Mineral", "Protein", "Kohlenhydrat", "Kalorie", "Diät", "Fitness",
-#     "Sport", "Basketball", "Volleyball", "Tennis", "Boxen", "Schach",
-#     "Ballett", "Oper", "Drama", "Komödie", "Film", "Serie", "Episode",
-#     "Szene", "Rolle", "Regisseur", "Produzent"
-# ]
-#                 },
+                word_groups=word_groups,
                 words_database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
                 stories_database_id="8d9d6643302c48649345209e18dbb0ca",  # stories
             )
