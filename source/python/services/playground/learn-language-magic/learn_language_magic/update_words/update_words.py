@@ -114,18 +114,22 @@ async def update_words(word_groups: dict, words_database_id: str, stories_databa
             # do not update existing words
             return
 
-        logger.debug("Creating new word page", word=word.word, properties=await word.build_notion_page_properties())
+        # - Create new page
+
+        _task = asyncio.create_task(word.notion_page_children)  # spawn already, don't need to wait
+
+        logger.debug("Creating new word page", word=word.word, properties=await word.notion_page_properties)
 
         page = await client.pages.create(
             parent={"database_id": words_database_id},
-            properties=await word.build_notion_page_properties(),
+            properties=await word.notion_page_properties,
         )
 
         # - Create new blocks
 
         await client.blocks.children.append(
             block_id=page["id"],
-            children=await word.build_notion_page_children(),
+            children=await _task,
         )
 
     # - Filter unique words

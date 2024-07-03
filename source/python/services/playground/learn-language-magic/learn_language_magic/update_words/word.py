@@ -71,8 +71,7 @@ class Word:
 
     @async_cached_property
     async def cases(self):
-        part_of_speech = await self.part_of_speech
-        if part_of_speech == "Noun":
+        if await self.part_of_speech == "Noun":
             return await ask(
                 f"""Cases of the german word: '{self.word}' as a markdown table""",
                 template={
@@ -90,8 +89,7 @@ class Word:
 
     @async_cached_property
     async def conjugations(self):
-        part_of_speech = await self.part_of_speech
-        if part_of_speech == "Verb":
+        if await self.part_of_speech == "Verb":
             return await ask(
                 f"""Conjugations of the german word: '{self.word}' as a markdown table""",
                 template=json.loads(
@@ -101,7 +99,8 @@ class Word:
         else:
             return {}
 
-    async def build_notion_page_properties(self):
+    @async_cached_property
+    async def notion_page_properties(self):
         # - Build properties
 
         result = {
@@ -126,7 +125,8 @@ class Word:
 
         return {k: v for k, v in result.items() if v is not None}
 
-    async def build_notion_page_children(self):
+    @async_cached_property
+    async def notion_page_children(self):
         result = []
 
         # - Build context
@@ -272,7 +272,7 @@ def test():
                     origin="test",
                     origin_text="",
                     group="test",
-                ).build_notion_page_properties(),
+                ).notion_page_properties(),
                 indent=2,
                 ensure_ascii=False,
             )
