@@ -2,7 +2,7 @@ import asyncio
 import time
 
 
-class RateLimiter:
+class AsyncRateLimiter:
     def __init__(self, rate: int, period: int = 1):
         self.rate = rate
         self.period = period
@@ -31,7 +31,7 @@ def test():
         await asyncio.sleep(0.01)  # Simulate work
 
     async def main():
-        limiter = RateLimiter(rate=2)
+        limiter = AsyncRateLimiter(rate=2)
         tasks = [task(limiter, i) for i in range(10)]
         await asyncio.gather(*tasks)
 

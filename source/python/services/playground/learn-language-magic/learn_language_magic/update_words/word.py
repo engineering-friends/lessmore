@@ -90,6 +90,17 @@ class Word:
             return {}
 
     async def build_notion_page_properties(self):
+        properties = {
+            "translation_en": await self.get_translation_en(),
+            "translation_ru": await self.get_translation_ru(),
+            "example_sentence": await self.get_example_sentence(),
+            "part_of_speech": await self.get_part_of_speech(),
+            "gender": await self.get_gender(),
+            "plural_form": await self.get_plural_form(),
+            "irregular_verb": await self.get_irregular_verb(),
+            "pronunciation": await self.get_pronunciation(),
+        }
+
         result = {
             "word": {"title": [{"text": {"content": self.word}}]},
             "origin": {"select": {"name": self.origin}},

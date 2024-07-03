@@ -1,10 +1,10 @@
 from typing import Any, Dict, Optional
 
+from lessmore.utils.asynchronous.rate_limiter import AsyncRateLimiter
 from lessmore.utils.enriched_notion_client import EnrichedNotionAsyncClient
-from lessmore.utils.rate_limiter import RateLimiter
 
 
-RATE_LIMITER = RateLimiter(rate=3, period=1)
+RATE_LIMITER = AsyncRateLimiter(rate=3, period=1)
 
 
 class NotionRateLimitedClient(EnrichedNotionAsyncClient):

@@ -3,14 +3,15 @@ import json
 import os
 import textwrap
 
-from lessmore.utils.async_retry import async_retry
+from lessmore.utils.asynchronous.rate_limiter import AsyncRateLimiter
 from lessmore.utils.cache_on_disk import cache_on_disk
-from lessmore.utils.rate_limiter import RateLimiter
 from openai import AsyncOpenAI
 from openai.types.chat import completion_create_params
 
 
-RATE_LIMITER = RateLimiter(rate=5000 - 500, period=60)  # tier 3 openai rate limits 5000RPM, subtract 10% to be safe
+RATE_LIMITER = AsyncRateLimiter(
+    rate=5000 - 500, period=60
+)  # tier 3 openai rate limits 5000RPM, subtract 10% to be safe
 
 
 async def ask(
