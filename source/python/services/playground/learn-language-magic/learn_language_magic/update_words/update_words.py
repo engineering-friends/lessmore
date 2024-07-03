@@ -4,6 +4,7 @@ from learn_language_magic.deps import Deps
 from learn_language_magic.notion_rate_limited_client import NotionRateLimitedClient
 from learn_language_magic.update_words.extract_words import extract_words
 from learn_language_magic.update_words.word import Word
+from lessmore.utils.asynchronous.async_cached_property import prefetch_all_cached_properties
 from lessmore.utils.functional.skip_duplicates import skip_duplicates
 from loguru import logger
 from more_itertools import first
@@ -116,8 +117,6 @@ async def update_words(word_groups: dict, words_database_id: str, stories_databa
 
         # - Create new page
 
-        _task = asyncio.create_task(word.notion_page_children)  # spawn already, don't need to wait
-
         logger.debug("Creating new word page", word=word.word, properties=await word.notion_page_properties)
 
         page = await client.pages.create(
@@ -129,16 +128,18 @@ async def update_words(word_groups: dict, words_database_id: str, stories_databa
 
         await client.blocks.children.append(
             block_id=page["id"],
-            children=await _task,
+            children=await word.notion_page_children,
         )
 
     # - Filter unique words
 
-    words = skip_duplicates(words, key=lambda w: w.word.lower())
+    words = list(skip_duplicates(words, key=lambda w: w.word.lower()))
 
     # - Process words
 
-    await asyncio.gather(*[_process_word(word) for word in words])
+    await asyncio.gather(
+        *([prefetch_all_cached_properties(word) for word in words] + [_process_word(word) for word in words])
+    )
 
 
 def test():

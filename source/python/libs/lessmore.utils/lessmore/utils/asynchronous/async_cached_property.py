@@ -1,4 +1,5 @@
 import asyncio
+import inspect
 import time
 
 from functools import wraps
@@ -26,13 +27,21 @@ class async_cached_property:
         async def wrapper(*args, **kwargs):
             async with getattr(instance, lock_attr):
                 if not getattr(instance, cache_set_attr):
-                    print("Running", self.coroutine.__name__)
                     result = await self.coroutine(instance, *args, **kwargs)
                     setattr(instance, cache_attr, result)
                     setattr(instance, cache_set_attr, True)
                 return getattr(instance, cache_attr)
 
         return wrapper()
+
+
+async def prefetch_all_cached_properties(instance):
+    tasks = []
+    for attr_name in dir(instance):
+        attr = getattr(instance, attr_name)
+        if inspect.isawaitable(attr):
+            tasks.append(attr)
+    await asyncio.gather(*tasks)
 
 
 def test():
