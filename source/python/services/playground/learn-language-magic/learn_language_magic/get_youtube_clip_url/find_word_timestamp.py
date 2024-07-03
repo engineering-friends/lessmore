@@ -2,19 +2,30 @@ import os
 
 import openai
 
+from learn_language_magic.ask import ask
 from learn_language_magic.deps import Deps
 from lessmore.utils.file_primitives.ensure_path import ensure_path
 from lessmore.utils.file_primitives.gen_temp_filename import gen_temp_filename
 from lessmore.utils.functional import pairwise
-from pydub import AudioSegment
 from pytube import YouTube
+
+
+async def get_youtube_clip_url(word: str) -> str:
+    # - Find iconic scene with the word "lauf" in it
+
+    iconic_scene_name = await ask(
+        f"What is the most iconic scene with the word '{word}' in it?", template='"Lauf, forrest, lauf" Forrest Gump'
+    )
+
+    # - Search youtube for clips. Clip should be
 
 
 def download_audio(youtube_url: str):
     yt = YouTube(youtube_url)
     stream = yt.streams.filter(only_audio=True).first()
-    output_file = stream.download(output_path=ensure_path(gen_temp_filename()), filename="audio")
-    return output_file
+    output_file = stream.download(output_path=gen_temp_filename(), filename="audio")
+    os.rename(output_file, output_file + ".wav")
+    return output_file + ".wav"
 
 
 def transcribe_audio_to_srt(audio_path: str) -> str:
@@ -46,9 +57,10 @@ def find_word_timestamp(srt: str, word: str) -> int:
 
 def main():
     url = "https://www.youtube.com/watch?v=sTRWhLDUlXE"
-    audio_path = download_audio(youtube_url="https://www.youtube.com/watch?v=sTRWhLDUlXE")
-    srt = transcribe_audio_to_srt(audio_path=audio_path)
-    timestamp = find_word_timestamp(srt, "lauf")
+    timestamp = find_word_timestamp(
+        srt=transcribe_audio_to_srt(audio_path=download_audio(youtube_url=url)),
+        word="lauf",
+    )
 
     if timestamp is not None:
         return url + "&t=" + str(timestamp) + "s"
