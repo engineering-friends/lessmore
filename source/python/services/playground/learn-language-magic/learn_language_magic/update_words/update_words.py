@@ -7,7 +7,7 @@ from learn_language_magic.update_words.word import Word
 from lessmore.utils.asynchronous.async_cached_property import prefetch_all_cached_properties
 from lessmore.utils.functional.skip_duplicates import skip_duplicates
 from loguru import logger
-from more_itertools import first
+from more_itertools import bucket, first
 
 
 async def update_words(word_groups: dict, words_database_id: str, stories_database_id: str):
@@ -90,7 +90,7 @@ async def update_words(word_groups: dict, words_database_id: str, stories_databa
                     word=_word,
                     origin=word_group_name,
                     origin_text=word_group if isinstance(word_group, str) else None,
-                    group=word_group_name if isinstance(word_group, list) else None,
+                    groups=[word_group_name] if isinstance(word_group, list) else None,
                 )
             )
 
@@ -112,7 +112,16 @@ async def update_words(word_groups: dict, words_database_id: str, stories_databa
         )
 
         if page:
-            # do not update existing words
+            # - Update "group" multi-select property: add word.group to the list
+
+            if word.groups and word.groups != [g["name"] for g in page["properties"]["groups"]["multi_select"]]:
+                await client.pages.update(
+                    page_id=page["id"],
+                    properties={
+                        "groups": {"multi_select": [{"name": group} for group in word.groups]},
+                    },
+                )
+
             return
 
         # - Create new page
@@ -133,28 +142,129 @@ async def update_words(word_groups: dict, words_database_id: str, stories_databa
 
     # - Filter unique words
 
-    words = list(skip_duplicates(words, key=lambda w: w.word.lower()))
+    unique_words = list(skip_duplicates(words, key=lambda w: w.word.lower()))
+
+    # - Update groups for each word
+
+    b = bucket(iterable=words, key=lambda word: word.word.lower())
+
+    for key in b:
+        # - Get groups
+
+        groups = [word.groups[0] for word in b[key] if word.groups]
+
+        # - Find unique word
+
+        unique_word = [word for word in unique_words if word.word.lower() == key][0]
+
+        # - Set groups
+
+        unique_word.groups = groups
 
     # - Process words
 
     await asyncio.gather(
-        *([prefetch_all_cached_properties(word) for word in words] + [_process_word(word) for word in words])
+        *(
+            [prefetch_all_cached_properties(word) for word in unique_words]
+            + [_process_word(word) for word in unique_words]
+        )
     )
 
+
+# fmt: off
 
 def test():
     async def main():
         print(
             await update_words(
                 word_groups={
-                    "story1": "Mr. und Mrs. Dursley im Ligusterweg Nummer 4 waren stolz darauf, ganz und gar normal zu sein, sehr stolz sogar",
-                    "group_1": ["Laufen", "Hund"],
-                    "group_2": ["Mrs."],
+                    "basics1": [
+                    # Nouns
+                    "Haus", "Baum", "Auto", "Tisch", "Stuhl", "Buch", "Hund", "Katze",
+                    "Freund", "Kind", "Wasser", "Brot", "Apfel", "Schule", "Arbeit",
+                    "Stadt", "Straße", "Zimmer", "Tag", "Jahr", "Mutter", "Vater",
+                    "Schwester", "Bruder", "Zeit",
+
+                    # Verbs
+                    "sein", "haben", "gehen", "kommen", "sehen", "hören", "sprechen",
+                    "essen", "trinken", "schlafen", "lesen", "schreiben", "lernen",
+                    "arbeiten", "spielen", "laufen", "fahren", "kaufen", "verkaufen",
+                    "nehmen", "geben", "finden", "fragen", "antworten", "wohnen"
+],
+                    "ver-verbs": [
+    "kaufen", "verkaufen",
+    "mieten", "vermieten",
+    "binden", "verbinden",
+    "brennen", "verbrennen",
+    "brauchen", "verbrauchen",
+    "teilen", "verteilen",
+    "geben", "vergeben",
+    "suchen", "versuchen",
+    "stehen", "verstehen",
+    "ändern", "verändern",
+    "meiden", "vermeiden",
+    "schwinden", "verschwinden",
+    "sammeln", "versammeln",
+    "wenden", "verwenden",
+    "langen", "verlangen",
+    "folgen", "verfolgen",
+    "bleiben", "verbleiben",
+    "treiben", "vertreiben",
+    "schaffen", "verschaffen",
+    "leihen", "verleihen",
+    "leiten", "verleiten",
+    "stehen", "verstehen",
+    "ziehen", "verziehen",
+    "arbeiten", "verarbeiten",
+    "führen", "verführen",
+    "halten", "verhalten",
+    "lernen", "verlernen",
+    "passen", "verpassen",
+    "schreiben", "verschreiben",
+    "zeihen", "verzeihen"
+],
+                    "travel": ["gehen", "fahren", "laufen", "fliegen", "reisen", "wandern", "marschieren", "schwimmen", "reiten", "ziehen"],
+                    'communication': ["fragen", "antworten", "sagen", "sprechen", "erzählen", "diskutieren", "erklären", "reden", "melden", "berichten"],
+                    "english-like": [
+    "finden", "Haus", "Mutter", "Vater", "Katze", "Hund", "Apfel", "Name",
+    "Buch", "Brot", "Wasser", "Hand", "Finger", "Telefon", "Musik", "Lampe",
+    "Auto", "Kind", "Maus", "Glas", "Garten", "Milch", "Zucker", "Tee",
+    "Salz", "Fisch", "Bier", "Schule", "Stuhl", "Tür", "Sonne", "Mond",
+    "Stern", "Wolke", "Regen", "Schnee", "Wind", "Kalt", "Heiß", "Blau",
+    "Grün", "Rot", "Braun", "Gelb", "Orange", "Zimmer", "Küche", "Bett",
+    "Tisch", "Stadt", "Bus", "Taxi", "Flugzeug", "Schiff", "Fahrrad",
+    "Motorrad", "Straße", "Park", "Bank", "Hotel", "Restaurant", "Supermarkt",
+    "Polizei", "Feuerwehr", "Krankenhaus", "Museum", "Theater", "Konzert",
+    "Sport", "Tennis", "Fußball", "Basketball", "Golf", "Schwimmen", "Yoga",
+    "Tanzen", "Film", "Literatur", "Computer", "Internet", "Telefon",
+    "Fernsehen", "Radio", "Magazin"
+],
+                   "russian-like": [
+    "Kamera", "Radio", "Telefon", "Computer", "Museum", "Restaurant",
+    "Universität", "Hotel", "Theater", "Büro", "Doktor", "Oper", "Bank",
+    "Park", "Zirkus", "Schule", "Bibliothek", "Student", "Studentin",
+    "Professor", "Konferenz", "Musik", "Instrument", "Programm", "Politik",
+    "Katastrophe", "Journalist", "Reporter", "Spezialist", "Pianist",
+    "Artist", "Tourist", "Chef", "Ingenieur", "Technik", "Maschine", "Motor",
+    "Kompetenz", "Funktion", "Organisation", "Information", "Diskussion",
+    "Projekt", "System", "Labor", "Analyse", "Methode", "Statistik",
+    "Strategie", "Taktik", "Disziplin", "Konzept", "Objekt", "Subjekt",
+    "Struktur", "Prozess", "Mechanismus", "Prinzip", "Philosophie",
+    "Psychologie", "Sociologie", "Biologie", "Chemie", "Physik", "Geologie",
+    "Mathematik", "Technologie", "Ökologie", "Medizin", "Anästhesie",
+    "Chirurgie", "Diagnose", "Therapie", "Immunität", "Allergie", "Vitamin",
+    "Mineral", "Protein", "Kohlenhydrat", "Kalorie", "Diät", "Fitness",
+    "Sport", "Basketball", "Volleyball", "Tennis", "Boxen", "Schach",
+    "Ballett", "Oper", "Drama", "Komödie", "Film", "Serie", "Episode",
+    "Szene", "Rolle", "Regisseur", "Produzent"
+]
                 },
                 words_database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
                 stories_database_id="8d9d6643302c48649345209e18dbb0ca",  # stories
             )
         )
+        
+# fmt: on
 
     import asyncio
 

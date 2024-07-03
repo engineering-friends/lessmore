@@ -13,7 +13,7 @@ class Word:
     word: str
     origin: str
     origin_text: str
-    group: str
+    groups: list[str]
 
     @async_cached_property
     async def translation_en(self):
@@ -106,7 +106,7 @@ class Word:
         result = {
             "word": {"title": [{"text": {"content": self.word}}]},
             "origin": {"select": {"name": self.origin}},
-            "group": {"select": {"name": self.group}} if self.group else None,
+            "groups": {"multi_select": [{"name": group} for group in self.groups]} if self.groups else None,
             "translation_en": {"rich_text": [{"text": {"content": self.translation_en}}]},
             "translation_ru": {"rich_text": [{"text": {"content": self.translation_ru}}]},
             "example_sentence": {"rich_text": [{"text": {"content": self.example_sentence}}]},
@@ -272,7 +272,7 @@ def test():
                     origin="test",
                     origin_text="",
                     group="test",
-                ).notion_page_properties(),
+                ).notion_page_properties,
                 indent=2,
                 ensure_ascii=False,
             )
