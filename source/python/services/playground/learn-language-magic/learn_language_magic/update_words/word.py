@@ -4,6 +4,7 @@ import json
 from dataclasses import dataclass
 
 from learn_language_magic.ask import ask
+from lessmore.utils.asynchronous.async_cached_property import async_cached_property
 from lessmore.utils.asynchronous.gather_nested import gather_nested
 
 
@@ -14,54 +15,63 @@ class Word:
     origin_text: str
     group: str
 
-    async def get_translation_en(self):
+    @async_cached_property
+    async def translation_en(self):
         return await ask(
             f"Translation of the german word '{self.word}' in English. Remove the trailing dot. Keep it as short as possible, preferably one word:"
         )
 
-    async def get_translation_ru(self):
+    @async_cached_property
+    async def translation_ru(self):
         return await ask(
             f"Переведи немецкое слово '{self.word}' на русский язык. Без точки в конце. Объясни как можно кратче, предпочтительно одним словом:"
         )
 
-    async def get_example_sentence(self):
+    @async_cached_property
+    async def example_sentence(self):
         return await ask(
             f"Example sentence with the german word '{self.word}'. Remove the trailing dot. Just the sentence:"
         )
 
-    async def get_part_of_speech(self):
+    @async_cached_property
+    async def part_of_speech(self):
         return await ask(
             f"""Part of speech of german word '{self.word}'. One of "Noun", "Verb", "Adjective", "Adverb", "Pronoun", "Preposition", "Conjunction", "Interjection" or "None".""",
             template="Noun",
         )
 
-    async def get_gender(self):
+    @async_cached_property
+    async def gender(self):
         return await ask(
             f"""Gender of the german word: '{self.word}'. One of "Masculine", "Feminine", "Neuter" or "Plural" or "None""",
             template="Masculine",
         )
 
-    async def get_plural_form(self):
+    @async_cached_property
+    async def plural_form(self):
         return await ask(
             f"Plural form of the german word '{self.word}'. If not applicable, answer ''",
             template="Hunde",
         )
 
-    async def get_irregular_verb(self):
+    @async_cached_property
+    async def irregular_verb(self):
         result = await ask(
             f"Is '{self.word}' an irregular verb?",
             template="yes",
         )
         return result == "yes"
 
-    async def get_pronunciation(self):
+    @async_cached_property
+    async def pronunciation(self):
         return await ask(
             f"Pronunciation of '{self.word}'",
             template="/ˈlaʊfə/",
         )
 
-    async def get_cases(self):
-        part_of_speech = await self.get_part_of_speech()
+    @async_cached_property
+    async def cases(self):
+        part_of_speech = await self.part_of_speech
         if part_of_speech == "Noun":
             return await ask(
                 f"""Cases of the german word: '{self.word}' as a markdown table""",
@@ -78,8 +88,9 @@ class Word:
         else:
             return {}
 
-    async def get_conjugations(self):
-        part_of_speech = await self.get_part_of_speech()
+    @async_cached_property
+    async def conjugations(self):
+        part_of_speech = await self.part_of_speech
         if part_of_speech == "Verb":
             return await ask(
                 f"""Conjugations of the german word: '{self.word}' as a markdown table""",
@@ -97,14 +108,14 @@ class Word:
             "word": {"title": [{"text": {"content": self.word}}]},
             "origin": {"select": {"name": self.origin}},
             "group": {"select": {"name": self.group}} if self.group else None,
-            "translation_en": {"rich_text": [{"text": {"content": self.get_translation_en()}}]},
-            "translation_ru": {"rich_text": [{"text": {"content": self.get_translation_ru()}}]},
-            "example_sentence": {"rich_text": [{"text": {"content": self.get_example_sentence()}}]},
-            "part_of_speech": {"select": {"name": self.get_part_of_speech()}},
-            "gender": {"select": {"name": self.get_gender()}},
-            "plural_form": {"rich_text": [{"text": {"content": self.get_plural_form()}}]},
-            "irregular_verb": {"checkbox": self.get_irregular_verb()},
-            "pronunciation": {"rich_text": [{"text": {"content": self.get_pronunciation()}}]},
+            "translation_en": {"rich_text": [{"text": {"content": self.translation_en}}]},
+            "translation_ru": {"rich_text": [{"text": {"content": self.translation_ru}}]},
+            "example_sentence": {"rich_text": [{"text": {"content": self.example_sentence}}]},
+            "part_of_speech": {"select": {"name": self.part_of_speech}},
+            "gender": {"select": {"name": self.gender}},
+            "plural_form": {"rich_text": [{"text": {"content": self.plural_form}}]},
+            "irregular_verb": {"checkbox": self.irregular_verb},
+            "pronunciation": {"rich_text": [{"text": {"content": self.pronunciation}}]},
         }
 
         # - Gather results
@@ -148,7 +159,7 @@ class Word:
 
         # - Build cases
 
-        if cases := await self.get_cases():
+        if cases := await self.cases:
             # - Add heading "Cases"
 
             result += [
@@ -201,7 +212,7 @@ class Word:
 
         # - Build conjugations
 
-        if conjugations := await self.get_conjugations():
+        if conjugations := await self.conjugations:
             # - Add heading "Conjugations"
 
             result += [
