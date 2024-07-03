@@ -4,6 +4,7 @@ import uuid
 
 from learn_language_magic.deps import Deps
 from learn_language_magic.draw_card_image.generate_image import generate_image
+from learn_language_magic.draw_card_image.upload_image_to_imgur import upload_image_to_imgur
 from learn_language_magic.draw_card_image.upload_image_to_yandex_disk import upload_image_to_yandex_disk
 from lessmore.utils.asynchronous.async_retry import async_retry
 from lessmore.utils.cache_on_disk import cache_on_disk
@@ -32,9 +33,7 @@ async def draw_card_image(word: str):
 
     # - Upload to imgur
 
-    return await cache_on_disk(directory=".yandex_disk_cache/")(
-        async_retry(tries=5, delay=2)(upload_image_to_yandex_disk)
-    )(
-        filename=filename,
-        yandex_disk_token=Deps.load().config.yandex_disk_token,
+    return await cache_on_disk(directory=".imgur_cache/")(async_retry(tries=5, delay=2)(upload_image_to_imgur))(
+        image_path=filename,
+        client_id=Deps.load().config.imgur_client_id,
     )

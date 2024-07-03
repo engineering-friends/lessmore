@@ -201,7 +201,6 @@ class Word:
         result = []
 
         # - Add image
-        print(await self.image_url)
         result += [
             {
                 "type": "image",
