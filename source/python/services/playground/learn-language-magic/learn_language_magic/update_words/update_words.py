@@ -238,7 +238,7 @@ def test():
     "Polizei", "Feuerwehr", "Krankenhaus", "Museum", "Theater", "Konzert",
     "Sport", "Tennis", "Fußball", "Basketball", "Golf", "Schwimmen", "Yoga",
     "Tanzen", "Film", "Literatur", "Computer", "Internet", "Telefon",
-    "Fernsehen", "Radio", "Magazin"
+    "Fernsehen", "Radio", "Magazin", "trinken", 'lernen', "sprechen", "schlafen"
 ],
                    "russian-like": [
     "Kamera", "Radio", "Telefon", "Computer", "Museum", "Restaurant",
