@@ -18,3 +18,7 @@ class Config(BaseSettings):
 
     imgur_client_id: str
     imgur_client_secret: str
+
+    # - Yandex disk
+
+    yandex_disk_token: str

@@ -124,8 +124,8 @@ async def update_words(word_groups: dict, words_database_id: str, stories_databa
 
             # -- Delete all blocks
 
-            for block in await client.blocks.children.list(block_id=page["id"]):
-                await client.blocks.children.delete(block_id=block["id"])
+            for block in (await client.blocks.children.list(block_id=page["id"]))["results"]:
+                await client.blocks.delete(block_id=block["id"])
 
             # -- Add new blocks
 
