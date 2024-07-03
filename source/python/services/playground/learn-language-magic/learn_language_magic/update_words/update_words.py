@@ -11,7 +11,7 @@ from loguru import logger
 from more_itertools import bucket, first
 
 
-async def update_words(word_groups: dict, words_database_id: str, stories_database_id: str):
+async def update_words(word_groups: dict, words_database_id: str, stories_database_id: str, force_update: bool = False):
     # - Init notion client
 
     client = NotionRateLimitedClient(auth=Deps.load().config.notion_token)
@@ -120,6 +120,20 @@ async def update_words(word_groups: dict, words_database_id: str, stories_databa
 
                 await client.pages.update(page_id=page["id"], properties=await word.notion_page_properties)
 
+            # - Update contents if forced
+
+            # -- Delete all blocks
+
+            for block in await client.blocks.children.list(block_id=page["id"]):
+                await client.blocks.children.delete(block_id=block["id"])
+
+            # -- Add new blocks
+
+            await client.blocks.children.append(
+                block_id=page["id"],
+                children=await word.notion_page_children,
+            )
+
             return
 
         # - Create new page
@@ -180,8 +194,10 @@ def test():
         print(
             await update_words(
                 word_groups=word_groups,
+                # word_groups={'test': 'laufen'},
                 words_database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
                 stories_database_id="8d9d6643302c48649345209e18dbb0ca",  # stories
+                force_update=True
             )
         )
         

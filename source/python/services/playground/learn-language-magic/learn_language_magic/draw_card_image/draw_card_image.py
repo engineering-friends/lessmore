@@ -7,6 +7,7 @@ from learn_language_magic.draw_card_image import upload_image
 from learn_language_magic.draw_card_image.generate_image import generate_image
 from learn_language_magic.draw_card_image.upload_image import upload_image_to_imgur
 from lessmore.utils.asynchronous.async_retry import async_retry
+from lessmore.utils.cache_on_disk import cache_on_disk
 from lessmore.utils.file_primitives.write_file import write_file
 from PIL import Image
 
@@ -32,7 +33,7 @@ async def draw_card_image(word: str):
 
     # - Upload to imgur
 
-    return await upload_image_to_imgur(
+    return await cache_on_disk(directory=".imgur_cache/")(upload_image_to_imgur)(
         image_path=filename,
         client_id=Deps.load().config.imgur_client_id,
     )
