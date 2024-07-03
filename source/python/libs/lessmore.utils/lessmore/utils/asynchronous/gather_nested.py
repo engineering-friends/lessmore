@@ -29,9 +29,9 @@ def test():
         return "Done!"
 
     async def main():
-        now = time.time()
+        started_at = time.time()
         await gather_nested(value={i: test_func() for i in range(100)})
-        assert time.time() - now < 0.1
+        assert time.time() - started_at < 0.1
 
     asyncio.run(main())
 
