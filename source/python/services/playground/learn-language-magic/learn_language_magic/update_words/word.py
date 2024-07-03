@@ -4,6 +4,7 @@ import json
 from dataclasses import dataclass
 
 from learn_language_magic.ask import ask
+from lessmore.utils.asynchronous.gather_nested import gather_nested
 
 
 @dataclass
@@ -90,30 +91,28 @@ class Word:
             return {}
 
     async def build_notion_page_properties(self):
-        properties = {
-            "translation_en": await self.get_translation_en(),
-            "translation_ru": await self.get_translation_ru(),
-            "example_sentence": await self.get_example_sentence(),
-            "part_of_speech": await self.get_part_of_speech(),
-            "gender": await self.get_gender(),
-            "plural_form": await self.get_plural_form(),
-            "irregular_verb": await self.get_irregular_verb(),
-            "pronunciation": await self.get_pronunciation(),
-        }
+        # - Build properties
 
         result = {
             "word": {"title": [{"text": {"content": self.word}}]},
             "origin": {"select": {"name": self.origin}},
             "group": {"select": {"name": self.group}} if self.group else None,
-            "translation_en": {"rich_text": [{"text": {"content": await self.get_translation_en()}}]},
-            "translation_ru": {"rich_text": [{"text": {"content": await self.get_translation_ru()}}]},
-            "example_sentence": {"rich_text": [{"text": {"content": await self.get_example_sentence()}}]},
-            "part_of_speech": {"select": {"name": await self.get_part_of_speech()}},
-            "gender": {"select": {"name": await self.get_gender()}} if await self.get_gender() else None,
-            "plural_form": {"rich_text": [{"text": {"content": await self.get_plural_form()}}]},
-            "irregular_verb": {"checkbox": await self.get_irregular_verb()},
-            "pronunciation": {"rich_text": [{"text": {"content": await self.get_pronunciation()}}]},
+            "translation_en": {"rich_text": [{"text": {"content": self.get_translation_en()}}]},
+            "translation_ru": {"rich_text": [{"text": {"content": self.get_translation_ru()}}]},
+            "example_sentence": {"rich_text": [{"text": {"content": self.get_example_sentence()}}]},
+            "part_of_speech": {"select": {"name": self.get_part_of_speech()}},
+            "gender": {"select": {"name": self.get_gender()}},
+            "plural_form": {"rich_text": [{"text": {"content": self.get_plural_form()}}]},
+            "irregular_verb": {"checkbox": self.get_irregular_verb()},
+            "pronunciation": {"rich_text": [{"text": {"content": self.get_pronunciation()}}]},
         }
+
+        # - Gather results
+
+        result = await gather_nested(result)
+
+        # - Filter out None values
+
         return {k: v for k, v in result.items() if v is not None}
 
     async def build_notion_page_children(self):

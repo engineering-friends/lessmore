@@ -1,5 +1,6 @@
 import asyncio
 import inspect
+import time
 
 from typing import Any, Awaitable
 
@@ -7,11 +8,12 @@ from typing import Any, Awaitable
 async def gather_nested(
     value: dict | list | Awaitable | Any,
     recursive: bool = True,
-):
+) -> dict | list | Any:
     if isinstance(value, dict):
-        return {k: await gather_nested(v, recursive=recursive) for k, v in value.items()}
+        results = await asyncio.gather(*(gather_nested(v, recursive=recursive) for v in value.values()))
+        return dict(zip(value.keys(), results))
     elif isinstance(value, list):
-        return [await gather_nested(v, recursive=recursive) for v in value]
+        return await asyncio.gather(*(gather_nested(v, recursive=recursive) for v in value))
     elif inspect.isawaitable(value):
         if recursive:
             return await gather_nested(await value, recursive=recursive)
@@ -27,7 +29,9 @@ def test():
         return "Done!"
 
     async def main():
-        print(await gather_nested(value={i: test_func() for i in range(1000)}))
+        now = time.time()
+        await gather_nested(value={i: test_func() for i in range(100)})
+        assert time.time() - now < 0.1
 
     asyncio.run(main())
 

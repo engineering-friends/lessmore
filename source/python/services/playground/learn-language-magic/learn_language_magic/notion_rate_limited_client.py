@@ -1,6 +1,6 @@
 from typing import Any, Dict, Optional
 
-from lessmore.utils.asynchronous.rate_limiter import AsyncRateLimiter
+from lessmore.utils.asynchronous.async_rate_limiter import AsyncRateLimiter
 from lessmore.utils.enriched_notion_client import EnrichedNotionAsyncClient
 
 

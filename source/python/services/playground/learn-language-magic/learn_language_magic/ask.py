@@ -3,7 +3,7 @@ import json
 import os
 import textwrap
 
-from lessmore.utils.asynchronous.rate_limiter import AsyncRateLimiter
+from lessmore.utils.asynchronous.async_rate_limiter import AsyncRateLimiter
 from lessmore.utils.cache_on_disk import cache_on_disk
 from openai import AsyncOpenAI
 from openai.types.chat import completion_create_params
