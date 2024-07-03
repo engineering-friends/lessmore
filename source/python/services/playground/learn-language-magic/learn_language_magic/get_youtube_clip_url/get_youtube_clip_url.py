@@ -1,13 +1,10 @@
-import os
-
 import openai
+
+from lessmore.utils.functional import pairwise
 
 from learn_language_magic.ask import ask
 from learn_language_magic.deps import Deps
-from lessmore.utils.file_primitives.ensure_path import ensure_path
-from lessmore.utils.file_primitives.gen_temp_filename import gen_temp_filename
-from lessmore.utils.functional import pairwise
-from pytube import YouTube
+from learn_language_magic.get_youtube_clip_url.download_audio import download_audio
 
 
 async def get_youtube_clip_url(word: str) -> str:
@@ -18,20 +15,6 @@ async def get_youtube_clip_url(word: str) -> str:
     )
 
     # - Search youtube for clips. Clip should be
-
-
-def download_audio(youtube_url: str):
-    yt = YouTube(youtube_url)
-    stream = yt.streams.filter(only_audio=True).first()
-    output_file = stream.download(output_path=gen_temp_filename(), filename="audio")
-    os.rename(output_file, output_file + ".wav")
-    return output_file + ".wav"
-
-
-def transcribe_audio_to_srt(audio_path: str) -> str:
-    with open(audio_path, "rb") as audio_file:
-        response = openai.audio.transcriptions.create(model="whisper-1", file=audio_file, response_format="srt")
-    return str(response)
 
 
 def find_word_timestamp(srt: str, word: str) -> int:
@@ -57,11 +40,16 @@ def find_word_timestamp(srt: str, word: str) -> int:
 
 def main():
     url = "https://www.youtube.com/watch?v=sTRWhLDUlXE"
+    audio_path = download_audio(youtube_url=url)
+
+    with open(audio_path, "rb") as audio_file:
+        response = openai.audio.transcriptions.create(model="whisper-1", file=audio_file, response_format="srt")
+    srt = str(response)
+
     timestamp = find_word_timestamp(
-        srt=transcribe_audio_to_srt(audio_path=download_audio(youtube_url=url)),
+        srt=srt,
         word="lauf",
     )
-
     if timestamp is not None:
         return url + "&t=" + str(timestamp) + "s"
 
