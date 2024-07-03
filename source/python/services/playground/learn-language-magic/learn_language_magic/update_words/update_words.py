@@ -150,6 +150,10 @@ async def update_words(word_groups: dict, words_database_id: str, stories_databa
 
         groups = [word.groups[0] for word in b[key] if word.groups]
 
+        # - Remove duplicates
+
+        groups = list(skip_duplicates(groups))
+
         # - Find unique word
 
         unique_word = [word for word in unique_words if word.word.lower() == key][0]
