@@ -3,9 +3,11 @@ import json
 
 from dataclasses import dataclass
 
+from benedict import benedict
 from learn_language_magic.ask import ask
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property
 from lessmore.utils.asynchronous.gather_nested import gather_nested
+from lessmore.utils.read_config.merge_dicts import merge_dicts
 
 
 @dataclass
@@ -98,6 +100,70 @@ class Word:
             )
         else:
             return {}
+
+    async def has_changed(self, old_notion_page_properties: dict):
+        # todo maybe: make more elegant, just merge recursively old and new properties and compare (deep merge neede, with list merging)
+        old_simplified_properties = {
+            "word": {
+                "title": [{"text": {"content": old_notion_page_properties["word"]["title"][0]["text"]["content"]}}]
+            },
+            "origin": {"select": {"name": old_notion_page_properties["origin"]["select"]["name"]}},
+            "groups": {
+                "multi_select": [
+                    {"name": group["name"]} for group in old_notion_page_properties["groups"]["multi_select"]
+                ]
+            }
+            if old_notion_page_properties["groups"]
+            else None,
+            "translation_en": {
+                "rich_text": [
+                    {
+                        "text": {
+                            "content": old_notion_page_properties["translation_en"]["rich_text"][0]["text"]["content"]
+                        }
+                    }
+                ]
+            },
+            "translation_ru": {
+                "rich_text": [
+                    {
+                        "text": {
+                            "content": old_notion_page_properties["translation_ru"]["rich_text"][0]["text"]["content"]
+                        }
+                    }
+                ]
+            },
+            "example_sentence": {
+                "rich_text": [
+                    {
+                        "text": {
+                            "content": old_notion_page_properties["example_sentence"]["rich_text"][0]["text"]["content"]
+                        }
+                    }
+                ]
+            },
+            "part_of_speech": {"select": {"name": old_notion_page_properties["part_of_speech"]["select"]["name"]}},
+            "gender": {"select": {"name": old_notion_page_properties["gender"]["select"]["name"]}},
+            "plural_form": {
+                "rich_text": [
+                    {"text": {"content": old_notion_page_properties["plural_form"]["rich_text"][0]["text"]["content"]}}
+                ]
+            },
+            "irregular_verb": {"checkbox": old_notion_page_properties["irregular_verb"]["checkbox"]},
+            "pronunciation": {
+                "rich_text": [
+                    {
+                        "text": {
+                            "content": old_notion_page_properties["pronunciation"]["rich_text"][0]["text"]["content"]
+                        }
+                    }
+                ]
+            },
+        }
+
+        return json.dumps(old_simplified_properties, ensure_ascii=False, sort_keys=True) != json.dumps(
+            await self.notion_page_properties, ensure_ascii=False, sort_keys=True
+        )
 
     @async_cached_property
     async def notion_page_properties(self):

@@ -112,15 +112,12 @@ async def update_words(word_groups: dict, words_database_id: str, stories_databa
         )
 
         if page:
-            # - Update "group" multi-select property: add word.group to the list
+            # - Update if different
 
-            if word.groups and word.groups != [g["name"] for g in page["properties"]["groups"]["multi_select"]]:
-                await client.pages.update(
-                    page_id=page["id"],
-                    properties={
-                        "groups": {"multi_select": [{"name": group} for group in word.groups]},
-                    },
-                )
+            if await word.has_changed(old_notion_page_properties=page["properties"]):
+                logger.debug("Updating word page", word=word.word, properties=await word.notion_page_properties)
+
+                await client.pages.update(page_id=page["id"], properties=await word.notion_page_properties)
 
             return
 
