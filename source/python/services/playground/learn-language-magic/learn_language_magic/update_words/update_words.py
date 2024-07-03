@@ -141,7 +141,7 @@ async def update_words(word_groups: dict, words_database_id: str, stories_databa
 
     unique_words = list(skip_duplicates(words, key=lambda w: w.word.lower()))
 
-    # - Update groups for each word
+    # - Update groups for each word (combine from all groups)
 
     b = bucket(iterable=words, key=lambda word: word.word.lower())
 
