@@ -19,7 +19,10 @@ async def upload_image_to_imgur(image_path: str, client_id: str):
 
 def test():
     async def main():
-        await upload_image_to_imgur(image_path="/tmp/image.png", client_id=Deps.load().config.imgur_client_id)
+        await upload_image_to_imgur(
+            image_path="/tmp/image.png",
+            client_id=Deps.load().config.imgur_client_id,
+        )
 
     # Run the main function
     asyncio.run(main())
