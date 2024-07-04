@@ -112,44 +112,29 @@ class EnrichedNotionAsyncClient(AsyncClient):
     @tested(tests=[test_upsert_database])
     async def upsert_database(
         self,
-        database_id: Optional[str] = None,
-        parent: Optional[dict] = None,
-        properties: Optional[dict] = None,
-        title: Optional[list] = None,
-        description: Optional[str] = None,
-        icon: Optional[dict] = None,
-        cover: Optional[dict] = None,
-        is_inline: Optional[bool] = None,
+        database: Optional[dict] = None,
         pages: list[dict] = [],
         remove_others: bool = False,
         page_unique_id_func: Optional[Callable] = None,
-        archived: Optional[bool] = None,
+        archive: Optional[bool] = None,
         update_page_contents: bool = True,
     ):
         # - If archived - just archive
 
-        if archived is not None:
-            return await self.blocks.update(block_id=database_id, archived=True)
+        if archive is not None:
+            assert "id" in database, "Database id is required to archive it"
+            return await self.blocks.update(block_id=database["id"], archived=True)
 
         # - Prepare kwargs
 
-        kwargs = {
-            "properties": properties,
-            "title": title,
-            "description": description,
-            "icon": icon,
-            "cover": cover,
-            "is_inline": is_inline,
-            "parent": parent,
-        }
-        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+        database = {k: v for k, v in database.items() if v is not None}
 
         # - Create database if not exists
 
-        if not database_id:
-            logger.debug("Creating new database", kwargs=kwargs)
+        if "id" not in database:
+            logger.debug("Creating new database", database=database)
 
-            database = await self.databases.create(**kwargs)
+            database = await self.databases.create(**database)
             database_id = database["id"]
 
             if pages:
@@ -159,18 +144,20 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
             return database
 
+        assert "id" in database
+
         # - Update metadata first
 
-        if kwargs:
+        if database:
             # - Update database
 
-            logger.info("Updating database", database_id=database_id, kwargs=kwargs)
+            logger.info("Updating database", database_id=database, database=database)
 
-            database = await self.databases.update(database_id=database_id, **kwargs)
+            database = await self.databases.update(database_id=database["id"], **drop(database, ["id"]))
         else:
             # - Just retrieve database
 
-            database = await self.databases.retrieve(database_id=database_id)
+            database = await self.databases.retrieve(database_id=database["id"])
 
         # - Update pages
 
@@ -181,7 +168,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         # - -- Get old pages
 
-        old_pages = await self.get_paginated_request(method=self.databases.query, database_id=database_id)
+        old_pages = await self.get_paginated_request(method=self.databases.query, database_id=database["id"])
 
         # -- Find correct page_id for each page
 
@@ -216,11 +203,24 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         # -- Create or update new pages
 
+        logger.debug(
+            "Upserting pages",
+            pages=[
+                {
+                    "database_id": database["id"],
+                    **drop(page, ["children"] if not update_page_contents else []),
+                }
+                for page in pages
+            ],
+        )
+
         await asyncio.gather(
             *[
                 self.upsert_page(
-                    parent={"database_id": database_id},
-                    page=drop(page, ["children"] if not update_page_contents else []),
+                    page={
+                        "parent": {"database_id": database["id"]},
+                        **drop(page, ["children"] if not update_page_contents else []),
+                    },
                 )
                 for page in pages
             ]

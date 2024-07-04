@@ -24,13 +24,17 @@ def test_upsert_database():
         database_name = f"test_page_{uuid.uuid4()}"
 
         database = await client.upsert_database(
-            parent={"page_id": deps.config.notion_test_page_id},
-            title=[{"text": {"content": database_name}}],
-            properties={"word": {"id": "title", "name": "word", "title": {}, "type": "title"}},
+            database={
+                "parent": {"page_id": deps.config.notion_test_page_id},
+                "title": [{"text": {"content": database_name}}],
+                "properties": {"word": {"id": "title", "name": "word", "title": {}, "type": "title"}},
+            }
         )
 
         database = await client.upsert_database(
-            database_id=database["id"],
+            database={
+                "id": database["id"],
+            },
             pages=[
                 {
                     "children": [{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
@@ -41,7 +45,7 @@ def test_upsert_database():
 
         # - Remove test database
 
-        await client.upsert_database(database_id=database["id"], archived=True)
+        await client.upsert_database(database=database, archive=True)
 
     asyncio.run(main())
 
