@@ -29,9 +29,10 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         return result
 
-    async def update_page(
+    async def create_or_update_page(
         self,
-        page_id: str,
+        page_id: Optional[str] = None,
+        parent: Optional[dict] = None,
         archived: Optional[bool] = None,
         properties: Optional[dict] = None,
         icon: Optional[str] = None,  # todo later: check that this type [@marklidenberg]
@@ -41,8 +42,25 @@ class EnrichedNotionAsyncClient(AsyncClient):
     ):
         # - Prepare kwargs
 
-        kwargs = {"archived": archived, "properties": properties, "icon": icon, "cover": cover}
+        kwargs = {"archived": archived, "properties": properties, "icon": icon, "cover": cover, "parent": parent}
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        # - If not page_id: create page
+
+        if not page_id:
+            # - Create page
+            page = await self.pages.create(**kwargs)
+
+            assert parent is not None, "Parent is required to create a new page"
+
+            # - Update children
+
+            if children is not None:
+                await self.blocks.children.append(block_id=page["id"], children=children)
+
+            # - Return page
+
+            return page
 
         # - Update children if needed
 
@@ -64,6 +82,11 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
                 await self.blocks.children.append(block_id=page_id, children=children)
 
+        # - Return if no kwargs provided
+
+        if not kwargs:
+            return old_page
+
         # - If old page provided - check if nothing has changed (to avoid unnecessary requests)
 
         if old_page and contains_nested(whole=old_page, part=kwargs):
@@ -74,6 +97,42 @@ class EnrichedNotionAsyncClient(AsyncClient):
         logger.trace("Updating page", page_id=page_id)
 
         return await self.pages.update(page_id=page_id, **kwargs)
+
+    async def update_database(
+        self,
+        database_id: str,
+        properties: Optional[dict] = None,
+        title: Optional[str] = None,
+        description: Optional[str] = None,
+        icon: Optional[dict] = None,
+        cover: Optional[dict] = None,
+        is_inline: Optional[bool] = None,
+        pages: list[dict] = [],
+        remove_others: bool = False,
+    ):
+        # - Update metadata first
+
+        kwargs = {
+            "properties": properties,
+            "title": title,
+            "description": description,
+            "icon": icon,
+            "cover": cover,
+            "is_inline": is_inline,
+        }
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        if kwargs:
+            await self.databases.update(database_id=database_id, **kwargs)
+
+        # - Update pages
+
+        if not pages:
+            return
+
+        # - Get old pages
+
+        old_pages = await self.get_paginated_request(method=self.databases.query, database_id=database_id)
 
 
 def test_paginated_request():
@@ -104,18 +163,19 @@ def test_update_page():
         # - Create page for tests inside tmp_page
 
         page_name = f"test_page_{uuid.uuid4()}"
-        page = await client.pages.create(
+
+        page = await client.create_or_update_page(
             parent={"page_id": deps.config.notion_test_page_id},
             properties={"title": {"title": [{"text": {"content": page_name}}]}},
         )
 
-        new_page = await client.update_page(
+        new_page = await client.create_or_update_page(
             page_id=page["id"],
             old_page=page,
             children=[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
         )
 
-        new_page = await client.update_page(  # should not update anything if nothing has changed
+        new_page = await client.create_or_update_page(  # should not update anything if nothing has changed
             page_id=page["id"],
             old_page=page,
             children=[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
