@@ -18,7 +18,7 @@ from PIL import Image
 async def draw_card_image(word: str):
     # - Get filename
 
-    filename = os.path.join(os.path.dirname(__file__), f"images/{word}.png")
+    filename = os.path.join(os.path.dirname(__file__), f"../data/dynamic/images/{word}.png")
 
     # - Write card if not exists
 
@@ -26,7 +26,7 @@ async def draw_card_image(word: str):
         # - Generate image
 
         image_contents = await async_retry(tries=5, delay=1)(generate_image)(
-            prompt=f"Illustrate german `{word}`",
+            prompt=f"Illustrate german `{word}` with german meaning",
             style="Continuous lines very easy, clean and minimalist, colorful: {prompt}",
         )
 

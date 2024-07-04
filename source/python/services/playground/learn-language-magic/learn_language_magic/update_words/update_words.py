@@ -1,4 +1,5 @@
 import asyncio
+import os
 
 from itertools import groupby
 
@@ -88,6 +89,29 @@ async def update_words(
 
     logger.info("Collected words", n_words=len(words))
 
+    # - Remove images for pages where `refresh_image` set to True
+
+    # -- Get all words pages
+
+    word_pages = await client.get_paginated_request(
+        method=client.databases.query,
+        database_id=words_database_id,
+    )
+
+    # -- Select word pages that need refreshing
+
+    refreshed_pages = [page for page in word_pages if page["properties"]["refresh_image"]["checkbox"]]
+
+    refreshed_titles = [first(page["properties"]["word"]["title"])["text"]["content"] for page in refreshed_pages]
+
+    # -- Remove images for pages that need refreshing
+
+    for page in refreshed_pages:
+        word_title = first(page["properties"]["word"]["title"])["text"]["content"]
+        filename = os.path.join(os.path.dirname(__file__), f"../data/dynamic/images/{word_title}.png")
+        if os.path.exists(filename):
+            os.remove(filename)
+
     # - Process words
 
     async def _update_notion_page(word: Word):
@@ -95,7 +119,7 @@ async def update_words(
             database={"id": words_database_id},
             pages=[await word.notion_page],
             page_unique_id_func=lambda page: page["properties"]["word"]["title"][0]["text"]["content"],
-            update_page_contents=update_page_contents,
+            update_page_contents=update_page_contents or word.word in refreshed_titles,
         )
 
     await asyncio.gather(
@@ -110,10 +134,10 @@ def test():
         print(
             await update_words(
                 word_groups=word_groups,
-                # word_groups={'test': 'laufen'},
+                # word_groups={'test': 'meiden'},
                 words_database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
                 stories_database_id="8d9d6643302c48649345209e18dbb0ca",  # stories
-                update_page_contents=True
+                update_page_contents=False
             )
         )
         
