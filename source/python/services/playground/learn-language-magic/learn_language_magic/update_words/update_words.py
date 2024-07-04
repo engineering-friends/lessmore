@@ -70,9 +70,7 @@ async def update_words(
 
     _words = []
 
-    for key, same_words in groupby(
-        sorted(words, key=lambda word: word.word.lower()), key=lambda word: word.word.lower()
-    ):
+    for key, same_words in groupby(words, key=lambda word: word.word.lower()):
         # - Get sample word - it will be used to merge the group
 
         _word = next(same_words)
@@ -106,7 +104,6 @@ def test():
                 # word_groups={'test': 'laufen'},
                 words_database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
                 stories_database_id="8d9d6643302c48649345209e18dbb0ca",  # stories
-                force_update=True
             )
         )
         
