@@ -106,102 +106,34 @@ class Word:
         else:
             return {}
 
-    async def has_changed(self, old_notion_page_properties: dict):
-        # todo maybe: make more elegant, just merge recursively old and new properties and compare (deep merge neede, with list merging) [@marklidenberg]
-        old_simplified_properties = {
-            "word": {
-                "title": [{"text": {"content": old_notion_page_properties["word"]["title"][0]["text"]["content"]}}]
-            },
-            "origin": {"select": {"name": old_notion_page_properties["origin"]["select"]["name"]}},
-            "groups": {
-                "multi_select": [
-                    {"name": group["name"]} for group in old_notion_page_properties["groups"]["multi_select"]
-                ]
-            }
-            if old_notion_page_properties["groups"]
-            else None,
-            "translation_en": {
-                "rich_text": [
-                    {
-                        "text": {
-                            "content": old_notion_page_properties["translation_en"]["rich_text"][0]["text"]["content"]
-                        }
-                    }
-                ]
-            },
-            "translation_ru": {
-                "rich_text": [
-                    {
-                        "text": {
-                            "content": old_notion_page_properties["translation_ru"]["rich_text"][0]["text"]["content"]
-                        }
-                    }
-                ]
-            },
-            "example_sentence": {
-                "rich_text": [
-                    {
-                        "text": {
-                            "content": old_notion_page_properties["example_sentence"]["rich_text"][0]["text"]["content"]
-                        }
-                    }
-                ]
-            },
-            "part_of_speech": {"select": {"name": old_notion_page_properties["part_of_speech"]["select"]["name"]}},
-            "gender": {"select": {"name": old_notion_page_properties["gender"]["select"]["name"]}},
-            "plural_form": {
-                "rich_text": [
-                    {"text": {"content": old_notion_page_properties["plural_form"]["rich_text"][0]["text"]["content"]}}
-                ]
-            },
-            "irregular_verb": {"checkbox": old_notion_page_properties["irregular_verb"]["checkbox"]},
-            "pronunciation": {
-                "rich_text": [
-                    {
-                        "text": {
-                            "content": old_notion_page_properties["pronunciation"]["rich_text"][0]["text"]["content"]
-                        }
-                    }
-                ]
-            },
-        }
-
-        return json.dumps(old_simplified_properties, ensure_ascii=False, sort_keys=True) != json.dumps(
-            await self.notion_page_properties, ensure_ascii=False, sort_keys=True
-        )
-
     @async_cached_property
-    async def notion_page_properties(self):
+    async def notion_page(self):
         # - Build properties
 
         result = {
-            "word": {"title": [{"text": {"content": self.word}}]},
-            "origin": {"select": {"name": self.origin}},
-            "groups": {"multi_select": [{"name": group} for group in self.groups]} if self.groups else None,
-            "translation_en": {"rich_text": [{"text": {"content": self.translation_en}}]},
-            "translation_ru": {"rich_text": [{"text": {"content": self.translation_ru}}]},
-            "example_sentence": {"rich_text": [{"text": {"content": self.example_sentence}}]},
-            "part_of_speech": {"select": {"name": self.part_of_speech}},
-            "gender": {"select": {"name": self.gender}},
-            "plural_form": {"rich_text": [{"text": {"content": self.plural_form}}]},
-            "irregular_verb": {"checkbox": self.irregular_verb},
-            "pronunciation": {"rich_text": [{"text": {"content": self.pronunciation}}]},
+            "properties": {
+                "word": {"title": [{"text": {"content": self.word}}]},
+                "origin": {"select": {"name": self.origin}},
+                "groups": {"multi_select": [{"name": group} for group in self.groups]} if self.groups else None,
+                "translation_en": {"rich_text": [{"text": {"content": self.translation_en}}]},
+                "translation_ru": {"rich_text": [{"text": {"content": self.translation_ru}}]},
+                "example_sentence": {"rich_text": [{"text": {"content": self.example_sentence}}]},
+                "part_of_speech": {"select": {"name": self.part_of_speech}},
+                "gender": {"select": {"name": self.gender}},
+                "plural_form": {"rich_text": [{"text": {"content": self.plural_form}}]},
+                "irregular_verb": {"checkbox": self.irregular_verb},
+                "pronunciation": {"rich_text": [{"text": {"content": self.pronunciation}}]},
+            },
+            "children": [],  # will be filled later
         }
 
-        # - Gather results
+        # - Add children
 
-        result = await gather_nested(result)
+        children = []
 
-        # - Filter out None values
+        # -- Add image
 
-        return {k: v for k, v in result.items() if v is not None}
-
-    @async_cached_property
-    async def notion_page_children(self):
-        result = []
-
-        # - Add image
-        result += [
+        children += [
             {
                 "type": "image",
                 "image": {
@@ -211,17 +143,17 @@ class Word:
             }
         ]
 
-        # - Build context
+        # -- Build context
 
         if self.origin_text:
-            result += [
+            children += [
                 {
                     "type": "heading_1",
                     "heading_1": {"rich_text": [{"text": {"content": "Context"}}]},
                 }
             ]
 
-            result += [
+            children += [
                 {
                     "type": "paragraph",
                     "paragraph": {
@@ -239,12 +171,12 @@ class Word:
                 }
             ]
 
-        # - Build cases
+        # -- Build cases
 
         if cases := await self.cases:
             # - Add heading "Cases"
 
-            result += [
+            children += [
                 {
                     "type": "heading_1",
                     "heading_1": {"rich_text": [{"text": {"content": "Cases"}}]},
@@ -264,7 +196,7 @@ class Word:
 
             # - Add table
 
-            result += [
+            children += [
                 {
                     "type": "table",
                     "table": {
@@ -292,12 +224,12 @@ class Word:
                 }
             ]
 
-        # - Build conjugations
+        # -- Build conjugations
 
         if conjugations := await self.conjugations:
             # - Add heading "Conjugations"
 
-            result += [
+            children += [
                 {
                     "type": "heading_1",
                     "heading_1": {"rich_text": [{"text": {"content": "Conjugations"}}]},
@@ -313,7 +245,7 @@ class Word:
             | Present (Präsens) | x | du | läufst |
             ...
             """
-            result += [
+            children += [
                 {
                     "type": "table",
                     "table": {
@@ -342,7 +274,15 @@ class Word:
                 }
             ]
 
-        return result
+        result["children"] = children
+
+        # - Gather results
+
+        result = await gather_nested(result)
+
+        # - Filter out None values
+
+        return {k: v for k, v in result.items() if v is not None}
 
 
 def test():
@@ -354,7 +294,7 @@ def test():
                     origin="test",
                     origin_text="",
                     group="test",
-                ).notion_page_properties,
+                ).notion_page,
                 indent=2,
                 ensure_ascii=False,
             )
