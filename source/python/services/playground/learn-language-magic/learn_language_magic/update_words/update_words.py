@@ -14,9 +14,7 @@ from more_itertools import bucket, first
 
 
 async def update_words(
-    word_groups: dict,
-    words_database_id: str,
-    stories_database_id: str,
+    word_groups: dict, words_database_id: str, stories_database_id: str, update_page_contents: bool = False
 ):
     # - Init notion client
 
@@ -95,6 +93,7 @@ async def update_words(
                     database_id=words_database_id,
                     pages=[await word.notion_page],
                     page_unique_id_func=lambda page: page["properties"]["word"]["title"][0]["text"]["content"],
+                    update_page_contents=update_page_contents,
                 )
                 for word in words
             ]
@@ -112,6 +111,7 @@ def test():
                 # word_groups={'test': 'laufen'},
                 words_database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
                 stories_database_id="8d9d6643302c48649345209e18dbb0ca",  # stories
+                update_page_contents=False
             )
         )
         

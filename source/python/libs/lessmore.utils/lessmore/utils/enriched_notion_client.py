@@ -128,6 +128,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
         remove_others: bool = False,
         page_unique_id_func: Optional[Callable] = None,
         archived: Optional[bool] = None,
+        update_page_contents: bool = True,
     ):
         # - If archived - just archive
 
@@ -222,7 +223,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
                 self.upsert_page(
                     page_id=page.get("id"),
                     parent={"database_id": database_id},
-                    **drop(page, ["id"]),
+                    **drop(page, ["id"] + (["children"] if not update_page_contents else [])),
                 )
                 for page in pages
             ]
