@@ -28,6 +28,7 @@ def test_upsert_page():
                 "properties": {"title": {"title": [{"text": {"content": page_name}}]}},
             },
             children=[
+                {"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}},
                 {
                     "type": "image",
                     "image": {
@@ -36,29 +37,23 @@ def test_upsert_page():
                             "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Random_Radio_Bruno_Festival_di_Sanremo_2021.png/440px-Random_Radio_Bruno_Festival_di_Sanremo_2021.png",
                         },
                     },
-                }
+                },
             ],
         )
 
-        # new_page = await client.upsert_page(
-        #     page={"id": page["id"]},
-        #     old_page=page,
-        #     children=[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
-        # )
-        #
-        # new_page = await client.upsert_page(  # should not change anything
-        #     page={"id": page["id"]},
-        #     old_page=page,
-        #     children=[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
-        # )
-        #
-        # assert contains_nested(
-        #     whole=new_page, part={"properties": {"title": {"title": [{"text": {"content": page_name}}]}}}
-        # )
+        new_page = await client.upsert_page(  # should not change anything
+            page={"id": page["id"]},
+            old_page=page,
+            children=[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
+        )
+
+        assert contains_nested(
+            whole=new_page, part={"properties": {"title": {"title": [{"text": {"content": page_name}}]}}}
+        )
 
         # - Remove test page
 
-        # await client.upsert_page(page={"id": page["id"], "archived": True})
+        await client.upsert_page(page={"id": page["id"], "archived": True})
 
     asyncio.run(main())
 

@@ -69,14 +69,11 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         assert "id" in page
 
-        # - Return if page was just for creation
-
-        if not page:
-            return old_page
-
         # - Update children if needed
 
         if children is not None:
+            logger.debug("Updating children", page=page)
+
             # - Get old children
 
             old_children = await self.get_paginated_request(method=self.blocks.children.list, block_id=page["id"])
@@ -89,12 +86,19 @@ class EnrichedNotionAsyncClient(AsyncClient):
                 # - Delete old children
 
                 for child in old_children:
-                    await self.blocks.delete(block_id=child["id"])
-                # await asyncio.gather(*[self.blocks.delete(block_id=child["id"]) for child in old_children])
+                    try:
+                        await self.blocks.delete(block_id=child["id"])
+                    except Exception as e:
+                        logger.error("Failed to delete child", child=child, error=e)
 
                 # - Create new children
 
                 await self.blocks.children.append(block_id=page["id"], children=children)
+
+        # - Return if no update needed for properties and stuff
+
+        if not drop(page, ["id"]):
+            return old_page
 
         # - Update page
 
@@ -148,7 +152,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         # - Update metadata first
 
-        if database:
+        if drop(database, ["id"]):
             # - Update database
 
             logger.info("Updating database", database_id=database, database=database)
@@ -219,8 +223,9 @@ class EnrichedNotionAsyncClient(AsyncClient):
                 self.upsert_page(
                     page={
                         "parent": {"database_id": database["id"]},
-                        **drop(page, ["children"] if not update_page_contents else []),
+                        **drop(page, ["children"]),
                     },
+                    children=None if not update_page_contents else page.get("children"),
                 )
                 for page in pages
             ]

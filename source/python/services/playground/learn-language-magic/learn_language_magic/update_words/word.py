@@ -5,8 +5,9 @@ from dataclasses import dataclass
 
 from benedict import benedict
 from learn_language_magic.ask import ask
+from learn_language_magic.deps import Deps
 from learn_language_magic.draw_card_image.draw_card_image import draw_card_image
-from lessmore.utils.asynchronous.async_cached_property import async_cached_property
+from lessmore.utils.asynchronous.async_cached_property import async_cached_property, prefetch_all_cached_properties
 from lessmore.utils.asynchronous.gather_nested import gather_nested
 from lessmore.utils.read_config.merge_dicts import merge_dicts
 
@@ -64,15 +65,13 @@ class Word:
 
     @async_cached_property
     async def irregular_verb(self):
-        result = await ask(
-            f"Is '{self.word}' an irregular verb? (yes/no/undefined)",
-            template="yes",
+        return (
+            await ask(
+                f"Is '{self.word}' an irregular verb?",
+                template="yes",
+            )
+            == "yes"
         )
-
-        if result == "undefined":
-            return None
-
-        return result == "yes"
 
     @async_cached_property
     async def pronunciation(self):
@@ -124,14 +123,14 @@ class Word:
                 "word": {"title": [{"text": {"content": self.word}}]},
                 "origin": {"select": {"name": self.origin}},
                 "groups": {"multi_select": [{"name": group} for group in self.groups]} if self.groups else None,
-                "translation_en": {"rich_text": [{"text": {"content": self.translation_en}}]},
-                "translation_ru": {"rich_text": [{"text": {"content": self.translation_ru}}]},
-                "example_sentence": {"rich_text": [{"text": {"content": self.example_sentence}}]},
-                "part_of_speech": {"select": {"name": self.part_of_speech}},
-                "gender": {"select": {"name": self.gender}} if await self.gender else None,
-                "plural_form": {"rich_text": [{"text": {"content": self.plural_form}}]},
-                "irregular_verb": {"checkbox": self.irregular_verb},
-                "pronunciation": {"rich_text": [{"text": {"content": self.pronunciation}}]},
+                "translation_en": {"rich_text": [{"text": {"content": await self.translation_en}}]},
+                "translation_ru": {"rich_text": [{"text": {"content": await self.translation_ru}}]},
+                "example_sentence": {"rich_text": [{"text": {"content": await self.example_sentence}}]},
+                "part_of_speech": {"select": {"name": await self.part_of_speech}},
+                "gender": {"select": {"name": await self.gender}} if await self.gender else None,
+                "plural_form": {"rich_text": [{"text": {"content": await self.plural_form}}]},
+                "irregular_verb": {"checkbox": await self.irregular_verb},
+                "pronunciation": {"rich_text": [{"text": {"content": await self.pronunciation}}]},
             },
             "children": [],  # will be filled later
         }
@@ -285,10 +284,6 @@ class Word:
 
         result["children"] = children
 
-        # - Gather results
-
-        result = await gather_nested(result)
-
         # - Filter out None values
 
         return {k: v for k, v in result.items() if v is not None}
@@ -296,14 +291,16 @@ class Word:
 
 def test():
     async def main():
+        Deps.load()
+        word = Word(
+            word="hunds",
+            origin="test",
+            origin_text="",
+            groups=["test"],
+        )
         print(
             json.dumps(
-                await Word(
-                    word="hund",
-                    origin="test",
-                    origin_text="",
-                    group="test",
-                ).notion_page,
+                await asyncio.gather(*[prefetch_all_cached_properties(word), word.notion_page]),
                 indent=2,
                 ensure_ascii=False,
             )

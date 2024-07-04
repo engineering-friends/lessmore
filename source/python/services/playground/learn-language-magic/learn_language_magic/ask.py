@@ -5,6 +5,7 @@ import textwrap
 
 from lessmore.utils.asynchronous.async_rate_limiter import AsyncRateLimiter
 from lessmore.utils.cache_on_disk import cache_on_disk
+from loguru import logger
 from openai import AsyncOpenAI
 from openai.types.chat import completion_create_params
 
@@ -37,6 +38,8 @@ async def ask(
         await RATE_LIMITER.acquire()
 
         # - Ask
+
+        logger.debug("Making request to OpenAI", prompt=prompt)
 
         result = (
             (
