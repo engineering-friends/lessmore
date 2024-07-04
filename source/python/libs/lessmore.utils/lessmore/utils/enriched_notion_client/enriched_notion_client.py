@@ -16,7 +16,7 @@ from lessmore.utils.tested import tested
 
 class EnrichedNotionAsyncClient(AsyncClient):
     @staticmethod
-    @tested(tests=[test_upsert_page])
+    @tested(tests=[test_paginated_request])
     async def get_paginated_request(method, **kwargs):
         # - Init
 
