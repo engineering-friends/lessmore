@@ -21,7 +21,7 @@ async def ask(
     open_ai_kwargs: dict = dict(model="gpt-4o"),
     cache: bool = True,
     template: str | dict = "",
-) -> str:
+) -> str | dict | list:
     # - Copy open_ai_kwargs to avoid side effects
 
     open_ai_kwargs = open_ai_kwargs.copy()

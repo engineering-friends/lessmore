@@ -97,14 +97,14 @@ async def update_words(
 
     # -- Get all words pages
 
-    word_pages = await client.get_paginated_request(
+    current_word_pages = await client.get_paginated_request(
         method=client.databases.query,
         database_id=words_database_id,
     )
 
     # -- Select word pages that need refreshing
 
-    refreshed_pages = [page for page in word_pages if page["properties"]["refresh_image"]["checkbox"]]
+    refreshed_pages = [page for page in current_word_pages if page["properties"]["refresh_image"]["checkbox"]]
 
     refreshed_titles = [first(page["properties"]["word"]["title"])["text"]["content"] for page in refreshed_pages]
 
@@ -116,6 +116,15 @@ async def update_words(
         if os.path.exists(filename):
             os.remove(filename)
 
+    # -- Get new titles
+
+    new_titles = [
+        word.word
+        for word in words
+        if word.word
+        not in [first(page["properties"]["word"]["title"])["text"]["content"] for page in current_word_pages]
+    ]
+
     # - Process words
 
     async def _update_pages():
@@ -126,10 +135,9 @@ async def update_words(
         # - Remove children if not updated
 
         for page in word_pages:
-            if not (
-                update_page_contents
-                or first(page["properties"]["word"]["title"])["text"]["content"] in refreshed_titles
-                or not page.get("id")
+            if (
+                not update_page_contents
+                and first(page["properties"]["word"]["title"])["text"]["content"] not in refreshed_titles + new_titles
             ):
                 # no need to update
                 page["children"] = None
@@ -149,16 +157,13 @@ async def update_words(
 
 def test():
     async def main():
-        print(
-            await update_words(
-                word_groups=word_groups,
-                # word_groups={'test': ['laufen']},
-                words_database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
-                stories_database_id="8d9d6643302c48649345209e18dbb0ca",  # stories
-                update_page_contents=False
-            )
+        await update_words(
+            word_groups=word_groups,
+            # word_groups={'test': ['laufen']},
+            words_database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
+            stories_database_id="8d9d6643302c48649345209e18dbb0ca",  # stories
+            update_page_contents=False
         )
-        
 
     import asyncio
 
