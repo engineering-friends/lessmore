@@ -36,7 +36,8 @@ google-api-python-client = "^2.136.0"
 pillow = "^10.4.0"
 imgurpython = "^1.1.7"
 aiofiles = "^24.1.0"
-boto3 = "^1.34.139"
+aiobotocore = "^2.13.1"
+aioboto3 = "^13.1.0"
 
 
 [build-system]
