@@ -5,6 +5,7 @@ import uuid
 from typing import Callable, Optional
 
 from lessmore.utils.functional.contains_nested import contains_nested
+from lessmore.utils.functional.dict.drop import drop
 from lessmore.utils.printy import printy as print
 from loguru import logger
 from more_itertools import first, only
@@ -185,6 +186,11 @@ class EnrichedNotionAsyncClient(AsyncClient):
                 if old_page:
                     page["id"] = old_page["id"]
 
+            # - Remove _unique_id
+
+            for page in old_pages + pages:
+                del page["_unique_id"]
+
         # -- Remove pages if needed
 
         if remove_others:
@@ -193,7 +199,16 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         # -- Create or update new pages
 
-        await asyncio.gather(*[self.upsert_page(parent={"database_id": database_id}, **page) for page in pages])
+        await asyncio.gather(
+            *[
+                self.upsert_page(
+                    page_id=page.get("id"),
+                    parent={"database_id": database_id},
+                    **drop(page, ["id"]),
+                )
+                for page in pages
+            ]
+        )
 
         return database
 

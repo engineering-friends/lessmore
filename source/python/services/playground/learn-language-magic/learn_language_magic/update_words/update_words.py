@@ -37,7 +37,6 @@ async def update_words(
                 database_id=stories_database_id,
                 pages=[
                     {
-                        "parent": {"database_id": stories_database_id},
                         "properties": {"Name": {"title": [{"text": {"content": word_group_name}}]}},
                         "children": [
                             {
