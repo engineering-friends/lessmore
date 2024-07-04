@@ -2,11 +2,12 @@ import asyncio
 import time
 import uuid
 
-from typing import Optional
+from typing import Callable, Optional
 
 from lessmore.utils.functional.contains_nested import contains_nested
 from lessmore.utils.printy import printy as print
 from loguru import logger
+from more_itertools import first, only
 from notion_client import AsyncClient
 
 
@@ -35,8 +36,8 @@ class EnrichedNotionAsyncClient(AsyncClient):
         parent: Optional[dict] = None,
         archived: Optional[bool] = None,
         properties: Optional[dict] = None,
-        icon: Optional[str] = None,  # todo later: check that this type [@marklidenberg]
-        cover: Optional[dict] = None,  # todo later: check that this type [@marklidenberg]
+        icon: Optional[dict] = None,
+        cover: Optional[dict] = None,
         old_page: Optional[dict] = None,
         children: Optional[list] = None,
     ):
@@ -49,6 +50,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         if not page_id:
             # - Create page
+
             page = await self.pages.create(**kwargs)
 
             assert parent is not None, "Parent is required to create a new page"
@@ -109,6 +111,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
         is_inline: Optional[bool] = None,
         pages: list[dict] = [],
         remove_others: bool = False,
+        page_unique_id_func: Optional[Callable] = None,
     ):
         # - Update metadata first
 
@@ -133,6 +136,34 @@ class EnrichedNotionAsyncClient(AsyncClient):
         # - Get old pages
 
         old_pages = await self.get_paginated_request(method=self.databases.query, database_id=database_id)
+
+        # - Find correct page_id for each page
+
+        if page_unique_id_func:
+            # - Set _unique_id
+            for page in old_pages + pages:
+                page["_unique_id"] = page_unique_id_func(page)
+
+            # - Set page id for matching _unique_id
+
+            for page in pages:
+                old_page = only(
+                    [old_page for old_page in old_pages if old_page["_unique_id"] == page["_unique_id"]], default=None
+                )
+                if old_page:
+                    page["id"] = old_page["id"]
+
+        # - Remove pages if needed
+
+        if remove_others:
+            to_remove = [page for page in old_pages if page["id"] not in [page["id"] for page in pages]]
+            await asyncio.gather(*[self.create_or_update_page(page_id=page["id"], archived=True) for page in to_remove])
+
+        # - Create or update new pages
+
+        await asyncio.gather(
+            *[self.create_or_update_page(parent={"database_id": database_id}, **page) for page in pages]
+        )
 
 
 def test_paginated_request():
@@ -192,6 +223,50 @@ def test_update_page():
     asyncio.run(main())
 
 
+def test_update_database():
+    async def main():
+        # - Init client
+
+        from learn_language_magic.deps import Deps
+
+        deps = Deps.load()
+
+        client = EnrichedNotionAsyncClient(
+            auth=deps.config.notion_token,
+        )
+
+        # - Create page for tests inside tmp_page
+
+        page_name = f"test_page_{uuid.uuid4()}"
+
+        page = await client.create_or_update_page(
+            parent={"page_id": deps.config.notion_test_page_id},
+            properties={"title": {"title": [{"text": {"content": page_name}}]}},
+        )
+
+        new_page = await client.create_or_update_page(
+            page_id=page["id"],
+            old_page=page,
+            children=[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
+        )
+
+        new_page = await client.create_or_update_page(  # should not update anything if nothing has changed
+            page_id=page["id"],
+            old_page=page,
+            children=[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
+        )
+
+        assert contains_nested(
+            whole=new_page, part={"properties": {"title": {"title": [{"text": {"content": page_name}}]}}}
+        )
+
+        # - Remove test page
+
+        await client.pages.update(page_id=page["id"], archived=True)
+
+    asyncio.run(main())
+
+
 if __name__ == "__main__":
-    # test_paginated_request()
+    test_paginated_request()
     test_update_page()
