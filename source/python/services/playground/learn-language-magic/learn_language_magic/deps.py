@@ -5,9 +5,10 @@ from pathlib import Path
 
 import openai
 
-from learn_language_magic.config.config import Config
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.read_config.read_config import read_config
+
+from learn_language_magic.config.config import Config
 
 
 @dataclass
@@ -32,6 +33,12 @@ class Deps:
         # - Set openai key
 
         openai.api_key = config.openai_api_key
+
+        # - Set amazon keys
+
+        os.environ["AWS_ACCESS_KEY_ID"] = config.aws_access_key_id
+        os.environ["AWS_SECRET_ACCESS_KEY"] = config.aws_secret_access_key
+        os.environ["AWS_DEFAULT_REGION"] = config.aws_default_region
 
         # - Return deps
 

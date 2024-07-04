@@ -15,11 +15,8 @@ class Config(BaseSettings):
     notion_token: str
     notion_test_page_id: str
 
-    # - Imgur
+    # - Amazon
 
-    imgur_client_id: str
-    imgur_client_secret: str
-
-    # - Yandex disk
-
-    yandex_disk_token: str
+    aws_access_key_id: str
+    aws_secret_access_key: str
+    aws_default_region: str
