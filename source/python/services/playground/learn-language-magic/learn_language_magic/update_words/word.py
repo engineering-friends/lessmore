@@ -26,46 +26,24 @@ class Word:
         )
 
     @async_cached_property
-    async def translation_ru(self):
-        return await ask(
-            f"Переведи немецкое '{self.word}' на русский язык. Без точки в конце. Объясни как можно кратче, предпочтительно один-к-одному:"
-        )
-
-    @async_cached_property
-    async def example_sentence(self):
-        return await ask(f"Example sentence with the german '{self.word}'. Remove the trailing dot. Just the sentence:")
-
-    @async_cached_property
     async def part_of_speech(self):
         return await ask(
-            f"""Parts of speech of german '{self.word}'. Each word is one of "Noun", "Verb", "Adjective", "Adverb", "Pronoun", "Preposition", "Conjunction", "Interjection" or "None".""",
-            template="Noun",
+            f"""Parts of speech of german '{self.word}'. Each word is one of "Noun", "Verb", "Adjective", "Adverb", "Pronoun", "Preposition", "Conjunction", "Interjection". Skip word if not applicable""",
+            template="Noun, Verb, Adjective",
         )
-
-    @async_cached_property
-    async def gender(self):
-        result = await ask(
-            f"""Gender of the german '{self.word}'. Each word is one of "Masculine", "Feminine", "Neuter" or "Plural" or "None""",
-            template="Masculine",
-        )
-
-        return result
 
     @async_cached_property
     async def plural_form(self):
         return await ask(
-            f"Plural form of the german '{self.word}'. If not applicable, answer ''",
-            template="Hunde",
+            f"Plural form of the german '{self.word}'. Skip word if not applicable.",
+            template="Hunde, Katzen, Autos",
         )
 
     @async_cached_property
     async def irregular_verb(self):
-        return (
-            await ask(
-                f"Is german '{self.word}' have irregular verbs? Which? Just words",
-                template="yes",
-            )
-            == "yes"
+        return await ask(
+            f"Which words from '{self.word} are irregular?",
+            template="sein, haben, laufen",
         )
 
     @async_cached_property
@@ -96,10 +74,7 @@ class Word:
                 "origin": {"select": {"name": self.origin}},
                 "groups": {"multi_select": [{"name": group} for group in self.groups]},
                 "translation_en": {"rich_text": [{"text": {"content": await self.translation_en}}]},
-                "translation_ru": {"rich_text": [{"text": {"content": await self.translation_ru}}]},
-                "example_sentence": {"rich_text": [{"text": {"content": await self.example_sentence}}]},
                 "part_of_speech": {"rich_text": [{"text": {"content": await self.part_of_speech}}]},
-                "gender": {"rich_text": [{"text": {"content": await self.gender}}]},
                 "plural_form": {"rich_text": [{"text": {"content": await self.plural_form}}]},
                 "irregular_verb": {"rich_text": [{"text": {"content": await self.irregular_verb}}]},
                 "pronunciation": {"rich_text": [{"text": {"content": await self.pronunciation}}]},
@@ -115,9 +90,6 @@ class Word:
             },
             "children": [],  # will be filled later
         }
-
-        if not await self.gender:
-            result["properties"].pop("gender")
 
         if not self.groups:
             result["properties"].pop("groups")
