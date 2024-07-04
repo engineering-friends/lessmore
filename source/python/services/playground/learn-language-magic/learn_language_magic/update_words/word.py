@@ -27,27 +27,30 @@ class Word:
         # - Extract distinct words
 
         words = await ask(
-            f"Extract distinct words from the german phrase `{self.word}`, skip und",
-            example=["der Apfel", "die Orange", "trinken"],
+            f"Extract distinct words from the german phrase `{self.word}`, skip und and articles",
+            example=["Apfel", "Orange", "trinken"],
         )
         words = [f"- {word}" for word in words]
 
         async def _process_word(word):
             word = await ask(
-                f"""Add english translation and pronunciation for '{word}'. Remove the trailing dot. Keep it as short as possible. Skip `und`""",
+                f"""Add english translation and pronunciation for '{word}'. Remove the trailing dot. Keep it as short as possible. Skip `und`, add articles if needed""",
                 example="- der Hund (dog, /dɛr hʊnt/)",
             )
+
+            if all(pronoun not in word for pronoun in ["der", "die", "das"]):
+                return [{"text": {"content": word + "\n"}}]
 
             # - Get nouns
 
             translation = await ask(f"Translation of the german '{word}' in Russian", example="Машина")
-            pronoun = await ask(
-                f"`{translation} это он, она или оно? Если не существительное - так и напиши `не существительное``",
+            russian_pronoun = await ask(
+                f"`{translation} - это он, она или оно?",
                 example="он",
             )
-            pronoun = pronoun.lower()
+            russian_pronoun = russian_pronoun.lower()
 
-            if pronoun not in ["он", "она", "оно"]:
+            if russian_pronoun not in ["он", "она", "оно"]:
                 return [{"text": {"content": word + "\n"}}]
 
             german_pronoun = re.search(r"\bder\b|\bdie\b|\bdas\b", word.lower())
@@ -58,12 +61,9 @@ class Word:
             german_pronoun = german_pronoun.group()
 
             is_gender_same = (
-                pronoun == "он"
-                and german_pronoun == "der"
-                or pronoun == "она"
-                and german_pronoun == "die"
-                or pronoun == "оно"
-                and german_pronoun == "das"
+                (russian_pronoun == "он" and german_pronoun == "der")
+                or (russian_pronoun == "она" and german_pronoun == "die")
+                or (russian_pronoun == "оно" and german_pronoun == "das")
             )
 
             # - Split text by nouns and non-nouns  ("der Apfel (apple) und die Orange (orange)" -> ["der", " Apfel (apple) und ", "die", " Orange (orange)"])
@@ -72,7 +72,8 @@ class Word:
                 escaped_separator = re.escape(separator)
                 return re.split(f"(?<={escaped_separator})|(?={escaped_separator})", text)
 
-            parts = split_preserve_separator(word.lower(), german_pronoun)
+            parts = split_preserve_separator(word, german_pronoun)
+            parts = sum([split_preserve_separator(part, german_pronoun.title()) for part in parts], [])
 
             # - Build result
 
@@ -81,7 +82,7 @@ class Word:
             for is_first, is_last, part in mark_ends(parts):
                 text = part if not is_last else part + "\n"
 
-                if part == german_pronoun:
+                if part.lower() == german_pronoun:
                     if not is_gender_same:
                         result.append(
                             {
