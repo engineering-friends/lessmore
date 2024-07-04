@@ -37,37 +37,26 @@ class EnrichedNotionAsyncClient(AsyncClient):
     @tested(tests=[test_upsert_page])
     async def upsert_page(
         self,
-        page_id: Optional[str] = None,
-        parent: Optional[dict] = None,
+        page: Optional[dict] = None,
         old_page: Optional[dict] = None,
-        archived: Optional[bool] = None,
-        properties: Optional[dict] = None,
-        icon: Optional[dict] = None,
-        cover: Optional[dict] = None,
         children: Optional[list] = None,
     ):
         # - Prepare kwargs
 
         # Note: it's very important to filter None values, or Notion will throw an ambiguous error
-        kwargs = {
-            "archived": archived,
-            "properties": {k: v for k, v in properties.items() if v is not None},
-            "icon": icon,
-            "cover": cover,
-            "parent": parent,
-        }
-        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+        page["properties"] = {k: v for k, v in page.get("properties", {}).items() if v is not None}
+        page = {k: v for k, v in page.items() if v is not None}
 
         # - If not page_id: create page
 
-        if not page_id:
+        if "id" not in page:
             # - Create page
 
-            logger.debug("Creating page", kwargs=kwargs)
+            logger.debug("Creating page", page=page)
 
-            page = await self.pages.create(**kwargs)
+            assert page.get("parent") is not None, "Parent is required to create a new page"
 
-            assert parent is not None, "Parent is required to create a new page"
+            page = await self.pages.create(**drop(page, ["id"]))
 
             # - Update children
 
@@ -78,17 +67,24 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
             return page
 
+        assert "id" in page
+
+        # - Return if page was just for creation
+
+        if not page:
+            return old_page
+
         # - Update children if needed
 
         if children is not None:
             # - Get old children
 
-            old_children = await self.get_paginated_request(method=self.blocks.children.list, block_id=page_id)
+            old_children = await self.get_paginated_request(method=self.blocks.children.list, block_id=page["id"])
 
             # - Update children if needed
 
             if not contains_nested(whole=old_children, part=children):
-                logger.debug("Updating children", page_id=page_id)
+                logger.debug("Updating children", page=page)
 
                 # - Delete old children
 
@@ -98,25 +94,20 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
                 # - Create new children
 
-                await self.blocks.children.append(block_id=page_id, children=children)
+                await self.blocks.children.append(block_id=page["id"], children=children)
 
         # - Update page
 
-        # -- Return if no kwargs provided
-
-        if not kwargs:
-            return old_page
-
         # -- If old page provided - check if nothing has changed (to avoid unnecessary requests)
 
-        if old_page and contains_nested(whole=old_page, part=kwargs):
+        if old_page and contains_nested(whole=old_page, part=page):
             return old_page
 
         # -- Update page
 
-        logger.debug("Updating page", page_id=page_id)
+        logger.debug("Updating page", page=page)
 
-        return await self.pages.update(page_id=page_id, **kwargs)
+        return await self.pages.update(page_id=page["id"], **drop(page, ["id"]))
 
     @tested(tests=[test_upsert_database])
     async def upsert_database(
@@ -162,7 +153,9 @@ class EnrichedNotionAsyncClient(AsyncClient):
             database_id = database["id"]
 
             if pages:
-                await asyncio.gather(*[self.upsert_page(parent={"database_id": database_id}, **page) for page in pages])
+                await asyncio.gather(
+                    *[self.upsert_page(page={**{"database_id": database_id}, **page}) for page in pages]
+                )
 
             return database
 
@@ -219,16 +212,15 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
             logger.debug("Removing pages", n_pages=len(to_remove))
 
-            await asyncio.gather(*[self.upsert_page(page_id=page["id"], archived=True) for page in to_remove])
+            await asyncio.gather(*[self.upsert_page(page={"id": page["id"], "archived": True}) for page in to_remove])
 
         # -- Create or update new pages
 
         await asyncio.gather(
             *[
                 self.upsert_page(
-                    page_id=page.get("id"),
                     parent={"database_id": database_id},
-                    **drop(page, ["id"] + (["children"] if not update_page_contents else [])),
+                    page=drop(page, ["children"] if not update_page_contents else []),
                 )
                 for page in pages
             ]

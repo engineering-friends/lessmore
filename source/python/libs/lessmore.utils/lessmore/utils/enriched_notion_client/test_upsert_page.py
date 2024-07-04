@@ -23,18 +23,29 @@ def test_upsert_page():
         page_name = f"test_page_{uuid.uuid4()}"
 
         page = await client.upsert_page(
-            parent={"page_id": deps.config.notion_test_page_id},
-            properties={"title": {"title": [{"text": {"content": page_name}}]}},
+            page={
+                "parent": {"page_id": deps.config.notion_test_page_id},
+                "properties": {"title": {"title": [{"text": {"content": page_name}}]}},
+            },
+            children=[
+                {
+                    "type": "image",
+                    "image": {
+                        "type": "external",
+                        "external": {"url": "https://i.imgur.com/o5yuYCB.jpeg"},
+                    },
+                }
+            ],
         )
 
         new_page = await client.upsert_page(
-            page_id=page["id"],
+            page={"id": page["id"]},
             old_page=page,
             children=[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
         )
 
-        new_page = await client.upsert_page(  # should not update anything if nothing has changed
-            page_id=page["id"],
+        new_page = await client.upsert_page(  # should not change anything
+            page={"id": page["id"]},
             old_page=page,
             children=[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
         )
@@ -45,7 +56,7 @@ def test_upsert_page():
 
         # - Remove test page
 
-        await client.upsert_page(page_id=page["id"], archived=True)
+        await client.upsert_page(page={"id": page["id"], "archived": True})
 
     asyncio.run(main())
 
