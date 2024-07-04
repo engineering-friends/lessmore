@@ -115,7 +115,13 @@ class EnrichedNotionAsyncClient(AsyncClient):
         pages: list[dict] = [],
         remove_others: bool = False,
         page_unique_id_func: Optional[Callable] = None,
+        archived: Optional[bool] = None,
     ):
+        # - If archived - just archive
+
+        if archived is not None:
+            return await self.blocks.update(block_id=database_id, archived=True)
+
         # - Prepare kwargs
 
         kwargs = {
@@ -284,7 +290,7 @@ def test_upsert_database():
 
         # - Remove test database
 
-        await client.upsert_page(page_id=database["id"], archived=True)
+        await client.upsert_database(database_id=database["id"], archived=True)
 
     asyncio.run(main())
 
