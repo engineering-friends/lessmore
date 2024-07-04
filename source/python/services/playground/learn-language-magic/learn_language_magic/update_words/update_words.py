@@ -125,6 +125,10 @@ async def update_words(
         not in [first(page["properties"]["word"]["title"])["text"]["content"] for page in current_word_pages]
     ]
 
+    # - Remove "cover" property for refreshed_pages
+
+    await asyncio.gather(*[client.upsert_page({"id": page["id"], "cover": None}) for page in refreshed_pages])
+
     # - Process words
 
     async def _update_pages():

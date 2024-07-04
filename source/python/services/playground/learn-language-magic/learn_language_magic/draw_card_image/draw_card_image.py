@@ -30,14 +30,6 @@ async def draw_card_image(word: str):
             style="Continuous lines very easy, clean and minimalist, colorful: {prompt}",
         )
 
-        # - Resize image to 1280x731 (telegram max size)
-
-        image = Image.open(io.BytesIO(image_contents))
-        image_resized = image.resize((1280, 731), Image.LANCZOS)
-        image_contents = io.BytesIO()
-        image_resized.save(image_contents, format="PNG")
-        image_contents = image_contents.getvalue()
-
         # - Save to tmp file and add to files
 
         write_file(data=image_contents, filename=filename, as_bytes=True)

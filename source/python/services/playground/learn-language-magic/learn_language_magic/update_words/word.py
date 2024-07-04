@@ -138,18 +138,33 @@ class Word:
             "properties": {
                 "word": {"title": [{"text": {"content": self.word}}]},
                 "origin": {"select": {"name": self.origin}},
-                "groups": {"multi_select": [{"name": group} for group in self.groups]} if self.groups else None,
+                "groups": {"multi_select": [{"name": group} for group in self.groups]},
                 "translation_en": {"rich_text": [{"text": {"content": await self.translation_en}}]},
                 "translation_ru": {"rich_text": [{"text": {"content": await self.translation_ru}}]},
                 "example_sentence": {"rich_text": [{"text": {"content": await self.example_sentence}}]},
                 "part_of_speech": {"select": {"name": await self.part_of_speech}},
-                "gender": {"select": {"name": await self.gender}} if await self.gender else None,
+                "gender": {"select": {"name": await self.gender}},
                 "plural_form": {"rich_text": [{"text": {"content": await self.plural_form}}]},
                 "irregular_verb": {"checkbox": await self.irregular_verb},
                 "pronunciation": {"rich_text": [{"text": {"content": await self.pronunciation}}]},
+                "cover": {
+                    "files": [
+                        {
+                            "name": f"{self.word}.png",
+                            "type": "external",
+                            "external": {"url": await self.image_url},
+                        }
+                    ],
+                },
             },
             "children": [],  # will be filled later
         }
+
+        if not await self.gender:
+            result["properties"].pop("gender")
+
+        if not self.groups:
+            result["properties"].pop("groups")
 
         # - Add children
 

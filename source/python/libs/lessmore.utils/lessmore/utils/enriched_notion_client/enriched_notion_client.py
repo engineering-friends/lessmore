@@ -44,7 +44,6 @@ class EnrichedNotionAsyncClient(AsyncClient):
         # - Prepare kwargs
 
         # Note: it's very important to filter None values, or Notion will throw an ambiguous error
-        page["properties"] = {k: v for k, v in page.get("properties", {}).items() if v is not None}
         page = {k: v for k, v in page.items() if v is not None}
 
         # - If not page_id: create page
