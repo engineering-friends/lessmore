@@ -13,6 +13,7 @@ class Config(BaseSettings):
     # - Notion
 
     notion_token: str
+    notion_test_page_id: str
 
     # - Imgur
 
