@@ -1,19 +1,22 @@
 import asyncio
-import time
-import uuid
 
 from typing import Callable, Optional
 
+from loguru import logger
+from more_itertools import only
+from notion_client import AsyncClient
+
+from lessmore.utils.enriched_notion_client.test_paginated_request import test_paginated_request
+from lessmore.utils.enriched_notion_client.test_upsert_database import test_upsert_database
+from lessmore.utils.enriched_notion_client.test_upsert_page import test_upsert_page
 from lessmore.utils.functional.contains_nested import contains_nested
 from lessmore.utils.functional.dict.drop import drop
-from lessmore.utils.printy import printy as print
-from loguru import logger
-from more_itertools import first, only
-from notion_client import AsyncClient
+from lessmore.utils.tested import tested
 
 
 class EnrichedNotionAsyncClient(AsyncClient):
     @staticmethod
+    @tested(tests=[test_upsert_page])
     async def get_paginated_request(method, **kwargs):
         # - Init
 
@@ -31,6 +34,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         return result
 
+    @tested(tests=[test_upsert_page])
     async def upsert_page(
         self,
         page_id: Optional[str] = None,
@@ -114,6 +118,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         return await self.pages.update(page_id=page_id, **kwargs)
 
+    @tested(tests=[test_upsert_database])
     async def upsert_database(
         self,
         database_id: Optional[str] = None,
@@ -230,106 +235,3 @@ class EnrichedNotionAsyncClient(AsyncClient):
         )
 
         return database
-
-
-def test_paginated_request():
-    async def main():
-        from learn_language_magic.deps import Deps
-
-        client = EnrichedNotionAsyncClient(
-            auth=Deps.load().config.notion_token,
-        )
-
-        print(await client.pages.retrieve(page_id="20901ecb09f8406983ff47f18d24f2a6"))
-
-    asyncio.run(main())
-
-
-def test_upsert_page():
-    async def main():
-        # - Init client
-
-        from learn_language_magic.deps import Deps
-
-        deps = Deps.load()
-
-        client = EnrichedNotionAsyncClient(
-            auth=deps.config.notion_token,
-        )
-
-        # - Create page for tests inside tmp_page
-
-        page_name = f"test_page_{uuid.uuid4()}"
-
-        page = await client.upsert_page(
-            parent={"page_id": deps.config.notion_test_page_id},
-            properties={"title": {"title": [{"text": {"content": page_name}}]}},
-        )
-
-        new_page = await client.upsert_page(
-            page_id=page["id"],
-            old_page=page,
-            children=[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
-        )
-
-        new_page = await client.upsert_page(  # should not update anything if nothing has changed
-            page_id=page["id"],
-            old_page=page,
-            children=[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
-        )
-
-        assert contains_nested(
-            whole=new_page, part={"properties": {"title": {"title": [{"text": {"content": page_name}}]}}}
-        )
-
-        # - Remove test page
-
-        await client.upsert_page(page_id=page["id"], archived=True)
-
-    asyncio.run(main())
-
-
-def test_upsert_database():
-    async def main():
-        # - Init client
-
-        from learn_language_magic.deps import Deps
-
-        deps = Deps.load()
-
-        client = EnrichedNotionAsyncClient(
-            auth=deps.config.notion_token,
-        )
-        print(await client.databases.retrieve(database_id="d7a47aa34d2448e38e1a62ed7b6c6775"))
-
-        # - Create page for tests inside tmp_page
-
-        database_name = f"test_page_{uuid.uuid4()}"
-
-        database = await client.upsert_database(
-            parent={"page_id": deps.config.notion_test_page_id},
-            title=[{"text": {"content": database_name}}],
-            properties={"word": {"id": "title", "name": "word", "title": {}, "type": "title"}},
-        )
-
-        database = await client.upsert_database(
-            database_id=database["id"],
-            pages=[
-                {
-                    "children": [{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
-                    "properties": {"word": {"title": [{"text": {"content": "Sure?!"}}]}},
-                }
-            ],
-        )
-
-        # - Remove test database
-
-        await client.upsert_database(database_id=database["id"], archived=True)
-
-    asyncio.run(main())
-
-
-if __name__ == "__main__":
-    # test_paginated_request()
-    # test_upsert_page()
-    test_upsert_database()

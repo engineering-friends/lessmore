@@ -115,12 +115,12 @@ def test():
             )
         )
         
-# fmt: on
 
     import asyncio
 
     asyncio.run(main())
 
+# fmt: on
 
 if __name__ == "__main__":
     test()
