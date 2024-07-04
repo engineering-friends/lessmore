@@ -67,7 +67,7 @@ class Word:
     async def irregular_verb(self):
         return (
             await ask(
-                f"Is '{self.word}' an irregular verb?",
+                f"Is german word '{self.word}' an irregular verb?",
                 template="yes",
             )
             == "yes"
@@ -76,7 +76,7 @@ class Word:
     @async_cached_property
     async def pronunciation(self):
         return await ask(
-            f"Pronunciation of '{self.word}'",
+            f"Pronunciation of german word '{self.word}'",
             template="/ˈlaʊfə/",
         )
 

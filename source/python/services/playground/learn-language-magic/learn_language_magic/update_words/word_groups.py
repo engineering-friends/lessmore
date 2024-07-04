@@ -52,6 +52,7 @@ word_groups = {
         "fragen",
         "antworten",
         "wohnen",
+        "fühlen",
     ],
     "ver-verbs": [
         "kaufen",
