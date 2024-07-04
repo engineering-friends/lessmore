@@ -5,13 +5,10 @@ import textwrap
 
 from dataclasses import dataclass
 
-from benedict import benedict
 from learn_language_magic.ask import ask
 from learn_language_magic.deps import Deps
 from learn_language_magic.draw_card_image.draw_card_image import draw_card_image
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property, prefetch_all_cached_properties
-from lessmore.utils.asynchronous.gather_nested import gather_nested
-from lessmore.utils.read_config.merge_dicts import merge_dicts
 from more_itertools import mark_ends
 
 
@@ -34,8 +31,8 @@ class Word:
 
         async def _process_word(word):
             word = await ask(
-                f"""Add english translation and pronunciation for '{word}'. Remove the trailing dot. Keep it as short as possible. Skip `und`, add articles if needed""",
-                example="- der Hund (dog, /dɛr hʊnt/)",
+                f"""Add english translation, pronunciation and emoji at the start for '{word}'. Remove the trailing dot. Keep it as short as possible. Skip `und`, add articles if needed""",
+                example="- 🐶 der Hund (dog, /dɛr hʊnt/)",
             )
 
             if all(pronoun not in word for pronoun in ["der", "die", "das"]):
@@ -134,14 +131,7 @@ class Word:
             example="sein, haben, laufen",
         )
 
-    @async_cached_property
-    async def pronunciation(self):
-        return await ask(
-            f"Pronunciation of german phrase '{self.word}'",
-            example="/ˈlaʊfə ˈhaːbn/",
-        )
-
-    @async_cached_property
+    # @async_cached_property
     async def image_url(self):
         return await draw_card_image(word=self.word)
 
@@ -158,18 +148,17 @@ class Word:
                 "part_of_speech": {"rich_text": [{"text": {"content": await self.part_of_speech}}]},
                 "plural_form": {"rich_text": [{"text": {"content": await self.plural_form}}]},
                 "irregular_verb": {"rich_text": [{"text": {"content": await self.irregular_verb}}]},
-                "pronunciation": {"rich_text": [{"text": {"content": await self.pronunciation}}]},
-                "refresh_image": {"checkbox": False},  # reset
                 "inline_translation": {"rich_text": await self.inline_translation_with_colored_genders},
-                "cover": {
-                    "files": [
-                        {
-                            "name": f"{self.word}.png",
-                            "type": "external",
-                            "external": {"url": await self.image_url},
-                        }
-                    ],
-                },
+                # "cover": {
+                #     "files": [
+                #         {
+                #             "name": f"{self.word}.png",
+                #             "type": "external",
+                #             "external": {"url": await self.image_url},
+                #         }
+                #     ],
+                # },
+                # "refresh_image": {"checkbox": False},  # reset
             },
             "children": [],  # will be filled later
         }
