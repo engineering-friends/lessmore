@@ -44,13 +44,22 @@ class EnrichedNotionAsyncClient(AsyncClient):
     ):
         # - Prepare kwargs
 
-        kwargs = {"archived": archived, "properties": properties, "icon": icon, "cover": cover, "parent": parent}
+        # Note: it's very important to filter None values, or Notion will throw an ambiguous error
+        kwargs = {
+            "archived": archived,
+            "properties": {k: v for k, v in properties.items() if v is not None},
+            "icon": icon,
+            "cover": cover,
+            "parent": parent,
+        }
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
         # - If not page_id: create page
 
         if not page_id:
             # - Create page
+
+            logger.debug("Creating page", kwargs=kwargs)
 
             page = await self.pages.create(**kwargs)
 
@@ -75,11 +84,13 @@ class EnrichedNotionAsyncClient(AsyncClient):
             # - Update children if needed
 
             if not contains_nested(whole=old_children, part=children):
-                logger.trace("Updating children", page_id=page_id)
+                logger.debug("Updating children", page_id=page_id)
 
                 # - Delete old children
 
-                await asyncio.gather(*[self.blocks.delete(block_id=child["id"]) for child in old_children])
+                for child in old_children:
+                    await self.blocks.delete(block_id=child["id"])
+                # await asyncio.gather(*[self.blocks.delete(block_id=child["id"]) for child in old_children])
 
                 # - Create new children
 
@@ -99,7 +110,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         # -- Update page
 
-        logger.trace("Updating page", page_id=page_id)
+        logger.debug("Updating page", page_id=page_id)
 
         return await self.pages.update(page_id=page_id, **kwargs)
 
@@ -139,6 +150,8 @@ class EnrichedNotionAsyncClient(AsyncClient):
         # - Create database if not exists
 
         if not database_id:
+            logger.debug("Creating new database", kwargs=kwargs)
+
             database = await self.databases.create(**kwargs)
             database_id = database["id"]
 
@@ -151,6 +164,8 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         if kwargs:
             # - Update database
+
+            logger.info("Updating database", database_id=database_id, kwargs=kwargs)
 
             database = await self.databases.update(database_id=database_id, **kwargs)
         else:
@@ -195,6 +210,9 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         if remove_others:
             to_remove = [page for page in old_pages if page["id"] not in [page["id"] for page in pages]]
+
+            logger.debug("Removing pages", n_pages=len(to_remove))
+
             await asyncio.gather(*[self.upsert_page(page_id=page["id"], archived=True) for page in to_remove])
 
         # -- Create or update new pages

@@ -45,10 +45,15 @@ class Word:
 
     @async_cached_property
     async def gender(self):
-        return await ask(
+        result = await ask(
             f"""Gender of the german word: '{self.word}'. One of "Masculine", "Feminine", "Neuter" or "Plural" or "None""",
             template="Masculine",
         )
+
+        if result == "None":
+            return None
+
+        return result
 
     @async_cached_property
     async def plural_form(self):
@@ -60,9 +65,13 @@ class Word:
     @async_cached_property
     async def irregular_verb(self):
         result = await ask(
-            f"Is '{self.word}' an irregular verb?",
+            f"Is '{self.word}' an irregular verb? (yes/no/undefined)",
             template="yes",
         )
+
+        if result == "undefined":
+            return None
+
         return result == "yes"
 
     @async_cached_property
@@ -74,21 +83,21 @@ class Word:
 
     @async_cached_property
     async def cases(self):
-        if await self.part_of_speech == "Noun":
-            return await ask(
-                f"""Cases of the german word: '{self.word}' as a markdown table""",
-                template={
-                    "columns": ["Case", "Irregular", "Singular", "Plural"],
-                    "rows": [
-                        ["Nominative", "x", "der Mann", "die Männer"],
-                        ["Accusative", "x", "den Mann", "die Männer"],
-                        ["Dative", "x", "dem Mann", "den Männern"],
-                        ["Genitive", "x", "des Mannes", "der Männer"],
-                    ],
-                },
-            )
-        else:
-            return {}
+        if await self.part_of_speech != "None":
+            return None
+
+        return await ask(
+            f"""Cases of the german word: '{self.word}' as a markdown table""",
+            template={
+                "columns": ["Case", "Irregular", "Singular", "Plural"],
+                "rows": [
+                    ["Nominative", "x", "der Mann", "die Männer"],
+                    ["Accusative", "x", "den Mann", "die Männer"],
+                    ["Dative", "x", "dem Mann", "den Männern"],
+                    ["Genitive", "x", "des Mannes", "der Männer"],
+                ],
+            },
+        )
 
     @async_cached_property
     async def image_url(self):
@@ -96,15 +105,15 @@ class Word:
 
     @async_cached_property
     async def conjugations(self):
-        if await self.part_of_speech == "Verb":
-            return await ask(
-                f"""Conjugations of the german word: '{self.word}' as a markdown table""",
-                template=json.loads(
-                    """{"columns":["Tense","Irregular Form","Pronoun","Conjugation"],"rows":{"Present (Präsens)":[["x","ich","laufe"],["x","du","läufst"],["x","er/sie/es","läuft"],["","wir","laufen"],["","ihr","lauft"],["","sie/Sie","laufen"]],"Past (Präteritum)":[["x","ich","lief"],["x","du","liefst"],["x","er/sie/es","lief"],["x","wir","liefen"],["x","ihr","lieft"],["x","sie/Sie","liefen"]],"Present Perfect (Perfekt)":[["x","ich","bin gelaufen"],["x","du","bist gelaufen"],["x","er/sie/es","ist gelaufen"],["x","wir","sind gelaufen"],["x","ihr","seid gelaufen"],["x","sie/Sie","sind gelaufen"]],"Past Perfect (Plusquamperfekt)":[["x","ich","war gelaufen"],["x","du","warst gelaufen"],["x","er/sie/es","war gelaufen"],["x","wir","waren gelaufen"],["x","ihr","wart gelaufen"],["x","sie/Sie","waren gelaufen"]],"Future I (Futur I)":[["","ich","werde laufen"],["","du","wirst laufen"],["","er/sie/es","wird laufen"],["","wir","werden laufen"],["","ihr","werdet laufen"],["","sie/Sie","werden laufen"]],"Future II (Futur II)":[["","ich","werde gelaufen sein"],["","du","wirst gelaufen sein"],["","er/sie/es","wird gelaufen sein"],["","wir","werden gelaufen sein"],["","ihr","werdet gelaufen sein"],["","sie/Sie","werden gelaufen sein"]],"Conditional II (Konjunktiv II) – Present":[["x","ich","liefe"],["x","du","liefest"],["x","er/sie/es","liefe"],["x","wir","liefen"],["x","ihr","liefet"],["x","sie/Sie","liefen"]],"Conditional II (Konjunktiv II) – Past":[["x","ich","wäre gelaufen"],["x","du","wärst gelaufen"],["x","er/sie/es","wäre gelaufen"],["x","wir","wären gelaufen"],["x","ihr","wärt gelaufen"],["x","sie/Sie","wären gelaufen"]],"Subjunctive I (Konjunktiv I) – Present":[["","ich","laufe"],["","du","laufest"],["","er/sie/es","laufe"],["","wir","laufen"],["","ihr","laufet"],["","sie/Sie","laufen"]],"Subjunctive I (Konjunktiv I) – Past":[["","ich","sei gelaufen"],["","du","seiest gelaufen"],["","er/sie/es","sei gelaufen"],["","wir","seien gelaufen"],["","ihr","seiet gelaufen"],["","sie/Sie","seien gelaufen"]],"Imperative (Befehlsform)":[["","du","lauf"],["","ihr","lauft"],["","Sie","laufen Sie"]]}}"""
-                ),
-            )
-        else:
-            return {}
+        if await self.part_of_speech != "Verb":
+            return None
+
+        return await ask(
+            f"""Conjugations of the german word: '{self.word}' as a markdown table""",
+            template=json.loads(
+                """{"columns":["Tense","Irregular Form","Pronoun","Conjugation"],"rows":{"Present (Präsens)":[["x","ich","laufe"],["x","du","läufst"],["x","er/sie/es","läuft"],["","wir","laufen"],["","ihr","lauft"],["","sie/Sie","laufen"]],"Past (Präteritum)":[["x","ich","lief"],["x","du","liefst"],["x","er/sie/es","lief"],["x","wir","liefen"],["x","ihr","lieft"],["x","sie/Sie","liefen"]],"Present Perfect (Perfekt)":[["x","ich","bin gelaufen"],["x","du","bist gelaufen"],["x","er/sie/es","ist gelaufen"],["x","wir","sind gelaufen"],["x","ihr","seid gelaufen"],["x","sie/Sie","sind gelaufen"]],"Past Perfect (Plusquamperfekt)":[["x","ich","war gelaufen"],["x","du","warst gelaufen"],["x","er/sie/es","war gelaufen"],["x","wir","waren gelaufen"],["x","ihr","wart gelaufen"],["x","sie/Sie","waren gelaufen"]],"Future I (Futur I)":[["","ich","werde laufen"],["","du","wirst laufen"],["","er/sie/es","wird laufen"],["","wir","werden laufen"],["","ihr","werdet laufen"],["","sie/Sie","werden laufen"]],"Future II (Futur II)":[["","ich","werde gelaufen sein"],["","du","wirst gelaufen sein"],["","er/sie/es","wird gelaufen sein"],["","wir","werden gelaufen sein"],["","ihr","werdet gelaufen sein"],["","sie/Sie","werden gelaufen sein"]],"Conditional II (Konjunktiv II) – Present":[["x","ich","liefe"],["x","du","liefest"],["x","er/sie/es","liefe"],["x","wir","liefen"],["x","ihr","liefet"],["x","sie/Sie","liefen"]],"Conditional II (Konjunktiv II) – Past":[["x","ich","wäre gelaufen"],["x","du","wärst gelaufen"],["x","er/sie/es","wäre gelaufen"],["x","wir","wären gelaufen"],["x","ihr","wärt gelaufen"],["x","sie/Sie","wären gelaufen"]],"Subjunctive I (Konjunktiv I) – Present":[["","ich","laufe"],["","du","laufest"],["","er/sie/es","laufe"],["","wir","laufen"],["","ihr","laufet"],["","sie/Sie","laufen"]],"Subjunctive I (Konjunktiv I) – Past":[["","ich","sei gelaufen"],["","du","seiest gelaufen"],["","er/sie/es","sei gelaufen"],["","wir","seien gelaufen"],["","ihr","seiet gelaufen"],["","sie/Sie","seien gelaufen"]],"Imperative (Befehlsform)":[["","du","lauf"],["","ihr","lauft"],["","Sie","laufen Sie"]]}}"""
+            ),
+        )
 
     @async_cached_property
     async def notion_page(self):
@@ -119,7 +128,7 @@ class Word:
                 "translation_ru": {"rich_text": [{"text": {"content": self.translation_ru}}]},
                 "example_sentence": {"rich_text": [{"text": {"content": self.example_sentence}}]},
                 "part_of_speech": {"select": {"name": self.part_of_speech}},
-                "gender": {"select": {"name": self.gender}},
+                "gender": {"select": {"name": self.gender}} if await self.gender else None,
                 "plural_form": {"rich_text": [{"text": {"content": self.plural_form}}]},
                 "irregular_verb": {"checkbox": self.irregular_verb},
                 "pronunciation": {"rich_text": [{"text": {"content": self.pronunciation}}]},

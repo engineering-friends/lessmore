@@ -83,12 +83,21 @@ async def update_words(
         _words.append(_word)
     words = _words
 
+    logger.info("Collected words", n_words=len(words))
+
     # - Process words
 
     await asyncio.gather(
         *(
             [prefetch_all_cached_properties(word) for word in words]
-            + [client.upsert_database(database_id=words_database_id, pages=[await word.notion_page]) for word in words]
+            + [
+                client.upsert_database(
+                    database_id=words_database_id,
+                    pages=[await word.notion_page],
+                    page_unique_id_func=lambda page: page["properties"]["word"]["title"][0]["text"]["content"],
+                )
+                for word in words
+            ]
         )
     )
 
