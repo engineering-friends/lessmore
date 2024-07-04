@@ -30,15 +30,15 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         return result
 
-    async def create_or_update_page(
+    async def upsert_page(
         self,
         page_id: Optional[str] = None,
         parent: Optional[dict] = None,
+        old_page: Optional[dict] = None,
         archived: Optional[bool] = None,
         properties: Optional[dict] = None,
         icon: Optional[dict] = None,
         cover: Optional[dict] = None,
-        old_page: Optional[dict] = None,
         children: Optional[list] = None,
     ):
         # - Prepare kwargs
@@ -84,27 +84,30 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
                 await self.blocks.children.append(block_id=page_id, children=children)
 
-        # - Return if no kwargs provided
+        # - Update page
+
+        # -- Return if no kwargs provided
 
         if not kwargs:
             return old_page
 
-        # - If old page provided - check if nothing has changed (to avoid unnecessary requests)
+        # -- If old page provided - check if nothing has changed (to avoid unnecessary requests)
 
         if old_page and contains_nested(whole=old_page, part=kwargs):
             return old_page
 
-        # - Update page
+        # -- Update page
 
         logger.trace("Updating page", page_id=page_id)
 
         return await self.pages.update(page_id=page_id, **kwargs)
 
-    async def update_database(
+    async def upsert_database(
         self,
-        database_id: str,
+        database_id: Optional[str] = None,
+        parent: Optional[dict] = None,
         properties: Optional[dict] = None,
-        title: Optional[str] = None,
+        title: Optional[list] = None,
         description: Optional[str] = None,
         icon: Optional[dict] = None,
         cover: Optional[dict] = None,
@@ -113,7 +116,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
         remove_others: bool = False,
         page_unique_id_func: Optional[Callable] = None,
     ):
-        # - Update metadata first
+        # - Prepare kwargs
 
         kwargs = {
             "properties": properties,
@@ -122,25 +125,48 @@ class EnrichedNotionAsyncClient(AsyncClient):
             "icon": icon,
             "cover": cover,
             "is_inline": is_inline,
+            "parent": parent,
         }
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
+        # - Create database if not exists
+
+        if not database_id:
+            database = await self.databases.create(**kwargs)
+            database_id = database["id"]
+
+            if pages:
+                await asyncio.gather(*[self.upsert_page(parent={"database_id": database_id}, **page) for page in pages])
+
+            return database
+
+        # - Update metadata first
+
         if kwargs:
-            await self.databases.update(database_id=database_id, **kwargs)
+            # - Update database
+
+            database = await self.databases.update(database_id=database_id, **kwargs)
+        else:
+            # - Just retrieve database
+
+            database = await self.databases.retrieve(database_id=database_id)
 
         # - Update pages
 
-        if not pages:
-            return
+        # -- Return if no pages provided
 
-        # - Get old pages
+        if not pages:
+            return database
+
+        # - -- Get old pages
 
         old_pages = await self.get_paginated_request(method=self.databases.query, database_id=database_id)
 
-        # - Find correct page_id for each page
+        # -- Find correct page_id for each page
 
         if page_unique_id_func:
             # - Set _unique_id
+
             for page in old_pages + pages:
                 page["_unique_id"] = page_unique_id_func(page)
 
@@ -153,17 +179,17 @@ class EnrichedNotionAsyncClient(AsyncClient):
                 if old_page:
                     page["id"] = old_page["id"]
 
-        # - Remove pages if needed
+        # -- Remove pages if needed
 
         if remove_others:
             to_remove = [page for page in old_pages if page["id"] not in [page["id"] for page in pages]]
-            await asyncio.gather(*[self.create_or_update_page(page_id=page["id"], archived=True) for page in to_remove])
+            await asyncio.gather(*[self.upsert_page(page_id=page["id"], archived=True) for page in to_remove])
 
-        # - Create or update new pages
+        # -- Create or update new pages
 
-        await asyncio.gather(
-            *[self.create_or_update_page(parent={"database_id": database_id}, **page) for page in pages]
-        )
+        await asyncio.gather(*[self.upsert_page(parent={"database_id": database_id}, **page) for page in pages])
+
+        return database
 
 
 def test_paginated_request():
@@ -179,7 +205,7 @@ def test_paginated_request():
     asyncio.run(main())
 
 
-def test_update_page():
+def test_upsert_page():
     async def main():
         # - Init client
 
@@ -195,18 +221,18 @@ def test_update_page():
 
         page_name = f"test_page_{uuid.uuid4()}"
 
-        page = await client.create_or_update_page(
+        page = await client.upsert_page(
             parent={"page_id": deps.config.notion_test_page_id},
             properties={"title": {"title": [{"text": {"content": page_name}}]}},
         )
 
-        new_page = await client.create_or_update_page(
+        new_page = await client.upsert_page(
             page_id=page["id"],
             old_page=page,
             children=[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
         )
 
-        new_page = await client.create_or_update_page(  # should not update anything if nothing has changed
+        new_page = await client.upsert_page(  # should not update anything if nothing has changed
             page_id=page["id"],
             old_page=page,
             children=[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
@@ -218,12 +244,12 @@ def test_update_page():
 
         # - Remove test page
 
-        await client.pages.update(page_id=page["id"], archived=True)
+        await client.upsert_page(page_id=page["id"], archived=True)
 
     asyncio.run(main())
 
 
-def test_update_database():
+def test_upsert_database():
     async def main():
         # - Init client
 
@@ -234,39 +260,36 @@ def test_update_database():
         client = EnrichedNotionAsyncClient(
             auth=deps.config.notion_token,
         )
+        print(await client.databases.retrieve(database_id="d7a47aa34d2448e38e1a62ed7b6c6775"))
 
         # - Create page for tests inside tmp_page
 
-        page_name = f"test_page_{uuid.uuid4()}"
+        database_name = f"test_page_{uuid.uuid4()}"
 
-        page = await client.create_or_update_page(
+        database = await client.upsert_database(
             parent={"page_id": deps.config.notion_test_page_id},
-            properties={"title": {"title": [{"text": {"content": page_name}}]}},
+            title=[{"text": {"content": database_name}}],
+            properties={"word": {"id": "title", "name": "word", "title": {}, "type": "title"}},
         )
 
-        new_page = await client.create_or_update_page(
-            page_id=page["id"],
-            old_page=page,
-            children=[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
+        database = await client.upsert_database(
+            database_id=database["id"],
+            pages=[
+                {
+                    "children": [{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
+                    "properties": {"word": {"title": [{"text": {"content": "Sure?!"}}]}},
+                }
+            ],
         )
 
-        new_page = await client.create_or_update_page(  # should not update anything if nothing has changed
-            page_id=page["id"],
-            old_page=page,
-            children=[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
-        )
+        # - Remove test database
 
-        assert contains_nested(
-            whole=new_page, part={"properties": {"title": {"title": [{"text": {"content": page_name}}]}}}
-        )
-
-        # - Remove test page
-
-        await client.pages.update(page_id=page["id"], archived=True)
+        await client.upsert_page(page_id=database["id"], archived=True)
 
     asyncio.run(main())
 
 
 if __name__ == "__main__":
-    test_paginated_request()
-    test_update_page()
+    # test_paginated_request()
+    # test_upsert_page()
+    test_upsert_database()
