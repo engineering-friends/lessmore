@@ -118,17 +118,31 @@ async def update_words(
 
     # - Process words
 
-    async def _update_notion_page(word: Word):
+    async def _update_pages():
+        # - Get all words pages
+
+        word_pages = await asyncio.gather(*[word.notion_page for word in words])
+
+        # - Remove children if not updated
+
+        for page in word_pages:
+            if not (
+                update_page_contents
+                or first(page["properties"]["word"]["title"])["text"]["content"] in refreshed_titles
+                or not page.get("id")
+            ):
+                # no need to update
+                page["children"] = None
+
+        # - Update pages
+
         await client.upsert_database(
             database={"id": words_database_id},
-            pages=[await word.notion_page],
+            pages=word_pages,
             page_unique_id_func=lambda page: page["properties"]["word"]["title"][0]["text"]["content"],
-            update_page_contents=update_page_contents or word.word in refreshed_titles,
         )
 
-    await asyncio.gather(
-        *([prefetch_all_cached_properties(word) for word in words] + [_update_notion_page(word) for word in words])
-    )
+    await asyncio.gather(*([prefetch_all_cached_properties(word) for word in words] + [_update_pages()]))
 
 
 # fmt: off

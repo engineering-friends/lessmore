@@ -121,7 +121,6 @@ class EnrichedNotionAsyncClient(AsyncClient):
         remove_others: bool = False,
         page_unique_id_func: Optional[Callable] = None,
         archive: Optional[bool] = None,
-        update_page_contents: bool = True,
     ):
         # - If archived - just archive
 
@@ -212,7 +211,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
             pages=[
                 {
                     "database_id": database["id"],
-                    **drop(page, ["children"] if not update_page_contents else []),
+                    **page,
                 }
                 for page in pages
             ],
@@ -228,7 +227,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
                     old_page=only(
                         [old_page for old_page in old_pages if old_page["id"] == page.get("id")], default=None
                     ),
-                    children=None if not update_page_contents else page.get("children"),
+                    children=page.get("children"),
                 )
                 for page in pages
             ]
