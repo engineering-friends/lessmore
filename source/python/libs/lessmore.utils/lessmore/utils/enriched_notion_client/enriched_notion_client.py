@@ -197,7 +197,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
         # -- Remove pages if needed
 
         if remove_others:
-            to_remove = [page for page in old_pages if page["id"] not in [page["id"] for page in pages]]
+            to_remove = [page for page in old_pages if page["id"] not in [page.get("id") for page in pages]]
 
             logger.debug("Removing pages", n_pages=len(to_remove))
 

@@ -11,7 +11,7 @@ async def get_youtube_clip_url(word: str) -> str:
     # - Find iconic scene with the word "lauf" in it
 
     iconic_scene_name = await ask(
-        f"What is the most iconic scene with the word '{word}' in it?", template='"Lauf, forrest, lauf" Forrest Gump'
+        f"What is the most iconic scene with the word '{word}' in it?", example='"Lauf, forrest, lauf" Forrest Gump'
     )
 
     # - Search youtube for clips. Clip should be

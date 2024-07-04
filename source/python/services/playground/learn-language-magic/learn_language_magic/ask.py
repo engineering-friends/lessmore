@@ -20,7 +20,7 @@ async def ask(
     dedent: bool = True,
     open_ai_kwargs: dict = dict(model="gpt-4o"),
     cache: bool = True,
-    template: str | dict = "",
+    example: str | dict = "",
 ) -> str | dict | list:
     # - Copy open_ai_kwargs to avoid side effects
 
@@ -59,8 +59,8 @@ async def ask(
 
         # - Validate json
 
-        if template:
-            assert "answer" in json.loads(result), f"Expected JSON with key 'answer', got: {result}"
+        if example:
+            assert "response" in json.loads(result), f"Expected JSON with key 'response', got: {result}"
 
         # - Return
 
@@ -76,9 +76,9 @@ async def ask(
 
     # - Process JSON
 
-    if template:
+    if example:
         open_ai_kwargs["response_format"] = completion_create_params.ResponseFormat(type="json_object")
-        prompt += f"""\n Answer in JSON. Template: \n```{json.dumps({"answer": template}, ensure_ascii=False)}\n```"""
+        prompt += f"""\n Answer in JSON with root key `response`. Example: \n```{json.dumps({"response": example}, ensure_ascii=False)}\n```"""
 
         return json.loads(
             await _ask(
@@ -86,7 +86,7 @@ async def ask(
                 dedent=dedent,
                 open_ai_kwargs=open_ai_kwargs,
             )
-        )["answer"]
+        )["response"]
 
     # - Run function
 
@@ -100,7 +100,7 @@ async def ask(
 def test():
     async def main():
         assert await ask("What is 2 + 2? Just the number") == "4"
-        assert await ask("What is the capital of France?", template="London") == "Paris"
+        assert await ask("What is the capital of France?", example="London") == "Paris"
 
     asyncio.run(main())
 

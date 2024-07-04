@@ -164,7 +164,7 @@ def test():
     async def main():
         await update_words(
             word_groups=word_groups,
-            # word_groups={'test': ['laufen']},
+            # word_groups={'test': ['das Mädchen und das Haus']},
             words_database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
             stories_database_id="8d9d6643302c48649345209e18dbb0ca",  # stories
             update_page_contents=False

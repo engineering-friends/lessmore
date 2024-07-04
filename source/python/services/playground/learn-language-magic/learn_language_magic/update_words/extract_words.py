@@ -17,7 +17,7 @@ async def extract_words(text: str):
     [Text]
     {text}"""
 
-    return await ask(prompt=PROMPT.format(text=text), template=["job", "be", "just", "a", "piece of cake"])
+    return await ask(prompt=PROMPT.format(text=text), example=["job", "be", "just", "a", "piece of cake"])
 
 
 def test():

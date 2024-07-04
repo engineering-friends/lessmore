@@ -28,36 +28,36 @@ class Word:
     @async_cached_property
     async def part_of_speech(self):
         return await ask(
-            f"""Parts of speech of german '{self.word}'. Each word is one of "Noun", "Verb", "Adjective", "Adverb", "Pronoun", "Preposition", "Conjunction", "Interjection". Skip word if not applicable""",
-            template="Noun, Verb, Adjective",
+            f"""Parts of speech of german '{self.word}'. Each word is one of "Noun", "Verb", "Adjective", "Adverb". Skip articles, prepositions, etc.""",
+            example="""der Hund (Noun) und die Katze (Noun)""",
         )
 
     @async_cached_property
     async def plural_form(self):
         return await ask(
             f"Plural form of the german '{self.word}'. Skip word if not applicable.",
-            template="Hunde, Katzen, Autos",
+            example="Hunde, Katzen, Autos",
         )
 
     @async_cached_property
     async def irregular_verb(self):
         return await ask(
-            f"Which words from '{self.word} are irregular?",
-            template="sein, haben, laufen",
+            f"Which words from `{self.word}` are irregular? Skip non-verb words`",
+            example="sein, haben, laufen",
         )
 
     @async_cached_property
     async def pronunciation(self):
         return await ask(
             f"Pronunciation of german '{self.word}'",
-            template="/ˈlaʊfə/",
+            example="/ˈlaʊfə ˈhaːbn/",
         )
 
     @async_cached_property
     async def different_gender(self):
         return await ask(
-            f"Is german '{self.word}' have different genders from Russian? Which? For each different gender write `die Sonne / солнце (оно)`",
-            template="die Sonne / солнце (оно), der Mond / луна (она)",
+            f"Is german '{self.word}' have different genders from Russian? Skip word if not applicable`",
+            example="""die Sonne (солнце оно), der Mond (луна она)""",
         )
 
     @async_cached_property
@@ -129,7 +129,7 @@ class Word:
                                 "text": {
                                     "content": await ask(
                                         f"""Extract a couple of context sentences of word "{self.word}" from this text: {self.origin_text}""",
-                                        template="Mr Dursley was the director of a firm called Grunnings, which made drills",
+                                        example="Mr Dursley was the director of a firm called Grunnings, which made drills",
                                     ),
                                 },
                             }
