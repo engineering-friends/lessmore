@@ -22,44 +22,39 @@ class Word:
     @async_cached_property
     async def translation_en(self):
         return await ask(
-            f"Translation of the german word '{self.word}' in English. Remove the trailing dot. Keep it as short as possible, preferably one word:"
+            f"Translation of the german '{self.word}' in English. Remove the trailing dot. Keep it as short as possible, preferably one-to-one:"
         )
 
     @async_cached_property
     async def translation_ru(self):
         return await ask(
-            f"Переведи немецкое слово '{self.word}' на русский язык. Без точки в конце. Объясни как можно кратче, предпочтительно одним словом:"
+            f"Переведи немецкое '{self.word}' на русский язык. Без точки в конце. Объясни как можно кратче, предпочтительно один-к-одному:"
         )
 
     @async_cached_property
     async def example_sentence(self):
-        return await ask(
-            f"Example sentence with the german word '{self.word}'. Remove the trailing dot. Just the sentence:"
-        )
+        return await ask(f"Example sentence with the german '{self.word}'. Remove the trailing dot. Just the sentence:")
 
     @async_cached_property
     async def part_of_speech(self):
         return await ask(
-            f"""Part of speech of german word '{self.word}'. One of "Noun", "Verb", "Adjective", "Adverb", "Pronoun", "Preposition", "Conjunction", "Interjection" or "None".""",
+            f"""Parts of speech of german '{self.word}'. Each word is one of "Noun", "Verb", "Adjective", "Adverb", "Pronoun", "Preposition", "Conjunction", "Interjection" or "None".""",
             template="Noun",
         )
 
     @async_cached_property
     async def gender(self):
         result = await ask(
-            f"""Gender of the german word: '{self.word}'. One of "Masculine", "Feminine", "Neuter" or "Plural" or "None""",
+            f"""Gender of the german '{self.word}'. Each word is one of "Masculine", "Feminine", "Neuter" or "Plural" or "None""",
             template="Masculine",
         )
-
-        if result == "None":
-            return None
 
         return result
 
     @async_cached_property
     async def plural_form(self):
         return await ask(
-            f"Plural form of the german word '{self.word}'. If not applicable, answer ''",
+            f"Plural form of the german '{self.word}'. If not applicable, answer ''",
             template="Hunde",
         )
 
@@ -67,7 +62,7 @@ class Word:
     async def irregular_verb(self):
         return (
             await ask(
-                f"Is german word '{self.word}' an irregular verb?",
+                f"Is german '{self.word}' have irregular verbs? Which? Just words",
                 template="yes",
             )
             == "yes"
@@ -76,59 +71,20 @@ class Word:
     @async_cached_property
     async def pronunciation(self):
         return await ask(
-            f"Pronunciation of german word '{self.word}'",
+            f"Pronunciation of german '{self.word}'",
             template="/ˈlaʊfə/",
         )
 
     @async_cached_property
-    async def cases(self):
-        if await self.part_of_speech != "None":
-            return None
-
-        result = await ask(
-            f"""Cases of the german word: '{self.word}' as a markdown table""",
-            template={
-                "columns": ["Case", "Irregular", "Singular", "Plural"],
-                "rows": [
-                    ["Nominative", "x", "der Mann", "die Männer"],
-                    ["Accusative", "x", "den Mann", "die Männer"],
-                    ["Dative", "x", "dem Mann", "den Männern"],
-                    ["Genitive", "x", "des Mannes", "der Männer"],
-                ],
-            },
+    async def different_gender(self):
+        return await ask(
+            f"Is german '{self.word}' have different genders from Russian? Which? For each different gender write `die Sonne / солнце (оно)`",
+            template="die Sonne / солнце (оно), der Mond / луна (она)",
         )
-
-        # - Validate number of columns
-
-        try:
-            assert len(result["columns"]) == 4
-            assert all(len(row) == 4 for row in result["rows"])
-        except:
-            return None
 
     @async_cached_property
     async def image_url(self):
         return await draw_card_image(word=self.word)
-
-    @async_cached_property
-    async def conjugations(self):
-        if await self.part_of_speech != "Verb":
-            return None
-
-        result = await ask(
-            f"""Conjugations of the german word: '{self.word}' as a markdown table""",
-            template=json.loads(
-                """{"columns":["Tense","Irregular Form","Pronoun","Conjugation"],"rows":{"Present (Präsens)":[["x","ich","laufe"],["x","du","läufst"],["x","er/sie/es","läuft"],["","wir","laufen"],["","ihr","lauft"],["","sie/Sie","laufen"]],"Past (Präteritum)":[["x","ich","lief"],["x","du","liefst"],["x","er/sie/es","lief"],["x","wir","liefen"],["x","ihr","lieft"],["x","sie/Sie","liefen"]],"Present Perfect (Perfekt)":[["x","ich","bin gelaufen"],["x","du","bist gelaufen"],["x","er/sie/es","ist gelaufen"],["x","wir","sind gelaufen"],["x","ihr","seid gelaufen"],["x","sie/Sie","sind gelaufen"]],"Past Perfect (Plusquamperfekt)":[["x","ich","war gelaufen"],["x","du","warst gelaufen"],["x","er/sie/es","war gelaufen"],["x","wir","waren gelaufen"],["x","ihr","wart gelaufen"],["x","sie/Sie","waren gelaufen"]],"Future I (Futur I)":[["","ich","werde laufen"],["","du","wirst laufen"],["","er/sie/es","wird laufen"],["","wir","werden laufen"],["","ihr","werdet laufen"],["","sie/Sie","werden laufen"]],"Future II (Futur II)":[["","ich","werde gelaufen sein"],["","du","wirst gelaufen sein"],["","er/sie/es","wird gelaufen sein"],["","wir","werden gelaufen sein"],["","ihr","werdet gelaufen sein"],["","sie/Sie","werden gelaufen sein"]],"Conditional II (Konjunktiv II) – Present":[["x","ich","liefe"],["x","du","liefest"],["x","er/sie/es","liefe"],["x","wir","liefen"],["x","ihr","liefet"],["x","sie/Sie","liefen"]],"Conditional II (Konjunktiv II) – Past":[["x","ich","wäre gelaufen"],["x","du","wärst gelaufen"],["x","er/sie/es","wäre gelaufen"],["x","wir","wären gelaufen"],["x","ihr","wärt gelaufen"],["x","sie/Sie","wären gelaufen"]],"Subjunctive I (Konjunktiv I) – Present":[["","ich","laufe"],["","du","laufest"],["","er/sie/es","laufe"],["","wir","laufen"],["","ihr","laufet"],["","sie/Sie","laufen"]],"Subjunctive I (Konjunktiv I) – Past":[["","ich","sei gelaufen"],["","du","seiest gelaufen"],["","er/sie/es","sei gelaufen"],["","wir","seien gelaufen"],["","ihr","seiet gelaufen"],["","sie/Sie","seien gelaufen"]],"Imperative (Befehlsform)":[["","du","lauf"],["","ihr","lauft"],["","Sie","laufen Sie"]]}}"""
-            ),
-        )
-
-        # - Validate number of columns
-
-        try:
-            assert len(result["columns"]) == 4
-            assert all(len(row) == 3 for row in result["rows"].values())
-        except:
-            return None
 
     @async_cached_property
     async def notion_page(self):
@@ -142,10 +98,10 @@ class Word:
                 "translation_en": {"rich_text": [{"text": {"content": await self.translation_en}}]},
                 "translation_ru": {"rich_text": [{"text": {"content": await self.translation_ru}}]},
                 "example_sentence": {"rich_text": [{"text": {"content": await self.example_sentence}}]},
-                "part_of_speech": {"select": {"name": await self.part_of_speech}},
-                "gender": {"select": {"name": await self.gender}},
+                "part_of_speech": {"rich_text": [{"text": {"content": await self.part_of_speech}}]},
+                "gender": {"rich_text": [{"text": {"content": await self.gender}}]},
                 "plural_form": {"rich_text": [{"text": {"content": await self.plural_form}}]},
-                "irregular_verb": {"checkbox": await self.irregular_verb},
+                "irregular_verb": {"rich_text": [{"text": {"content": await self.irregular_verb}}]},
                 "pronunciation": {"rich_text": [{"text": {"content": await self.pronunciation}}]},
                 "cover": {
                     "files": [
@@ -206,109 +162,6 @@ class Word:
                                 },
                             }
                         ]
-                    },
-                }
-            ]
-
-        # -- Build cases
-
-        if cases := await self.cases:
-            # - Add heading "Cases"
-
-            children += [
-                {
-                    "type": "heading_1",
-                    "heading_1": {"rich_text": [{"text": {"content": "Cases"}}]},
-                }
-            ]
-
-            # - Add simple table
-
-            """
-            | Case | Irregular | Singular | Plural |
-            | --- | --- | --- | --- |
-            | Nominative | x | der Mann | die Männer |
-            | Accusative | x | den Mann | die Männer |
-            | Dative | x | dem Mann | den Männern |
-            | Genitive | x | des Mannes | der Männer |
-                """
-
-            # - Add table
-
-            children += [
-                {
-                    "type": "table",
-                    "table": {
-                        "table_width": 4,
-                        "has_column_header": True,
-                        "has_row_header": False,
-                        "children": [
-                            {
-                                "type": "table_row",
-                                "table_row": {
-                                    "cells": [
-                                        [
-                                            {
-                                                "type": "text",
-                                                "text": {"content": cell},
-                                            }
-                                        ]
-                                        for cell in row
-                                    ]
-                                },
-                            }
-                            for row in [cases["columns"]] + cases["rows"]
-                        ],
-                    },
-                }
-            ]
-
-        # -- Build conjugations
-
-        if conjugations := await self.conjugations:
-            # - Add heading "Conjugations"
-
-            children += [
-                {
-                    "type": "heading_1",
-                    "heading_1": {"rich_text": [{"text": {"content": "Conjugations"}}]},
-                }
-            ]
-
-            # - Add simple table
-
-            """
-            | Tense | Irregular Form | Pronoun | Conjugation |
-            | --- | --- | --- | --- |
-            | Present (Präsens) | x | ich | laufe |
-            | Present (Präsens) | x | du | läufst |
-            ...
-            """
-            children += [
-                {
-                    "type": "table",
-                    "table": {
-                        "table_width": 4,
-                        "has_column_header": True,
-                        "has_row_header": False,
-                        "children": [
-                            {
-                                "type": "table_row",
-                                "table_row": {
-                                    "cells": [
-                                        [
-                                            {
-                                                "type": "text",
-                                                "text": {"content": cell},
-                                            }
-                                        ]
-                                        for cell in row
-                                    ]
-                                },
-                            }
-                            for row in [conjugations["columns"]]
-                            + [[key] + row for key, rows in conjugations["rows"].items() for row in rows]
-                        ],
                     },
                 }
             ]
