@@ -74,9 +74,13 @@ async def update_words(
     for key, same_words in groupby(
         sorted(words, key=lambda word: word.word.lower()), key=lambda word: word.word.lower()
     ):
+        # - Unpack iterator
+
+        same_words = list(same_words)
+
         # - Get sample word - it will be used to merge the group
 
-        _word = next(same_words)
+        _word = same_words[0]
 
         # - Update word
 
@@ -134,7 +138,7 @@ def test():
         print(
             await update_words(
                 word_groups=word_groups,
-                # word_groups={'test': 'meiden'},
+                # word_groups={'test': ['laufen']},
                 words_database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
                 stories_database_id="8d9d6643302c48649345209e18dbb0ca",  # stories
                 update_page_contents=False

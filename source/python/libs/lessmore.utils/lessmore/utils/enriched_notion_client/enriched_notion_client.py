@@ -225,6 +225,9 @@ class EnrichedNotionAsyncClient(AsyncClient):
                         "parent": {"database_id": database["id"]},
                         **drop(page, ["children"]),
                     },
+                    old_page=only(
+                        [old_page for old_page in old_pages if old_page["id"] == page.get("id")], default=None
+                    ),
                     children=None if not update_page_contents else page.get("children"),
                 )
                 for page in pages

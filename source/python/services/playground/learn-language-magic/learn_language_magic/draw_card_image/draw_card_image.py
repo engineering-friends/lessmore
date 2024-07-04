@@ -56,11 +56,14 @@ async def draw_card_image(word: str):
     def _sanitize_filename(filename: str) -> str:
         # Replace spaces with dashes
         filename = filename.replace(" ", "-")
+
         # Remove or replace any other unsafe characters
         filename = re.sub(r"[^A-Za-z0-9\-_.]", "", filename)
         return filename
 
-    return await cache_on_disk(directory=".imgur_cache/")(async_retry(tries=5, delay=2)(upload_file_to_s3))(
+    return await cache_on_disk(directory=os.path.join(os.path.dirname(__file__), "../data/dynamic/.s3_cache/"))(
+        async_retry(tries=5, delay=2)(upload_file_to_s3)
+    )(
         filename=filename,
         bucket="lessmore",
         object_name="learn-language-magic/images/" + _sanitize_filename(os.path.basename(filename)),
