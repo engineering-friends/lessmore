@@ -4,6 +4,8 @@ from typing import Optional
 
 import aioboto3
 
+from loguru import logger
+
 from learn_language_magic.deps import Deps
 
 
@@ -12,6 +14,8 @@ async def upload_file_to_s3(
     bucket: str,
     object_name: Optional[str] = None,
 ):
+    logger.debug("Uploading file to S3", filename=filename)
+
     object_name = object_name or filename
     session = aioboto3.Session()
     async with session.client("s3") as client:

@@ -72,7 +72,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
         # - Update children if needed
 
         if children is not None:
-            logger.debug("Updating children", page=page)
+            logger.debug("Get children", page=page)
 
             # - Get old children
 

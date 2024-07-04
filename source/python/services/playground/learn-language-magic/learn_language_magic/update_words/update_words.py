@@ -35,7 +35,7 @@ async def update_words(
 
         if isinstance(word_group, str):
             await client.upsert_database(
-                database_id=stories_database_id,
+                database={"id": stories_database_id},
                 pages=[
                     {
                         "properties": {"Name": {"title": [{"text": {"content": word_group_name}}]}},
@@ -70,7 +70,9 @@ async def update_words(
 
     _words = []
 
-    for key, same_words in groupby(words, key=lambda word: word.word.lower()):
+    for key, same_words in groupby(
+        sorted(words, key=lambda word: word.word.lower()), key=lambda word: word.word.lower()
+    ):
         # - Get sample word - it will be used to merge the group
 
         _word = next(same_words)
