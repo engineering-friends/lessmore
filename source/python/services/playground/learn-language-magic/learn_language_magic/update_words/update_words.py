@@ -152,7 +152,7 @@ async def update_words(
             database={"id": words_database_id},
             pages=word_pages,
             page_unique_id_func=lambda page: page["properties"]["word"]["title"][0]["text"]["content"],
-            remove_others=True,
+            remove_others=False,
         )
 
     await asyncio.gather(*([prefetch_all_cached_properties(word) for word in words] + [_update_pages()]))

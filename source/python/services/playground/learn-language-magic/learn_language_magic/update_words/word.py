@@ -1,5 +1,7 @@
 import asyncio
 import json
+import re
+import textwrap
 
 from dataclasses import dataclass
 
@@ -10,6 +12,7 @@ from learn_language_magic.draw_card_image.draw_card_image import draw_card_image
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property, prefetch_all_cached_properties
 from lessmore.utils.asynchronous.gather_nested import gather_nested
 from lessmore.utils.read_config.merge_dicts import merge_dicts
+from more_itertools import mark_ends
 
 
 @dataclass
@@ -18,6 +21,90 @@ class Word:
     origin: str
     origin_text: str
     groups: list[str]
+
+    @async_cached_property
+    async def inline_translation_with_colored_genders(self):
+        # - Extract distinct words
+
+        words = await ask(
+            f"Extract distinct words from the german phrase `{self.word}`, skip und",
+            example=["der Apfel", "die Orange", "trinken"],
+        )
+        words = [f"- {word}" for word in words]
+
+        async def _process_word(word):
+            word = await ask(
+                f"""Add english translation and pronunciation for '{word}'. Remove the trailing dot. Keep it as short as possible. Skip `und`""",
+                example="- der Hund (dog, /dɛr hʊnt/)",
+            )
+
+            # - Get nouns
+
+            translation = await ask(f"Translation of the german '{word}' in Russian", example="Машина")
+            pronoun = await ask(
+                f"`{translation} это он, она или оно? Если не существительное - так и напиши `не существительное``",
+                example="он",
+            )
+            pronoun = pronoun.lower()
+
+            if pronoun not in ["он", "она", "оно"]:
+                return [{"text": {"content": word + "\n"}}]
+
+            german_pronoun = re.search(r"\bder\b|\bdie\b|\bdas\b", word.lower())
+
+            if not german_pronoun:
+                return [{"text": {"content": word + "\n"}}]
+
+            german_pronoun = german_pronoun.group()
+
+            is_gender_same = (
+                pronoun == "он"
+                and german_pronoun == "der"
+                or pronoun == "она"
+                and german_pronoun == "die"
+                or pronoun == "оно"
+                and german_pronoun == "das"
+            )
+
+            # - Split text by nouns and non-nouns  ("der Apfel (apple) und die Orange (orange)" -> ["der", " Apfel (apple) und ", "die", " Orange (orange)"])
+
+            def split_preserve_separator(text, separator):
+                escaped_separator = re.escape(separator)
+                return re.split(f"(?<={escaped_separator})|(?={escaped_separator})", text)
+
+            parts = split_preserve_separator(word.lower(), german_pronoun)
+
+            # - Build result
+
+            result = []
+
+            for is_first, is_last, part in mark_ends(parts):
+                text = part if not is_last else part + "\n"
+
+                if part == german_pronoun:
+                    if not is_gender_same:
+                        result.append(
+                            {
+                                "annotations": {"color": "red"},
+                                "plain_text": text,
+                                "text": {"content": text},
+                            }
+                        )
+                    else:
+                        result.append(
+                            {
+                                "annotations": {"color": "green"},
+                                "plain_text": text,
+                                "text": {"content": text},
+                            }
+                        )
+                else:
+                    result.append({"text": {"content": text}})
+            return result
+
+        # - Process words
+
+        return sum(await asyncio.gather(*[_process_word(word) for word in words]), [])
 
     @async_cached_property
     async def translation_en(self):
@@ -54,33 +141,6 @@ class Word:
         )
 
     @async_cached_property
-    async def different_genders(self):
-        # - Get nouns
-
-        nouns = await ask(f"Extract nouns from german `{self.word}`", example=["der Hund", "die Katze"])
-
-        russian_translations = await asyncio.gather(
-            *[ask(f"Translation of the german '{noun}' in Russian", example="Машина") for noun in nouns]
-        )
-
-        russian_pronouns = await asyncio.gather(
-            *[ask(f"`{translation} это он, она или оно?`", example="он") for translation in russian_translations]
-        )
-
-        # - Build result
-
-        values = []
-
-        for i in range(len(nouns)):
-            if "die" in nouns[i] and russian_pronouns[i] != "она":
-                values.append(f"{nouns[i]} ({russian_translations[i]} {russian_pronouns[i]})")
-            elif "der" in nouns[i] and russian_pronouns[i] != "он":
-                values.append(f"{nouns[i]} ({russian_translations[i]} {russian_pronouns[i]})")
-            elif "das" in nouns[i] and russian_pronouns[i] != "оно":
-                values.append(f"{nouns[i]} ({russian_translations[i]} {russian_pronouns[i]})")
-        return ", ".join(values)
-
-    @async_cached_property
     async def image_url(self):
         return await draw_card_image(word=self.word)
 
@@ -98,8 +158,8 @@ class Word:
                 "plural_form": {"rich_text": [{"text": {"content": await self.plural_form}}]},
                 "irregular_verb": {"rich_text": [{"text": {"content": await self.irregular_verb}}]},
                 "pronunciation": {"rich_text": [{"text": {"content": await self.pronunciation}}]},
-                "different_genders": {"rich_text": [{"text": {"content": await self.different_genders}}]},
                 "refresh_image": {"checkbox": False},  # reset
+                "inline_translation": {"rich_text": await self.inline_translation_with_colored_genders},
                 "cover": {
                     "files": [
                         {

@@ -10,7 +10,7 @@ word_groups = {
         "der Hund und die Katze",
         "der Freund und der Feind",
         "das Kind und der Erwachsene",
-        "das Feuer, das Wasser, die Luft, die Erde",
+        "das Wasser, die Erde, das Feuer, die Luft",
         "das Brot und die Butter",
         "der Apfel und die Orange",
         "der Kindergarten, die Schule, die Universität",
