@@ -35,7 +35,7 @@ class Word:
     @async_cached_property
     async def plural_form(self):
         return await ask(
-            f"Plural form of the german '{self.word}'. Skip word if not applicable.",
+            f"For all nouns from '{self.word}' provide their plural forms. Skip non-noun words. Use comma as a separator.",
             example="Hunde, Katzen, Autos",
         )
 
@@ -49,16 +49,36 @@ class Word:
     @async_cached_property
     async def pronunciation(self):
         return await ask(
-            f"Pronunciation of german '{self.word}'",
+            f"Pronunciation of german phrase '{self.word}'",
             example="/ˈlaʊfə ˈhaːbn/",
         )
 
     @async_cached_property
-    async def different_gender(self):
-        return await ask(
-            f"Is german '{self.word}' have different genders from Russian? Skip word if not applicable`",
-            example="""die Sonne (солнце оно), der Mond (луна она)""",
+    async def different_genders(self):
+        # - Get nouns
+
+        nouns = await ask(f"Extract nouns from german `{self.word}`", example=["der Hund", "die Katze"])
+
+        russian_translations = await asyncio.gather(
+            *[ask(f"Translation of the german '{noun}' in Russian", example="Машина") for noun in nouns]
         )
+
+        russian_pronouns = await asyncio.gather(
+            *[ask(f"`{translation} это он, она или оно?`", example="он") for translation in russian_translations]
+        )
+
+        # - Build result
+
+        values = []
+
+        for i in range(len(nouns)):
+            if "die" in nouns[i] and russian_pronouns[i] != "она":
+                values.append(f"{nouns[i]} ({russian_translations[i]} {russian_pronouns[i]})")
+            elif "der" in nouns[i] and russian_pronouns[i] != "он":
+                values.append(f"{nouns[i]} ({russian_translations[i]} {russian_pronouns[i]})")
+            elif "das" in nouns[i] and russian_pronouns[i] != "оно":
+                values.append(f"{nouns[i]} ({russian_translations[i]} {russian_pronouns[i]})")
+        return ", ".join(values)
 
     @async_cached_property
     async def image_url(self):
@@ -78,6 +98,8 @@ class Word:
                 "plural_form": {"rich_text": [{"text": {"content": await self.plural_form}}]},
                 "irregular_verb": {"rich_text": [{"text": {"content": await self.irregular_verb}}]},
                 "pronunciation": {"rich_text": [{"text": {"content": await self.pronunciation}}]},
+                "different_genders": {"rich_text": [{"text": {"content": await self.different_genders}}]},
+                "refresh_image": {"checkbox": False},  # reset
                 "cover": {
                     "files": [
                         {

@@ -20,7 +20,7 @@ async def ask(
     dedent: bool = True,
     open_ai_kwargs: dict = dict(model="gpt-4o"),
     cache: bool = True,
-    example: str | dict = "",
+    example: str | dict | list = "",
 ) -> str | dict | list:
     # - Copy open_ai_kwargs to avoid side effects
 
