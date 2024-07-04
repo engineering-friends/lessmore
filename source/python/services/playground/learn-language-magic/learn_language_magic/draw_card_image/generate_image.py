@@ -8,6 +8,7 @@ from learn_language_magic.ask import ask
 from lessmore.utils.asynchronous.async_rate_limiter import AsyncRateLimiter
 from lessmore.utils.file_primitives.write_file import write_file
 from lessmore.utils.system.open_in_os import open_in_os
+from loguru import logger
 from openai import AsyncOpenAI
 
 
@@ -24,6 +25,8 @@ async def generate_image(
         size="1792x1024",
     ),
 ) -> bytes:
+    logger.debug("Generating image with prompt: {prompt}", prompt=prompt)
+
     # - Run preprompt if needed
 
     if pre_prompt:

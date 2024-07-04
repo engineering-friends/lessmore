@@ -3,10 +3,12 @@ import asyncio
 import httpx
 
 from learn_language_magic.deps import Deps
-from lessmore.utils.cache_on_disk import cache_on_disk
+from loguru import logger
 
 
 async def upload_image_to_imgur(image_path: str, client_id: str):
+    logger.info("Uploading image to imgur")
+
     url = "https://api.imgur.com/3/image"
     headers = {"Authorization": f"Client-ID {client_id}"}
 

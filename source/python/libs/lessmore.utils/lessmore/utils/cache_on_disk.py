@@ -85,10 +85,10 @@ def cache_on_disk(
             return result
 
         @wraps(func)
-        async def async_wrapper(*args, **kwargs):
+        async def async_wrapper(cache_unique_key: str = "", *args, **kwargs):
             # - Get key
 
-            key = _get_key(func=func, args=args, kwargs=kwargs)
+            key = _get_key(func=func, args=args, kwargs=kwargs, cache_unique_key=cache_unique_key)
 
             # - Check if the result is already in the cache
 

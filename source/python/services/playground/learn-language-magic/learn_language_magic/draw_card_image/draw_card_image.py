@@ -1,3 +1,4 @@
+import asyncio
 import hashlib
 import io
 import os.path
@@ -55,5 +56,18 @@ async def draw_card_image(word: str):
     return await cache_on_disk(directory=".imgur_cache/")(async_retry(tries=5, delay=2)(upload_image_to_imgur))(
         image_path=filename,
         client_id=Deps.load().config.imgur_client_id,
-        cache_unique_id=file_contents_hash,  # different images - different urls
+        cache_unique_key=file_contents_hash,  # different images - different urls
     )
+
+
+def test():
+    Deps.load()
+
+    async def main():
+        print(await draw_card_image("Guten Morgen"))
+
+    asyncio.run(main())
+
+
+if __name__ == "__main__":
+    test()
