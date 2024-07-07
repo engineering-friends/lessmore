@@ -31,17 +31,20 @@ class Word:
             example="🐶",
         )
 
-        if (
-            await ask(
-                # f"""Would emoji {emoji} be suitable for the german word '{self.word}' in the dictionary? (yes/no)""",
-                f"""Is emoji {emoji} is a good illustration for the german word '{self.word}'? (yes/no)""",
-                example="yes",
-            )
-            == "yes"
-        ):
-            return emoji
-        else:
-            return "💬"
+        # deprecated
+        # if (
+        #     await ask(
+        #         # f"""Would emoji {emoji} be suitable for the german word '{self.word}' in the dictionary? (yes/no)""",
+        #         f"""Is emoji {emoji} is a good illustration for the german word '{self.word}'? (yes/no)""",
+        #         example="yes",
+        #     )
+        #     == "yes"
+        # ):
+        #     return emoji
+        # else:
+        #     return "💬"
+
+        return emoji
 
     @async_cached_property
     async def pronunciation(self):
@@ -63,7 +66,7 @@ class Word:
                 "emoji": {"rich_text": [{"text": {"content": await self.emoji}}]},
                 "pronunciation": {"rich_text": [{"text": {"content": await self.pronunciation}}]},
             },
-            "children": [],  # not using children for now
+            "children": None,  # not using children for now
         }
 
         # - Filter out None values

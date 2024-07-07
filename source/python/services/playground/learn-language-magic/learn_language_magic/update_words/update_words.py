@@ -107,7 +107,7 @@ async def update_words(
     # - Update anki deck
 
     for group_name, group in groupby(
-        sorted(words, key=lambda word: (word.groups[0], word.bundles[0])),
+        sorted(words, key=lambda word: (word.groups[0], first(word.bundles, default=""))),
         key=lambda word: word.groups[0],
     ):
         upsert_anki_deck(
