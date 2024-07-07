@@ -34,7 +34,7 @@ class Word:
         if (
             await ask(
                 # f"""Would emoji {emoji} be suitable for the german word '{self.word}' in the dictionary? (yes/no)""",
-                f"""Does emoji {emoji} accurately represent for the german word '{self.word}'? (yes/no)""",
+                f"""Is emoji {emoji} is a good illustration for the german word '{self.word}'? (yes/no)""",
                 example="yes",
             )
             == "yes"

@@ -6,6 +6,7 @@ from itertools import groupby
 from learn_language_magic.ask import ask
 from learn_language_magic.deps import Deps
 from learn_language_magic.notion_rate_limited_client import NotionRateLimitedClient
+from learn_language_magic.update_words.upsert_anki_deck import upsert_anki_deck
 from learn_language_magic.update_words.word import Word
 from learn_language_magic.update_words.word_collection import word_collection
 from lessmore.utils.asynchronous.async_cached_property import prefetch_all_cached_properties
@@ -32,9 +33,14 @@ async def update_words(
             bundle_name = None
             if "; " in word_or_bundle or ": " in word_or_bundle:
                 if ": " in word_or_bundle:
-                    bundle_name = group_name.split(": ")[0]
+                    bundle_name = word_or_bundle.split(": ")[0]
                 else:
                     bundle_name = word_or_bundle
+
+            # - Remove bundle prefix
+
+            if bundle_name:
+                word_or_bundle = word_or_bundle.removeprefix(f"{bundle_name}: ")
 
             # - Split words by ';'
 
@@ -98,6 +104,26 @@ async def update_words(
 
     await asyncio.gather(*([prefetch_all_cached_properties(word) for word in words] + [_update_pages()]))
 
+    # - Update anki deck
+
+    for group_name, group in groupby(
+        sorted(words, key=lambda word: (word.groups[0], word.bundles[0])),
+        key=lambda word: word.groups[0],
+    ):
+        upsert_anki_deck(
+            words=[
+                {
+                    "front": word.word,
+                    "back": f"{await word.emoji} {await word.translation}",
+                    "tags": word.bundles,
+                }
+                for word in words
+            ],
+            deck_name=group_name,
+            parent_deck_name="Default",
+            remove_others=True,
+        )
+
 
 # fmt: off
 
@@ -105,7 +131,7 @@ def test():
     async def main():
         await update_words(
             word_collection=word_collection,
-            # word_collection={'test': ['der Tisch; der Stuhl; Kapitel']},
+            # word_collection={'test': ['Bundle: Minute; der Tisch; Kapitel']},
             words_database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
         )
 

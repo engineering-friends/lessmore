@@ -5,7 +5,7 @@ import requests
 
 def upsert_anki_deck(
     deck_name: str,
-    words: list[Sequence[str]],
+    words: list[dict] = {},  # front, back, tags
     parent_deck_name: str = "",
     remove_others: bool = False,
 ):
@@ -59,21 +59,19 @@ def upsert_anki_deck(
 
     existing_notes_dict = {note["fields"]["Front"]["value"]: note for note in existing_notes_info}
 
-    new_words_dict = {front: back for front, back in words}
-
     # Update existing notes and add new ones
     notes_to_add = []
-    for front, back in new_words_dict.items():
-        if front in existing_notes_dict:
-            note_id = existing_notes_dict[front]["noteId"]
-            update_note(note_id, {"Front": front, "Back": back})
+    for word in words:
+        if word["front"] in existing_notes_dict:
+            note_id = existing_notes_dict[word["front"]]["noteId"]
+            update_note(note_id, {"Front": word["front"], "Back": word["back"]})
         else:
             note = {
                 "deckName": full_deck_name,
                 "modelName": "Basic",
-                "fields": {"Front": front, "Back": back},
+                "fields": {"Front": word["front"], "Back": word["back"]},
                 "options": {"allowDuplicate": False},
-                "tags": [],
+                "tags": word.get("tags", []),
             }
             notes_to_add.append(note)
 
@@ -82,7 +80,11 @@ def upsert_anki_deck(
 
     # Remove missing words
     if remove_others:
-        notes_to_delete = [note["noteId"] for front, note in existing_notes_dict.items() if front not in new_words_dict]
+        notes_to_delete = [
+            note["noteId"]
+            for front, note in existing_notes_dict.items()
+            if front not in [word["front"] for word in words]
+        ]
         if notes_to_delete:
             delete_notes(notes_to_delete)
 
