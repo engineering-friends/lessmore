@@ -26,10 +26,22 @@ class Word:
 
     @async_cached_property
     async def emoji(self):
-        return await ask(
-            f"""Add emoji for the german word '{self.word}'. If these is no accurate emoji, use 💬""",
+        emoji = await ask(
+            f"""Add emoji for the german word '{self.word}'""",
             example="🐶",
         )
+
+        if (
+            await ask(
+                # f"""Would emoji {emoji} be suitable for the german word '{self.word}' in the dictionary? (yes/no)""",
+                f"""Does emoji {emoji} accurately represent for the german word '{self.word}'? (yes/no)""",
+                example="yes",
+            )
+            == "yes"
+        ):
+            return emoji
+        else:
+            return "💬"
 
     @async_cached_property
     async def pronunciation(self):
@@ -46,10 +58,10 @@ class Word:
             "properties": {
                 "word": {"title": [{"text": {"content": self.word}}]},
                 "groups": {"multi_select": [{"name": group} for group in self.groups]},
-                "bundles": {"multi_select": [{"name": group} for group in self.bundles]},
+                "bundles": {"multi_select": [{"name": bundle} for bundle in self.bundles]},
                 "translation": {"rich_text": [{"text": {"content": await self.translation}}]},
-                "emoji": {"rich_text": [{"text": {"content": await self.translation}}]},
-                "pronunciation": {"rich_text": [{"text": {"content": await self.translation}}]},
+                "emoji": {"rich_text": [{"text": {"content": await self.emoji}}]},
+                "pronunciation": {"rich_text": [{"text": {"content": await self.pronunciation}}]},
             },
             "children": [],  # not using children for now
         }

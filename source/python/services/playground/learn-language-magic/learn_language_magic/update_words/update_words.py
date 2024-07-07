@@ -25,34 +25,33 @@ async def update_words(
     # - Collect words
 
     words = []
-    for group_name, word_or_bundle in word_collection.items():
-        # - Get bundle name
+    for group_name, word_or_bundles in word_collection.items():
+        for word_or_bundle in word_or_bundles:
+            # - Get bundle name
 
-        bundle_name = None
-        if ";" in group_name or ":" in group_name:
-            if ":" in group_name:
-                bundle_name = group_name.split(":")[0]
-            else:
-                bundle_name = await ask(
-                    f"Provide a single one, at most two word name for the group: {bundle_name}", example="Friends"
+            bundle_name = None
+            if "; " in word_or_bundle or ": " in word_or_bundle:
+                if ": " in word_or_bundle:
+                    bundle_name = group_name.split(": ")[0]
+                else:
+                    bundle_name = word_or_bundle
+
+            # - Split words by ';'
+
+            _words = word_or_bundle.split("; ")
+
+            # - Process words
+
+            for _word in _words:
+                # - Convert to dataclass
+
+                words.append(
+                    Word(
+                        word=_word,
+                        groups=[group_name],
+                        bundles=[bundle_name] if bundle_name else [],
+                    )
                 )
-
-        # - Split words by ';'
-
-        _words = word_or_bundle.split(";")
-
-        # - Process words
-
-        for _word in _words:
-            # - Convert to dataclass
-
-            words.append(
-                Word(
-                    word=_word,
-                    groups=[group_name],
-                    bundles=[bundle_name],
-                )
-            )
 
     # - Merge words with same word
 
@@ -106,7 +105,7 @@ def test():
     async def main():
         await update_words(
             word_collection=word_collection,
-            # word_groups={'test': ['das Mädchen und das Haus']},
+            # word_collection={'test': ['der Tisch; der Stuhl; Kapitel']},
             words_database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
         )
 
