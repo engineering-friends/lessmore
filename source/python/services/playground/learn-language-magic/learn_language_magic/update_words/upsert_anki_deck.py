@@ -66,12 +66,23 @@ def upsert_anki_deck(
     for word in words:
         if word["front"] in existing_notes_dict:
             note_id = existing_notes_dict[word["front"]]["noteId"]
-            update_note(note_id, {"Front": word["front"], "Back": word["back"]})
+            update_note(
+                note_id,
+                {
+                    "Front": word["front"],
+                    "Back": word["back"],
+                    "Pronunciation": "/" + word["pronunciation"] + "/",
+                },
+            )
         else:
             note = {
                 "deckName": full_deck_name,
                 "modelName": "Basic",
-                "fields": {"Front": word["front"], "Back": word["back"]},
+                "fields": {
+                    "Front": word["front"],
+                    "Back": word["back"],
+                    "Pronunciation": "/" + word["pronunciation"] + "/",
+                },
                 "options": {"allowDuplicate": False},
                 "tags": word.get("tags", []),
             }

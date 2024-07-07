@@ -127,6 +127,7 @@ async def update_words(
                 {
                     "front": word.word,
                     "back": f"{await word.emoji} {await word.translation}",
+                    "pronunciation": await word.pronunciation,
                     "tags": word.bundles,
                 }
                 for word in group
