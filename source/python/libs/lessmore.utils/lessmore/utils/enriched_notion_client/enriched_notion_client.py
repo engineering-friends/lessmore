@@ -7,6 +7,7 @@ from more_itertools import only
 from notion_client import AsyncClient
 
 from lessmore.utils.enriched_notion_client.test_paginated_request import test_paginated_request
+from lessmore.utils.enriched_notion_client.test_parse_markdown_table import test_parse_markdown_table
 from lessmore.utils.enriched_notion_client.test_upsert_database import test_upsert_database
 from lessmore.utils.enriched_notion_client.test_upsert_page import test_upsert_page
 from lessmore.utils.functional.contains_nested import contains_nested
@@ -234,3 +235,75 @@ class EnrichedNotionAsyncClient(AsyncClient):
         )
 
         return database
+
+    @tested(tests=[test_parse_markdown_table])
+    @staticmethod
+    def parse_markdown_table(markdown_table: str) -> dict:
+        """
+        Parameters
+        ----------
+        markdown: str
+        | Subject Pronoun | Conjugation |
+        | --- | --- |
+        | ich (I) |  |
+        | du (you, singular informal) |  |
+        | er/sie/es (he/she/it) |  |
+        | wir (we) |  |
+        | ihr (you, plural informal) |  |
+        | sie/Sie (they/you, formal) |  |
+
+        Returns
+        -------
+        {"type": "table",
+        "table": {"has_column_header": True, "has_row_header": False, "table_width": 2, "children": [
+        """
+
+        import re
+
+        def parse_markdown_table(md_table):
+            rows = md_table.strip().split("\n")
+            header = rows[0]
+            delimiter = rows[1]
+            data = rows[2:]
+
+            headers = [h.strip() for h in re.split(r"\s*\|\s*", header.strip("|"))]
+            table_data = []
+
+            for row in data:
+                cells = [cell.strip() for cell in re.split(r"\s*\|\s*", row.strip("|"))]
+                table_data.append(cells)
+
+            return headers, table_data
+
+        def create_notion_table(headers, data):
+            notion_table = {
+                "object": "block",
+                "type": "table",
+                "table": {
+                    "table_width": len(headers),
+                    "has_column_header": True,
+                    "has_row_header": False,
+                    "children": [],
+                },
+            }
+
+            # Create header row
+            header_row = {
+                "type": "table_row",
+                "table_row": {"cells": [[{"type": "text", "text": {"content": header}}] for header in headers]},
+            }
+            notion_table["table"]["children"].append(header_row)
+
+            # Create data rows
+            for row in data:
+                notion_row = {
+                    "type": "table_row",
+                    "table_row": {"cells": [[{"type": "text", "text": {"content": cell}}] for cell in row]},
+                }
+                notion_table["table"]["children"].append(notion_row)
+
+            return notion_table
+
+        headers, data = parse_markdown_table(markdown_table)
+        notion_table = create_notion_table(headers, data)
+        return notion_table

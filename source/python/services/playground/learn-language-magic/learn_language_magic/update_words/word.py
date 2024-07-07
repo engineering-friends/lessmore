@@ -20,7 +20,7 @@ class Word:
     @async_cached_property
     async def translation(self):
         return await ask(
-            f"""Add english translation for the german word '{self.word}'. Keep it as brief as possible""",
+            f"""Add english translation for the german word '{self.word}'""",
             example="🐶",
         )
 
@@ -45,6 +45,55 @@ class Word:
         #     return emoji
         #
         return emoji
+
+    @async_cached_property
+    async def irregular_verb_conjugation(self):
+        # - Check if the word is a verb
+
+        is_verb = (
+            await ask(
+                f"""Is the german word '{self.word}' a verb? (yes/no)""",
+                example="yes",
+            )
+            == "yes"
+        )
+
+        if not is_verb:
+            return None
+
+        # - Check if the word is an irregular verb
+
+        is_irregular_verb = (
+            await ask(f"""Is the german verb '{self.word}' an irregular verb? (yes/no)""", example="yes") == "yes"
+        )
+
+        if not is_irregular_verb:
+            return None
+
+        # - Ask for the conjugation
+
+        """
+| Subject Pronoun | Conjugation |
+| --- | --- |
+| ich (I) |  |
+| du (you, singular informal) |  |
+| er/sie/es (he/she/it) |  |
+| wir (we) |  |
+| ihr (you, plural informal) |  |
+| sie/Sie (they/you, formal) |  |"""
+
+        return await ask(
+            f"""Verb conjugation table for the german verb '{self.word}'""",
+            example=textwrap.dedent("""
+            | Subject Pronoun | Conjugation |
+            | --- | --- |
+            | ich (I) |  |
+            | du (you, singular informal) |  |
+            | er/sie/es (he/she/it) |  |
+            | wir (we) |  |
+            | ihr (you, plural informal) |  |
+            | sie/Sie (they/you, formal) |  |"""),
+        )
 
     @async_cached_property
     async def pronunciation(self):
