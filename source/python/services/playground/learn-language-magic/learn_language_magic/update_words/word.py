@@ -27,23 +27,23 @@ class Word:
     @async_cached_property
     async def emoji(self):
         emoji = await ask(
-            f"""Add emoji for the german word '{self.word}'""",
+            f"""Add single emoji for the german word '{self.word}'""",
             example="🐶",
         )
 
-        # deprecated
+        # # deprecated
         # if (
         #     await ask(
         #         # f"""Would emoji {emoji} be suitable for the german word '{self.word}' in the dictionary? (yes/no)""",
-        #         f"""Is emoji {emoji} is a good illustration for the german word '{self.word}'? (yes/no)""",
+        #         f"""Is emoji {emoji} have absolutely different meaning for the german word '{self.word}'? (yes/no)""",
         #         example="yes",
         #     )
         #     == "yes"
         # ):
-        #     return emoji
-        # else:
         #     return "💬"
-
+        # else:
+        #     return emoji
+        #
         return emoji
 
     @async_cached_property

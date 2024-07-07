@@ -35,7 +35,11 @@ async def update_words(
                 if ": " in word_or_bundle:
                     bundle_name = word_or_bundle.split(": ")[0]
                 else:
-                    bundle_name = word_or_bundle
+                    bundle_name = await ask(
+                        f"Give me a one/two word group name for german words '{word_or_bundle}'. The group_name should be in English",
+                        example="Sleep Cycle",
+                    )
+                    # bundle_name = word_or_bundle
 
             # - Remove bundle prefix
 
