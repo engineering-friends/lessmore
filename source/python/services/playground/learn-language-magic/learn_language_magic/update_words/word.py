@@ -7,6 +7,7 @@ from dataclasses import dataclass
 
 from learn_language_magic.ask import ask
 from learn_language_magic.deps import Deps
+from learn_language_magic.markdown_table_to_df import markdown_table_to_df
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property, prefetch_all_cached_properties
 from lessmore.utils.enriched_notion_client.enriched_notion_client import EnrichedNotionAsyncClient
 from more_itertools import mark_ends
@@ -24,6 +25,25 @@ class Word:
             f"""Add english translation for the german word '{self.word}'""",
             example="🐶",
         )
+
+    @async_cached_property
+    async def original(self):
+        result = ""
+
+        result += self.word
+
+        if await self.is_irregular_verb:
+            df = markdown_table_to_df(await self.irregular_verb_conjugation)
+
+            df = df[df["Irregular"] == "x"]
+            df.pop("Irregular")
+            # change er/sie/es -> er
+            df["Pronoun"] = df["Pronoun"].apply(lambda x: re.sub(r"/.*", "", x))
+            values = []
+            for i, row in df.iterrows():
+                values.append(f"{row['Pronoun']} {row['Present']}")
+            result += " (" + ", ".join(values) + ")"
+        return result
 
     @async_cached_property
     async def emoji(self):
@@ -73,7 +93,7 @@ class Word:
 
         # - Ask for the conjugation
 
-        return await ask(
+        irregular_present_conjugations = await ask(
             f"""Verb conjugation table for the german verb '{self.word}'""",
             example=textwrap.dedent("""
 | Pronoun | Present | Irregular |
@@ -85,6 +105,11 @@ class Word:
 | ihr | schlaft |  |
 | sie/Sie | schlafen |  |"""),
         )
+
+        if " x " not in irregular_present_conjugations:
+            return None
+
+        return irregular_present_conjugations
 
     @async_cached_property
     async def is_irregular_verb(self):
@@ -104,6 +129,7 @@ class Word:
         result = {
             "properties": {
                 "word": {"title": [{"text": {"content": self.word}}]},
+                "original": {"rich_text": [{"text": {"content": await self.original}}]},
                 "groups": {"multi_select": [{"name": group} for group in self.groups]},
                 "bundles": {"multi_select": [{"name": bundle} for bundle in self.bundles]},
                 "translation": {"rich_text": [{"text": {"content": await self.translation}}]},

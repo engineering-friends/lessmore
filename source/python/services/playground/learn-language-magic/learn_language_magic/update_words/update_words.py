@@ -125,7 +125,7 @@ async def update_words(
         upsert_anki_deck(
             words=[
                 {
-                    "front": word.word,
+                    "front": await word.original,
                     "back": f"{await word.emoji} {await word.translation}",
                     "pronunciation": await word.pronunciation,
                     "tags": word.bundles,
