@@ -1,4 +1,5 @@
 import asyncio
+import re
 
 from typing import Callable, Optional
 
@@ -238,7 +239,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
     @tested(tests=[test_parse_markdown_table])
     @staticmethod
-    def parse_markdown_table(markdown_table: str) -> dict:
+    def parse_markdown_table(markdown_table: str, annotations: Optional[Callable] = None) -> dict:
         """
         Parameters
         ----------
@@ -252,6 +253,9 @@ class EnrichedNotionAsyncClient(AsyncClient):
         | ihr (you, plural informal) |  |
         | sie/Sie (they/you, formal) |  |
 
+        annotations: Optional[Callable]
+            def annotations(header: str, row: list) -> dict:
+
         Returns
         -------
         {
@@ -259,8 +263,6 @@ class EnrichedNotionAsyncClient(AsyncClient):
         "table": {"has_column_header": True, "has_row_header": False, "table_width": 2, "children": [...]}
         }
         """
-
-        import re
 
         def parse_markdown_table(md_table):
             rows = md_table.strip().split("\n")
@@ -298,10 +300,16 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
             # Create data rows
             for row in data:
-                notion_row = {
-                    "type": "table_row",
-                    "table_row": {"cells": [[{"type": "text", "text": {"content": cell}}] for cell in row]},
-                }
+                row_dict = {headers[i]: row[i] for i in range(len(headers))}
+                notion_row = {"type": "table_row", "table_row": {"cells": []}}
+                for col_index, cell in enumerate(row):
+                    cell_content = {"type": "text", "text": {"content": cell}}
+                    # Apply annotations if the function is provided and returns non-None
+                    if annotations:
+                        annotation = annotations(headers[col_index], row_dict)
+                        if annotation:
+                            cell_content["annotations"] = annotation
+                    notion_row["table_row"]["cells"].append([cell_content])
                 notion_table["table"]["children"].append(notion_row)
 
             return notion_table

@@ -73,28 +73,22 @@ class Word:
 
         # - Ask for the conjugation
 
-        """
-| Subject Pronoun | Conjugation |
-| --- | --- |
-| ich (I) |  |
-| du (you, singular informal) |  |
-| er/sie/es (he/she/it) |  |
-| wir (we) |  |
-| ihr (you, plural informal) |  |
-| sie/Sie (they/you, formal) |  |"""
-
         return await ask(
             f"""Verb conjugation table for the german verb '{self.word}'""",
             example=textwrap.dedent("""
-            | Subject Pronoun | Conjugation |
-            | --- | --- |
-            | ich (I) |  |
-            | du (you, singular informal) |  |
-            | er/sie/es (he/she/it) |  |
-            | wir (we) |  |
-            | ihr (you, plural informal) |  |
-            | sie/Sie (they/you, formal) |  |"""),
+| Pronoun | Present | Irregular |
+| --- | --- | --- |
+| ich  | schlafe |  |
+| du | schläfst | x |
+| er/sie/es | schläft | x |
+| wir | schlafen |  |
+| ihr | schlaft |  |
+| sie/Sie | schlafen |  |"""),
         )
+
+    @async_cached_property
+    async def is_irregular_verb(self):
+        return await self.irregular_verb_conjugation is not None
 
     @async_cached_property
     async def pronunciation(self):
@@ -115,6 +109,7 @@ class Word:
                 "translation": {"rich_text": [{"text": {"content": await self.translation}}]},
                 "emoji": {"rich_text": [{"text": {"content": await self.emoji}}]},
                 "pronunciation": {"rich_text": [{"text": {"content": await self.pronunciation}}]},
+                "is_irregular_verb": {"checkbox": await self.is_irregular_verb},
             },
             "children": None
             if not await self.irregular_verb_conjugation
