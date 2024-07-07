@@ -3,11 +3,11 @@ import os
 
 from itertools import groupby
 
+from learn_language_magic.ask import ask
 from learn_language_magic.deps import Deps
 from learn_language_magic.notion_rate_limited_client import NotionRateLimitedClient
-from learn_language_magic.update_words.extract_words import extract_words
 from learn_language_magic.update_words.word import Word
-from learn_language_magic.update_words.word_groups import word_groups
+from learn_language_magic.update_words.word_collection import word_collection
 from lessmore.utils.asynchronous.async_cached_property import prefetch_all_cached_properties
 from lessmore.utils.functional.skip_duplicates import skip_duplicates
 from loguru import logger
@@ -15,10 +15,8 @@ from more_itertools import bucket, first
 
 
 async def update_words(
-    word_groups: dict,
+    word_collection: dict,
     words_database_id: str,
-    stories_database_id: str,
-    update_page_contents: bool = False,
 ):
     # - Init notion client
 
@@ -27,31 +25,21 @@ async def update_words(
     # - Collect words
 
     words = []
-    for word_group_name, word_group in word_groups.items():
-        # - Extract words from stories
+    for group_name, word_or_bundle in word_collection.items():
+        # - Get bundle name
 
-        _words = word_group if isinstance(word_group, list) else await extract_words(word_group)
+        bundle_name = None
+        if ";" in group_name or ":" in group_name:
+            if ":" in group_name:
+                bundle_name = group_name.split(":")[0]
+            else:
+                bundle_name = await ask(
+                    f"Provide a single one, at most two word name for the group: {bundle_name}", example="Friends"
+                )
 
-        # - Add story to stories database if needed
+        # - Split words by ';'
 
-        if isinstance(word_group, str):
-            await client.upsert_database(
-                database={"id": stories_database_id},
-                pages=[
-                    {
-                        "properties": {"Name": {"title": [{"text": {"content": word_group_name}}]}},
-                        "children": [
-                            {
-                                "type": "paragraph",
-                                "paragraph": {"rich_text": [{"text": {"content": word_group}}]},
-                            }
-                        ],
-                    }
-                ],
-                page_unique_id_func=lambda page: page["properties"]["Name"]["title"][0]["text"]["content"],
-            )
-
-        logger.info("Processing group", group=word_group_name, words=_words)
+        _words = word_or_bundle.split(";")
 
         # - Process words
 
@@ -61,9 +49,8 @@ async def update_words(
             words.append(
                 Word(
                     word=_word,
-                    origin=word_group_name,
-                    origin_text=word_group if isinstance(word_group, str) else None,
-                    groups=[word_group_name] if isinstance(word_group, list) else None,
+                    groups=[group_name],
+                    bundles=[bundle_name],
                 )
             )
 
@@ -85,6 +72,7 @@ async def update_words(
         # - Update word
 
         _word.groups = list(skip_duplicates([word.groups[0] for word in same_words if word.groups]))
+        _word.bundles = list(skip_duplicates([word.bundles[0] for word in same_words if word.bundles]))
 
         # - Add to new words
 
@@ -93,42 +81,6 @@ async def update_words(
 
     logger.info("Collected words", n_words=len(words))
 
-    # - Remove images for pages where `refresh_image` set to True
-
-    # -- Get all words pages
-
-    current_word_pages = await client.get_paginated_request(
-        method=client.databases.query,
-        database_id=words_database_id,
-    )
-
-    # -- Select word pages that need refreshing
-
-    refreshed_pages = [page for page in current_word_pages if page["properties"]["refresh_image"]["checkbox"]]
-
-    refreshed_titles = [first(page["properties"]["word"]["title"])["text"]["content"] for page in refreshed_pages]
-
-    # -- Remove images for pages that need refreshing
-
-    for page in refreshed_pages:
-        word_title = first(page["properties"]["word"]["title"])["text"]["content"]
-        filename = os.path.join(os.path.dirname(__file__), f"../data/dynamic/images/{word_title}.png")
-        if os.path.exists(filename):
-            os.remove(filename)
-
-    # -- Get new titles
-
-    new_titles = [
-        word.word
-        for word in words
-        if word.word
-        not in [first(page["properties"]["word"]["title"])["text"]["content"] for page in current_word_pages]
-    ]
-
-    # - Remove "cover" property for refreshed_pages
-
-    await asyncio.gather(*[client.upsert_page({"id": page["id"], "cover": None}) for page in refreshed_pages])
-
     # - Process words
 
     async def _update_pages():
@@ -136,23 +88,13 @@ async def update_words(
 
         word_pages = await asyncio.gather(*[word.notion_page for word in words])
 
-        # - Remove children if not updated
-
-        for page in word_pages:
-            if (
-                not update_page_contents
-                and first(page["properties"]["word"]["title"])["text"]["content"] not in refreshed_titles + new_titles
-            ):
-                # no need to update
-                page["children"] = None
-
         # - Update pages
 
         await client.upsert_database(
             database={"id": words_database_id},
             pages=word_pages,
             page_unique_id_func=lambda page: page["properties"]["word"]["title"][0]["text"]["content"],
-            remove_others=False,
+            remove_others=True,
         )
 
     await asyncio.gather(*([prefetch_all_cached_properties(word) for word in words] + [_update_pages()]))
@@ -163,16 +105,15 @@ async def update_words(
 def test():
     async def main():
         await update_words(
-            word_groups=word_groups,
+            word_collection=word_collection,
             # word_groups={'test': ['das Mädchen und das Haus']},
             words_database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
-            stories_database_id="8d9d6643302c48649345209e18dbb0ca",  # stories
-            update_page_contents=False
         )
 
     import asyncio
 
     asyncio.run(main())
+
 
 # fmt: on
 
