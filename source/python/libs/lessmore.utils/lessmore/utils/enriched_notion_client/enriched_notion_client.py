@@ -254,8 +254,10 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         Returns
         -------
-        {"type": "table",
-        "table": {"has_column_header": True, "has_row_header": False, "table_width": 2, "children": [
+        {
+        "type": "table",
+        "table": {"has_column_header": True, "has_row_header": False, "table_width": 2, "children": [...]}
+        }
         """
 
         import re

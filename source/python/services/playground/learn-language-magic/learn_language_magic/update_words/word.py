@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from learn_language_magic.ask import ask
 from learn_language_magic.deps import Deps
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property, prefetch_all_cached_properties
+from lessmore.utils.enriched_notion_client.enriched_notion_client import EnrichedNotionAsyncClient
 from more_itertools import mark_ends
 
 
@@ -115,7 +116,9 @@ class Word:
                 "emoji": {"rich_text": [{"text": {"content": await self.emoji}}]},
                 "pronunciation": {"rich_text": [{"text": {"content": await self.pronunciation}}]},
             },
-            "children": None,  # not using children for now
+            "children": None
+            if not await self.irregular_verb_conjugation
+            else [EnrichedNotionAsyncClient.parse_markdown_table(await self.irregular_verb_conjugation)],
         }
 
         # - Filter out None values
@@ -127,7 +130,7 @@ def test():
     async def main():
         Deps.load()
         word = Word(
-            word="hunds",
+            word="laufen",
             groups=["test_group"],
             bundles=["test_bundle"],
         )
