@@ -113,7 +113,12 @@ class Word:
             },
             "children": None
             if not await self.irregular_verb_conjugation
-            else [EnrichedNotionAsyncClient.parse_markdown_table(await self.irregular_verb_conjugation)],
+            else [
+                EnrichedNotionAsyncClient.parse_markdown_table(
+                    await self.irregular_verb_conjugation,
+                    annotations=lambda header, row: {"color": "red"} if row["Irregular"] == "x" else None,
+                )
+            ],
         }
 
         # - Filter out None values
