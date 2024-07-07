@@ -2,6 +2,8 @@ from typing import Sequence
 
 import requests
 
+from loguru import logger
+
 
 def upsert_anki_deck(
     deck_name: str,
@@ -49,7 +51,7 @@ def upsert_anki_deck(
 
     if not words:
         delete_deck(full_deck_name)
-        print(f"Deck '{full_deck_name}' deleted as no words were specified.")
+        logger.debug(f"Deck '{full_deck_name}' deleted as no words were specified.")
         return
 
     create_deck(full_deck_name)
@@ -88,7 +90,7 @@ def upsert_anki_deck(
         if notes_to_delete:
             delete_notes(notes_to_delete)
 
-    print("Upsert operation completed successfully!")
+    logger.debug("Upsert operation completed successfully!")
 
 
 def test():

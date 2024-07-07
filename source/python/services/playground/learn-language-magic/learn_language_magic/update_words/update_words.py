@@ -114,6 +114,14 @@ async def update_words(
         sorted(words, key=lambda word: (word.groups[0], first(word.bundles, default=""))),
         key=lambda word: word.groups[0],
     ):
+        # - Unpack iterator
+
+        group = list(group)
+
+        # - Update anki deck
+
+        logger.info("Upserting anki deck", group_name=group_name, n_words=len(list(group)))
+
         upsert_anki_deck(
             words=[
                 {
@@ -121,7 +129,7 @@ async def update_words(
                     "back": f"{await word.emoji} {await word.translation}",
                     "tags": word.bundles,
                 }
-                for word in words
+                for word in group
             ],
             deck_name=group_name,
             parent_deck_name="Default",
