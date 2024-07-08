@@ -10,7 +10,7 @@ word_collection = {
         "der Hund; die Katze",
         "der Freund; der Feind",
         "das Kind; der Erwachsene",
-        "das Wasser; die Erde; das Feuer; die Luft",
+        "das Wasser; die Erde; das Feuer; die Luft",  # water and fire neutral, earth and air feminine
         "das Brot; die Butter",
         "der Apfel; die Orange",
         "der Kindergarten; die Schule; die Universität",
@@ -18,7 +18,7 @@ word_collection = {
         "die Straße",
         "das Zimmer",
         "der Tag; die Nacht",
-        "Time: das Jahr; der Monat; die Woche; der Tag; die Stunde; die Minute; die Sekunde",
+        "Time: das Jahr; der Monat; die Woche; der Tag; die Stunde; die Minute; die Sekunde",  # mini is feminine, das Jahr, der Monat, die Woche
         "der Vater; die Mutter",
         "der Bruder; die Schwester",
         "die Zeit; der Raum",
@@ -41,14 +41,6 @@ word_collection = {
         "finden; verlieren",
         "fragen; antworten",
         "wohnen; sterben; das Leben; der Tod",
-    ],
-    "german_subject_pronouns": [
-        "Ich",  # I
-        "Du",  # You (singular, informal)
-        "Ihr",  # You (plural, informal)
-        "er; sie; es",  # He
-        "Wir",  # We
-        "Sie",  # They
     ],
     "german_prepositions": [
         "mit",  # with
