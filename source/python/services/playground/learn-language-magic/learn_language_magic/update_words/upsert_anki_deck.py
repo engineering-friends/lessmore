@@ -8,7 +8,6 @@ from loguru import logger
 def upsert_anki_deck(
     deck_name: str,
     words: list[dict] = {},  # front, back, tags
-    parent_deck_name: str = "",
     remove_others: bool = False,
 ):
     base_url = "http://localhost:8765"
@@ -47,16 +46,14 @@ def upsert_anki_deck(
     def delete_notes(note_ids):
         send_request("deleteNotes", {"notes": note_ids})
 
-    full_deck_name = f"{parent_deck_name}::{deck_name}" if parent_deck_name else deck_name
-
     if not words:
-        delete_deck(full_deck_name)
-        logger.debug(f"Deck '{full_deck_name}' deleted as no words were specified.")
+        delete_deck(deck_name)
+        logger.debug(f"Deck '{deck_name}' deleted as no words were specified.")
         return
 
-    create_deck(full_deck_name)
+    create_deck(deck_name)
 
-    existing_notes = find_notes(f"deck:{full_deck_name}")
+    existing_notes = find_notes(f"deck:{deck_name}")
     existing_notes_info = get_notes_info(existing_notes) if existing_notes else []
 
     existing_notes_dict = {note["fields"]["Front"]["value"]: note for note in existing_notes_info}
@@ -76,7 +73,7 @@ def upsert_anki_deck(
             )
         else:
             note = {
-                "deckName": full_deck_name,
+                "deckName": deck_name,
                 "modelName": "Basic",
                 "fields": {
                     "Front": word["front"],
@@ -106,10 +103,8 @@ def upsert_anki_deck(
 
 def test():
     upsert_anki_deck(
-        deck_name="Vocabulary",
-        words=[],
-        # words=[("hello", "こんにちは"), ("goodbye", "さようなら"), ("thank you", "ありがとう")],
-        parent_deck_name="Language",
+        deck_name="Default::Sure?::Vocabulary",
+        words=[{"front": "test", "back": "test", "pronunciation": "test", "tags": ["test"]}],
         remove_others=True,
     )
 

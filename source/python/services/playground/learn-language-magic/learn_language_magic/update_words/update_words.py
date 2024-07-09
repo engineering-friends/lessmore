@@ -6,6 +6,7 @@ from itertools import groupby
 from learn_language_magic.ask import ask
 from learn_language_magic.deps import Deps
 from learn_language_magic.notion_rate_limited_client import NotionRateLimitedClient
+from learn_language_magic.update_words.flatten_word_collection import flatten_word_collection
 from learn_language_magic.update_words.upsert_anki_deck import upsert_anki_deck
 from learn_language_magic.update_words.word import Word
 from learn_language_magic.update_words.word_collection import word_collection
@@ -22,6 +23,10 @@ async def update_words(
     # - Init notion client
 
     client = NotionRateLimitedClient(auth=Deps.load().config.notion_token)
+
+    # - Flatten word collection
+
+    word_collection = flatten_word_collection(word_collection)
 
     # - Collect words
 
@@ -132,8 +137,7 @@ async def update_words(
                 }
                 for word in group
             ],
-            deck_name=group_name,
-            parent_deck_name="Default",
+            deck_name=f"Default::{group_name}",
             remove_others=True,
         )
 
