@@ -122,7 +122,7 @@ word_collection = {
     },
     "grammar": {
         "rules": {
-            [
+            "present_tense_conjugations": [
                 "ich kaufe",
                 "du kaufst",
                 "er kauft",

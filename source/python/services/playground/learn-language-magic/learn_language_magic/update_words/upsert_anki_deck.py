@@ -88,7 +88,7 @@ def upsert_anki_deck(
                     "Back": word["back"],
                     "Pronunciation": "/" + word["pronunciation"] + "/",
                 },
-                "options": {"allowDuplicate": False},
+                "options": {"allowDuplicate": True},
                 "tags": word.get("tags", []),
             }
             notes_to_add.append(note)

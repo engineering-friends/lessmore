@@ -119,17 +119,12 @@ async def update_words(
 
     # - Update anki deck
 
-    for group_name, group in groupby(
-        sorted(words, key=lambda word: (word.groups[0], first(word.bundles, default=""))),
-        key=lambda word: word.groups[0],
-    ):
-        # - Unpack iterator
+    all_group_names = skip_duplicates(sum([word.groups for word in words], []))
 
-        group = list(group)
+    for group_name in all_group_names:
+        group_words = [word for word in words if group_name in word.groups]
 
-        # - Update anki deck
-
-        logger.info("Upserting anki deck", group_name=group_name, n_words=len(list(group)))
+        logger.info("Upserting anki deck", group_name=group_name, n_words=len(group_words))
 
         upsert_anki_deck(
             words=[
@@ -139,7 +134,7 @@ async def update_words(
                     "pronunciation": await word.pronunciation,
                     "tags": word.bundles,
                 }
-                for word in group
+                for word in group_words
             ],
             deck_name=f"Default::{group_name}",
             remove_others=True,
