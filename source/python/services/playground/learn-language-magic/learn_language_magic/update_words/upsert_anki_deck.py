@@ -10,6 +10,7 @@ def upsert_anki_deck(
     words: list[dict] = {},  # front, back, tags, pronunciation
     remove_others: bool = False,
     reset_updated: bool = True,
+    allow_duplicates: bool = True,
 ):
     base_url = "http://localhost:8765"
 
@@ -88,7 +89,7 @@ def upsert_anki_deck(
                     "Back": word["back"],
                     "Pronunciation": "/" + word["pronunciation"] + "/",
                 },
-                "options": {"allowDuplicate": True},
+                "options": {"allowDuplicate": allow_duplicates},
                 "tags": word.get("tags", []),
             }
             notes_to_add.append(note)

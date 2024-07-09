@@ -138,6 +138,7 @@ async def update_words(
             ],
             deck_name=f"Default::{group_name}",
             remove_others=True,
+            allow_duplicates="words::" not in group_name,
         )
 
 
