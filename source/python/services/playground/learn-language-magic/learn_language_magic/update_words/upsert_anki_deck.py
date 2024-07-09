@@ -7,8 +7,9 @@ from loguru import logger
 
 def upsert_anki_deck(
     deck_name: str,
-    words: list[dict] = {},  # front, back, tags
+    words: list[dict] = {},  # front, back, tags, pronunciation
     remove_others: bool = False,
+    reset_updated: bool = True,
 ):
     base_url = "http://localhost:8765"
 
@@ -46,6 +47,9 @@ def upsert_anki_deck(
     def delete_notes(note_ids):
         send_request("deleteNotes", {"notes": note_ids})
 
+    def reset_cards(card_ids):
+        send_request("relearnCards", {"cards": card_ids})
+
     if not words:
         delete_deck(deck_name)
         logger.debug(f"Deck '{deck_name}' deleted as no words were specified.")
@@ -60,17 +64,21 @@ def upsert_anki_deck(
 
     # Update existing notes and add new ones
     notes_to_add = []
+    cards_to_reset = []
     for word in words:
         if word["front"] in existing_notes_dict:
             note_id = existing_notes_dict[word["front"]]["noteId"]
-            update_note(
-                note_id,
-                {
-                    "Front": word["front"],
-                    "Back": word["back"],
-                    "Pronunciation": "/" + word["pronunciation"] + "/",
-                },
-            )
+            current_back = existing_notes_dict[word["front"]]["fields"]["Back"]["value"]
+            if current_back != word["back"]:
+                update_note(
+                    note_id,
+                    {
+                        "Front": word["front"],
+                        "Back": word["back"],
+                        "Pronunciation": "/" + word["pronunciation"] + "/",
+                    },
+                )
+                cards_to_reset.append(note_id)
         else:
             note = {
                 "deckName": deck_name,
@@ -88,6 +96,9 @@ def upsert_anki_deck(
     if notes_to_add:
         add_notes(notes_to_add)
 
+    if reset_updated and cards_to_reset:
+        reset_cards([note["noteId"] for note in existing_notes_info if note["noteId"] in cards_to_reset])
+
     # Remove missing words
     if remove_others:
         notes_to_delete = [
@@ -104,7 +115,7 @@ def upsert_anki_deck(
 def test():
     upsert_anki_deck(
         deck_name="Default::Sure?::Vocabulary",
-        words=[{"front": "test", "back": "test", "pronunciation": "test", "tags": ["test"]}],
+        words=[{"front": "test", "back": "test updated 4", "pronunciation": "test", "tags": ["test"]}],
         remove_others=True,
     )
 

@@ -95,7 +95,11 @@ async def update_words(
 
     logger.info("Collected words", n_words=len(words))
 
-    # - Process words
+    # - Prefetch all properties
+
+    await asyncio.gather(*([prefetch_all_cached_properties(word) for word in words]))
+
+    # - Update notion pages
 
     async def _update_pages():
         # - Get all words pages
@@ -111,7 +115,7 @@ async def update_words(
             remove_others=True,
         )
 
-    await asyncio.gather(*([prefetch_all_cached_properties(word) for word in words] + [_update_pages()]))
+    # await _update_pages()
 
     # - Update anki deck
 
