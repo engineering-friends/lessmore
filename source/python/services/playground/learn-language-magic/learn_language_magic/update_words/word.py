@@ -137,14 +137,14 @@ class Word:
                 "pronunciation": {"rich_text": [{"text": {"content": await self.pronunciation}}]},
                 "is_irregular_verb": {"checkbox": await self.is_irregular_verb},
             },
-            "children": None
-            if not await self.irregular_verb_conjugation
-            else [
-                EnrichedNotionAsyncClient.parse_markdown_table(
-                    await self.irregular_verb_conjugation,
-                    annotations=lambda header, row: {"color": "red"} if row["Irregular"] == "x" else None,
-                )
-            ],
+            "children": None,
+            # if not await self.irregular_verb_conjugation
+            # else [
+            #     EnrichedNotionAsyncClient.parse_markdown_table(
+            #         await self.irregular_verb_conjugation,
+            #         annotations=lambda header, row: {"color": "red"} if row["Irregular"] == "x" else None,
+            #     )
+            # ],
         }
 
         # - Filter out None values

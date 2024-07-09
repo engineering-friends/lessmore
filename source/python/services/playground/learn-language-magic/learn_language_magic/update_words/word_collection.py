@@ -1,5 +1,5 @@
 word_collection = {
-    "basics1": [
+    "basics_1": [
         # Nouns
         "das Haus; der Garten",
         "der Baum; die Blume",
@@ -22,6 +22,8 @@ word_collection = {
         "der Vater; die Mutter",
         "der Bruder; die Schwester",
         "die Zeit; der Raum",
+    ],
+    "basics_2": [
         # Verbs
         "sein; haben",
         "kommen; gehen",
@@ -42,36 +44,73 @@ word_collection = {
         "fragen; antworten",
         "wohnen; sterben; das Leben; der Tod",
     ],
-    "german_prepositions": [
-        "mit",  # with
-        "bei",  # at, near, with
-        "durch",  # through
-        "für",  # for
-        "gegen",  # against
-        "ohne",  # without
-        "um",  # around, at (time)
-        "aus",  # out of, from
-        "außer",  # except for, besides
-        "nach",  # after, to
-        "seit",  # since (time)
-        "von",  # from, of
-        "zu",  # to, at
-        "an",  # on, at, to
-        "auf",  # on, upon, to
-        "hinter",  # behind
-        "in",  # in, into
-        "neben",  # next to, beside
-        "über",  # over, above, about
-        "unter",  # under, among
-        "vor",  # in front of, before, ago
-        "zwischen",  # between
-        "entlang",  # along
-        "gegenüber",  # opposite, across from
-        "während",  # during
-        "wegen",  # because of
-        "trotz",  # despite
-        "innerhalb",  # within (inside of)
-        "außerhalb",  # outside of
+    "present_tense_conjugations": [
+        "ich schreibe",
+        "du schreibst",
+        "er schreibt",
+        "wir schreiben",
+        "ihr schreibt",
+        "sie schreiben",
+        "ich spiele",
+        "du spielst",
+        "er spielt",
+        "wir spielen",
+        "ihr spielt",
+        "sie spielen",
+        "ich gehe",
+        "du gehst",
+        "er geht",
+        "wir gehen",
+        "ihr geht",
+        "sie gehen",
+        "ich trinke",
+        "du trinkst",
+        "er trinkt",
+        "wir trinken",
+        "ihr trinkt",
+        "sie trinken",
+        "ich arbeite",
+        "du arbeitest",
+        "er arbeitet",
+        "wir arbeiten",
+        "ihr arbeitet",
+        "sie arbeiten",
+        "ich kaufe",
+        "du kaufst",
+        "er kauft",
+        "wir kaufen",
+        "ihr kauft",
+        "sie kaufen",
+        "ich lerne",
+        "du lernst",
+        "er lernt",
+        "wir lernen",
+        "ihr lernt",
+        "sie lernen",
+        "ich wohne",
+        "du wohnst",
+        "er wohnt",
+        "wir wohnen",
+        "ihr wohnt",
+        "sie wohnen",
+        "ich finde",
+        "du findest",
+        "er findet",
+        "wir finden",
+        "ihr findet",
+        "sie finden",
+        "ich regne",
+        "du regnest",
+        "er regnet",
+        "wir regnen",
+        "ihr regnet",
+        "sie regnen",
+        "ich öffne",
+        "du öffnest",
+        "er öffnet",
+        "wir öffnen",
+        "ihr öffnet",
+        "sie öffnen",
     ],
     "numbering_of": [
         "einige",  # some
@@ -128,8 +167,6 @@ word_collection = {
         "Ich verstehe nicht",  # I don't understand
         "Können Sie das wiederholen?",  # Can you repeat that?
         "Sprechen Sie Englisch?",  # Do you speak English?
-        "Mir geht's gut",  # I'm fine
-        "Mir geht's schlecht",  # I'm not well
         "Ich heiße...",  # My name is...
         "Wie heißen Sie?",  # What's your name?
         "Freut mich",  # Nice to meet you
@@ -148,29 +185,5 @@ word_collection = {
         "Was kostet das?",  # How much does this cost?
         "Können Sie mir helfen?",  # Can you help me?
         "Wo ist...?",  # Where is...?
-    ],
-    "travel": [
-        "gehen",
-        "fahren",
-        "laufen",
-        "fliegen",
-        "reisen",
-        "wandern",
-        "marschieren",
-        "schwimmen",
-        "reiten",
-        "ziehen",
-    ],
-    "communication": [
-        "fragen",
-        "antworten",
-        "sagen",
-        "sprechen",
-        "erzählen",
-        "diskutieren",
-        "erklären",
-        "reden",
-        "melden",
-        "berichten",
     ],
 }
