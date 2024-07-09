@@ -9,8 +9,7 @@ def flatten_word_collection(collection: dict, prefix: str = "") -> dict:
 
 
 def test():
-    collection = {"a": 1, "b": {"c": 2, "d": {"e": 3}}}
-    print(flatten_word_collection(collection))
+    assert flatten_word_collection({"a": 1, "b": {"c": 2, "d": {"e": 3}}}) == {"a": 1, "b::c": 2, "b::d::e": 3}
 
 
 if __name__ == "__main__":
