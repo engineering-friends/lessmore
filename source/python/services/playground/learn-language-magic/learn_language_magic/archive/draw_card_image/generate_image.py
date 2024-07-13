@@ -6,6 +6,8 @@ import requests
 
 from learn_language_magic.ask import ask
 from lessmore.utils.asynchronous.async_rate_limiter import AsyncRateLimiter
+from lessmore.utils.file_primitives.ensure_path import ensure_path
+from lessmore.utils.file_primitives.gen_temp_filename import gen_temp_filename
 from lessmore.utils.file_primitives.write_file import write_file
 from lessmore.utils.system.open_in_os import open_in_os
 from loguru import logger
@@ -63,12 +65,26 @@ async def generate_image(
 
 
 def test():
+    async def run(prompt="Continuous lines very easy, clean and minimalist, black and white"):
+        temp_filename = ensure_path(gen_temp_filename(dir='/tmp/', extension='.png'))
+        image_contents = await generate_image(prompt=prompt)
+        write_file(data=image_contents, filename=temp_filename, as_bytes=True)
+        open_in_os(temp_filename)
+
     async def main():
-        image_contents = await generate_image(
-            prompt="Continuous lines very easy, clean and minimalist, colorful. Illustrate german 'laufen'"
+        await asyncio.gather(
+            *[
+                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light"),
+                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A cat"),
+                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A cat"),
+                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A cat"),
+                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A cat"),
+                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. Swirling lines"),
+                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. Swirling lines"),
+                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. Swirling lines"),
+                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. Swirling lines"),
+            ]
         )
-        write_file(data=image_contents, filename="/tmp/image.png", as_bytes=True)
-        open_in_os("/tmp/image.png")
 
     asyncio.run(main())
 

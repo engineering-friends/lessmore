@@ -153,7 +153,23 @@ word_collection = {
                 "wir öffnen",
                 "ihr öffnet",
                 "sie öffnen",
-            ]
+            ],
+            "articles_cases": [
+                "Der Hund gibt den Ball dem Mann des Kindes",  # masculine definite
+                "Die Hunde geben die Bälle den Kindern der Männer",  # masculine plural definite
+                "Ein Hund gibt einen Ball einem Mann eines Kindes",  # masculine indefinite
+                "Die Frau gibt die Blume der Mutter der Kinder",  # feminine definite
+                "Eine Frau gibt eine Blume einer Mutter einer Kinder",  # feminine indefinite
+                "Das Kind gibt das Buch dem Freund des Vaters",  # neutral definite
+                "Ein Kind gibt ein Buch einem Freund eines Vaters",  # neutral indefinite,
+                "Der Den Dem Des::Masculine Definite",
+                "Ein Einen Einem Eines::Masculine Indefinite",
+                "Das Das Dem Des::Neutral Definite",
+                "Ein Ein Einem Eines::Neutral Indefinite",
+                "Die Die Der Der::Feminine Definite",
+                "Eine Eine Einer Einer::Feminine Indefinite",
+                "Die Die Den Der::Plural",
+            ],
         },
         "practice": {
             "present_tense_conjugations": [

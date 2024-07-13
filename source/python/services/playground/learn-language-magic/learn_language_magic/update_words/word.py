@@ -18,10 +18,11 @@ class Word:
     word: str
     groups: list[str]
     bundles: list[str]
+    manual_translation: str = ""
 
     @async_cached_property
     async def translation(self):
-        return await ask(
+        return self.manual_translation or await ask(
             f"""Add english translation for the german word '{self.word}'""",
             example="🐶",
         )
@@ -117,9 +118,21 @@ class Word:
 
     @async_cached_property
     async def pronunciation(self):
-        return await ask(
+        result = await ask(
             f"""Add pronunciation for the german word '{self.word}'""",
             example="dɛr hʊnt",
+        )
+
+        if not isinstance(result, str):
+            return ""
+
+        return result
+
+    @async_cached_property
+    async def plural(self):
+        return await ask(
+            f"""Add plural for the german word '{self.word}'. If not a noun, leave empty.""",
+            example="Hunde",
         )
 
     @async_cached_property

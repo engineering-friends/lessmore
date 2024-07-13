@@ -58,6 +58,10 @@ async def update_words(
             # - Process words
 
             for _word in _words:
+                # - Split manual translation
+
+                _word, _manual_translation = _word.split("::") if "::" in _word else (_word, "")
+
                 # - Convert to dataclass
 
                 words.append(
@@ -65,6 +69,7 @@ async def update_words(
                         word=_word,
                         groups=[group_name],
                         bundles=[bundle_name] if bundle_name else [],
+                        manual_translation=_manual_translation,
                     )
                 )
 
@@ -129,10 +134,13 @@ async def update_words(
         upsert_anki_deck(
             words=[
                 {
-                    "front": await word.original,
+                    "front": await word.original + ""
+                    if not await word.plural
+                    else f"{await word.original} ({await word.plural})",
                     "back": f"{await word.emoji} {await word.translation}",
                     "pronunciation": await word.pronunciation,
                     "tags": word.bundles,
+                    "plural": await word.plural,
                 }
                 for word in group_words
             ],
