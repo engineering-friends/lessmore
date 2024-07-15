@@ -4,7 +4,7 @@ import re
 from typing import Callable, Optional
 
 from loguru import logger
-from more_itertools import only
+from more_itertools import first, only
 from notion_client import AsyncClient
 
 from lessmore.utils.enriched_notion_client.test_paginated_request import test_paginated_request
@@ -185,7 +185,8 @@ class EnrichedNotionAsyncClient(AsyncClient):
             # - Set page id for matching _unique_id
 
             for page in pages:
-                old_page = only(
+                # todo maybe: should be only here, but sometimes if fails for some reason
+                old_page = first(
                     [old_page for old_page in old_pages if old_page["_unique_id"] == page["_unique_id"]], default=None
                 )
                 if old_page:
