@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 from typing import Union
 
 import pendulum
@@ -60,6 +60,11 @@ def to_datetime(
 
         raise Exception(f"Integer out of bounds for datetime: {value}")
     elif isinstance(value, str):
+        # - Check if now
+
+        if value.lower() == "now":
+            return datetime.now(UTC).replace(tzinfo=None)
+
         # - Try most common patterns
 
         for pattern in COMMON_DATETIME_PATTERNS:
