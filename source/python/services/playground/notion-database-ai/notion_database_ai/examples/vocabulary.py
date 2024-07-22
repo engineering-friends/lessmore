@@ -15,7 +15,7 @@ class Vocabulary:
 
     @auto_column
     async def emoji(self):
-        return await ask(f"Single emoji representing {self.bundle}")
+        return await ask(f"SINGLE emoji representing words {self.bundle}, only one", example="🔥")
 
 
 if __name__ == "__main__":
