@@ -3,8 +3,8 @@ import inspect
 from dataclasses import dataclass
 from typing import Any
 
-from notion_database_ai.columns.auto_property import auto_property
-from notion_database_ai.columns.input_property import input_property
+from notion_database_ai.properties.auto_property import auto_property
+from notion_database_ai.properties.input_property import input_property
 
 
 def get_property_name_to_attribute_name(row: Any) -> dict:
