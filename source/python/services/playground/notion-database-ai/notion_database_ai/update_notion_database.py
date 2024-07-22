@@ -14,9 +14,6 @@ from notion_database_ai.field.column import column
 from notion_database_ai.field.extract_columns import extract_columns
 
 
-SUPPORTED_PROPERTIES = ["title", "text", "number", "select", "multi-select", "date"]
-
-
 async def update_notion_database(
     database_id: str,
     row_class: type,
@@ -95,7 +92,7 @@ async def update_notion_database(
 
 
 def test():
-    async def main():
+    async def main(database: Optional[dict] = None):
         # - Init client
 
         from learn_language_magic.deps import Deps
@@ -110,45 +107,46 @@ def test():
 
         # - Create page for tests inside tmp_page
 
-        database_name = f"test_page_{uuid.uuid4()}"
+        if not database:
+            database_name = f"test_page_{uuid.uuid4()}"
 
-        database = await client.upsert_database(
-            database={
-                "parent": {"page_id": deps.config.notion_test_page_id},
-                "title": [{"text": {"content": database_name}}],
-                "properties": {
-                    "title": {
-                        "id": "title",
-                        "name": "word",
-                        "title": {},
-                        "type": "title",
-                    },
-                    "Number": {
-                        "id": "number",
-                        "name": "number",
-                        "number": {},
-                        "type": "number",
-                    },
-                    "name": {"id": "name", "name": "name", "rich_text": {}, "type": "rich_text"},
-                    "Foo": {"id": "foo", "name": "foo", "rich_text": {}, "type": "rich_text"},
-                },
-            }
-        )
-
-        database = await client.upsert_database(
-            database={
-                "id": database["id"],
-            },
-            pages=[
-                {
+            database = await client.upsert_database(
+                database={
+                    "parent": {"page_id": deps.config.notion_test_page_id},
+                    "title": [{"text": {"content": database_name}}],
                     "properties": {
-                        "title": {"title": [{"text": {"content": "Test Title"}}]},
-                        "Number": {"number": 1},
-                    }
+                        "title": {
+                            "id": "title",
+                            "name": "word",
+                            "title": {},
+                            "type": "title",
+                        },
+                        "Number": {
+                            "id": "number",
+                            "name": "number",
+                            "number": {},
+                            "type": "number",
+                        },
+                        "name": {"id": "name", "name": "name", "rich_text": {}, "type": "rich_text"},
+                        "Foo": {"id": "foo", "name": "foo", "rich_text": {}, "type": "rich_text"},
+                    },
                 }
-            ],
-            children_list=[[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}]],
-        )
+            )
+
+            database = await client.upsert_database(
+                database={
+                    "id": database["id"],
+                },
+                pages=[
+                    {
+                        "properties": {
+                            "title": {"title": [{"text": {"content": "Test Title"}}]},
+                            "Number": {"number": 1},
+                        }
+                    }
+                ],
+                children_list=[[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}]],
+            )
 
         @dataclass
         class Example:
@@ -169,7 +167,7 @@ def test():
             notion_token=deps.config.notion_token,
         )
 
-    asyncio.run(main())
+    asyncio.run(main(database={"id": "6834e1ab38ec42c9b9c505ef07a4361a"}))  # pragma: allowlist secret
 
 
 if __name__ == "__main__":
