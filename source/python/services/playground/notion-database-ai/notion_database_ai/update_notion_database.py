@@ -4,7 +4,7 @@ from typing import Optional
 
 from learn_language_magic.notion_rate_limited_client import NotionRateLimitedClient
 from lessmore.utils.asynchronous.async_cached_property import prefetch_all_cached_properties
-from notion_database_ai.notion_database_row import NotionDatabaseRow
+from notion_database_ai.database_row.notion_database_row import NotionDatabaseRow
 
 
 SUPPORTED_PROPERTIES = ["title", "text", "number", "select", "multi-select", "date"]

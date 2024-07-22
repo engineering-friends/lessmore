@@ -3,7 +3,7 @@ from dataclasses import field
 from lessmore.utils.functional.dict.drop import drop
 
 
-def notion_column(name: str, **kwargs):
+def column(name: str, **kwargs):
     # syntax sugar to add field with adding column name to metadata
     return field(
         **drop(kwargs, ["metadata"]),

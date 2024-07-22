@@ -3,14 +3,14 @@ import inspect
 import json
 
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property
-from notion_database_ai.notion_column import notion_column
-from notion_database_ai.notion_property import notion_property
+from notion_database_ai.auto_column import auto_column
+from notion_database_ai.column import column
 
 
-class NotionDatabaseRow:
+class DatabaseRow:
     def __init__(self, property_types: dict, **kwargs):
         self.property_types = property_types
-        self.column_names_by_property_names = {}  # column names are set from notion_property on first descriptor call
+        self.auto_column_names_by_property_names = {}  # column names are set from notion_property on first descriptor call
 
         super().__init__(**kwargs)
 
@@ -62,19 +62,20 @@ class NotionDatabaseRow:
 
 def test():
     async def main():
-        class Example(NotionDatabaseRow):
-            title: str = notion_column(name="Title")
+        class Example(DatabaseRow):
+            title: str
+            my_number: str = column(name="My Number")
 
-            @notion_property
+            @auto_column
             async def name(self):
                 return "Example"
 
-            @notion_property(column="Foo")
+            @auto_column(name="Foo")
             async def foo(self):
                 return "Foo"
 
         example = Example(property_types={})
-        print(example.column_names_by_property_names)
+        print(example.auto_column_names_by_property_names)
 
     asyncio.run(main())
 

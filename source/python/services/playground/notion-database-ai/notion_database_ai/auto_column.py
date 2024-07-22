@@ -8,14 +8,14 @@ from typing import Coroutine, Optional
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property
 
 
-class notion_property:
+class auto_column:
     def __init__(
         self,
         coroutine: Optional[Coroutine] = None,
-        column: Optional[str] = None,
+        name: Optional[str] = None,
     ):
         self.coroutine = coroutine
-        self.column = column or coroutine.__name__
+        self.name = name or coroutine.__name__
 
     def __call__(self, coroutine):
         # hack to use both @notion_property and @notion_property(column='...') decorators
@@ -23,11 +23,11 @@ class notion_property:
         return self
 
     def __get__(self, instance, owner):
-        # - Set column name inside the owner
+        # - Set column name inside the instance
 
-        column_names_by_property_names = getattr(owner, "column_names_by_property_names", {})
-        column_names_by_property_names[self.coroutine.__name__] = self.column
-        setattr(owner, "column_names_by_property_names", column_names_by_property_names)
+        column_names_by_property_names = getattr(instance, "column_names_by_property_names", {})
+        column_names_by_property_names[self.coroutine.__name__] = self.name
+        setattr(instance, "column_names_by_property_names", column_names_by_property_names)
 
         # - Return async property
 
@@ -37,7 +37,7 @@ class notion_property:
 def test():
     async def main():
         class Example:
-            @notion_property(column="asdf")
+            @auto_column(name="asdf")
             async def data(self):
                 await asyncio.sleep(0.001)  # Simulate a long-running calculation
                 return time.time()
