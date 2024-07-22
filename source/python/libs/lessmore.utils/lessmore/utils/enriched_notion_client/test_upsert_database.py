@@ -34,11 +34,7 @@ def test_upsert_database():
             database={
                 "id": database["id"],
             },
-            pages=[
-                {
-                    "properties": {"word": {"title": [{"text": {"content": "Sure?!"}}]}},
-                }
-            ],
+            pages=[{"properties": {"word": {"title": [{"text": {"content": "Sure?!"}}]}}}],
             children_list=[[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}]],
         )
 

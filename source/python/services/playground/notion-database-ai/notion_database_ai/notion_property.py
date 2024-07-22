@@ -44,15 +44,6 @@ class notion_property:
         return wrapper()
 
 
-async def prefetch_all_cached_properties(instance):
-    tasks = []
-    for attr_name in dir(instance):
-        attr = getattr(instance, attr_name)
-        if inspect.isawaitable(attr):
-            tasks.append(attr)
-    await asyncio.gather(*tasks)
-
-
 def test():
     async def main():
         class Example:

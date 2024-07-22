@@ -1,24 +1,26 @@
 import asyncio
 import json
-import re
-import textwrap
 
-from dataclasses import dataclass
-
-from learn_language_magic.ask import ask
-from learn_language_magic.deps import Deps
-from learn_language_magic.markdown_table_to_df import markdown_table_to_df
-from lessmore.utils.asynchronous.async_cached_property import async_cached_property, prefetch_all_cached_properties
-from lessmore.utils.enriched_notion_client.enriched_notion_client import EnrichedNotionAsyncClient
-from more_itertools import mark_ends
+from lessmore.utils.asynchronous.async_cached_property import async_cached_property
+from pydantic import BaseModel
 
 
-@dataclass
-class NotionDatabaseRow:
+class NotionDatabaseRow(BaseModel):
+    def __init__(self, property_types: dict, **kwargs):
+        self.property_types = property_types
+        super().__init__(**kwargs)
+
+    def get_column_names(self):
+        result = []
+
+        # add fields
+        result += list(self.__fields__.keys())
+
+        # add notion_properties
+
     @async_cached_property
     async def notion_page(self):
         # - Collect all dataclass fields and notion_properties
-        # - Build properties
 
         result = {
             "properties": {

@@ -3,7 +3,7 @@ import asyncio
 from typing import Any, Dict, Optional
 
 from lessmore.utils.asynchronous.async_rate_limiter import AsyncRateLimiter
-from lessmore.utils.enriched_notion_client.enriched_notion_client import EnrichedNotionAsyncClient
+from lessmore.utils.enriched_notion_client.enriched_notion_async_client import EnrichedNotionAsyncClient
 from loguru import logger
 
 
