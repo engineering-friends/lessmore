@@ -116,55 +116,6 @@ class Word:
     async def is_irregular_verb(self):
         return await self.irregular_verb_conjugation is not None
 
-    @async_cached_property
-    async def pronunciation(self):
-        result = await ask(
-            f"""Add pronunciation for the german word '{self.word}'""",
-            example="dɛr hʊnt",
-        )
-
-        if not isinstance(result, str):
-            return ""
-
-        return result
-
-    @async_cached_property
-    async def plural(self):
-        return await ask(
-            f"""Add plural for the german word '{self.word}'. If not a noun, leave empty.""",
-            example="Hunde",
-        )
-
-    @async_cached_property
-    async def notion_page(self):
-        # - Build properties
-
-        result = {
-            "properties": {
-                "word": {"title": [{"text": {"content": self.word}}]},
-                "original": {"rich_text": [{"text": {"content": await self.original}}]},
-                "groups": {"multi_select": [{"name": group} for group in self.groups]},
-                "bundles": {"multi_select": [{"name": bundle} for bundle in self.bundles]},
-                "translation": {"rich_text": [{"text": {"content": await self.translation}}]},
-                "emoji": {"rich_text": [{"text": {"content": await self.emoji}}]},
-                "pronunciation": {"rich_text": [{"text": {"content": await self.pronunciation}}]},
-                "is_irregular_verb": {"checkbox": await self.is_irregular_verb},
-            },
-            "children": None,
-            # if not await self.irregular_verb_conjugation
-            # else [
-            #     EnrichedNotionAsyncClient.parse_markdown_table(
-            #         await self.irregular_verb_conjugation,
-            #         annotations=lambda header, row: {"color": "red"} if row["Irregular"] == "x" else None,
-            #     )
-            # ],
-        }
-
-        # - Filter out None values
-
-        return {k: v for k, v in result.items() if v is not None}
-
-
 def test():
     async def main():
         Deps.load()

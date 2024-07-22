@@ -10,7 +10,7 @@ from notion_database_ai.update_notion_database import update_notion_database
 @dataclass
 class Vocabulary:
     name: str
-    group: str
+    deck: str
     bundle: str
 
     @auto_column
@@ -24,6 +24,18 @@ class Vocabulary:
     @auto_column
     async def translation(self):
         return await ask(f"English translation of german `{self.name}`", example="Run")
+
+    @auto_column
+    async def pronunciation(self):
+        return await ask(f"Pronunciation of german `{self.name}`", example="/ɪç ˈtʁɪŋkə/")
+
+    @auto_column
+    async def plural(self):
+        is_noun = await ask(f"Is german `{self.name}` a noun?", example="yes") == "yes"
+        if not is_noun:
+            return ""
+        else:
+            return await ask(f"Plural of german `{self.name}`", example="Hunde")
 
 
 if __name__ == "__main__":
