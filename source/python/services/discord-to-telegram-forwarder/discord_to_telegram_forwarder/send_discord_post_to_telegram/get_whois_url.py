@@ -27,7 +27,9 @@ async def get_whois_url(
     pages = list(
         await client.get_paginated_request(
             method=client.databases.query,
-            database_id=whois_database_id,
+            method_kwargs=dict(
+                database_id=whois_database_id,
+            ),
         )
     )
 

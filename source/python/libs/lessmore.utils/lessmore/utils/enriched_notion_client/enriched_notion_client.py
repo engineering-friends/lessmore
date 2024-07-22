@@ -19,7 +19,7 @@ from lessmore.utils.tested import tested
 class EnrichedNotionAsyncClient(AsyncClient):
     @staticmethod
     @tested(tests=[test_paginated_request])
-    async def get_paginated_request(method, **kwargs):
+    async def get_paginated_request(method, method_kwargs):
         # - Init
 
         result = []
@@ -29,7 +29,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
         # - Get data from notion
 
         while has_more:
-            response = await method(start_cursor=start_cursor, **kwargs)
+            response = await method(start_cursor=start_cursor, **method_kwargs)
             result.extend(response["results"])
             start_cursor = response["next_cursor"]
             has_more = response["has_more"]
@@ -77,7 +77,10 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
             # - Get old children
 
-            old_children = await self.get_paginated_request(method=self.blocks.children.list, block_id=page["id"])
+            old_children = await self.get_paginated_request(
+                method=self.blocks.children.list,
+                method_kwargs=dict(block_id=page["id"]),
+            )
 
             # - Update children if needed
 
@@ -172,7 +175,10 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         # - -- Get old pages
 
-        old_pages = await self.get_paginated_request(method=self.databases.query, database_id=database["id"])
+        old_pages = await self.get_paginated_request(
+            method=self.databases.query,
+            method_kwargs=dict(database_id=database["id"]),
+        )
 
         # -- Find correct page_id for each page
 
@@ -185,7 +191,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
             # - Set page id for matching _unique_id
 
             for page in pages:
-                # todo maybe: should be only here, but sometimes if fails for some reason
+                # todo maybe: should be only here, but sometimes if fails for some reason [@marklidenberg]
                 old_page = first(
                     [old_page for old_page in old_pages if old_page["_unique_id"] == page["_unique_id"]], default=None
                 )
@@ -305,6 +311,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
                 notion_row = {"type": "table_row", "table_row": {"cells": []}}
                 for col_index, cell in enumerate(row):
                     cell_content = {"type": "text", "text": {"content": cell}}
+
                     # Apply annotations if the function is provided and returns non-None
                     if annotations:
                         annotation = annotations(headers[col_index], row_dict)

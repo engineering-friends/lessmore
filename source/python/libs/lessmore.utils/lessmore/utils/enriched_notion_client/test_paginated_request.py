@@ -13,6 +13,11 @@ def test_paginated_request():
             auth=Deps.load().config.notion_token,
         )
 
+        print(
+            await client.get_paginated_request(
+                method=client.pages.retrieve, method_kwargs={"page_id": "20901ecb09f8406983ff47f18d24f2a6"}
+            )
+        )
         print(await client.pages.retrieve(page_id="20901ecb09f8406983ff47f18d24f2a6"))
 
     asyncio.run(main())

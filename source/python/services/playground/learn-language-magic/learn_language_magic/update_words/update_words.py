@@ -19,6 +19,7 @@ from more_itertools import bucket, first
 async def update_words(
     word_collection: dict,
     words_database_id: str,
+    remove_others: bool = False,
 ):
     # - Init notion client
 
@@ -145,7 +146,7 @@ async def update_words(
                 for word in group_words
             ],
             deck_name=f"Default::{group_name}",
-            remove_others=True,
+            remove_others=remove_others,
             allow_duplicates="words::" not in group_name,
         )
 
@@ -155,8 +156,9 @@ async def update_words(
 def test():
     async def main():
         await update_words(
-            word_collection=word_collection,
-            # word_collection={'test': ['Bundle: Minute; der Tisch; Kapitel']},
+            # word_collection=word_collection,
+            word_collection={'test': {'bundle': ['Minute', 'wordder Tisch; Kapitel']}},
+            remove_others=False,
             words_database_id="d7a47aa34d2448e38e1a62ed7b6c6775",  # words
         )
 
