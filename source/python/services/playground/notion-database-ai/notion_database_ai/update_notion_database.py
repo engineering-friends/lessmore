@@ -1,11 +1,17 @@
 import asyncio
+import uuid
 
+from dataclasses import dataclass
 from typing import Optional
 
+from inline_snapshot import snapshot
 from learn_language_magic.notion_rate_limited_client import NotionRateLimitedClient
 from lessmore.utils.asynchronous.async_cached_property import prefetch_all_cached_properties
+from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
 from notion_database_ai.build_notion_page import build_notion_page
-from notion_database_ai.get_properties_to_attribute_name import get_property_name_to_attribute_name
+from notion_database_ai.field.auto_column import auto_column
+from notion_database_ai.field.column import column
+from notion_database_ai.field.extract_columns import extract_columns
 
 
 SUPPORTED_PROPERTIES = ["title", "text", "number", "select", "multi-select", "date"]
@@ -36,11 +42,6 @@ async def update_notion_database(
         k: v["type"] for k, v in (await client.databases.retrieve(database_id=database_id))["properties"].items()
     }
 
-    # - Assert all input properties are present in the notion database
-
-    for k in row_class.__dataclass_fields__.keys():
-        assert k in property_types, f"Property {k} not found in the notion database"
-
     # - Build rows
 
     rows = [
@@ -54,15 +55,14 @@ async def update_notion_database(
         for page in pages
     ]
 
-    # - Get property_name_to_attribute_name
+    # - Get columns
 
-    property_name_to_attribute_name = get_property_name_to_attribute_name(rows[0])
+    columns = extract_columns(rows[0])
 
-    # - Assert all properties are in place
+    # - Assert all column names are present in notion page
 
-    assert set(property_name_to_attribute_name.keys()).issubset(
-        set(property_types.keys())
-    ), f"Notion page: {list(property_types.keys())}, your dataclass: {list(property_name_to_attribute_name.keys())}"
+    for _column in columns:
+        assert _column.name in property_types, f"Property {_column.name} is not present"
 
     # - Calculate rows
 
@@ -92,3 +92,85 @@ async def update_notion_database(
         pages=new_pages,
         remove_others=False,
     )
+
+
+def test():
+    async def main():
+        # - Init client
+
+        from learn_language_magic.deps import Deps
+
+        deps = Deps.load()
+
+        from lessmore.utils.enriched_notion_client.enriched_notion_async_client import EnrichedNotionAsyncClient
+
+        client = EnrichedNotionAsyncClient(
+            auth=deps.config.notion_token,
+        )
+
+        # - Create page for tests inside tmp_page
+
+        database_name = f"test_page_{uuid.uuid4()}"
+
+        database = await client.upsert_database(
+            database={
+                "parent": {"page_id": deps.config.notion_test_page_id},
+                "title": [{"text": {"content": database_name}}],
+                "properties": {
+                    "title": {
+                        "id": "title",
+                        "name": "word",
+                        "title": {},
+                        "type": "title",
+                    },
+                    "Number": {
+                        "id": "number",
+                        "name": "number",
+                        "number": {},
+                        "type": "number",
+                    },
+                    "name": {"id": "name", "name": "name", "rich_text": {}, "type": "rich_text"},
+                    "Foo": {"id": "foo", "name": "foo", "rich_text": {}, "type": "rich_text"},
+                },
+            }
+        )
+
+        database = await client.upsert_database(
+            database={
+                "id": database["id"],
+            },
+            pages=[
+                {
+                    "properties": {
+                        "title": {"title": [{"text": {"content": "Test Title"}}]},
+                        "Number": {"number": 1},
+                    }
+                }
+            ],
+            children_list=[[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}]],
+        )
+
+        @dataclass
+        class Example:
+            title: str
+            number: int = column(alias="Number")
+
+            @auto_column
+            async def name(self):
+                return "Example"
+
+            @auto_column(alias="Foo")
+            async def foo(self):
+                return "Foo"
+
+        await update_notion_database(
+            database_id=database["id"],
+            row_class=Example,
+            notion_token=deps.config.notion_token,
+        )
+
+    asyncio.run(main())
+
+
+if __name__ == "__main__":
+    test()
