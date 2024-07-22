@@ -1,7 +1,21 @@
-from dataclasses import field as dataclass_field
+from dataclasses import (
+    dataclass,
+    field as dataclass_field,
+)
 from typing import Optional
 
 from lessmore.utils.functional.dict.drop import drop
+
+
+@dataclass
+class Column:
+    attribute: Optional[str] = None
+    alias: Optional[str] = None
+    is_auto: bool = False
+
+    @property
+    def name(self):
+        return self.alias or self.attribute
 
 
 def column(alias: Optional[str] = None, **kwargs):
@@ -9,10 +23,7 @@ def column(alias: Optional[str] = None, **kwargs):
     return dataclass_field(
         **drop(kwargs, ["metadata"]),
         metadata={
-            "column": {
-                "alias": alias,
-                "is_auto": False,
-            },
+            "column": Column(alias=alias),
             **kwargs.get("metadata", {}),
         },
     )

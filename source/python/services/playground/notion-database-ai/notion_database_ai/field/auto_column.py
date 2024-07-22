@@ -6,6 +6,7 @@ from functools import wraps
 from typing import Coroutine, Optional
 
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property
+from notion_database_ai.field.column import Column
 
 
 AUTO_COLUMNS = "auto_columns"
@@ -28,12 +29,14 @@ class auto_column:
     def __get__(self, instance, owner):
         # - Set column name inside the instance
 
-        auto_columns = getattr(instance, AUTO_COLUMNS, {})
-        auto_columns[self.coroutine.__name__] = {
-            "attribute": self.coroutine.__name__,
-            "alias": self.alias,
-            "is_auto": True,
-        }
+        auto_columns = getattr(instance, AUTO_COLUMNS, [])
+        auto_columns.append(
+            Column(
+                attribute=self.coroutine.__name__,
+                alias=self.alias,
+                is_auto=True,
+            )
+        )
         setattr(instance, AUTO_COLUMNS, auto_columns)
 
         # - Return async property
