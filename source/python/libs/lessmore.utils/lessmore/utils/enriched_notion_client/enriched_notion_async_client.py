@@ -111,6 +111,8 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         if old_page and contains_nested(whole=old_page, part=page):
             return old_page
+        else:
+            logger.debug("Pages", old_page=old_page, page=page)
 
         # -- Update page
 
@@ -533,5 +535,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
             return [select["name"] for select in property["multi_select"]]
         elif property["type"] == "title":
             return "".join([text["plain_text"] for text in property["title"]])
+        elif property["type"] == "rich_text":
+            return "".join([text["plain_text"] for text in property["rich_text"]])
         else:
             raise ValueError(f"Unknown property type: {property['type']}")

@@ -8,6 +8,7 @@ from inline_snapshot import snapshot
 from learn_language_magic.notion_rate_limited_client import NotionRateLimitedClient
 from lessmore.utils.asynchronous.async_cached_property import prefetch_all_cached_properties
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
+from loguru import logger
 from notion_database_ai.build_notion_page import build_notion_page
 from notion_database_ai.field.auto_column import auto_column
 from notion_database_ai.field.column import column
@@ -29,6 +30,10 @@ async def update_notion_database(
         method=client.databases.query,
         method_kwargs=dict(database_id=database_id),
     )
+
+    pages = pages[:50]
+
+    logger.info("Got pages", n_pages=len(pages))
 
     if not pages:
         return
@@ -63,9 +68,13 @@ async def update_notion_database(
 
     # - Calculate rows
 
+    logger.info("Prefetching all auto columns")
+
     await asyncio.gather(*[prefetch_all_cached_properties(row) for row in rows])
 
     # - Get notion pages
+
+    logger.info("Building notion pages")
 
     new_pages = await asyncio.gather(
         *[
@@ -83,6 +92,8 @@ async def update_notion_database(
         new_pages[i]["id"] = row["id"]
 
     # - Update notion pages
+
+    logger.info("Updating notion pages")
 
     await client.upsert_database(
         database={"id": database_id},

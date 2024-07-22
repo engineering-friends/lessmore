@@ -26,22 +26,26 @@ async def build_notion_page(row: Any, property_types: dict):
 
     # - Build notion page
 
-    properties = {}
+    properties = {_column.name: {} for _column in columns}
     page = {"properties": properties}
 
     for _column in columns:
         if property_types[_column.name] == "title":
-            properties[_column.name] = [{"text": {"content": getattr(row, _column.attribute)}}]
+            properties[_column.name][property_types[_column.name]] = [
+                {"text": {"content": getattr(row, _column.attribute)}}
+            ]
         elif property_types[_column.name] == "number":
-            properties[_column.name] = getattr(row, _column.attribute)
+            properties[_column.name][property_types[_column.name]] = getattr(row, _column.attribute)
         elif property_types[_column.name] == "checkbox":
-            properties[_column.name] = getattr(row, _column.attribute)
+            properties[_column.name][property_types[_column.name]] = getattr(row, _column.attribute)
         elif property_types[_column.name] == "rich_text":
-            properties[_column.name] = [{"text": {"content": getattr(row, _column.attribute)}}]
+            properties[_column.name][property_types[_column.name]] = [
+                {"text": {"content": getattr(row, _column.attribute)}}
+            ]
         elif property_types[_column.name] == "select":
-            properties[_column.name] = {"name": getattr(row, _column.attribute)}
+            properties[_column.name][property_types[_column.name]] = {"name": getattr(row, _column.attribute)}
         elif property_types[_column.name] == "multi_select":
-            properties[_column.name] = [{"name": getattr(row, _column.attribute)}]
+            properties[_column.name][property_types[_column.name]] = [{"name": getattr(row, _column.attribute)}]
         else:
             raise Exception(f"Unknown property type: {property_types[_column.name]}")
 
