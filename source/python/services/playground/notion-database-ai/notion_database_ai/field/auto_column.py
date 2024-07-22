@@ -27,21 +27,22 @@ class auto_column:
         return self
 
     def __get__(self, instance, owner):
-        # - Set column name inside the instance
+        if instance is None:
+            # - Init class
 
-        auto_columns = getattr(owner, AUTO_COLUMNS, [])
-        auto_columns.append(
-            Column(
-                attribute=self.coroutine.__name__,
-                alias=self.alias,
-                is_auto=True,
+            auto_columns = getattr(owner, AUTO_COLUMNS, [])
+            auto_columns.append(
+                Column(
+                    attribute=self.coroutine.__name__,
+                    alias=self.alias,
+                    is_auto=True,
+                )
             )
-        )
-        setattr(owner, AUTO_COLUMNS, auto_columns)
+            setattr(owner, AUTO_COLUMNS, auto_columns)
+        else:
+            # - Init instance method
 
-        # - Return async property
-
-        return async_cached_property(coroutine=self.coroutine).__get__(instance, owner)
+            return async_cached_property(coroutine=self.coroutine).__get__(instance, owner)
 
 
 def test():

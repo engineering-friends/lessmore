@@ -111,8 +111,6 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
         if old_page and contains_nested(whole=old_page, part=page):
             return old_page
-        else:
-            logger.debug("Pages", old_page=old_page, page=page)
 
         # -- Update page
 

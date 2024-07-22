@@ -25,12 +25,15 @@ class async_cached_property:
 
         @wraps(self.coroutine)
         async def wrapper(*args, **kwargs):
-            async with getattr(instance, lock_attr):
-                if not getattr(instance, cache_set_attr):
-                    result = await self.coroutine(instance, *args, **kwargs)
-                    setattr(instance, cache_attr, result)
-                    setattr(instance, cache_set_attr, True)
+            if getattr(instance, cache_set_attr):
                 return getattr(instance, cache_attr)
+            else:
+                async with getattr(instance, lock_attr):
+                    if not getattr(instance, cache_set_attr):
+                        result = await self.coroutine(instance, *args, **kwargs)
+                        setattr(instance, cache_attr, result)
+                        setattr(instance, cache_set_attr, True)
+                    return getattr(instance, cache_attr)
 
         return wrapper()
 

@@ -9,6 +9,7 @@ from typing import Any
 from inline_snapshot import snapshot
 from lessmore.utils.asynchronous.gather_nested import gather_nested
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
+from loguru import logger
 from notion_database_ai.field.auto_column import auto_column
 from notion_database_ai.field.column import column
 from notion_database_ai.field.extract_columns import extract_columns

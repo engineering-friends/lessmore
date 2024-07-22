@@ -31,8 +31,6 @@ async def update_notion_database(
         method_kwargs=dict(database_id=database_id),
     )
 
-    pages = pages[:50]
-
     logger.info("Got pages", n_pages=len(pages))
 
     if not pages:
