@@ -10,12 +10,20 @@ from notion_database_ai.update_notion_database import update_notion_database
 @dataclass
 class Vocabulary:
     name: str
-    group: list[str]
+    group: str
     bundle: str
 
     @auto_column
-    async def emoji(self):
+    async def bundle_emoji(self):
         return await ask(f"SINGLE emoji representing words {self.bundle}, only one", example="🔥")
+
+    @auto_column
+    async def emoji(self):
+        return await ask(f"SINGLE emoji representing words {self.name}, only one", example="🔥")
+
+    @auto_column
+    async def translation(self):
+        return await ask(f"English translation of german `{self.name}`", example="Run")
 
 
 if __name__ == "__main__":
