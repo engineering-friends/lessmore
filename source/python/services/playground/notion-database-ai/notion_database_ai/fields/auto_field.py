@@ -8,26 +8,26 @@ from typing import Coroutine, Optional
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property
 
 
-class auto_property:
+class auto_field:
     def __init__(
         self,
         coroutine: Optional[Coroutine] = None,
-        name: Optional[str] = None,
+        alias: Optional[str] = None,
     ):
         self.coroutine = coroutine
-        self.name = name or coroutine.__name__
+        self.alias = alias
 
     def __call__(self, coroutine):
-        # hack to use both @notion_property and @notion_property(column='...') decorators
+        # hack to use both @auto_field and @auto_field(column='...') decorators
         self.coroutine = coroutine
         return self
 
     def __get__(self, instance, owner):
         # - Set column name inside the instance
 
-        auto_property_name_to_attribute_name = getattr(instance, "auto_property_name_to_attribute_name", {})
-        auto_property_name_to_attribute_name[self.name] = self.coroutine.__name__
-        setattr(instance, "auto_property_name_to_attribute_name", auto_property_name_to_attribute_name)
+        auto_fields = getattr(instance, "auto_fields", {})
+        auto_fields[self.coroutine.__name__] = {"alias": self.alias}
+        setattr(instance, "auto_fields", auto_fields)
 
         # - Return async property
 
@@ -37,14 +37,18 @@ class auto_property:
 def test():
     async def main():
         class Example:
-            @auto_property(name="asdf")
-            async def data(self):
-                await asyncio.sleep(0.001)  # Simulate a long-running calculation
-                return time.time()
+            @auto_field
+            def foo(self) -> str:
+                return "foo"
+
+            @auto_field(alias="asdf")
+            async def bar(self) -> int:
+                return 123
 
         example = Example()
-        example.data.close()
-        print(example.auto_property_name_to_attribute_name)
+        example.foo.close()
+        example.bar.close()
+        print(example.auto_fields)
 
     asyncio.run(main())
 

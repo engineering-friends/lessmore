@@ -6,9 +6,9 @@ from dataclasses import dataclass
 from typing import Any
 
 from lessmore.utils.asynchronous.gather_nested import gather_nested
+from notion_database_ai.fields.auto_field import auto_property
+from notion_database_ai.fields.input_property import input_property
 from notion_database_ai.get_properties_to_attribute_name import get_property_name_to_attribute_name
-from notion_database_ai.properties.auto_property import auto_property
-from notion_database_ai.properties.input_property import input_property
 
 
 async def build_notion_page(row: Any, property_types: dict):

@@ -74,15 +74,13 @@ def test():
     async def main():
         await asyncio.gather(
             *[
-                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light"),
-                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A cat"),
-                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A cat"),
-                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A cat"),
-                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A cat"),
-                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. Swirling lines"),
-                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. Swirling lines"),
-                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. Swirling lines"),
-                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. Swirling lines"),
+                # run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light"),
+                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A pet"),
+                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A pet"),
+                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A pet"),
+                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A pet"),
+                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A pet"),
+                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A pet"),
             ]
         )
 
