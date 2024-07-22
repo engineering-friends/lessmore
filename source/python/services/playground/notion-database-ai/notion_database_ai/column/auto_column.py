@@ -6,10 +6,11 @@ from functools import wraps
 from typing import Coroutine, Optional
 
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property
-from notion_database_ai.column.column import Column
+
+from notion_database_ai.column.column_info import ColumnInfo
 
 
-AUTO_COLUMNS = "auto_columns"
+AUTO_COLUMN_INFOS = "auto_column_infos"
 
 
 class auto_column:
@@ -30,15 +31,15 @@ class auto_column:
         if instance is None:
             # - Init class
 
-            auto_columns = getattr(owner, AUTO_COLUMNS, [])
-            auto_columns.append(
-                Column(
+            auto_column_infos = getattr(owner, AUTO_COLUMN_INFOS, [])
+            auto_column_infos.append(
+                ColumnInfo(
                     attribute=self.coroutine.__name__,
                     alias=self.alias,
                     is_auto=True,
                 )
             )
-            setattr(owner, AUTO_COLUMNS, auto_columns)
+            setattr(owner, AUTO_COLUMN_INFOS, auto_column_infos)
         else:
             # - Init instance method
 
@@ -56,10 +57,12 @@ def test():
             async def bar(self) -> int:
                 return 123
 
-        example = Example()
-        example.foo.close()
-        example.bar.close()
-        print(example.auto_columns)
+        # access properties to trigger auto_column.__get__
+        Example.foo, Example.bar
+        assert Example.auto_column_infos == [
+            ColumnInfo(attribute="foo", alias=None, is_auto=True),
+            ColumnInfo(attribute="bar", alias="asdf", is_auto=True),
+        ]
 
     asyncio.run(main())
 
