@@ -37,7 +37,7 @@ async def update_notion_database(
     if not pages:
         return
 
-    # - Get row types from the first page
+    # - Get property types
 
     property_types = {
         k: v["type"] for k, v in (await client.databases.retrieve(database_id=database_id))["properties"].items()
@@ -45,21 +45,21 @@ async def update_notion_database(
 
     # - Extract columns
 
-    columns = extract_column_infos(row_class)
+    column_infos = extract_column_infos(row_class)
 
     # - Assert all column names are present in notion page
 
-    for _column in columns:
-        assert _column.name in property_types, f"Property {_column.name} is not present"
+    for column_info in column_infos:
+        assert column_info.name in property_types, f"Property {column_info.name} is not present"
 
     # - Build rows
 
     rows = [
         row_class(
             **{
-                _column.attribute: client.plainify_database_property(page["properties"][_column.name])
-                for _column in columns
-                if not _column.is_auto
+                column_info.attribute: client.plainify_database_property(page["properties"][column_info.name])
+                for column_info in column_infos
+                if not column_info.is_auto
             },
         )
         for page in pages
