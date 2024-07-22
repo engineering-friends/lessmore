@@ -243,7 +243,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
                         [old_page for old_page in old_pages if old_page["id"] == page.get("id")],
                         default=None,
                     ),
-                    children=children_list[i],
+                    children=children_list[i] if children_list else None,
                 )
                 for i, page in enumerate(pages)
             ]
@@ -334,8 +334,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
         return notion_table
 
     @tested(tests=[test_plainify_database_property])
-    @staticmethod
-    def plainify_database_property(property: dict) -> bool or str | list[str]:
+    def plainify_database_property(self, property: dict) -> bool | str | list[str]:
         """
               Parameters
               ----------

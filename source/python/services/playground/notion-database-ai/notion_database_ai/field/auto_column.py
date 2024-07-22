@@ -29,7 +29,7 @@ class auto_column:
     def __get__(self, instance, owner):
         # - Set column name inside the instance
 
-        auto_columns = getattr(instance, AUTO_COLUMNS, [])
+        auto_columns = getattr(owner, AUTO_COLUMNS, [])
         auto_columns.append(
             Column(
                 attribute=self.coroutine.__name__,
@@ -37,7 +37,7 @@ class auto_column:
                 is_auto=True,
             )
         )
-        setattr(instance, AUTO_COLUMNS, auto_columns)
+        setattr(owner, AUTO_COLUMNS, auto_columns)
 
         # - Return async property
 

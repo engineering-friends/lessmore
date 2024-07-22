@@ -42,27 +42,27 @@ async def update_notion_database(
         k: v["type"] for k, v in (await client.databases.retrieve(database_id=database_id))["properties"].items()
     }
 
-    # - Build rows
+    # - Extract columns
 
-    rows = [
-        row_class(
-            **{
-                k: client.plainify_database_property(v)
-                for k, v in page["properties"].items()
-                if v["type"] in SUPPORTED_PROPERTIES
-            },
-        )
-        for page in pages
-    ]
-
-    # - Get columns
-
-    columns = extract_columns(rows[0])
+    columns = extract_columns(row_class)
 
     # - Assert all column names are present in notion page
 
     for _column in columns:
         assert _column.name in property_types, f"Property {_column.name} is not present"
+
+    # - Build rows
+
+    rows = [
+        row_class(
+            **{
+                _column.attribute: client.plainify_database_property(page["properties"][_column.name])
+                for _column in columns
+                if not _column.is_auto
+            },
+        )
+        for page in pages
+    ]
 
     # - Calculate rows
 

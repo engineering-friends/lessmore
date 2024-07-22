@@ -63,7 +63,7 @@ def test():
         async def foo(self):
             return "Foo"
 
-    assert extract_columns(Example(title="123", my_number=123)) == snapshot(
+    assert extract_columns(Example) == snapshot(
         [
             Column(attribute="title", alias=None, is_auto=False),
             Column(attribute="my_number", alias="MyNumber", is_auto=False),
