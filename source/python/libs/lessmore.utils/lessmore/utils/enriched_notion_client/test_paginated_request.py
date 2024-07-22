@@ -12,15 +12,14 @@ def test_paginated_request():
         client = EnrichedNotionAsyncClient(
             auth=Deps.load().config.notion_token,
         )
-        # print(
-        #     await client.get_paginated_request(
-        #         method=client.databases.query,
-        #         method_kwargs={
-        #             "database_id": "60682eb4e436490782307b4073a02731",
-        #         },
-        #     )
-        # )
-        print(await client.pages.retrieve(page_id="54873a3a8061491e99b7fbe55e0dcc7b"))
+        print(
+            await client.get_paginated_request(
+                method=client.databases.query,
+                method_kwargs={
+                    "database_id": "60682eb4e436490782307b4073a02731",
+                },
+            )
+        )
 
     asyncio.run(main())
 

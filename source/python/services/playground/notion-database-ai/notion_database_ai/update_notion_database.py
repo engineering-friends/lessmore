@@ -32,7 +32,14 @@ async def update_notion_database(
 
     # - Get row types from the first page
 
-    property_types = {k: v["type"] for k, v in pages[0]["properties"].items()}
+    property_types = {
+        k: v["type"] for k, v in (await client.databases.retrieve(database_id=database_id))["properties"].items()
+    }
+
+    # - Assert all input properties are present in the notion database
+
+    for k in row_class.__dataclass_fields__.keys():
+        assert k in property_types, f"Property {k} not found in the notion database"
 
     # - Build rows
 
