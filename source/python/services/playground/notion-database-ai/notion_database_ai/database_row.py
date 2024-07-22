@@ -3,8 +3,8 @@ import inspect
 import json
 
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property
-from notion_database_ai.auto_column import auto_column
-from notion_database_ai.column import column
+from notion_database_ai.columns.auto_column import auto_column
+from notion_database_ai.columns.column import column
 
 
 class DatabaseRow:

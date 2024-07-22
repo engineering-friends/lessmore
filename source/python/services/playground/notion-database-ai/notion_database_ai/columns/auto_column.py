@@ -25,9 +25,9 @@ class auto_column:
     def __get__(self, instance, owner):
         # - Set column name inside the instance
 
-        column_names_by_property_names = getattr(instance, "column_names_by_property_names", {})
+        column_names_by_property_names = getattr(instance, "auto_column_names_by_property_names", {})
         column_names_by_property_names[self.coroutine.__name__] = self.name
-        setattr(instance, "column_names_by_property_names", column_names_by_property_names)
+        setattr(instance, "auto_column_names_by_property_names", column_names_by_property_names)
 
         # - Return async property
 
