@@ -23,9 +23,9 @@ class notion_property:
         return self
 
     def __get__(self, instance, owner):
-        # - Set column name inside owner
+        # - Set column name inside the owner
 
-        column_names_by_property_names = getattr(owner, "__column_names_by_property_names", {})
+        column_names_by_property_names = getattr(owner, "column_names_by_property_names", {})
         column_names_by_property_names[self.coroutine.__name__] = self.column
         setattr(owner, "column_names_by_property_names", column_names_by_property_names)
 
