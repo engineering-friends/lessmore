@@ -237,7 +237,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
                 self.upsert_page(
                     page={
                         "parent": {"database_id": database["id"]},
-                        **drop(page, ["children"]),
+                        **page,
                     },
                     old_page=only(
                         [old_page for old_page in old_pages if old_page["id"] == page.get("id")],
