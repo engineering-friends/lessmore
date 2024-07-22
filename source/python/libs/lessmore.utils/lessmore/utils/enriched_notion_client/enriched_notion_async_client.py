@@ -509,7 +509,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
         elif property["type"] == "created_time":
             return property["created_time"]
         elif property["type"] == "date":
-            return property["date"]["start"]
+            return [property["date"]["start"], property["date"].get("end")]
         elif property["type"] == "email":
             return property["email"]
         elif property["type"] == "files":

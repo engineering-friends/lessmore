@@ -17,7 +17,7 @@ def sample_database_page_prepare():
         write_file(
             data=await client.pages.retrieve(page_id="54873a3a8061491e99b7fbe55e0dcc7b"),
             filename=local_path("sample_database_page.json"),
-            writer=json.dump,
+            writer=lambda data, file: json.dump(data, file, indent=2),
         )
 
     asyncio.run(main())
