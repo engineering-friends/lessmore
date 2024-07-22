@@ -8,7 +8,7 @@ from typing import Coroutine, Optional
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property
 
 
-class auto_column:
+class auto_property:
     def __init__(
         self,
         coroutine: Optional[Coroutine] = None,
@@ -25,9 +25,9 @@ class auto_column:
     def __get__(self, instance, owner):
         # - Set column name inside the instance
 
-        column_names_by_property_names = getattr(instance, "auto_column_names_by_property_names", {})
-        column_names_by_property_names[self.coroutine.__name__] = self.name
-        setattr(instance, "auto_column_names_by_property_names", column_names_by_property_names)
+        auto_property_name_to_attribute_name = getattr(instance, "auto_property_name_to_attribute_name", {})
+        auto_property_name_to_attribute_name[self.name] = self.coroutine.__name__
+        setattr(instance, "auto_property_name_to_attribute_name", auto_property_name_to_attribute_name)
 
         # - Return async property
 
@@ -37,14 +37,14 @@ class auto_column:
 def test():
     async def main():
         class Example:
-            @auto_column(name="asdf")
+            @auto_property(name="asdf")
             async def data(self):
                 await asyncio.sleep(0.001)  # Simulate a long-running calculation
                 return time.time()
 
         example = Example()
-        print(example.data)
-        print(example.column_names_by_property_names)
+        example.data.close()
+        print(example.auto_property_name_to_attribute_name)
 
     asyncio.run(main())
 

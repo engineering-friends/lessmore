@@ -4,7 +4,6 @@ from typing import Optional
 
 from learn_language_magic.notion_rate_limited_client import NotionRateLimitedClient
 from lessmore.utils.asynchronous.async_cached_property import prefetch_all_cached_properties
-from notion_database_ai.database_row.notion_database_row import NotionDatabaseRow
 
 
 SUPPORTED_PROPERTIES = ["title", "text", "number", "select", "multi-select", "date"]
@@ -12,7 +11,7 @@ SUPPORTED_PROPERTIES = ["title", "text", "number", "select", "multi-select", "da
 
 async def update_notion_database(
     database_id: str,
-    row_class: type[NotionDatabaseRow],
+    row_class: type,
     notion_token: Optional[str] = None,
 ):
     # - Init notion client
@@ -37,7 +36,6 @@ async def update_notion_database(
 
     rows = [
         row_class(
-            property_types=property_types,
             **{
                 k: client.plainify_database_property(v)
                 for k, v in page["properties"].items()
@@ -47,7 +45,7 @@ async def update_notion_database(
         for page in pages
     ]
 
-    # - Update rows
+    # - Calculate rows
 
     await asyncio.gather(*([prefetch_all_cached_properties(row) for row in rows]))
 
