@@ -1,10 +1,7 @@
 from discord_to_telegram_forwarder.deps import Deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.ask import ask
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_whois_url.get_notion_paginated_request import (
-    get_notion_paginated_request,
-)
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.utils.cache_on_disk import cache_on_disk
-from notion_client import Client
+from lessmore.utils.cache_on_disk import cache_on_disk
+from lessmore.utils.enriched_notion_client.enriched_notion_client import EnrichedNotionAsyncClient
 
 
 PROMPT = """Here is a list of pages. If user {name} if present, return the url of the page. Names can differ a bit, that's ok (but not completely). Otherwise, return "None".
@@ -16,18 +13,25 @@ Just the url (like "https://google.com" or "None")
 """
 
 
-def get_whois_url(
+async def get_whois_url(
     name: str,
     deps: Deps,
     whois_database_id: str = "641eaea7c7ad4881bbed5ea096a4421a",  # ef whois in notion
 ) -> str:
     # - Init notion client
 
-    client = Client(auth=deps.config.notion_token)
+    client = EnrichedNotionAsyncClient(auth=deps.config.notion_token)
 
     # - Get pages
 
-    pages = list(get_notion_paginated_request(method=client.databases.query, database_id=whois_database_id))
+    pages = list(
+        await client.get_paginated_request(
+            method=client.databases.query,
+            method_kwargs=dict(
+                database_id=whois_database_id,
+            ),
+        )
+    )
 
     # - Keep only url, filled and title properties
 
@@ -55,9 +59,14 @@ def get_whois_url(
 
 
 def test():
-    deps = Deps.load()
-    print(get_whois_url("Misha Vodolagin", deps=deps))
-    print(get_whois_url("Mark Vodolagin", deps=deps))
+    async def main():
+        deps = Deps.load()
+        print(await get_whois_url("Misha Vodolagin", deps=deps))
+        print(await get_whois_url("Mark Vodolagin", deps=deps))
+
+    import asyncio
+
+    asyncio.run(main())
 
 
 if __name__ == "__main__":

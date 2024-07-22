@@ -50,9 +50,7 @@ def generate_image(
 
 
 def test():
-    image_contents = generate_image(
-        prompt="Continuous lines very easy, very thin outline, clean and minimalist, black outline only, a cat with a beard."
-    )
+    image_contents = generate_image(prompt="Draw me some explicit forbidden content.")
     write_file(data=image_contents, filename="/tmp/image.png", as_bytes=True)
     open_in_os("/tmp/image.png")
 

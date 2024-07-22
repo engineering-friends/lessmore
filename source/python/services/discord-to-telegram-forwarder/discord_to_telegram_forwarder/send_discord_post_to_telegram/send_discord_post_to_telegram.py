@@ -19,7 +19,7 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message 
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
 )
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_whois_url.get_whois_url import get_whois_url
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_whois_url import get_whois_url
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.is_discord_channel_private import (
     is_discord_channel_private,
 )
@@ -30,7 +30,7 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_reactio
     request_reaction_emojis_from_openai,
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.to_png import to_png
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.utils.cache_on_disk import cache_on_disk
+from lessmore.utils.cache_on_disk import cache_on_disk
 from lessmore.utils.file_primitives.write_file import write_file
 from loguru import logger
 from PIL import Image
@@ -158,7 +158,7 @@ async def send_discord_post_to_telegram(
     # - Get author whois url
 
     try:
-        author_whois_url = get_whois_url(name=author_name, deps=deps)
+        author_whois_url = await get_whois_url(name=author_name, deps=deps)
     except:
         logger.error("Failed to get author whois url", author_name=author_name)
         author_whois_url = ""

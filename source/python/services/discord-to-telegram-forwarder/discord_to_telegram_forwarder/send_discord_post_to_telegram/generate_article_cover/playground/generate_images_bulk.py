@@ -15,7 +15,7 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.generate_ima
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.generate_article_cover.playground.plot_dataframe_of_images import (
     plot_dataframe_of_images,
 )
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.utils.cache_on_disk import cache_on_disk
+from lessmore.utils.cache_on_disk import cache_on_disk
 from retry import retry
 
 from deeplay.utils.file_utils.read_file import read_file
