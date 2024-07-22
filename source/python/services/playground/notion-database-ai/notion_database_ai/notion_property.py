@@ -3,74 +3,50 @@ import inspect
 import time
 
 from functools import wraps
-from typing import Literal, Optional
+from typing import Coroutine, Optional
 
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property
 
 
 class notion_property:
-    def __init__(self, coroutine):
+    def __init__(
+        self,
+        coroutine: Optional[Coroutine] = None,
+        column: Optional[str] = None,
+    ):
         self.coroutine = coroutine
+        self.column = column or coroutine.__name__
+
+    def __call__(self, coroutine):
+        # hack to use both @notion_property and @notion_property(column='...') decorators
+        self.coroutine = coroutine
+        return self
 
     def __get__(self, instance, owner):
-        # - Get async property first
+        # - Set column name inside owner
 
-        async_property = async_cached_property(coroutine=self.coroutine).__get__(instance, owner)
+        column_names_by_property_names = getattr(owner, "__column_names_by_property_names", {})
+        column_names_by_property_names[self.coroutine.__name__] = self.column
+        setattr(owner, "column_names_by_property_names", column_names_by_property_names)
 
-        # - Set property
+        # - Return async property
 
-        if instance is None:
-            return self
-
-        # Get or create cache and lock attributes on the instance
-        cache_attr = f"_{self.coroutine.__name__}_cache"
-        lock_attr = f"_{self.coroutine.__name__}_lock"
-        cache_set_attr = f"_{self.coroutine.__name__}_cache_set"
-
-        if not hasattr(instance, cache_attr):
-            setattr(instance, cache_attr, None)
-            setattr(instance, lock_attr, asyncio.Lock())
-            setattr(instance, cache_set_attr, False)
-
-        @wraps(self.coroutine)
-        async def wrapper(*args, **kwargs):
-            async with getattr(instance, lock_attr):
-                if not getattr(instance, cache_set_attr):
-                    result = await self.coroutine(instance, *args, **kwargs)
-                    setattr(instance, cache_attr, result)
-                    setattr(instance, cache_set_attr, True)
-                return getattr(instance, cache_attr)
-
-        return wrapper()
+        return async_cached_property(coroutine=self.coroutine).__get__(instance, owner)
 
 
 def test():
     async def main():
         class Example:
-            @async_cached_property
+            @notion_property(column="asdf")
             async def data(self):
-                print("Computing data...")
-                await asyncio.sleep(0.01)  # Simulate a long-running calculation
+                await asyncio.sleep(0.001)  # Simulate a long-running calculation
                 return time.time()
 
-        example1 = Example()
-        example2 = Example()
+        example = Example()
+        print(example.data)
+        print(example.column_names_by_property_names)
 
-        result1a = asyncio.create_task(example1.data)
-        result1b = asyncio.create_task(example1.data)
-
-        assert await result1a == await result1b
-
-        result2a = asyncio.create_task(example2.data)
-        result2b = asyncio.create_task(example2.data)
-
-        assert await result2a == await result2b
-
-        assert await result1a != await result2a
-
-    started_at = time.time()
     asyncio.run(main())
-    assert time.time() - started_at < 0.03
 
 
 if __name__ == "__main__":

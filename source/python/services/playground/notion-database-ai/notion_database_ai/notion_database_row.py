@@ -1,20 +1,27 @@
 import asyncio
+import inspect
 import json
 
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property
+from notion_database_ai.notion_property import notion_property
 from pydantic import BaseModel
 
 
-class NotionDatabaseRow(BaseModel):
+class NotionDatabaseRow:
     def __init__(self, property_types: dict, **kwargs):
         self.property_types = property_types
         super().__init__(**kwargs)
+
+        # - Get each property at least once to ensure that metadata is loaded for "notion_properties"
+
+        for attr_name in dir(self):
+            getattr(self, attr_name)
 
     def get_column_names(self):
         result = []
 
         # add fields
-        result += list(self.__fields__.keys())
+        # result += list(self.__fields__.keys())
 
         # add notion_properties
 
@@ -51,7 +58,17 @@ class NotionDatabaseRow(BaseModel):
 
 def test():
     async def main():
-        pass
+        class Example(NotionDatabaseRow):
+            @notion_property
+            async def name(self):
+                return "Example"
+
+            @notion_property(column="Foo")
+            async def foo(self):
+                return "Foo"
+
+        example = Example(property_types={})
+        print(example.column_names_by_property_names)
 
     asyncio.run(main())
 
