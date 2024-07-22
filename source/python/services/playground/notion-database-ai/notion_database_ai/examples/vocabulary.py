@@ -15,6 +15,8 @@ class Vocabulary:
 
     @auto_column
     async def bundle_emoji(self):
+        if not self.bundle:
+            return ""
         return await ask(f"SINGLE emoji representing words {self.bundle}, only one", example="🔥")
 
     @auto_column
@@ -27,7 +29,7 @@ class Vocabulary:
 
     @auto_column
     async def pronunciation(self):
-        return await ask(f"Pronunciation of german `{self.name}`", example="/ɪç ˈtʁɪŋkə/")
+        return str(await ask(f"Pronunciation of german `{self.name}`", example="/ɪç ˈtʁɪŋkə/"))
 
     @auto_column
     async def plural(self):
