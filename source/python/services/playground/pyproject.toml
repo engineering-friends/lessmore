@@ -38,6 +38,7 @@ imgurpython = "^1.1.7"
 aiofiles = "^24.1.0"
 aiobotocore = "^2.13.1"
 aioboto3 = "^13.1.0"
+inline-snapshot = {git = "https://github.com/marklidenberg/inline-snapshot"}
 
 
 [build-system]
