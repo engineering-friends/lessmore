@@ -10,9 +10,9 @@ from lessmore.utils.asynchronous.async_cached_property import prefetch_all_cache
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
 from loguru import logger
 from notion_database_ai.build_notion_page import build_notion_page
-from notion_database_ai.field.auto_column import auto_column
-from notion_database_ai.field.column import column
-from notion_database_ai.field.extract_columns import extract_columns
+from notion_database_ai.column.auto_column import auto_column
+from notion_database_ai.column.column import column
+from notion_database_ai.column.extract_columns import extract_columns
 
 
 async def update_notion_database(

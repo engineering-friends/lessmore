@@ -3,7 +3,7 @@ import asyncio
 from dataclasses import dataclass
 
 from learn_language_magic.ask import ask
-from notion_database_ai.field.auto_column import auto_column
+from notion_database_ai.column.auto_column import auto_column
 from notion_database_ai.update_notion_database import update_notion_database
 
 

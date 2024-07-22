@@ -6,7 +6,7 @@ from functools import wraps
 from typing import Coroutine, Optional
 
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property
-from notion_database_ai.field.column import Column
+from notion_database_ai.column.column import Column
 
 
 AUTO_COLUMNS = "auto_columns"

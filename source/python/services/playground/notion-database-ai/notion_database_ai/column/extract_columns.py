@@ -5,8 +5,8 @@ from typing import Any
 
 from inline_snapshot import snapshot
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
-from notion_database_ai.field.auto_column import auto_column
-from notion_database_ai.field.column import Column, column
+from notion_database_ai.column.auto_column import auto_column
+from notion_database_ai.column.column import Column, column
 
 
 def extract_columns(row: Any) -> list:
