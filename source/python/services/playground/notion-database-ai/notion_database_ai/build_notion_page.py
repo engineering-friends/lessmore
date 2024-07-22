@@ -30,28 +30,22 @@ async def build_notion_page(row: Any, property_types: dict):
     page = {"properties": properties}
 
     for _column in columns:
+        value = await getattr(row, _column.attribute) if _column.is_auto else getattr(row, _column.attribute)
+
         if property_types[_column.name] == "title":
-            properties[_column.name][property_types[_column.name]] = [
-                {"text": {"content": getattr(row, _column.attribute)}}
-            ]
+            properties[_column.name][property_types[_column.name]] = [{"text": {"content": value}}]
         elif property_types[_column.name] == "number":
-            properties[_column.name][property_types[_column.name]] = getattr(row, _column.attribute)
+            properties[_column.name][property_types[_column.name]] = value
         elif property_types[_column.name] == "checkbox":
-            properties[_column.name][property_types[_column.name]] = getattr(row, _column.attribute)
+            properties[_column.name][property_types[_column.name]] = value
         elif property_types[_column.name] == "rich_text":
-            properties[_column.name][property_types[_column.name]] = [
-                {"text": {"content": getattr(row, _column.attribute)}}
-            ]
+            properties[_column.name][property_types[_column.name]] = [{"text": {"content": value}}]
         elif property_types[_column.name] == "select":
-            properties[_column.name][property_types[_column.name]] = {"name": getattr(row, _column.attribute)}
+            properties[_column.name][property_types[_column.name]] = {"name": value}
         elif property_types[_column.name] == "multi_select":
-            properties[_column.name][property_types[_column.name]] = [{"name": getattr(row, _column.attribute)}]
+            properties[_column.name][property_types[_column.name]] = [{"name": x} for x in value]
         else:
             raise Exception(f"Unknown property type: {property_types[_column.name]}")
-
-    # - Await coroutines
-
-    page = await gather_nested(page)
 
     # - Return page
 
