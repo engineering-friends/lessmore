@@ -9,6 +9,7 @@ from notion_client import AsyncClient
 
 from lessmore.utils.enriched_notion_client.test_paginated_request import test_paginated_request
 from lessmore.utils.enriched_notion_client.test_parse_markdown_table import test_parse_markdown_table
+from lessmore.utils.enriched_notion_client.test_plainify_database_property import test_plainify_database_property
 from lessmore.utils.enriched_notion_client.test_upsert_database import test_upsert_database
 from lessmore.utils.enriched_notion_client.test_upsert_page import test_upsert_page
 from lessmore.utils.functional.contains_nested import contains_nested
@@ -122,10 +123,16 @@ class EnrichedNotionAsyncClient(AsyncClient):
         self,
         database: Optional[dict] = None,
         pages: list[dict] = [],
+        children_list: Optional[list[dict]] = None,
         remove_others: bool = False,
         page_unique_id_func: Optional[Callable] = None,
         archive: Optional[bool] = None,
     ):
+        # - Validate pages has the same length as children
+
+        if children_list is not None:
+            assert len(pages) == len(children_list), "Pages and children_list should have the same length"
+
         # - If archived - just archive
 
         if archive is not None:
@@ -236,9 +243,9 @@ class EnrichedNotionAsyncClient(AsyncClient):
                         [old_page for old_page in old_pages if old_page["id"] == page.get("id")],
                         default=None,
                     ),
-                    children=page.get("children"),
+                    children=children_list[i],
                 )
-                for page in pages
+                for i, page in enumerate(pages)
             ]
         )
 
@@ -325,3 +332,207 @@ class EnrichedNotionAsyncClient(AsyncClient):
         headers, data = parse_markdown_table(markdown_table)
         notion_table = create_notion_table(headers, data)
         return notion_table
+
+    @tested(tests=[test_plainify_database_property])
+    @staticmethod
+    def plainify_database_property(property: dict) -> bool or str | list[str]:
+        """
+              Parameters
+              ----------
+              property: dict
+
+                  Examples:
+                  {
+          "Checkbox": {
+            "checkbox": true,
+            "id": "x%3AWM",
+            "type": "checkbox"
+          },
+          "Created by": {
+            "created_by": {
+              "avatar_url": "https://s3-us-west-2.amazonaws.com/public.notion-static.com/1cdd4edd-c36c-4707-b2d0-add156945b34/serious.jpeg",
+              "id": "bdb47407-ca48-4745-9aff-74763ad1bae0",
+              "name": "Mark Lidenberg",
+              "object": "user",
+              "person": {
+                "email": "marklidenberg@gmail.com"
+              },
+              "type": "person"
+            },
+            "id": "aXeg",
+            "type": "created_by"
+          },
+          "Created time": {
+            "created_time": "2024-07-22T08:56:00.000Z",
+            "id": "B%7DsS",
+            "type": "created_time"
+          },
+          "Date": {
+            "date": {
+              "end": null,
+              "start": "2024-07-18",
+              "time_zone": null
+            },
+            "id": "VBT%60",
+            "type": "date"
+          },
+          "Email": {
+            "email": "marklidenberg@gmail.com",
+            "id": "a%3Azs",
+            "type": "email"
+          },
+          "Files & media": {
+            "files": [
+              {
+                "file": {
+                  "expiry_time": "2024-07-22T09:59:08.505Z",
+                  "url": "https://prod-files-secure.s3.us-west-2.amazonaws.com/3249c2aa-1717-4003-b846-e9d6eb0fb98f/c4092125-8011-4350-8bfd-bae2f4ff2c52/cover_letter.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240722%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240722T085908Z&X-Amz-Expires=3600&X-Amz-Signature=7f6cc075cea8f321038c7d0e53d97683a5b4df446e76852e817773049b0e9fe6&X-Amz-SignedHeaders=host&x-id=GetObject"
+                },
+                "name": "cover_letter.txt",
+                "type": "file"
+              }
+            ],
+            "id": "%5BGdh",
+            "type": "files"
+          },
+          "Last edited by": {
+            "id": "_fBq",
+            "last_edited_by": {
+              "avatar_url": "https://s3-us-west-2.amazonaws.com/public.notion-static.com/1cdd4edd-c36c-4707-b2d0-add156945b34/serious.jpeg",
+              "id": "bdb47407-ca48-4745-9aff-74763ad1bae0",
+              "name": "Mark Lidenberg",
+              "object": "user",
+              "person": {
+                "email": "marklidenberg@gmail.com"
+              },
+              "type": "person"
+            },
+            "type": "last_edited_by"
+          },
+          "Last edited time": {
+            "id": "e%3Ac%5E",
+            "last_edited_time": "2024-07-22T08:58:00.000Z",
+            "type": "last_edited_time"
+          },
+          "Number": {
+            "id": "HBvK",
+            "number": 3,
+            "type": "number"
+          },
+          "Person": {
+            "id": "uB%7C%3B",
+            "people": [
+              {
+                "avatar_url": "https://s3-us-west-2.amazonaws.com/public.notion-static.com/1cdd4edd-c36c-4707-b2d0-add156945b34/serious.jpeg",
+                "id": "bdb47407-ca48-4745-9aff-74763ad1bae0",
+                "name": "Mark Lidenberg",
+                "object": "user",
+                "person": {
+                  "email": "marklidenberg@gmail.com"
+                },
+                "type": "person"
+              }
+            ],
+            "type": "people"
+          },
+          "Phone": {
+            "id": "rk%40%7D",
+            "phone_number": "+995551185124",
+            "type": "phone_number"
+          },
+          "Select": {
+            "id": "%5Eq%3F%3B",
+            "select": {
+              "color": "red",
+              "id": "a7842663-7443-4372-ac1d-60c2a97af7c6",
+              "name": "a"
+            },
+            "type": "select"
+          },
+          "Status": {
+            "id": "Rozo",
+            "status": {
+              "color": "default",
+              "id": "3b0c37fa-905f-4156-a686-9e65aba33efc",
+              "name": "Not started"
+            },
+            "type": "status"
+          },
+          "URL": {
+            "id": "wUQN",
+            "type": "url",
+            "url": "https://meet.google.com/pth-hmic-wup"
+          },
+          "multi-select": {
+            "id": "Bn%5DR",
+            "multi_select": [
+              {
+                "color": "red",
+                "id": "32c2c3d9-04cf-4318-9405-63d622cabc86",
+                "name": "a"
+              }
+            ],
+            "type": "multi_select"
+          },
+          "title": {
+            "id": "title",
+            "title": [
+              {
+                "annotations": {
+                  "bold": false,
+                  "code": false,
+                  "color": "default",
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                },
+                "href": null,
+                "plain_text": "a",
+                "text": {
+                  "content": "a",
+                  "link": null
+                },
+                "type": "text"
+              }
+            ],
+            "type": "title"
+          }
+        }
+
+              Returns
+              -------
+        """
+        if property["type"] == "checkbox":
+            return property["checkbox"]
+        elif property["type"] == "created_by":
+            return property["created_by"]["name"]
+        elif property["type"] == "created_time":
+            return property["created_time"]
+        elif property["type"] == "date":
+            return property["date"]["start"]
+        elif property["type"] == "email":
+            return property["email"]
+        elif property["type"] == "files":
+            return [file["name"] for file in property["files"]]
+        elif property["type"] == "last_edited_by":
+            return property["last_edited_by"]["name"]
+        elif property["type"] == "last_edited_time":
+            return property["last_edited_time"]
+        elif property["type"] == "number":
+            return property["number"]
+        elif property["type"] == "people":
+            return [person["name"] for person in property["people"]]
+        elif property["type"] == "phone_number":
+            return property["phone_number"]
+        elif property["type"] == "select":
+            return property["select"]["name"]
+        elif property["type"] == "status":
+            return property["status"]["name"]
+        elif property["type"] == "url":
+            return property["url"]
+        elif property["type"] == "multi_select":
+            return [select["name"] for select in property["multi_select"]]
+        elif property["type"] == "title":
+            return "".join([text["plain_text"] for text in property["title"]])
+        else:
+            raise ValueError(f"Unknown property type: {property['type']}")

@@ -9,7 +9,7 @@ from notion_database_ai.notion_database_row import NotionDatabaseRow
 
 async def update_notion_database(
     database_id: str,
-    row: type[NotionDatabaseRow],
+    row_class: type[NotionDatabaseRow],
     notion_token: Optional[str] = None,
     openai_token: Optional[str] = None,
 ):
@@ -18,6 +18,11 @@ async def update_notion_database(
     client = NotionRateLimitedClient(auth=notion_token)
 
     # - Get current notion pages
+
+    pages = await client.get_paginated_request(
+        method=client.databases.query,
+        method_kwargs=dict(database_id=database_id),
+    )
 
     # - Build rows
 
