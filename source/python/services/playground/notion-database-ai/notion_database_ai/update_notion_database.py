@@ -9,10 +9,11 @@ from learn_language_magic.notion_rate_limited_client import NotionRateLimitedCli
 from lessmore.utils.asynchronous.async_cached_property import prefetch_all_cached_properties
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
 from loguru import logger
+
 from notion_database_ai.build_notion_page import build_notion_page
-from notion_database_ai.field.auto_column import auto_column
-from notion_database_ai.field.column import column
-from notion_database_ai.field.extract_columns import extract_columns
+from notion_database_ai.column.auto_column import auto_column
+from notion_database_ai.column.column import column
+from notion_database_ai.column.extract_column_infos import extract_column_infos
 
 
 async def update_notion_database(
@@ -36,7 +37,7 @@ async def update_notion_database(
     if not pages:
         return
 
-    # - Get row types from the first page
+    # - Get property types
 
     property_types = {
         k: v["type"] for k, v in (await client.databases.retrieve(database_id=database_id))["properties"].items()
@@ -44,21 +45,21 @@ async def update_notion_database(
 
     # - Extract columns
 
-    columns = extract_columns(row_class)
+    column_infos = extract_column_infos(row_class)
 
     # - Assert all column names are present in notion page
 
-    for _column in columns:
-        assert _column.name in property_types, f"Property {_column.name} is not present"
+    for column_info in column_infos:
+        assert column_info.name in property_types, f"Property {column_info.name} is not present"
 
     # - Build rows
 
     rows = [
         row_class(
             **{
-                _column.attribute: client.plainify_database_property(page["properties"][_column.name])
-                for _column in columns
-                if not _column.is_auto
+                column_info.attribute: client.plainify_database_property(page["properties"][column_info.name])
+                for column_info in column_infos
+                if not column_info.is_auto
             },
         )
         for page in pages

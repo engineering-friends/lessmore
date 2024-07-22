@@ -10,43 +10,49 @@ from inline_snapshot import snapshot
 from lessmore.utils.asynchronous.gather_nested import gather_nested
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
 from loguru import logger
-from notion_database_ai.field.auto_column import auto_column
-from notion_database_ai.field.column import column
-from notion_database_ai.field.extract_columns import extract_columns
+
+from notion_database_ai.column.auto_column import auto_column
+from notion_database_ai.column.column import column
+from notion_database_ai.column.extract_column_infos import extract_column_infos
 
 
 async def build_notion_page(row: Any, property_types: dict):
     # - Extract columns
 
-    columns = extract_columns(row=row)
+    column_ifos = extract_column_infos(cls=row.__class__)
 
     # - Assert all column names are present in notion page
 
-    for _column in columns:
-        assert _column.name in property_types, f"Property {_column.name} is not present"
+    for column_info in column_ifos:
+        assert column_info.name in property_types, f"Property {column_info.name} is not present"
 
     # - Build notion page
 
-    properties = {_column.name: {} for _column in columns}
+    properties = {_column.name: {} for _column in column_ifos}
     page = {"properties": properties}
 
-    for _column in columns:
-        value = await getattr(row, _column.attribute) if _column.is_auto else getattr(row, _column.attribute)
+    for column_info in column_ifos:
+        value = (
+            await getattr(row, column_info.attribute) if column_info.is_auto else getattr(row, column_info.attribute)
+        )
 
-        if property_types[_column.name] == "title":
-            properties[_column.name][property_types[_column.name]] = [{"text": {"content": value}}]
-        elif property_types[_column.name] == "number":
-            properties[_column.name][property_types[_column.name]] = value
-        elif property_types[_column.name] == "checkbox":
-            properties[_column.name][property_types[_column.name]] = value
-        elif property_types[_column.name] == "rich_text":
-            properties[_column.name][property_types[_column.name]] = [{"text": {"content": value}}]
-        elif property_types[_column.name] == "select":
-            properties[_column.name][property_types[_column.name]] = {"name": value}
-        elif property_types[_column.name] == "multi_select":
-            properties[_column.name][property_types[_column.name]] = [{"name": x} for x in value]
+        _type = property_types[column_info.name]
+        property = properties[column_info.name]
+
+        if _type == "title":
+            property[_type] = [{"text": {"content": value}}]
+        elif _type == "number":
+            properties[column_info.name][_type] = value
+        elif _type == "checkbox":
+            properties[column_info.name][_type] = value
+        elif _type == "rich_text":
+            properties[column_info.name][_type] = [{"text": {"content": value}}]
+        elif _type == "select":
+            properties[column_info.name][_type] = {"name": value}
+        elif _type == "multi_select":
+            properties[column_info.name][_type] = [{"name": x} for x in value]
         else:
-            raise Exception(f"Unknown property type: {property_types[_column.name]}")
+            raise Exception(f"Unknown property type: {_type}")
 
     # - Return page
 
@@ -79,10 +85,10 @@ def test():
         ) == snapshot(
             {
                 "properties": {
-                    "title": [{"text": {"content": "Example"}}],
-                    "My Number": 123,
-                    "Foo": [{"text": {"content": "Foo"}}],
-                    "name": [{"text": {"content": "Example"}}],
+                    "title": {"title": [{"text": {"content": "Example"}}]},
+                    "My Number": {"number": 123},
+                    "Foo": {"rich_text": [{"text": {"content": "Foo"}}]},
+                    "name": {"rich_text": [{"text": {"content": "Example"}}]},
                 }
             }
         )
