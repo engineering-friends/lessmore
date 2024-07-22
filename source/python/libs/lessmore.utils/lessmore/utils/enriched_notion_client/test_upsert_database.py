@@ -5,8 +5,6 @@ from lessmore.utils.printy import printy as print
 
 
 def test_upsert_database():
-    from lessmore.utils.enriched_notion_client.enriched_notion_client import EnrichedNotionAsyncClient
-
     async def main():
         # - Init client
 
@@ -14,38 +12,39 @@ def test_upsert_database():
 
         deps = Deps.load()
 
+        from lessmore.utils.enriched_notion_client.enriched_notion_async_client import EnrichedNotionAsyncClient
+
         client = EnrichedNotionAsyncClient(
             auth=deps.config.notion_token,
         )
-        print(await client.pages.retrieve(page_id="aa8a345c528f48ae8e18b3ddef6403ec"))
-        #
-        # # - Create page for tests inside tmp_page
-        #
-        # database_name = f"test_page_{uuid.uuid4()}"
-        #
-        # database = await client.upsert_database(
-        #     database={
-        #         "parent": {"page_id": deps.config.notion_test_page_id},
-        #         "title": [{"text": {"content": database_name}}],
-        #         "properties": {"word": {"id": "title", "name": "word", "title": {}, "type": "title"}},
-        #     }
-        # )
-        #
-        # database = await client.upsert_database(
-        #     database={
-        #         "id": database["id"],
-        #     },
-        #     pages=[
-        #         {
-        #             "children": [{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}],
-        #             "properties": {"word": {"title": [{"text": {"content": "Sure?!"}}]}},
-        #         }
-        #     ],
-        # )
-        #
-        # # - Remove test database
-        #
-        # await client.upsert_database(database=database, archive=True)
+
+        # - Create page for tests inside tmp_page
+
+        database_name = f"test_page_{uuid.uuid4()}"
+
+        database = await client.upsert_database(
+            database={
+                "parent": {"page_id": deps.config.notion_test_page_id},
+                "title": [{"text": {"content": database_name}}],
+                "properties": {"word": {"id": "title", "name": "word", "title": {}, "type": "title"}},
+            }
+        )
+
+        database = await client.upsert_database(
+            database={
+                "id": database["id"],
+            },
+            pages=[
+                {
+                    "properties": {"word": {"title": [{"text": {"content": "Sure?!"}}]}},
+                }
+            ],
+            children_list=[[{"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Hello!"}}]}}]],
+        )
+
+        # - Remove test database
+
+        await client.upsert_database(database=database, archive=True)
 
     asyncio.run(main())
 

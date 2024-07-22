@@ -123,7 +123,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
         self,
         database: Optional[dict] = None,
         pages: list[dict] = [],
-        children_list: Optional[list[dict]] = None,
+        children_list: Optional[list[list[dict]]] = None,
         remove_others: bool = False,
         page_unique_id_func: Optional[Callable] = None,
         archive: Optional[bool] = None,
