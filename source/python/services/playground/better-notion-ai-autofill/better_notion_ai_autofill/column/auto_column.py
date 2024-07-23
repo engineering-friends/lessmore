@@ -27,11 +27,11 @@ class auto_column:
         self.coroutine = coroutine
         return self
 
-    def __get__(self, instance, owner):
+    def __get__(self, instance, cls):
         if instance is None:
             # - Init class
 
-            auto_column_infos = getattr(owner, AUTO_COLUMN_INFOS, [])
+            auto_column_infos = getattr(cls, AUTO_COLUMN_INFOS, [])
             auto_column_infos.append(
                 ColumnInfo(
                     attribute=self.coroutine.__name__,
@@ -39,11 +39,11 @@ class auto_column:
                     is_auto=True,
                 )
             )
-            setattr(owner, AUTO_COLUMN_INFOS, auto_column_infos)
+            setattr(cls, AUTO_COLUMN_INFOS, auto_column_infos)
         else:
             # - Init instance method
 
-            return async_cached_property(coroutine=self.coroutine).__get__(instance, owner)
+            return async_cached_property(coroutine=self.coroutine).__get__(instance, cls)
 
 
 def test():

@@ -2,8 +2,8 @@ import asyncio
 
 from dataclasses import dataclass
 
+from better_notion_ai_autofill.autofill import autofill
 from better_notion_ai_autofill.column.auto_column import auto_column
-from better_notion_ai_autofill.update_notion_database import update_notion_database
 from learn_language_magic.ask import ask
 
 
@@ -44,8 +44,8 @@ if __name__ == "__main__":
     from learn_language_magic.deps import Deps
 
     asyncio.run(
-        update_notion_database(
-            row_class=Vocabulary,
+        autofill(
+            row_cls=Vocabulary,
             database_id="1f38a3aab8c14da19bb1b4317bdbc148",
             notion_token=Deps.load().config.notion_token,
         )
