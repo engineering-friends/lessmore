@@ -26,14 +26,16 @@ async def update_vocabulary(vocabulary_database_id: str):
 
     df = pd.DataFrame(properties_list)
 
+    df = df.sort_values(by=["deck", "bundle", "comment"])
+
     # - Update anki deck
 
     for deck, grp in df.groupby("deck"):
         upsert_anki_deck(
             words=[
                 {
-                    "front": row["name"] + "" if not row["plural"] else f"{row['name']} ({row['plural']})",
-                    "back": f"{row['emoji']} {row['translation']}",
+                    "front": row["front_card"],
+                    "back": row["back_card"],
                     "pronunciation": row["pronunciation"],
                     "comment": row["comment"],
                 }

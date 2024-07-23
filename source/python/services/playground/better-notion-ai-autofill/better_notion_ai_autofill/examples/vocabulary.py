@@ -9,35 +9,38 @@ from learn_language_magic.ask import ask
 
 @dataclass
 class Vocabulary:
-    name: str
+    front: str
     deck: str
     bundle: str
-
-    @auto_column
-    async def bundle_emoji(self):
-        if not self.bundle:
-            return ""
-        return await ask(f"SINGLE emoji representing words {self.bundle}, only one", example="🔥")
+    back: str
 
     @auto_column
     async def emoji(self):
-        return await ask(f"SINGLE emoji representing words {self.name}, only one", example="🔥")
+        return await ask(f"SINGLE emoji representing words {self.front}, only one", example="🔥")
 
     @auto_column
     async def translation(self):
-        return await ask(f"English translation of german `{self.name}`", example="Run")
+        return await ask(f"English translation of german `{self.front}`", example="Run")
 
     @auto_column
     async def pronunciation(self):
-        return str(await ask(f"Pronunciation of german `{self.name}`", example="/ɪç ˈtʁɪŋkə/"))
+        return str(await ask(f"Pronunciation of german `{self.front}`", example="/ɪç ˈtʁɪŋkə/"))
 
     @auto_column
     async def plural(self):
-        is_noun = await ask(f"Is german `{self.name}` a noun?", example="yes") == "yes"
+        is_noun = await ask(f"Is german `{self.front}` a noun?", example="yes") == "yes"
         if not is_noun:
             return ""
         else:
-            return await ask(f"Plural of german `{self.name}`", example="Hunde")
+            return await ask(f"Plural of german `{self.front}`", example="Hunde")
+
+    @auto_column
+    async def front_card(self):
+        return f"{await self.emoji} {self.front or self.translation}"
+
+    @auto_column
+    async def back_card(self):
+        return self.back if not self.plural else f"{self.back} ({await self.plural})"
 
 
 if __name__ == "__main__":
