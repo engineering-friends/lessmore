@@ -3,7 +3,7 @@ import inspect
 import time
 
 from functools import wraps
-from typing import Any, Coroutine, Optional
+from typing import Coroutine, Optional
 
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property
 
@@ -13,7 +13,7 @@ from better_notion_ai_autofill.column.column_info import ColumnInfo
 AUTO_COLUMN_INFOS = "auto_column_infos"
 
 
-class auto_column(async_cached_property):
+class auto_column:
     def __init__(
         self,
         coroutine: Optional[Coroutine] = None,
@@ -22,23 +22,28 @@ class auto_column(async_cached_property):
         self.coroutine = coroutine
         self.alias = alias
 
-        super().__init__(coroutine=self.coroutine)
-
     def __call__(self, coroutine):
         # hack to use both @auto_field and @auto_field(column='...') decorators
         self.coroutine = coroutine
         return self
 
-    def __set_name__(self, cls: Any, name: str):
-        auto_column_infos = getattr(cls, AUTO_COLUMN_INFOS, [])
-        auto_column_infos.append(
-            ColumnInfo(
-                attribute=self.coroutine.__name__,
-                alias=self.alias,
-                is_auto=True,
+    def __get__(self, instance, cls):
+        if instance is None:
+            # - Init class
+
+            auto_column_infos = getattr(cls, AUTO_COLUMN_INFOS, [])
+            auto_column_infos.append(
+                ColumnInfo(
+                    attribute=self.coroutine.__name__,
+                    alias=self.alias,
+                    is_auto=True,
+                )
             )
-        )
-        setattr(cls, AUTO_COLUMN_INFOS, auto_column_infos)
+            setattr(cls, AUTO_COLUMN_INFOS, auto_column_infos)
+        else:
+            # - Init instance method
+
+            return async_cached_property(coroutine=self.coroutine).__get__(instance, cls)
 
 
 def test():
@@ -53,6 +58,7 @@ def test():
                 return 123
 
         # access properties to trigger auto_column.__get__
+        Example.foo, Example.bar
         assert Example.auto_column_infos == [
             ColumnInfo(attribute="foo", alias=None, is_auto=True),
             ColumnInfo(attribute="bar", alias="asdf", is_auto=True),

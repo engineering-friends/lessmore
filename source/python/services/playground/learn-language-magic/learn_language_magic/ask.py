@@ -79,24 +79,16 @@ async def ask(
     # - Process JSON
 
     if example:
-        attempts = 0
+        open_ai_kwargs["response_format"] = completion_create_params.ResponseFormat(type="json_object")
+        prompt += f"""\n Answer in JSON with root key `response`. Example: \n```{json.dumps({"response": example}, ensure_ascii=False)}\n```"""
 
-        while True:
-            open_ai_kwargs["response_format"] = completion_create_params.ResponseFormat(type="json_object")
-            prompt += f"""\n Answer in JSON with root key `response`. Example: \n```{json.dumps({"response": example}, ensure_ascii=False)}\n```"""
-
-            result = json.loads(
-                await (_ask if attempts == 0 else _ask_non_cached)(
-                    prompt=prompt,
-                    dedent=dedent,
-                    open_ai_kwargs=open_ai_kwargs,
-                )
-            )["response"]
-
-            if type(result) is type(example):
-                return result
-            else:
-                attempts += 1
+        return json.loads(
+            await _ask(
+                prompt=prompt,
+                dedent=dedent,
+                open_ai_kwargs=open_ai_kwargs,
+            )
+        )["response"]
 
     # - Run function
 
