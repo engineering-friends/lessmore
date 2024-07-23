@@ -68,9 +68,16 @@ def upsert_anki_deck(
     cards_to_reset = []
     for word in words:
         if word["front"] in existing_notes_dict:
+            # - Get current
+
+            current_note = {
+                key.lower(): existing_notes_dict[word["front"]]["fields"][key]["value"]
+                for key in ["Front", "Back", "Pronunciation", "Comment"]
+            }
             note_id = existing_notes_dict[word["front"]]["noteId"]
-            current_back = existing_notes_dict[word["front"]]["fields"]["Back"]["value"]
-            if current_back != word["back"]:
+
+            # - Update if needed
+            if current_note != word:
                 update_note(
                     note_id,
                     {

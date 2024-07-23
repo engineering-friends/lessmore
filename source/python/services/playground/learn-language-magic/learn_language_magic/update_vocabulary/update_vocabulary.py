@@ -40,7 +40,7 @@ async def update_vocabulary(vocabulary_database_id: str):
                 for i, row in grp.iterrows()
             ],
             deck_name=f"Default::{deck}",
-            remove_others=False,
+            remove_others=True,
             allow_duplicates="words::" not in deck,
         )
 
