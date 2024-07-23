@@ -76,7 +76,8 @@ def upsert_anki_deck(
                     {
                         "Front": word["front"],
                         "Back": word["back"],
-                        "Pronunciation": "/" + word["pronunciation"] + "/",
+                        "Pronunciation": word["pronunciation"],
+                        "Comment": word["comment"],
                     },
                 )
                 cards_to_reset.append(note_id)
@@ -87,7 +88,8 @@ def upsert_anki_deck(
                 "fields": {
                     "Front": word["front"],
                     "Back": word["back"],
-                    "Pronunciation": "/" + word["pronunciation"] + "/",
+                    "Pronunciation": word["pronunciation"],
+                    "Comment": word["comment"],
                 },
                 "options": {"allowDuplicate": allow_duplicates},
                 "tags": word.get("tags", []),

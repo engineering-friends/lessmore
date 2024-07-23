@@ -2,9 +2,9 @@ import asyncio
 
 from dataclasses import dataclass
 
+from better_notion_ai_autofill.column.auto_column import auto_column
+from better_notion_ai_autofill.update_notion_database import update_notion_database
 from learn_language_magic.ask import ask
-from notion_database_ai.column.auto_column import auto_column
-from notion_database_ai.update_notion_database import update_notion_database
 
 
 @dataclass

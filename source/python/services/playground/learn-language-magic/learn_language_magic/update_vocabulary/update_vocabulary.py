@@ -32,9 +32,10 @@ async def update_vocabulary(vocabulary_database_id: str):
         upsert_anki_deck(
             words=[
                 {
-                    "front": row["name"] + "" if not await row["plural"] else f"{row['name']} ({row['plural']})",
-                    "back": f"{row['emoji']} {await row['translation']}",
+                    "front": row["name"] + "" if not row["plural"] else f"{row['name']} ({row['plural']})",
+                    "back": f"{row['emoji']} {row['translation']}",
                     "pronunciation": row["pronunciation"],
+                    "comment": row["comment"],
                 }
                 for i, row in grp.iterrows()
             ],

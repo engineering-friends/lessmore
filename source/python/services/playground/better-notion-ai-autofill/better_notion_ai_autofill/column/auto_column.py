@@ -7,7 +7,7 @@ from typing import Coroutine, Optional
 
 from lessmore.utils.asynchronous.async_cached_property import async_cached_property
 
-from notion_database_ai.column.column_info import ColumnInfo
+from better_notion_ai_autofill.column.column_info import ColumnInfo
 
 
 AUTO_COLUMN_INFOS = "auto_column_infos"

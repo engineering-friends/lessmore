@@ -6,9 +6,9 @@ from typing import Any
 from inline_snapshot import snapshot
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
 
-from notion_database_ai.column.auto_column import auto_column
-from notion_database_ai.column.column import column
-from notion_database_ai.column.column_info import ColumnInfo
+from better_notion_ai_autofill.column.auto_column import auto_column
+from better_notion_ai_autofill.column.column import column
+from better_notion_ai_autofill.column.column_info import ColumnInfo
 
 
 def extract_column_infos(cls: type) -> list:
