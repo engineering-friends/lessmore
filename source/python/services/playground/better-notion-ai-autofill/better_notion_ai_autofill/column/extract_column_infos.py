@@ -6,9 +6,9 @@ from typing import Any
 from inline_snapshot import snapshot
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
 
-from notion_database_ai.column.auto_column import auto_column
-from notion_database_ai.column.column import column
-from notion_database_ai.column.column_info import ColumnInfo
+from better_notion_ai_autofill.column.auto_column import auto_column
+from better_notion_ai_autofill.column.column import column
+from better_notion_ai_autofill.column.column_info import ColumnInfo
 
 
 def extract_column_infos(cls: type) -> list:
@@ -35,15 +35,6 @@ def extract_column_infos(cls: type) -> list:
 
     # - Extract auto_columns
 
-    # -- Get attributes to trigger auto_column decorators
-
-    for attr_name in dir(cls):
-        if attr_name.startswith("__"):
-            continue
-        getattr(cls, attr_name)
-
-    # -- Add
-
     column_infos += cls.auto_column_infos
 
     # - Return
@@ -69,8 +60,8 @@ def test():
         [
             ColumnInfo(attribute="title", alias=None, is_auto=False),
             ColumnInfo(attribute="my_number", alias="MyNumber", is_auto=False),
-            ColumnInfo(attribute="foo", alias="Foo", is_auto=True),
             ColumnInfo(attribute="name", alias=None, is_auto=True),
+            ColumnInfo(attribute="foo", alias="Foo", is_auto=True),
         ]
     )
 

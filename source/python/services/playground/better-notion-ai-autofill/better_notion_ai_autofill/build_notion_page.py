@@ -4,34 +4,34 @@ import json
 import time
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Optional
 
 from inline_snapshot import snapshot
 from lessmore.utils.asynchronous.gather_nested import gather_nested
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
 from loguru import logger
 
-from notion_database_ai.column.auto_column import auto_column
-from notion_database_ai.column.column import column
-from notion_database_ai.column.extract_column_infos import extract_column_infos
+from better_notion_ai_autofill.column.auto_column import auto_column
+from better_notion_ai_autofill.column.column import column
+from better_notion_ai_autofill.column.extract_column_infos import extract_column_infos
 
 
 async def build_notion_page(row: Any, property_types: dict):
     # - Extract columns
 
-    column_ifos = extract_column_infos(cls=row.__class__)
+    column_infos = extract_column_infos(cls=row.__class__)
 
     # - Assert all column names are present in notion page
 
-    for column_info in column_ifos:
+    for column_info in column_infos:
         assert column_info.name in property_types, f"Property {column_info.name} is not present"
 
     # - Build notion page
 
-    properties = {_column.name: {} for _column in column_ifos}
+    properties = {column_info.name: {} for column_info in column_infos}
     page = {"properties": properties}
 
-    for column_info in column_ifos:
+    for column_info in column_infos:
         value = (
             await getattr(row, column_info.attribute) if column_info.is_auto else getattr(row, column_info.attribute)
         )

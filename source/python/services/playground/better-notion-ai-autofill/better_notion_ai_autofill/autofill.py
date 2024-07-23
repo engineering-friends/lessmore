@@ -10,15 +10,15 @@ from lessmore.utils.asynchronous.async_cached_property import prefetch_all_cache
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
 from loguru import logger
 
-from notion_database_ai.build_notion_page import build_notion_page
-from notion_database_ai.column.auto_column import auto_column
-from notion_database_ai.column.column import column
-from notion_database_ai.column.extract_column_infos import extract_column_infos
+from better_notion_ai_autofill.build_notion_page import build_notion_page
+from better_notion_ai_autofill.column.auto_column import auto_column
+from better_notion_ai_autofill.column.column import column
+from better_notion_ai_autofill.column.extract_column_infos import extract_column_infos
 
 
-async def update_notion_database(
+async def autofill(
     database_id: str,
-    row_class: type,
+    row_cls: type,
     notion_token: Optional[str] = None,
 ):
     # - Init notion client
@@ -45,7 +45,7 @@ async def update_notion_database(
 
     # - Extract columns
 
-    column_infos = extract_column_infos(row_class)
+    column_infos = extract_column_infos(row_cls)
 
     # - Assert all column names are present in notion page
 
@@ -55,7 +55,7 @@ async def update_notion_database(
     # - Build rows
 
     rows = [
-        row_class(
+        row_cls(
             **{
                 column_info.attribute: client.plainify_database_property(page["properties"][column_info.name])
                 for column_info in column_infos
@@ -171,9 +171,9 @@ def test():
             async def foo(self):
                 return "Foo"
 
-        await update_notion_database(
+        await autofill(
             database_id=database["id"],
-            row_class=Example,
+            row_cls=Example,
             notion_token=deps.config.notion_token,
         )
 

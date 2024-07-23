@@ -68,6 +68,8 @@ async def ask(
 
     # - Wrap cache if needed
 
+    _ask_non_cached = _ask
+
     _ask = (
         _ask
         if not cache

@@ -5,7 +5,7 @@ from typing import Optional
 
 from lessmore.utils.functional.dict.drop import drop
 
-from notion_database_ai.column.column_info import ColumnInfo
+from better_notion_ai_autofill.column.column_info import ColumnInfo
 
 
 def column(alias: Optional[str] = None, **kwargs):
