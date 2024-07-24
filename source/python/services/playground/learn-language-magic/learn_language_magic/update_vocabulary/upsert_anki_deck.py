@@ -58,23 +58,23 @@ def upsert_anki_deck(
 
     create_deck(deck_name)
 
-    existing_notes = find_notes(f"deck:{deck_name}")
-    existing_notes_info = get_notes_info(existing_notes) if existing_notes else []
+    existing_deck_notes = find_notes(f"deck:{deck_name}")
+    existing_deck_notes_info = get_notes_info(existing_deck_notes) if existing_deck_notes else []
 
-    existing_notes_dict = {note["fields"]["Back"]["value"]: note for note in existing_notes_info}
+    existing_deck_notes_dict = {note["fields"]["Back"]["value"]: note for note in existing_deck_notes_info}
 
     # Update existing notes and add new ones
     notes_to_add = []
     cards_to_reset = []
     for word in words:
-        if word["back"] in existing_notes_dict:
+        if word["back"] in existing_deck_notes_dict:
             # - Get current
 
             current_note = {
-                key.lower(): existing_notes_dict[word["back"]]["fields"][key]["value"]
+                key.lower(): existing_deck_notes_dict[word["back"]]["fields"][key]["value"]
                 for key in ["Front", "Back", "Pronunciation", "Comment"]
             }
-            note_id = existing_notes_dict[word["back"]]["noteId"]
+            note_id = existing_deck_notes_dict[word["back"]]["noteId"]
 
             # - Update if needed
 
@@ -111,12 +111,14 @@ def upsert_anki_deck(
         add_notes(notes_to_add)
 
     if reset_updated and cards_to_reset:
-        reset_cards([note["noteId"] for note in existing_notes_info if note["noteId"] in cards_to_reset])
+        reset_cards([note["noteId"] for note in existing_deck_notes_info if note["noteId"] in cards_to_reset])
 
-    # Remove missing words
+    # - Remove missing words
     if remove_others:
         notes_to_delete = [
-            note["noteId"] for back, note in existing_notes_dict.items() if back not in [word["back"] for word in words]
+            note["noteId"]
+            for back, note in existing_deck_notes_dict.items()
+            if back not in [word["back"] for word in words]
         ]
         if notes_to_delete:
             delete_notes(notes_to_delete)

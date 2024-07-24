@@ -43,7 +43,6 @@ async def update_vocabulary(vocabulary_database_id: str):
             ],
             deck_name=f"Default::{deck.replace('/', '::')}",
             remove_others=True,
-            allow_duplicates="words/" not in deck,
         )
 
 
