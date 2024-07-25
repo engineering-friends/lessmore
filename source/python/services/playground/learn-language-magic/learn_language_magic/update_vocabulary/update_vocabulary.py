@@ -26,11 +26,11 @@ async def update_vocabulary(vocabulary_database_id: str):
 
     df = pd.DataFrame(properties_list)
 
-    df = df.sort_values(by=["deck", "bundle", "comment"])
+    df = df.sort_values(by=["group", "sub_group", "comment"])
 
     # - Update anki deck
 
-    for deck, grp in df.groupby("deck"):
+    for group, grp in df.groupby("group"):
         upsert_anki_deck(
             words=[
                 {
@@ -41,7 +41,7 @@ async def update_vocabulary(vocabulary_database_id: str):
                 }
                 for i, row in grp.iterrows()
             ],
-            deck_name=f"Default::{deck.replace('/', '::')}",
+            deck_name=f"Default::{group.replace('/', '::')}",
             remove_others=True,
         )
 

@@ -10,7 +10,7 @@ from learn_language_magic.ask import ask
 @dataclass
 class Vocabulary:
     front: str
-    deck: str
+    group: str
     bundle: str
     back: str
 
@@ -36,7 +36,7 @@ class Vocabulary:
 
     @auto_column
     async def front_card(self) -> str:
-        return (await self.emoji + " " if "words/" in self.deck else "") + (self.front or await self.translation)
+        return (await self.emoji + " " if "words/" in self.group else "") + (self.front or await self.translation)
 
     @auto_column
     async def back_card(self) -> str:
