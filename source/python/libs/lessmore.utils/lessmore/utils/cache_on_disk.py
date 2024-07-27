@@ -6,6 +6,7 @@ import json
 from functools import lru_cache, wraps
 
 from diskcache import Cache
+
 from lessmore.utils.file_primitives.ensure_path import ensure_path
 
 
@@ -27,7 +28,7 @@ def cache_on_disk(
 
     # - Define the decorator
 
-    def _get_key(func, args, kwargs, cache_unique_key):
+    def _get_key(func, args, kwargs):
         # - Generate a unique key based on function arguments and their values
 
         # -- Get full kwargs
@@ -59,16 +60,14 @@ def cache_on_disk(
             hasher.update(key.encode())
             hashable(value)
 
-        hasher.update(cache_unique_key.encode())
-
         return hasher.hexdigest()
 
     def decorator(func):
         @wraps(func)
-        def sync_wrapper(cache_unique_key: str = "", *args, **kwargs):
+        def sync_wrapper(*args, **kwargs):
             # - Get key
 
-            key = _get_key(func=func, args=args, kwargs=kwargs, cache_unique_key=cache_unique_key)
+            key = _get_key(func=func, args=args, kwargs=kwargs)
 
             # - Check if the result is already in the cache
 
@@ -85,10 +84,10 @@ def cache_on_disk(
             return result
 
         @wraps(func)
-        async def async_wrapper(cache_unique_key: str = "", *args, **kwargs):
+        async def async_wrapper(*args, **kwargs):
             # - Get key
 
-            key = _get_key(func=func, args=args, kwargs=kwargs, cache_unique_key=cache_unique_key)
+            key = _get_key(func=func, args=args, kwargs=kwargs)
 
             # - Check if the result is already in the cache
 

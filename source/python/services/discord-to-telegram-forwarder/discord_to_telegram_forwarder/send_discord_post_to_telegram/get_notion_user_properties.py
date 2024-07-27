@@ -1,7 +1,9 @@
 from discord_to_telegram_forwarder.deps import Deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.ask import ask
 from lessmore.utils.cache_on_disk import cache_on_disk
-from lessmore.utils.enriched_notion_client.enriched_notion_client import EnrichedNotionAsyncClient
+from lessmore.utils.enriched_notion_client.enriched_notion_async_client import EnrichedNotionAsyncClient
+from lessmore.utils.functional.dict.pick import pick
+from more_itertools import first
 
 
 PROMPT = """Here is a list of pages. If user {name} if present, return the url of the page. Names can differ a bit, that's ok (but not completely). Otherwise, return "None".
@@ -13,11 +15,11 @@ Just the url (like "https://google.com" or "None")
 """
 
 
-async def get_whois_url(
+async def get_notion_user_properties(
     name: str,
     deps: Deps,
     whois_database_id: str = "641eaea7c7ad4881bbed5ea096a4421a",  # ef whois in notion
-) -> str:
+) -> dict:
     # - Init notion client
 
     client = EnrichedNotionAsyncClient(auth=deps.config.notion_token)
@@ -37,32 +39,35 @@ async def get_whois_url(
 
     pages = [
         {
-            "url": page["url"],
-            "filled": page["properties"]["Filled"]["checkbox"],
-            "title": "".join([text["plain_text"] for text in page["properties"]["Name"]["title"]]),
+            **pick(
+                {
+                    property_name: client.plainify_database_property(property=property)
+                    for property_name, property in page["properties"].items()
+                    if property
+                    and property["type"] not in ["relation", "formula", "people"]  # filter out unsupported properties
+                },
+                keys=["Name", "TG_username", "Стиль постов", "Заполнена"],
+            ),
+            **{"url": page["url"]},
         }
         for page in pages
     ]
-
-    # - Filter filled pages
-
-    pages = [page for page in pages if page["filled"]]
 
     # - Ask gpt the link for the page with the name
 
     url = cache_on_disk(directory=f"{deps.local_files_dir}/whois")(ask)(PROMPT.format(name=name, pages=str(pages)))
 
     if url == "None":
-        return None
-
-    return url
+        return {}
+    else:
+        return first([page for page in pages if page["url"] == url], default={})
 
 
 def test():
     async def main():
         deps = Deps.load()
-        print(await get_whois_url("Misha Vodolagin", deps=deps))
-        print(await get_whois_url("Mark Vodolagin", deps=deps))
+        print(await get_notion_user_properties("Misha Vodolagin", deps=deps))
+        print(await get_notion_user_properties("Mark Vodolagin", deps=deps))
 
     import asyncio
 
