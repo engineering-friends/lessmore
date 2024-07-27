@@ -16,10 +16,12 @@ from discord_to_telegram_forwarder.deps import Deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.generate_image import generate_image
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.download_as_temp_file import _download_as_temp_file
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_notion_user_properties import (
+    get_notion_user_properties,
+)
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
     get_shortened_url_from_tiny_url,
 )
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_whois_url import get_whois_url
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.is_discord_channel_private import (
     is_discord_channel_private,
 )
@@ -155,13 +157,13 @@ async def send_discord_post_to_telegram(
     author_name = message.author.display_name
     url = message.jump_url
 
-    # - Get author whois url
+    # - Get user notion properties
 
     try:
-        author_whois_url = await get_whois_url(name=author_name, deps=deps)
+        notion_properties = await get_notion_user_properties(name=author_name, deps=deps)
     except:
-        logger.error("Failed to get author whois url", author_name=author_name)
-        author_whois_url = ""
+        logger.error("Failed to get user notion properties")
+        notion_properties = {}
 
     # - Generate images if there are none
 
@@ -191,7 +193,10 @@ async def send_discord_post_to_telegram(
                         - A man examining floating, digitally scanned leaves and branches in a virtual reality museum
     
                         The text: {prompt}""",
-                style="Continuous lines very easy, very thin outline, clean and minimalist, black outline only, {prompt}",
+                style=notion_properties.get(
+                    "Стиль постов",
+                    "Continuous lines very easy, very thin outline, clean and minimalist, black outline only",
+                ),
             )
 
             # - Resize image to 1280x731 (telegram max size)
@@ -271,7 +276,7 @@ async def send_discord_post_to_telegram(
             body=body,
             url=url,
             inner_shortened_url=inner_shortened_url,
-            author_url=author_whois_url,
+            author_url=notion_properties.get("url", ""),
         )
 
         # - Then cut it to size limit
@@ -295,7 +300,7 @@ async def send_discord_post_to_telegram(
         body=body,
         url=url,
         inner_shortened_url=inner_shortened_url,
-        author_url=author_whois_url,
+        author_url=notion_properties.get("url", ""),
     )
 
     # - Split files to separate message if needed

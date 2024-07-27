@@ -59,7 +59,7 @@ async def draw_card_image(word: str):
         filename=filename,
         bucket="lessmore",
         object_name="learn-language-magic/images/" + _sanitize_filename(os.path.basename(filename)),
-        cache_unique_key=file_contents_hash,  # different images - different urls
+        # cache_unique_key=file_contents_hash,  # different images - different urls
     )
 
 

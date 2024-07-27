@@ -508,6 +508,8 @@ class EnrichedNotionAsyncClient(AsyncClient):
         elif property["type"] == "created_time":
             return property["created_time"]
         elif property["type"] == "date":
+            if not property["date"]:
+                return ""
             return [property["date"]["start"], property["date"].get("end")]
         elif property["type"] == "email":
             return property["email"]
@@ -519,12 +521,12 @@ class EnrichedNotionAsyncClient(AsyncClient):
             return property["last_edited_time"]
         elif property["type"] == "number":
             return property["number"]
-        elif property["type"] == "people":
-            return [person["name"] for person in property["people"]]
         elif property["type"] == "phone_number":
             return property["phone_number"]
         elif property["type"] == "select":
-            return property["select"]["name"]
+            if not property["select"]:
+                return ""
+            return property["select"].get("name", "")
         elif property["type"] == "status":
             return property["status"]["name"]
         elif property["type"] == "url":

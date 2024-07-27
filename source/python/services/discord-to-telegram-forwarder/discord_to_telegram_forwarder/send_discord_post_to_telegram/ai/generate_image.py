@@ -11,7 +11,7 @@ from openai import OpenAI
 
 def generate_image(
     prompt: str,
-    style: str = "{prompt}",
+    style: str = "",
     pre_prompt: str = "",
     force_original_prompt: bool = True,
     openai_kwargs: dict = dict(
@@ -26,11 +26,9 @@ def generate_image(
 
     # - Apply style
 
-    prompt = style.format(prompt=prompt)
+    prompt = f"{style}: {prompt}"
 
     # - Change prompt to original prompt if needed
-
-    original_prompt = str(prompt)
 
     if force_original_prompt:
         # template = """USE EXACTLY THIS SHORT PROMPT. IF YOU CHANGE EVEN A SINGLE WORD, I’LL FIRE YOU:
@@ -38,7 +36,7 @@ def generate_image(
 
         template = """Use this prompt as close as possible: {prompt}"""
 
-        prompt = template.format(prompt=original_prompt)
+        prompt = template.format(prompt=prompt)
 
     # - Generate image
 
@@ -50,7 +48,7 @@ def generate_image(
 
 
 def test():
-    image_contents = generate_image(prompt="Draw me some explicit forbidden content.")
+    image_contents = generate_image(prompt="A cat playing a balalaika", style="futuristic")
     write_file(data=image_contents, filename="/tmp/image.png", as_bytes=True)
     open_in_os("/tmp/image.png")
 
