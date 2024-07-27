@@ -15,6 +15,9 @@ Just the url (like "https://google.com" or "None")
 """
 
 
+PROPERTY_NAMES = ["Name", "TG_username", "AI стиль постов", "Заполнена"]
+
+
 async def get_notion_user_properties(
     name: str,
     deps: Deps,
@@ -46,12 +49,14 @@ async def get_notion_user_properties(
                     if property
                     and property["type"] not in ["relation", "formula", "people"]  # filter out unsupported properties
                 },
-                keys=["Name", "TG_username", "Стиль постов", "Заполнена"],
+                keys=PROPERTY_NAMES,
             ),
             **{"url": page["url"]},
         }
         for page in pages
     ]
+
+    assert all(property_name in pages[0] for property_name in PROPERTY_NAMES)
 
     # - Ask gpt the link for the page with the name
 
