@@ -195,7 +195,7 @@ async def send_discord_post_to_telegram(
                         The text: {prompt}""",
                 style=notion_properties.get(
                     "AI стиль постов",
-                    "Continuous lines very easy, very thin outline, clean and minimalist, black outline only",
+                    "Continuous lines very easy, clean and minimalist, black background, lines are glowing as light, colorful",
                 ),
             )
 

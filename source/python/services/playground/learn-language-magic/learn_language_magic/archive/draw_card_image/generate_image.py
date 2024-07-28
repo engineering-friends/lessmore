@@ -65,7 +65,7 @@ async def generate_image(
 
 
 def test():
-    async def run(prompt="Continuous lines very easy, clean and minimalist, black and white"):
+    async def run(prompt="Matrix-style, green on black background, a pet"):
         temp_filename = ensure_path(gen_temp_filename(dir='/tmp/', extension='.png'))
         image_contents = await generate_image(prompt=prompt)
         write_file(data=image_contents, filename=temp_filename, as_bytes=True)
@@ -75,12 +75,7 @@ def test():
         await asyncio.gather(
             *[
                 # run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light"),
-                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A pet"),
-                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A pet"),
-                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A pet"),
-                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A pet"),
-                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A pet"),
-                run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light. A pet"),
+                run(prompt="Matrix-style, green on black background, a pet"),
             ]
         )
 
