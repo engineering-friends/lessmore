@@ -1,7 +1,7 @@
 import json
 
 from datetime import date, datetime
-from typing import Callable
+from typing import Any, Callable
 
 
 def printy_serializer(value):
@@ -16,10 +16,16 @@ def printy_serializer(value):
 
 
 def printy(
-    value,
-    clip: bool = False,
+    value: Any,
+    clip: bool = True,
     serializer: Callable = printy_serializer,
 ) -> str:
+    """Print and optionally copy to clipboard a value. Useful for debugging.
+
+    Usually used as `from lessmore.utils.printy import printy as print`.
+
+    """
+
     # - Serialize
 
     value = serializer(value)
@@ -27,9 +33,12 @@ def printy(
     # - Clip
 
     if clip:
-        import pyperclip
+        try:
+            import pyperclip
 
-        pyperclip.copy(value)
+            pyperclip.copy(value)
+        except:
+            pass
 
     # - Print
 
@@ -42,7 +51,7 @@ def printy(
 
 def test():
     printy({"a": 1, "b": 2})
-    v = printy({"a": 1, "b": 2}, clip=True)
+    v = printy({"a": 1, "b": 2})
     assert v == '{"a": 1, "b": 2}'
 
 

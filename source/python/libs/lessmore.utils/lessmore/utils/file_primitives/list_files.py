@@ -10,6 +10,7 @@ def list_files(
     pattern: Union[None, str, Callable] = None,
     recursive: bool = True,
 ):
+    """List files in a directory with custom pattern. Glob alternatives, but faster and only for the files."""
     # - Get list of files
 
     if not recursive:

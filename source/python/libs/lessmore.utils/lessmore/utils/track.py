@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 
 class track:
-    """Simple tqdm wrapper with more functionality."""
+    """Simple tqdm wrapper."""
 
     def __init__(
         self,

@@ -27,6 +27,7 @@ def to_datetime(
     value: DatetimeLike,
     parse_date_kwargs: dict = {},
 ) -> datetime:
+    """Converts any datetime-like value to a naive-datetime object in UTC."""
     if isinstance(value, datetime) and not isinstance(value, pendulum.DateTime):
         if value.tzinfo:
             value = value.astimezone(pendulum.UTC).replace(tzinfo=None)

@@ -16,8 +16,7 @@ def cache_on_disk(
     reset: bool = False,
 ) -> callable:
     """
-    Decorator factory that takes a directory name for storing cache data.
-    Returns a decorator that caches the results of the function to disk.
+    Decorator factory for caching the results of a function to disk.
 
     # todo later: handle closing the cache or using other library, this is a quick and dirty implementation [@marklidenberg]
     """

@@ -8,7 +8,7 @@ from loguru import logger
 def async_retry(
     tries: Optional[int] = None,
     delay: int = 1,
-    condition: Callable = lambda e: True,
+    retry_condition: Callable = lambda e: True,
 ):
     def decorator(func):
         async def wrapper(*args, **kwargs):
@@ -20,7 +20,7 @@ def async_retry(
                 try:
                     return await func(*args, **kwargs)
                 except Exception as e:
-                    if not condition(e):
+                    if not retry_condition(e):
                         raise
 
                     attempt += 1
@@ -36,7 +36,7 @@ def async_retry(
 
 
 def test():
-    @async_retry(tries=3, delay=1, condition=lambda e: isinstance(e, ValueError))
+    @async_retry(tries=3, delay=1, retry_condition=lambda e: isinstance(e, ValueError))
     async def test_func():
         raise ValueError("Test exception")
 

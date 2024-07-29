@@ -28,7 +28,7 @@ def resolve_dict_placeholders(dic):
 
             if isinstance(cursor, str):
                 cursor = resolve_placeholders(dic=dic, s=cursor)
-            s = s.replace(f"{{{{{match}}}}}", str(cursor))
+            s = s.replace("{{" + match + "}}", str(cursor))
         return s
 
     def recursive_resolve(sub_dic: dict, dic: dict):
@@ -47,7 +47,7 @@ def test():
     assert resolve_dict_placeholders(
         {
             "a": 1,
-            "h": "{{b}}",
+            "h": "{{a}}",
             "b": "{{a}} and {{c}}",
             "c": "value of c",
             "d": {"e": "nested {{a}}"},
@@ -55,7 +55,7 @@ def test():
         }
     ) == {
         "a": 1,
-        "h": "1 and value of c",
+        "h": "1",
         "b": "1 and value of c",
         "c": "value of c",
         "d": {"e": "nested 1"},

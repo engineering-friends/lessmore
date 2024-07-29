@@ -5,8 +5,10 @@ from typing import Union
 
 
 def ensure_path(path: Union[str, os.PathLike, Path]) -> Union[str, os.PathLike, Path]:
-    """
-    Ensure that the directory path exists.
+    """Ensure that the directory path exists and return the path.
+
+    Common scenario: `with open(ensure_path("path/to/file.txt"), "w") as f:...`
+
     """
     os.makedirs(os.path.dirname(str(path)), exist_ok=True)
     return path

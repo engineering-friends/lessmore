@@ -2,11 +2,20 @@ import json
 import math
 import sys
 
-from lessmore.utils.loguru_utils.get_traceback import get_traceback
 from loguru import logger
 
+from lessmore.utils.loguru_utils.formatters.get_traceback import get_traceback
 
-def format_as_json(record):
+
+def format_as_json(record: dict) -> str:
+    """Loguru json formatter.
+
+    Sample output:
+    {"level": "INFO", "message": "Simple message", "ts": 1722241041459, "source": "", "extra": {}, "stack": "", "error": ""}
+    {"level": "INFO", "message": "Message with extra", "ts": 1722241041459, "source": "", "extra": {"extra": {"foo": "bar"}}, "stack": "", "error": ""}
+    {"level": "ERROR", "message": "Exception caught", "ts": 1722241041459, "source": "", "extra": {}, "stack": "...\nValueError: This is an exception\n", "error": ""}
+
+    """
     assert "_json" not in record["extra"]
 
     extra = dict(record["extra"])

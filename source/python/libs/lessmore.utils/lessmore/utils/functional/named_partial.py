@@ -1,8 +1,9 @@
 from functools import partial, update_wrapper
+from typing import Callable
 
 
-def named_partial(func, *args, **kwargs):
-    """A partial function that keeps the original function's docstring and name. functools.partial does not do this."""
+def named_partial(func, *args, **kwargs) -> Callable:
+    """A partial function that keeps the original function's docstring and name. `functools.partial` does not do this."""
     partial_func = partial(func, *args, **kwargs)
     update_wrapper(wrapper=partial_func, wrapped=func)
     return partial_func

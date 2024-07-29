@@ -13,14 +13,11 @@ import emoji as emoji_lib
 
 from box import Box
 from discord_to_telegram_forwarder.deps import Deps
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.generate_image import generate_image
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.generate_article_cover import generate_article_cover
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.download_as_temp_file import _download_as_temp_file
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_notion_user_properties import (
     get_notion_user_properties,
-)
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
-    get_shortened_url_from_tiny_url,
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.is_discord_channel_private import (
     is_discord_channel_private,
@@ -53,10 +50,25 @@ async def send_discord_post_to_telegram(
     telegram_chat_to_filter: dict[Union[str, int], Callable[[discord.Message], bool]],
     filter_forum_post_messages: bool = True,
     emoji: Optional[str] = None,
-    add_inner_shortened_url: bool = True,
 ) -> None:
-    # - Filter forum post messages: from forum channel and is starter message
+    """
+    Parameters
+    ----------
+    deps: Deps
+        Dependencies
+    message: discord.Message
+    telegram_chat_to_filter: dict
+        Telegram chat to filter function (if filter function returns True, message will be sent to this chat)
+    filter_forum_post_messages: bool
+        Filter forum post messages: if True, will only send messages that are from forum channel and are starter message
+    emoji: bool
+        Emoji to use in the message
+    Returns
+    -------
 
+    """
+
+    # - Filter forum post messages: from forum channel and is starter message
     if filter_forum_post_messages:
         is_post_message = isinstance(
             maybe(message).channel.parent.or_else(None), discord.ForumChannel
@@ -103,7 +115,9 @@ async def send_discord_post_to_telegram(
         for discord_alias in discord_aliases:
             discord_alias_to_telegram_username[discord_alias] = telegram_username
 
-    # - Fix usernames in message text and replace with telegram tags / discord display name
+    # - Fix discord placeholders: <@913095424225706005>, <#1106702799938519211>, <@&1106702799938519211> -> @marklidenberg, [name](link), @<name>
+
+    # -- Fix usernames in the message text and replace them with telegram / discord display name (e.g. <@913095424225706005> -> @marklidenberg)
 
     for user_id in re.findall(r"<@(\d+)>", message.content):  # <@913095424225706005>
         # - Get user
@@ -125,18 +139,18 @@ async def send_discord_post_to_telegram(
             f"{MENTION_CHAR_PLACEHOLDER}{telegram_username}" if telegram_username else user.display_name,
         )
 
-    # - Find all channels and replace with links
+    # -- Find all channels and replace with links
 
     for channel_id in re.findall(r"<#(\d+)>", message.content):  # <#1106702799938519211>
         # - Get channel
 
         channel = message.guild.get_channel(int(channel_id))
 
-        # - Replace <#1106702799938519211> with <name>
+        # - Replace <#1106702799938519211> with  [name](link)
 
         message.content = message.content.replace(f"<#{channel_id}>", f"[{channel.name}]({channel.jump_url})")
 
-    # - Find all roles and replace with their names
+    # -- Find all roles and replace with their names
 
     for role_id in re.findall(r"<@&(\d+)>", message.content):  # <@&1106702799938519211>
         # - Get role
@@ -145,22 +159,24 @@ async def send_discord_post_to_telegram(
 
         # - Replace <@&1106702799938519211> with @<name>
 
-        message.content = message.content.replace(f"<@&{role_id}>", f"{role.name}")
+        message.content = message.content.replace(f"<@&{role_id}>", role.name)
 
     # - Unfold message
 
-    channel_name = maybe(message).channel.name.or_else("")
-    parent_channel_name = maybe(message).channel.parent.name.or_else("")
-    title = maybe(message).channel.name.or_else("")
-    tags = [tag.name for tag in maybe(message).channel.applied_tags.or_else([])]
-    body = message.content
-    author_name = message.author.display_name
-    url = message.jump_url
+    channel_or_post_name = maybe(message).channel.name.or_else("")  # `Челленджи в EF`
+    parent_channel_name = maybe(message).channel.parent.name.or_else("")  # `?│requests`
+    title = maybe(message).channel.name.or_else("")  # `Челленджи в EF`
+    tags = [tag.name for tag in maybe(message).channel.applied_tags.or_else([])]  # `['want_a_session']`
+    body = message.content  # `Мы с другом раз в полгода...`
+    author_name = message.author.display_name  # `Mark Lidenberg`
+    url = message.jump_url  # `https://discord.com/...`
 
     # - Get user notion properties
 
     try:
-        notion_properties = await get_notion_user_properties(name=author_name, deps=deps)
+        notion_properties = await get_notion_user_properties(
+            name=author_name, deps=deps
+        )  # {'AI стиль постов': 'style of secret of kells, old paper, celtic art', 'Name': 'Mark Lidenberg', 'TG_username': 'marklidenberg', 'url': 'https://www.notion.so/Mark-Lidenberg-d5ae5f192b4c402ba014268e63aed47c', 'Заполнена': True}
     except:
         logger.error("Failed to get user notion properties")
         notion_properties = {}
@@ -172,27 +188,10 @@ async def send_discord_post_to_telegram(
 
         try:
             image_contents = cache_on_disk(f"{deps.local_files_dir}/generate_image")(
-                retry(tries=5, delay=1)(generate_image)
+                retry(tries=5, delay=1)(generate_article_cover)
             )(
-                prompt="\n".join([title, body]),
-                pre_prompt="""
-                        - There is an animated movie with a scene, that is described below. Describe the first shot of the scene
-                        - EXCLUDE all electronic devices with screens (e.g. phones, laptops, etc.)
-                        - It should be ONE shot, describing ONE scene. Choose any scene from the text
-                        - It MUST have describe the text briefly, including it's core idea
-                        - Skip any people names, use abstract forms (e.g. Petr Lavrov -> a man). Keep intact other names (e.g. Apple, Russia, ChatGPT, ...)
-                        - Make it 15 words max
-    
-                        Examples of other scenes:
-                        - A man is standing in the middle of the desert, looking at the sky, happy
-                        - The night sky full of fireworks
-                        - Winter landscape with houses, trees and snow covered mountain background, a sky filled with snowflakes
-                        - A man finishing a grueling marathon race, crowd cheering, with a mountainous backdrop
-                        - Man hands over documents at military registration desk, civilian officer reviews them, austere office setting
-                        - Father and son discussing universities at home, papers with "PROS/CONS" lists on the table
-                        - A man examining floating, digitally scanned leaves and branches in a virtual reality museum
-    
-                        The text: {prompt}""",
+                title=title,
+                body=body,
                 style=notion_properties.get(
                     "AI стиль постов",
                     "Continuous lines very easy, clean and minimalist, black background, lines are glowing as light, colorful",
@@ -231,13 +230,7 @@ async def send_discord_post_to_telegram(
 
         else:
             # get from openai
-            emoji = request_emoji_representing_text_from_openai(f"{channel_name} {title} {body}")
-
-    # -- Make discord schema and shorten it to make it https:// with redirection to discord://
-
-    inner_shortened_url = (
-        get_shortened_url_from_tiny_url(url.replace("https", "discord")) if add_inner_shortened_url else ""
-    )
+            emoji = request_emoji_representing_text_from_openai(f"{channel_or_post_name} {title} {body}")
 
     # -- Replace @ for ~ in the body and title
 
@@ -248,7 +241,7 @@ async def send_discord_post_to_telegram(
 
     body = body.replace(MENTION_CHAR_PLACEHOLDER, "@")
 
-    # -- Remove prefix non-alhpanumeric (or -) characters from parent_channel_name
+    # -- Remove prefix non-alphanumeric (or -) characters from parent_channel_name
 
     def _is_alphanumeric_with_dashes(string: str) -> bool:
         return all([character.isalnum() or character == "-" for character in string])
@@ -265,24 +258,22 @@ async def send_discord_post_to_telegram(
     # --- Crop body if necessary
 
     if body:
-        # - First get full message text
-
-        message_text_full = format_message(
-            parent_channel_name=parent_channel_name,
-            emoji=emoji,
-            title=title,
-            tags=tags,
-            author_name=author_name,
-            body=body,
-            url=url,
-            inner_shortened_url=inner_shortened_url,
-            author_url=notion_properties.get("url", ""),
-        )
-
-        # - Then cut it to size limit
-
         body_size = len(body)
-        non_body_size = len(message_text_full) - body_size
+        non_body_size = (
+            len(
+                format_message(
+                    parent_channel_name=parent_channel_name,
+                    emoji=emoji,
+                    title=title,
+                    tags=tags,
+                    author_name=author_name,
+                    body=body,
+                    url=url,
+                    author_url=notion_properties.get("url", ""),
+                )
+            )
+            - body_size
+        )
         body_size_limit = MESSAGE_LIMIT - non_body_size - len("... (больше в посте)")
         body_size_limit -= (
             100  # for safety, as telegram could in theory have slightly different way of counting symbols
@@ -299,7 +290,6 @@ async def send_discord_post_to_telegram(
         author_name=author_name,
         body=body,
         url=url,
-        inner_shortened_url=inner_shortened_url,
         author_url=notion_properties.get("url", ""),
     )
 
@@ -444,7 +434,6 @@ async def test():
                 "attachments": [],
             }
         ),
-        add_inner_shortened_url=True,
         telegram_chat_to_filter={deps.config.telegram_ef_channel: lambda message: True},
         filter_forum_post_messages=False,
     )
@@ -453,8 +442,8 @@ async def test():
 if __name__ == "__main__":
     # asyncio.run(
     #     test_send_real_message_from_discord(
-    #         forum_name="🗒│posts",
-    #         title_contains="Про 3D Printing",
+    #         forum_name="❔│requests",
+    #         title_contains="Челленджи",
     #     )
     # )
 

@@ -1,4 +1,7 @@
-def any_empty(iterable):
+from typing import Iterable
+
+
+def any_empty(iterable: Iterable) -> bool:
     return any(not item for item in iterable)
 
 

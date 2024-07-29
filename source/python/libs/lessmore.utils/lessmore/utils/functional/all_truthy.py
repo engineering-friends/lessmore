@@ -1,4 +1,7 @@
-def all_truthy(iterable):
+from typing import Iterable
+
+
+def all_truthy(iterable: Iterable) -> bool:
     return all(item for item in iterable)
 
 

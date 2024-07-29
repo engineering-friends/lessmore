@@ -1,7 +1,7 @@
 import sys
 
 
-def get_traceback(exception, engine="better_exceptions"):
+def get_traceback(exception, engine: str = "better_exceptions") -> str:
     assert engine in ["stackprinter", "better_exceptions"]
 
     if engine == "better_exceptions":

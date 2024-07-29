@@ -1,7 +1,11 @@
-TEMPLATE = """#{parent_channel_name}
-{emoji} **{title}** by {author}
-{body}{tags}
-[→ к посту]({url}){apple_link}"""
+from inline_snapshot import snapshot
+from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
+
+
+TEMPLATE = """{emoji} **{title}** 
+by {author}
+{body}
+[→ обсудить в дискорде]({url}) | #{parent_channel_name} {tags}"""
 
 
 def format_message(
@@ -12,8 +16,8 @@ def format_message(
     author_name: str,
     body: str,
     url: str,
-    inner_shortened_url: str = "",
     author_url: str = "",
+    inner_shortened_url: str = "",  # deprecated
 ):
     return TEMPLATE.format(
         parent_channel_name=parent_channel_name.replace("-", "_"),
@@ -21,14 +25,13 @@ def format_message(
         title=title,
         author=author_name if not author_url else f"[{author_name}]({author_url})",
         body="\n" + body + "\n" if body else "",
-        tags="\n" + " ".join([f"#{tag}" for tag in tags]) + "\n" if tags else "",
+        tags=" ".join([f"#{tag}" for tag in tags]) + "\n" if tags else "",
         url=url,
-        apple_link=f" / [→ к посту для mac]({inner_shortened_url})" if inner_shortened_url else "",
     )
 
 
 def test():
-    print(
+    assert (
         format_message(
             parent_channel_name="<parent_channel_name>",
             emoji="<emoji>",
@@ -37,9 +40,18 @@ def test():
             body="<body>",
             url="<url>",
             inner_shortened_url="<inner_shortened_url>",
+            tags=["want_a_session"],
         )
-    )
+    ) == snapshot("""\
+<emoji> **<title>** 
+by <author_name>
+
+<body>
+
+[→ обсудить в дискорде](<url>) | #<parent_channel_name> #want_a_session
+""")
 
 
 if __name__ == "__main__":
-    test()
+    # test()
+    run_snapshot_tests(mode="update_all")

@@ -1,14 +1,15 @@
-import json
-import math
 import sys
 
 from collections import OrderedDict
 from typing import Any
 
-from lessmore.utils.loguru_utils.format_as_colored_json._add_color_tags_to_json import _add_color_tags_to_json
-from lessmore.utils.loguru_utils.get_traceback import get_traceback
-from lessmore.utils.to_anything.to_datetime import to_datetime
 from loguru import logger
+
+from lessmore.utils.loguru_utils.formatters.format_as_colored_json._add_color_tags_to_json import (
+    _add_color_tags_to_json,
+)
+from lessmore.utils.loguru_utils.formatters.get_traceback import get_traceback
+from lessmore.utils.to_anything.to_datetime import to_datetime
 
 
 try:
@@ -19,6 +20,20 @@ except ImportError:
 
 
 def format_as_colored_json(append_non_json_traceback: bool = True):
+    """Loguru formatter builder for colored json logs.
+
+    Sample output (colored in the console):
+    {"ts": "2024-07-29 08:19:03.675", "module": "format_as_colored_json", "message": "Simple message"}
+    {"ts": "2024-07-29 08:19:03.675", "module": "format_as_colored_json", "message": "Message with extra", "foo": "bar"}
+    {"ts": "2024-07-29 08:19:03.675", "module": "format_as_colored_json", "message": "Exception caught", "error": "ValueError: This is an exception", "traceback": "...\nValueError: This is an exception"}
+
+    Parameters
+    ----------
+    append_non_json_traceback : bool
+        If True, extra traceback will be appended to the log, as if we use the vanilla formatter.
+
+    """
+
     def _format_as_json_colored(record: Record):
         # - Validate record
 

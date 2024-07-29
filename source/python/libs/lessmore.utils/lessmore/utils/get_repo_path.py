@@ -4,7 +4,7 @@ from lessmore.utils.get_frame_path.get_frame_path import get_parent_frame_path
 
 
 def get_repo_path() -> Path:
-    # - Find nearest .git folder path
+    """Find the nearest .git folder path in the parent directories of the current file."""
 
     current_path = Path(get_parent_frame_path()).parent
 

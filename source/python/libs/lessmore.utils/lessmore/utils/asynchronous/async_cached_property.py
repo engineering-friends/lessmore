@@ -6,6 +6,11 @@ from functools import wraps
 
 
 class async_cached_property:
+    """A decorator that caches the result of an asynchronous property on the instance.
+
+    The result is stored in a private attribute on the instance and is only computed once, even if the property is accessed multiple times concurrently.
+    """
+
     def __init__(self, coroutine):
         self.coroutine = coroutine
 

@@ -6,7 +6,7 @@ from lessmore.utils.read_config.read_config import read_config
 config = read_config(
     source=[
         {"root": os.path.dirname(__file__)},
-        "{root}/config.yaml",
+        "{{root}}/config.yaml",
     ]
 )
 

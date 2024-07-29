@@ -1,15 +1,11 @@
-import fnmatch
-import glob
-import importlib.util
-import os
-import sys
+"""Test imports of all files in the project."""
 
-import tqdm
+import importlib.util
+import sys
 
 from lessmore.utils.file_primitives.list_files import list_files
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.track import track
-from loguru import logger
 
 
 # - Utils

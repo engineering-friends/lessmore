@@ -1,13 +1,13 @@
 
-# Develop
+# Development
 
 Run `poetry install` to create a virtual environment and install the dependencies.
 
-You can add it to IDE as a python interpreter to run all files in the virtual environment.
+You can set it as the Python interpreter in your IDE to run all files within the virtual environment.
 
-Execute `poetry run <my_python_file>.py` to run the python file in the virtual environment.
+Execute `poetry run <my_python_file>.py` to run the Python file in the virtual environment.
 
-To test the package, you can just add `Sources Root` to the `lessmore.utils` directory in your IDE.
+To develop the package, add the `Sources Root` to the `lessmore.utils` directory in your IDE and you're good to go.
 
 # Install for your service
 

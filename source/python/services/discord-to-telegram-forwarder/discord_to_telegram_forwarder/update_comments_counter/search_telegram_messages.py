@@ -2,7 +2,11 @@ from discord_to_telegram_forwarder.deps import Deps
 from telethon.tl.patched import Message
 
 
-async def search_telegram_messages(deps: Deps, channel: str | int, query: str) -> list[Message]:
+async def search_telegram_messages(
+    deps: Deps,
+    channel: str | int,
+    query: str,
+) -> list[Message]:
     # - Set cache key
 
     cache_key = ("search_telegram_messages", channel, query)

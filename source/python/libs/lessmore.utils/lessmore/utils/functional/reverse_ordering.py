@@ -3,6 +3,8 @@ from functools import total_ordering
 
 @total_ordering
 class reverse_ordering:
+    """Decorator to reverse the ordering of a class."""
+
     def __init__(self, obj):
         self.obj = obj
 

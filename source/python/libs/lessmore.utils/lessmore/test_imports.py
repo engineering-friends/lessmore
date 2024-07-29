@@ -1,16 +1,16 @@
+"""Test imports of all files in the utils folder."""
+
 import fnmatch
 import glob
 import importlib.util
 import os
 import sys
 
-import tqdm
+from loguru import logger
 
 from lessmore.utils.file_primitives.list_files import list_files
-from lessmore.utils.loguru_utils.format_as_colored_json.format_as_colored_json import format_as_colored_json
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.track import track
-from loguru import logger
 
 
 # - Utils
@@ -45,6 +45,5 @@ def test_imports(path):
 
 if __name__ == "__main__":
     setup_json_loguru()
-
     logger.info("Start testing imports")
     test_imports("utils/")

@@ -5,7 +5,7 @@ from lessmore.utils.wise_comments.wise_comments_formatter import WiseCommentsFor
 from loguru import logger
 
 
-def format_file(filename):
+def format_file(filename: str) -> None:
     logger.debug("Formatting file", filename=filename)
 
     # - Check if not exists

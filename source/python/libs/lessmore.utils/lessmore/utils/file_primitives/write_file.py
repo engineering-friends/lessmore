@@ -9,21 +9,7 @@ def write_file(
     writer: Callable = lambda data, file: file.write(data),
     open_kwargs: dict = {},
 ) -> Any:
-    """Write data to file_filename using writer function.
-
-    Parameters
-    ----------
-    filename : Union[str, Path]
-        filename to file.
-    data : Any
-        Data to write.
-    as_bytes : bool, optional
-        Whether to write as bytes, by default False
-    writer : Callable, optional
-        Writer function, by default lambda f, data: f.write(data)
-    open_kwargs
-        Additional arguments for open function.
-    """
+    """A simple file writer helper, as it should have been in the first place. Useful for one-liners or nested function calls."""
     with open(str(filename), "wb" if as_bytes else "w", **open_kwargs) as file:
         return writer(data, file)
 

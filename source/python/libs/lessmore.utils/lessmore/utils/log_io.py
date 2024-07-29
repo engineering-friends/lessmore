@@ -13,6 +13,8 @@ def log_io(
         func.__name__, args=args, kwargs=kwargs, result=result
     ),
 ):
+    """Decorator to log input and output of a function"""
+
     def _log_io(func):
         # - Replace input_logger and output_logger with stubs if not provided
 

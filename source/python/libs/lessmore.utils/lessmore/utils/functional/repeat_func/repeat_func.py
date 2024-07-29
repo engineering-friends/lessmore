@@ -19,7 +19,7 @@ def repeat_func(func: Callable, times: Optional[int], kwargs: Any) -> Iterable:
 
 
 def test():
-    print(
+    assert (
         head(
             3,
             repeat_func(
@@ -28,7 +28,7 @@ def test():
                 kwargs={"x": 1},
             ),
         )
-    )
+    ) == [2, 2, 2]
 
 
 if __name__ == "__main__":

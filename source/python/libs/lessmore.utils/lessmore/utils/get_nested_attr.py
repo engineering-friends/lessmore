@@ -1,7 +1,8 @@
 from typing import Any
 
 
-def get_nested_attr(value, expression: str, default: Any = None):
+def get_nested_attr(value: Any, expression: str | list, default: Any = None) -> Any:
+    """Get a nested attribute from an object by a string or a list (e.g., `np.random.choice`)"""
     if isinstance(expression, list):
         for sub_expression in expression:
             res = get_nested_attr(value, sub_expression)

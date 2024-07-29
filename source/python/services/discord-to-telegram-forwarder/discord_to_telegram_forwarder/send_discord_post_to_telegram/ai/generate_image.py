@@ -18,7 +18,7 @@ def generate_image(
         model="dall-e-3",
         size="1792x1024",
     ),
-) -> Box:
+) -> bytes:
     # - Run preprompt if needed
 
     if pre_prompt:

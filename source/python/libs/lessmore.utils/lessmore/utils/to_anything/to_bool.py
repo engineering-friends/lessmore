@@ -4,7 +4,8 @@ from typing import Union
 BoolLike = Union[bool, str, int, float]
 
 
-def to_bool(value):
+def to_bool(value: BoolLike) -> bool:
+    """Converts bool-like values to bool."""
     if isinstance(value, bool):
         return value
     elif isinstance(value, (int, float)):

@@ -1,3 +1,5 @@
+"""Combo Formatter, alpha version. Configures Wise and Black/Rust together in the IDE."""
+
 import os
 
 import typer

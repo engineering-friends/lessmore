@@ -1,4 +1,7 @@
-def all_falsey(iterable):
+from typing import Iterable
+
+
+def all_falsey(iterable: Iterable) -> bool:
     return all(not item for item in iterable)
 
 

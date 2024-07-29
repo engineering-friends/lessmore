@@ -8,24 +8,10 @@ def read_file(
     filename: Union[str, Path],
     as_bytes: bool = False,
     reader: Callable = lambda file: file.read(),
-    default: Any = None,
-    open_kwargs: dict = {},
+    default: Any = None,  # if file does not exist
+    open_kwargs: dict = {},  # extra kwargs for open
 ) -> Any:
-    """Чтение файла.
-
-    Parameters
-    ----------
-    filename : str
-        Путь к файлу.
-    as_bytes : bool, optional
-        Читать файл как байты, by default False
-    reader : Callable, optional
-        Функция чтения файла, by default lambda f: f.read()
-    default : Any, optional
-        Значение по умолчанию, by default None
-    open_kwargs : dict, optional
-        Параметры открытия файла, by default {}
-    """
+    """A simple file reader helper, as it should have been in the first place. Useful for one-liners and nested function calls."""
 
     # - Convert Path to str
 
