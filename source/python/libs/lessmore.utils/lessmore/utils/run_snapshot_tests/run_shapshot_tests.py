@@ -17,8 +17,12 @@ from loguru import logger
 def run_snapshot_tests(
     path: Optional[str] = None,
     mode: Literal["assert", "create_missing", "fix_broken", "update_all"] = "create_missing",
-):
+) -> None:
     """Run test with inline snapshots.
+
+    A helper over inline-snapshot library with better interface + prettier logs.
+
+    Requires custom `inline-shapshot` fork:
 
     Parameters
     ----------
@@ -30,7 +34,7 @@ def run_snapshot_tests(
 
     assert (
         inline_snapshot.__version__ == "0.8.0-marklidenberg-1.0.0"
-    ), "Works only with https://github.com/marklidenberg/inline-snapshot"
+    ), "Works only with https://github.com/marklidenberg/inline-snapshot 0.8.0 fork."
 
     # - Configure loguru
 

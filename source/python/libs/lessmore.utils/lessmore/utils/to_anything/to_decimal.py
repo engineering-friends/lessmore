@@ -9,7 +9,8 @@ from lessmore.utils.round.round_decimal import round_decimal
 DecimalLike = Union[str, int, float]
 
 
-def to_decimal(value, max_precision=16):
+def to_decimal(value: DecimalLike, max_precision: int = 16):
+    """Convert any number-like value to Decimal."""
     if isinstance(value, str):
         # - Validate
 

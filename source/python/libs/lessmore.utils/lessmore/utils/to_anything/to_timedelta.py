@@ -7,7 +7,8 @@ from typing import Union
 TimedeltaLike = Union[list, int, float, str, timedelta]
 
 
-def to_timedelta(value):
+def to_timedelta(value: TimedeltaLike) -> timedelta:
+    """Converts any timedelta-like value to timedelta object."""
     if isinstance(value, timedelta):
         return value
     elif isinstance(value, str):

@@ -8,7 +8,7 @@ def run_system_command(
     command: Union[str, list],
     timeout: int = 60,
     working_dir: Optional[str] = None,
-):
+) -> str:
     # - Append cd command to the command if working_dir is provided
 
     if working_dir:
