@@ -7,7 +7,7 @@ from lessmore.utils.enriched_notion_client.enriched_notion_async_client import E
 from loguru import logger
 
 
-RATE_LIMITER = AsyncRateLimiter(rate=3, period_seconds=1)
+RATE_LIMITER = AsyncRateLimiter(rate=3, period=1)
 
 
 class NotionRateLimitedClient(EnrichedNotionAsyncClient):

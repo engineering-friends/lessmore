@@ -11,7 +11,7 @@ from openai.types.chat import completion_create_params
 
 
 RATE_LIMITER = AsyncRateLimiter(
-    rate=5000 - 500, period_seconds=60
+    rate=5000 - 500, period=60
 )  # tier 3 openai rate limits 5000RPM, subtract 10% to be safe
 
 

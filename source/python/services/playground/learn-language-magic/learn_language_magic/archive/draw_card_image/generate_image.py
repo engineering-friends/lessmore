@@ -14,7 +14,7 @@ from loguru import logger
 from openai import AsyncOpenAI
 
 
-RATE_LIMITER = AsyncRateLimiter(rate=7 - 1, period_seconds=60)  # tier 3 openai rate limits 7 images per minute
+RATE_LIMITER = AsyncRateLimiter(rate=7 - 1, period=60)  # tier 3 openai rate limits 7 images per minute
 
 
 async def generate_image(
