@@ -6,8 +6,10 @@ import pytest
 
 
 @pytest.mark.skip
-def tested(tests: list[Union[str, Callable]]):
+def tested(tests: list[Union[str, Callable]]) -> Callable:
     """Decorator to mark a function as tested.
+
+    Built for developer convenience to quickly jump to tests from code. Useful for testing class methods and functions which tests are not in the same file.
 
     Parameters
     ----------

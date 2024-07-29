@@ -4,7 +4,7 @@ import zipfile
 from lessmore.utils.zip.zip_path import zip_path
 
 
-def unzip_path(path: str, output_path: str = "."):
+def unzip_path(path: str, output_path: str = ".") -> str:
     with zipfile.ZipFile(path, "r") as zip_ref:
         zip_ref.extractall(output_path)
     return output_path
