@@ -5,6 +5,8 @@ from retry import retry
 
 
 class RetryLogger:
+    """Retry logger for retry package. By default retry package logs to stderr. This class enables to log to loguru."""
+
     @staticmethod
     def warning(fmt, error, delay):
         logger.warning("Retrying", error=error, delay=delay)

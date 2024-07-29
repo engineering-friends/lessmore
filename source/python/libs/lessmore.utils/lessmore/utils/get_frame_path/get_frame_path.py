@@ -12,6 +12,8 @@ from lessmore.utils.tested import tested
 def get_frame_path(
     frame_num: int,  # 0 - current frame, 1 - parent frame, ...
 ) -> Path:
+    """Get the path of the frame that called this function. Useful to get caller's path."""
+
     # - Get the current frame
 
     current_frame = inspect.currentframe()

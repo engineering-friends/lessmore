@@ -21,7 +21,9 @@ def read_config(
     source: Union[str, dict, list, ENV],
     _cumulative_config: dict = {},
 ) -> dict:
-    """Read config from multiple sources, merge them and replace placeholders at the end of the process from the config itself.
+    """Read config from multiple sources (dictionaries/files/urls/environment variables), merge them and replace templated placeholders at the end of the process from the config itself.
+
+    Useful when you have a root config with environment key (e.g. "test", "prod") and you want to read and merge another config with separate file for each environment.
 
     Parameters
     ----------
@@ -76,10 +78,14 @@ def read_config(
 
 
 def test():
-    write_file(data="a: 1\nb: '{a}'", filename="/tmp/test.yaml")
-    write_file(data='{"a": 10}', filename="/tmp/test.json")
-
-    print(read_config(["/tmp/test.yaml", "/tmp/test.json"]))
+    write_file(data="a: 1\nb: '{a}'\nenvironment: test", filename="/tmp/test.yaml")
+    write_file(data='{"c": 10}', filename="/tmp/test.json")
+    assert read_config(["/tmp/test.yaml", "/tmp/{environment}.json"]) == {
+        "a": 1,
+        "b": "1",
+        "environment": "test",
+        "c": 10,
+    }
 
 
 if __name__ == "__main__":

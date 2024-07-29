@@ -10,7 +10,7 @@ import pytest
 from lessmore.utils.file_primitives.read_file import read_file
 from lessmore.utils.file_primitives.write_file import write_file
 from lessmore.utils.get_frame_path.get_frame_path import get_parent_frame_path
-from lessmore.utils.loguru_utils.format_as_colored_json.format_as_colored_json import format_as_colored_json
+from lessmore.utils.loguru_utils.formatters.format_as_colored_json.format_as_colored_json import format_as_colored_json
 from loguru import logger
 
 
