@@ -1,7 +1,7 @@
 from PIL import Image
 
 
-def to_png(filename_in: str, filename_out: str = None):
+def to_png(filename_in: str, filename_out: str = None) -> str:
     """Convert image to png"""
     filename_out = filename_out or filename_in + ".png"
 

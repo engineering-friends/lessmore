@@ -28,16 +28,27 @@ def format_message(
 
 
 def test():
-    print(
-        format_message(
-            parent_channel_name="<parent_channel_name>",
-            emoji="<emoji>",
-            title="<title>",
-            author_name="<author_name>",
-            body="<body>",
-            url="<url>",
-            inner_shortened_url="<inner_shortened_url>",
+    assert (
+        (
+            format_message(
+                parent_channel_name="<parent_channel_name>",
+                emoji="<emoji>",
+                title="<title>",
+                author_name="<author_name>",
+                body="<body>",
+                url="<url>",
+                inner_shortened_url="<inner_shortened_url>",
+                tags=["want_a_session"],
+            )
         )
+        == """#<parent_channel_name>
+<emoji> **<title>** by <author_name>
+
+<body>
+
+#want_a_session
+
+[→ к посту](<url>) / [→ к посту для mac](<inner_shortened_url>)"""
     )
 
 
