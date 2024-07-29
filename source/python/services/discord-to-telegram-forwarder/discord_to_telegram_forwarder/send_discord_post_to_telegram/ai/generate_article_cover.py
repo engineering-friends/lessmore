@@ -1,8 +1,7 @@
 from box import Box
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.generate_image import generate_image
+from lessmore.utils.file_primitives.write_file import write_file
 from lessmore.utils.system.open_in_os import open_in_os
-
-from deeplay.utils.file_utils.write_file import write_file
 
 
 def generate_article_cover(title: str, body: str, style: str) -> bytes:
