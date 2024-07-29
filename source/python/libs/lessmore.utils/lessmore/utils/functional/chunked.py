@@ -16,7 +16,13 @@ def chunked(
     slice: bool = False,
     mode: Literal["incomplete", "fill", "even", "ignore", "strict"] = "incomplete",
     fillvalue=None,
-):
+) -> Iterable:
+    """Chunk iterable into n-sized chunks
+
+    A wrapper around `more_itertools.chunked`, `more_itertools.chunked_even`, `more_itertools.grouper`, `more_itertools.ichunked`, `more_itertools.sliced`
+
+    """
+
     # - Get output
 
     if iterable_chunks:

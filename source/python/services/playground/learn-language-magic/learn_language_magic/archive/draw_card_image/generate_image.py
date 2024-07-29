@@ -14,7 +14,7 @@ from loguru import logger
 from openai import AsyncOpenAI
 
 
-RATE_LIMITER = AsyncRateLimiter(rate=7 - 1, period=60)  # tier 3 openai rate limits 7 images per minute
+RATE_LIMITER = AsyncRateLimiter(rate=7 - 1, period_seconds=60)  # tier 3 openai rate limits 7 images per minute
 
 
 async def generate_image(
@@ -75,7 +75,10 @@ def test():
         await asyncio.gather(
             *[
                 # run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light"),
-                run(prompt="Matrix-style, green on black background, a pet"),
+                run(prompt="style of secret of kells, old paper, celtic art, a pet"),
+                run(prompt="style of secret of kells, old paper, celtic art, a pet"),
+                run(prompt="style of secret of kells, old paper, celtic art, a pet"),
+                run(prompt="style of secret of kells, old paper, celtic art, a pet"),
             ]
         )
 

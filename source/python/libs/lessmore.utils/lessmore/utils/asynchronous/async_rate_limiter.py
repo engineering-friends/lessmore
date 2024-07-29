@@ -3,9 +3,11 @@ import time
 
 
 class AsyncRateLimiter:
-    def __init__(self, rate: int, period: int = 1):
+    """Rate limiter for async functions. Useful for limiting the rate of requests to an API."""
+
+    def __init__(self, rate: int, period_seconds: int = 1):
         self.rate = rate
-        self.period = period
+        self.period_seconds = period_seconds
         self.counter = 0
         self.lock = asyncio.Lock()
         self.last_reset = time.time()
@@ -14,7 +16,7 @@ class AsyncRateLimiter:
         while True:
             async with self.lock:
                 current_time = time.time()
-                if current_time - self.last_reset >= self.period:
+                if current_time - self.last_reset >= self.period_seconds:
                     self.counter = 0
                     self.last_reset = current_time
 

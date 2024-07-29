@@ -18,9 +18,12 @@ from lessmore.utils.tested import tested
 
 
 class EnrichedNotionAsyncClient(AsyncClient):
+    """Enriched Notion Async Client, with additional functionality."""
+
     @staticmethod
     @tested(tests=[test_paginated_request])
     async def get_paginated_request(method, method_kwargs):
+        """Request all pages at once from paginated method"""
         # - Init
 
         result = []
@@ -44,6 +47,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
         old_page: Optional[dict] = None,
         children: Optional[list] = None,
     ):
+        """Upsert page with children. Old page is used to avoid unnecessary updates."""
         # - Prepare kwargs
 
         # Note: it's very important to filter None values, or Notion will throw an ambiguous error
@@ -128,6 +132,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
         page_unique_id_func: Optional[Callable] = None,
         archive: Optional[bool] = None,
     ):
+        """Upsert database with pages and children."""
         # - Validate pages has the same length as children
 
         if children_list is not None:
@@ -254,7 +259,8 @@ class EnrichedNotionAsyncClient(AsyncClient):
     @tested(tests=[test_parse_markdown_table])
     @staticmethod
     def parse_markdown_table(markdown_table: str, annotations: Optional[Callable] = None) -> dict:
-        """
+        """Helper to parse markdown table into Notion simple table block.
+
         Parameters
         ----------
         markdown: str
@@ -335,7 +341,8 @@ class EnrichedNotionAsyncClient(AsyncClient):
 
     @tested(tests=[test_plainify_database_property])
     def plainify_database_property(self, property: dict) -> bool | str | list[str]:
-        """
+        """Convert Notion property to plain value. (notion properties are stored, for example, in the page['properties'] dictionary)
+
               Parameters
               ----------
               property: dict

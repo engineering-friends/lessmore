@@ -9,6 +9,7 @@ async def gather_nested(
     value: dict | list | Awaitable | Any,
     recursive: bool = True,
 ) -> dict | list | Any:
+    """Run all awaitables in a nested structure concurrently."""
     if isinstance(value, dict):
         results = await asyncio.gather(*(gather_nested(v, recursive=recursive) for v in value.values()))
         return dict(zip(value.keys(), results))

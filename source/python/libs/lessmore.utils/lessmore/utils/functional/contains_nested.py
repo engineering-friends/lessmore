@@ -1,7 +1,11 @@
 from typing import Any, Union
 
 
-def contains_nested(whole: Union[list, dict, str, int, Any], part: Union[list, dict, str, int, Any]) -> bool:
+def contains_nested(
+    whole: Union[list, dict, str, int, Any],
+    part: Union[list, dict, str, int, Any],
+) -> bool:
+    """Checks if the whole contains the part. The part can be a nested structure."""
     if isinstance(whole, dict) and isinstance(part, dict):
         for key in part:
             if key not in whole:
@@ -14,7 +18,7 @@ def contains_nested(whole: Union[list, dict, str, int, Any], part: Union[list, d
             return False
         for value in part:
             if not any(contains_nested(element, value) for element in whole):  # brute force search
-                # todo maybe: optimize search somehow
+                # todo maybe: optimize search somehow [@marklidenberg]
                 return False
         return True
     else:

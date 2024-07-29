@@ -1,4 +1,7 @@
-def any_truthy(iterable):
+from typing import Iterable
+
+
+def any_truthy(iterable: Iterable) -> bool:
     return any(item for item in iterable)
 
 

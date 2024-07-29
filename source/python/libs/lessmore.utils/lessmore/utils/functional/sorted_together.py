@@ -3,7 +3,12 @@ from typing import Callable, Iterable
 from more_itertools import unzip
 
 
-def sorted_together(iterables: Iterable, key: Callable = None, reverse: bool = False):
+def sorted_together(
+    iterables: Iterable,
+    key: Callable = None,
+    reverse: bool = False,
+) -> Iterable:
+    """Sorts multiple iterables together based on the key function."""
     return unzip(sorted(zip(*iterables), key=key, reverse=reverse))
 
 

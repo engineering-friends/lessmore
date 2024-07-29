@@ -2,8 +2,8 @@ from .all_empty import *
 from .any_empty import *
 from .chunked import *
 from .identity import *
-from .more_itertools import *
+from .more_itertools_renamed import *
 from .roundrobin import *
 from .unfold_any import *
 from .unfold_one import *
-from .windowing import *
+from .windowed import *

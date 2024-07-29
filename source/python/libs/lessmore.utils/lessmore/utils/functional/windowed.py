@@ -7,9 +7,6 @@ from more_itertools import (
 )
 
 
-# todo: split to separate files
-
-
 # a slightly more useful windowed implementation with prefix and suffix
 def windowed(
     iterable: Iterable,
@@ -19,7 +16,7 @@ def windowed(
     step: Optional[int] = None,
     add_prefix: bool = False,
     add_suffix: bool = False,
-):
+) -> Iterable:
     # - Validate arguments
 
     assert n is not None or offsets is not None
@@ -47,7 +44,7 @@ def pairwise(
     step: Optional[int] = None,
     add_prefix: bool = False,
     add_suffix: bool = False,
-):
+) -> Iterable:
     return windowed(
         iterable=iterable,
         n=2,

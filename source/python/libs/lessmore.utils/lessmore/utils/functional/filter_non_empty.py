@@ -1,11 +1,12 @@
 from itertools import filterfalse
+from typing import Iterable
 
 
-def filter_non_empty(iterable):
+def filter_non_empty(iterable: Iterable) -> Iterable:
     return filter(None, iterable)
 
 
-def filter_empty(iterable):
+def filter_empty(iterable: Iterable) -> Iterable:
     return filterfalse(None, iterable)
 
 

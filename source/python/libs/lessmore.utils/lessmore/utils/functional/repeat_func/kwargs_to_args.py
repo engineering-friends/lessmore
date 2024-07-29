@@ -29,12 +29,12 @@ def test():
     def f(a, b=2):
         print(a, b)
 
-    print(
+    assert (
         kwargs_to_args(
             func=f,
             kwargs={"a": 1},
         )
-    )
+    ) == [1, 2]
 
 
 if __name__ == "__main__":

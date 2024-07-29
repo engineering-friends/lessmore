@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from more_itertools import (
     interleave,
     interleave_evenly,
@@ -8,7 +10,11 @@ from more_itertools import (
 # -- Interleave: round-robing
 
 
-def round_robin(iterables, exhaust=True, evenly=False):
+def round_robin(
+    iterables: list[Iterable],
+    exhaust: bool = True,
+    evenly: bool = False,
+) -> Iterable:
     assert exhaust or (not exhaust and not evenly), "Unsupported mode"
 
     if exhaust:

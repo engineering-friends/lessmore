@@ -1,7 +1,10 @@
 from typing import Callable, Iterable, Iterator
 
 
-def skip_duplicates(values: Iterable, key: Callable = lambda x: x) -> Iterator:
+def skip_duplicates(
+    values: Iterable,
+    key: Callable = lambda x: x,
+) -> Iterator:
     seen = set()
     for x in values:
         k = key(x)

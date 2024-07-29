@@ -7,8 +7,8 @@ def apply_nested(
     key_func: Callable = lambda x: x,
     filter_func: Callable = lambda key, value: True,
     excluded_builtin_types: Sequence = (),
-):
-    """apply_nested function recursively to python common object types: list, dict, set, tuple"""
+) -> Any:
+    """Apply function recursively to python nested object types: list, dict, set, tuple"""
 
     # - Return applied function if not dict, list, set, tuple
 

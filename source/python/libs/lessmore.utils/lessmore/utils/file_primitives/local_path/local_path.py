@@ -7,7 +7,7 @@ from lessmore.utils.get_frame_path.get_frame_path import get_parent_frame_path
 
 
 def local_path(path: Union[str, os.PathLike, Path]) -> str:
-    """Helper to quickly get a local path relative to the caller's file."""
+    """Gets a local path relative to the caller's file. Useful to keep auxiliary files in the same directory as the caller's file."""
     if isinstance(path, Path):
         return os.path.dirname(get_parent_frame_path()) / path
     else:
