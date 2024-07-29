@@ -14,14 +14,10 @@ import emoji as emoji_lib
 from box import Box
 from discord_to_telegram_forwarder.deps import Deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.generate_article_cover import generate_article_cover
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.generate_image import generate_image
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.download_as_temp_file import _download_as_temp_file
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.format_message import format_message
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_notion_user_properties import (
     get_notion_user_properties,
-)
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.get_shortened_url_from_tiny_url import (
-    get_shortened_url_from_tiny_url,
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.is_discord_channel_private import (
     is_discord_channel_private,
@@ -54,7 +50,6 @@ async def send_discord_post_to_telegram(
     telegram_chat_to_filter: dict[Union[str, int], Callable[[discord.Message], bool]],
     filter_forum_post_messages: bool = True,
     emoji: Optional[str] = None,
-    add_inner_shortened_url: bool = True,
 ) -> None:
     """
     Parameters
@@ -68,15 +63,12 @@ async def send_discord_post_to_telegram(
         Filter forum post messages: if True, will only send messages that are from forum channel and are starter message
     emoji: bool
         Emoji to use in the message
-    add_inner_shortened_url: bool
-        Whether to replace discord url with `discord://` url, shortened to `https://` url (e.g. https://tinyurl.com/...)
     Returns
     -------
 
     """
 
     # - Filter forum post messages: from forum channel and is starter message
-
     if filter_forum_post_messages:
         is_post_message = isinstance(
             maybe(message).channel.parent.or_else(None), discord.ForumChannel
@@ -240,12 +232,6 @@ async def send_discord_post_to_telegram(
             # get from openai
             emoji = request_emoji_representing_text_from_openai(f"{channel_or_post_name} {title} {body}")
 
-    # -- Make discord schema and shorten it to make it https:// with redirection to discord://
-
-    inner_shortened_url = (
-        get_shortened_url_from_tiny_url(url.replace("https", "discord")) if add_inner_shortened_url else ""
-    )
-
     # -- Replace @ for ~ in the body and title
 
     title = title.replace("@", "~")
@@ -283,7 +269,6 @@ async def send_discord_post_to_telegram(
                     author_name=author_name,
                     body=body,
                     url=url,
-                    inner_shortened_url=inner_shortened_url,
                     author_url=notion_properties.get("url", ""),
                 )
             )
@@ -305,7 +290,6 @@ async def send_discord_post_to_telegram(
         author_name=author_name,
         body=body,
         url=url,
-        inner_shortened_url=inner_shortened_url,
         author_url=notion_properties.get("url", ""),
     )
 
@@ -450,18 +434,17 @@ async def test():
                 "attachments": [],
             }
         ),
-        add_inner_shortened_url=True,
         telegram_chat_to_filter={deps.config.telegram_ef_channel: lambda message: True},
         filter_forum_post_messages=False,
     )
 
 
 if __name__ == "__main__":
-    asyncio.run(
-        test_send_real_message_from_discord(
-            forum_name="❔│requests",
-            title_contains="Челленджи",
-        )
-    )
+    # asyncio.run(
+    #     test_send_real_message_from_discord(
+    #         forum_name="❔│requests",
+    #         title_contains="Челленджи",
+    #     )
+    # )
 
-    # asyncio.run(test())
+    asyncio.run(test())

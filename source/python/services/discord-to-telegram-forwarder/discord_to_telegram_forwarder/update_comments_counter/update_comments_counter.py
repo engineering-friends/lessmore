@@ -16,7 +16,8 @@ async def update_comments_counter(
     message: discord.Message,
     channels: list[str | int],
 ) -> None:
-    """Adds comment counter from Discord: `→ к посту / → к посту для mac` -> `→ к посту / → к посту для mac (0)`"""
+    """Adds comment counter from Discord: `→ обсудить в дискорде` -> `→ обсудить в дискорде (0)`"""
+
     # - Find telegram message
 
     telegram_message = first(
@@ -41,11 +42,11 @@ async def update_comments_counter(
     comments_count = 0 if maybe(message).channel.starter_message.id.or_else("") == message.id else message.position + 1
 
     # "(+2)" or "" -> "(+3)"
-    if re.search(r"\(\+?\d+\)$", text):
-        text = re.sub(r"\(\+?\d+\)$", f"({'+' if comments_count else ''}{comments_count})", text)
-    else:
-        text = text.rstrip()
-        text = text + f" ({'+' if comments_count else ''}{comments_count})"
+    text = re.sub(
+        r"→ обсудить в дискорде(\s*\(\+?\d+\))*",
+        f"→ обсудить в дискорде ({'+' if comments_count else ''}{comments_count})",
+        text,
+    )
 
     logger.info(
         "Updating telegram message message",
@@ -86,10 +87,10 @@ async def test():
         message=Box(
             {
                 "channel": {
-                    "name": "Foo by Mark Lidenberg",
-                    "starter_message": {"id": 123},
+                    "name": "Мета-исследование об эффекте кофе на организм",
+                    "starter_message": {"id": 100},
                 },
-                "position": 123,
+                "position": 100,
                 "id": "id",
                 "content": "content",
             }

@@ -34,7 +34,7 @@ def run_snapshot_tests(
 
     assert (
         inline_snapshot.__version__ == "0.8.0-marklidenberg-1.0.0"
-    ), "Works only with https://github.com/marklidenberg/inline-snapshot 0.8.0 fork."
+    ), "Works only with https://github.com/marklidenberg/inline-snapshot 0.8.0 fork. If you use poetry, run `poetry add git+https://github.com/marklidenberg/inline-snapshot`"
 
     # - Configure loguru
 
