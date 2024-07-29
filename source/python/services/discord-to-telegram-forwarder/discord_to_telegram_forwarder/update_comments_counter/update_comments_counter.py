@@ -41,10 +41,14 @@ async def update_comments_counter(
 
     comments_count = 0 if maybe(message).channel.starter_message.id.or_else("") == message.id else message.position + 1
 
+    if comments_count == 0:
+        logger.info("No comments, skipping")
+        return
+
     # "(+2)" or "" -> "(+3)"
     text = re.sub(
         r"→ обсудить в дискорде(\s*\(\+?\d+\))*",
-        f"→ обсудить в дискорде ({'+' if comments_count else ''}{comments_count})",
+        f"→ обсудить в дискорде (+{comments_count})",
         text,
     )
 
@@ -88,9 +92,9 @@ async def test():
             {
                 "channel": {
                     "name": "Мета-исследование об эффекте кофе на организм",
-                    "starter_message": {"id": 100},
+                    "starter_message": {"id": -1},
                 },
-                "position": 100,
+                "position": -1,
                 "id": "id",
                 "content": "content",
             }
