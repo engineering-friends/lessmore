@@ -16,6 +16,7 @@ async def update_comments_counter(
     message: discord.Message,
     channels: list[str | int],
 ) -> None:
+    """Adds comment counter from Discord: `→ к посту / → к посту для mac` -> `→ к посту / → к посту для mac (0)`"""
     # - Find telegram message
 
     telegram_message = first(
