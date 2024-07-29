@@ -17,3 +17,5 @@ Deployed manually for now, without docker image (it's faster), will do proper CI
 Core functions: 
 - `send_discord_post_to_telegram`: sends post from Discord to Telegram
 - `update_comments_counter`: updates comments counter in the post
+
+Entry point: `main.py`

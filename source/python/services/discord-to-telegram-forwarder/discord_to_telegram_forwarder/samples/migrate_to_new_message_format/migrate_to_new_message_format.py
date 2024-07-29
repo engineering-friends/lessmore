@@ -14,12 +14,7 @@ from telethon import TelegramClient
 
 rate_limiters = (
     AsyncRateLimiter(
-        rate=10,
-        period=1,
-        cache_path="/tmp/telegram_rate_limiter_1.json",
-    ),
-    AsyncRateLimiter(
-        rate=15,
+        rate=5,
         period=60,
         cache_path="/tmp/telegram_rate_limiter_60.json",
     ),
