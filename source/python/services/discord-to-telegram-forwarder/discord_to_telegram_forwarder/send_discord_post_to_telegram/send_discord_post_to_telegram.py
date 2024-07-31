@@ -69,6 +69,7 @@ async def send_discord_post_to_telegram(
     """
 
     # - Filter forum post messages: from forum channel and is starter message
+
     if filter_forum_post_messages:
         is_post_message = isinstance(
             maybe(message).channel.parent.or_else(None), discord.ForumChannel
@@ -192,10 +193,8 @@ async def send_discord_post_to_telegram(
             )(
                 title=title,
                 body=body,
-                style=notion_properties.get(
-                    "AI стиль постов",
-                    "Continuous lines very easy, clean and minimalist, black and white",
-                ),
+                style=notion_properties.get("AI стиль постов")
+                or "Continuous lines very easy, clean and minimalist, black and white",
             )
 
             # - Resize image to 1280x731 (telegram max size)
