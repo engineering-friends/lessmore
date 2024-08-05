@@ -42,6 +42,9 @@ inline-snapshot = {git = "https://github.com/marklidenberg/inline-snapshot"}
 prefect = "^2.19.8"
 pandas = "^2.2.2"
 notion-client = "^2.2.1"
+pycallgraph2 = "^1.1.3"
+pyan3 = "^1.2.0"
+code2flow = "^2.5.1"
 
 
 [build-system]

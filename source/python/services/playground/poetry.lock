@@ -769,6 +769,16 @@ files = [
 ]
 
 [[package]]
+name = "code2flow"
+version = "2.5.1"
+description = "Visualize your source code as DOT flowcharts"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "code2flow-2.5.1.tar.gz", hash = "sha256:ad98717920da6598dac38a1951f38b84891f4aa4bd2f36c119b0dbac729f4785"},
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -3534,6 +3544,20 @@ files = [
 ]
 
 [[package]]
+name = "pyan3"
+version = "1.2.0"
+description = "Offline call graph generator for Python 3"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pyan3-1.2.0-py3-none-any.whl", hash = "sha256:89b4d7b3003b794fb9b041b08da91bcbd1dde4c82ec4af039b1e6b8f418efab1"},
+    {file = "pyan3-1.2.0.tar.gz", hash = "sha256:36b49b678820e882de7271fb8a18789d57cd1e284f0314bdecd587f02c049a19"},
+]
+
+[package.dependencies]
+jinja2 = "*"
+
+[[package]]
 name = "pyasn1"
 version = "0.6.0"
 description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
@@ -3557,6 +3581,17 @@ files = [
 
 [package.dependencies]
 pyasn1 = ">=0.4.6,<0.7.0"
+
+[[package]]
+name = "pycallgraph2"
+version = "1.1.3"
+description = "Python Call Graph is a Python module that creates call graph visualizations for Python applications."
+optional = false
+python-versions = "*"
+files = [
+    {file = "pycallgraph2-1.1.3-py2.py3-none-any.whl", hash = "sha256:0e8eb7b8651074c549c6ea2efaee5bd953bcaf2fb028b8ad1abdbad7386eb306"},
+    {file = "pycallgraph2-1.1.3.tar.gz", hash = "sha256:f5d02c1ea446cd7051ad886fc61c6698c1d1f6b759ac5e32ddec5fab153b73c8"},
+]
 
 [[package]]
 name = "pycparser"
@@ -8463,4 +8498,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.1"
-content-hash = "4723f7a50ef0c1c571a3d58865f5253c35259b6c6d228d1d253af2f39c94da91"
+content-hash = "d289f54d95224a3501e853e7572191ed7e1a44056d86b4ca2669fc60716fca5b"
