@@ -68,7 +68,7 @@ async def send_discord_post_to_telegram(
 
     """
 
-    # - Filter forum post messages: from forum channel and is starter message
+    # - Return if not a post message if `filter_forum_post_messages` is True
 
     if filter_forum_post_messages:
         is_post_message = isinstance(
@@ -79,7 +79,7 @@ async def send_discord_post_to_telegram(
             logger.info("Message is not a forum post message, skipping", message_id=message.id)
             return
 
-    # - Filter public
+    # - Return if message is in private channel and `filter_public_channels` is True
 
     if deps.config.filter_public_channels:
         for channel_candidate in [
@@ -107,7 +107,7 @@ async def send_discord_post_to_telegram(
                 temp_path = _download_as_temp_file(attachment.url, extension=os.path.splitext(attachment.filename)[1])
                 files.append(temp_path)
 
-    # - Get discord_alias_to_telegram_username
+    # - Load `telegram_username_to_discord_aliases`
 
     telegram_username_to_discord_aliases = json.loads(deps.config.telegram_username_to_discord_aliases_json)
 
@@ -116,9 +116,9 @@ async def send_discord_post_to_telegram(
         for discord_alias in discord_aliases:
             discord_alias_to_telegram_username[discord_alias] = telegram_username
 
-    # - Fix discord placeholders: <@913095424225706005>, <#1106702799938519211>, <@&1106702799938519211> -> @marklidenberg, [name](link), @<name>
+    # - Fix discord placeholders in the message text: <@913095424225706005>, <#1106702799938519211>, <@&1106702799938519211> -> @marklidenberg, [name](link), @<name>
 
-    # -- Fix usernames in the message text and replace them with telegram / discord display name (e.g. <@913095424225706005> -> @marklidenberg)
+    # -- <@913095424225706005> -> @marklidenberg
 
     for user_id in re.findall(r"<@(\d+)>", message.content):  # <@913095424225706005>
         # - Get user
@@ -140,7 +140,7 @@ async def send_discord_post_to_telegram(
             f"{MENTION_CHAR_PLACEHOLDER}{telegram_username}" if telegram_username else user.display_name,
         )
 
-    # -- Find all channels and replace with links
+    # -- <#1106702799938519211> -> [name](link)
 
     for channel_id in re.findall(r"<#(\d+)>", message.content):  # <#1106702799938519211>
         # - Get channel
@@ -151,7 +151,7 @@ async def send_discord_post_to_telegram(
 
         message.content = message.content.replace(f"<#{channel_id}>", f"[{channel.name}]({channel.jump_url})")
 
-    # -- Find all roles and replace with their names
+    # --  <@&1106702799938519211> -> @<name>
 
     for role_id in re.findall(r"<@&(\d+)>", message.content):  # <@&1106702799938519211>
         # - Get role
@@ -180,9 +180,10 @@ async def send_discord_post_to_telegram(
         )  # {'AI стиль постов': 'style of secret of kells, old paper, celtic art', 'Name': 'Mark Lidenberg', 'TG_username': 'marklidenberg', 'url': 'https://www.notion.so/Mark-Lidenberg-d5ae5f192b4c402ba014268e63aed47c', 'Заполнена': True}
     except:
         logger.error("Failed to get user notion properties")
+
         notion_properties = {}
 
-    # - Generate images if there are none
+    # - Generate an image cover if no images are attached
 
     if not files:
         # - Generate article cover
@@ -231,16 +232,16 @@ async def send_discord_post_to_telegram(
             # get from openai
             emoji = request_emoji_representing_text_from_openai(f"{channel_or_post_name} {title} {body}")
 
-    # -- Replace @ for ~ in the body and title
+    # -- Replace `@` for `~` in the body and title
 
     title = title.replace("@", "~")
     body = body.replace("@", "~")
 
-    # -- Allow specific user mentions from dicsord to bypass the filter
+    # -- Allow specific user mentions from discord to bypass the filter
 
     body = body.replace(MENTION_CHAR_PLACEHOLDER, "@")
 
-    # -- Remove prefix non-alphanumeric (or -) characters from parent_channel_name
+    # -- Remove prefix non-alphanumeric (or -) characters from `parent_channel_name`
 
     def _is_alphanumeric_with_dashes(string: str) -> bool:
         return all([character.isalnum() or character == "-" for character in string])
