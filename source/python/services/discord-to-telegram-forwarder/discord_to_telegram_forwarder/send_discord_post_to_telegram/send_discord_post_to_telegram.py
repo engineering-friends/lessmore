@@ -151,7 +151,7 @@ async def send_discord_post_to_telegram(
 
         message.content = message.content.replace(f"<#{channel_id}>", f"[{channel.name}]({channel.jump_url})")
 
-    # --  <@&1106702799938519211> -> @<name>
+    # -- <@&1106702799938519211> -> @<name>
 
     for role_id in re.findall(r"<@&(\d+)>", message.content):  # <@&1106702799938519211>
         # - Get role
