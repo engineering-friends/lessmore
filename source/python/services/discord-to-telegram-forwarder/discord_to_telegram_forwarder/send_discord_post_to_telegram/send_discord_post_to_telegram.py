@@ -68,7 +68,9 @@ async def send_discord_post_to_telegram(
 
     """
 
-    # - Return if not a post message if `filter_forum_post_messages` is True
+    # - Do not send in certain cases
+
+    # -- Return if not a post message if `filter_forum_post_messages` is True
 
     if filter_forum_post_messages:
         is_post_message = isinstance(
@@ -79,7 +81,7 @@ async def send_discord_post_to_telegram(
             logger.info("Message is not a forum post message, skipping", message_id=message.id)
             return
 
-    # - Return if message is in private channel and `filter_public_channels` is True
+    # -- Return if message is in private channel and `filter_public_channels` is True
 
     if deps.config.filter_public_channels:
         for channel_candidate in [
@@ -107,16 +109,17 @@ async def send_discord_post_to_telegram(
                 temp_path = _download_as_temp_file(attachment.url, extension=os.path.splitext(attachment.filename)[1])
                 files.append(temp_path)
 
-    # - Load `telegram_username_to_discord_aliases`
+    # - Unfold message
 
-    telegram_username_to_discord_aliases = json.loads(deps.config.telegram_username_to_discord_aliases_json)
+    channel_or_post_name = maybe(message).channel.name.or_else("")  # `Челленджи в EF`
+    parent_channel_name = maybe(message).channel.parent.name.or_else("")  # `?│requests`
+    title = maybe(message).channel.name.or_else("")  # `Челленджи в EF`
+    tags = [tag.name for tag in maybe(message).channel.applied_tags.or_else([])]  # `['want_a_session']`
+    body = message.content  # `Мы с другом раз в полгода...`
+    author_name = message.author.display_name  # `Mark Lidenberg`
+    url = message.jump_url  # `https://discord.com/...`
 
-    discord_alias_to_telegram_username = {}
-    for telegram_username, discord_aliases in telegram_username_to_discord_aliases.items():
-        for discord_alias in discord_aliases:
-            discord_alias_to_telegram_username[discord_alias] = telegram_username
-
-    # - Fix discord placeholders in the message text: <@913095424225706005>, <#1106702799938519211>, <@&1106702799938519211> -> @marklidenberg, [name](link), @<name>
+    # - Fix discord placeholders in the body: <@913095424225706005>, <#1106702799938519211>, <@&1106702799938519211> -> @marklidenberg, [name](link), @<name>
 
     # -- <@913095424225706005> -> @marklidenberg
 
@@ -124,6 +127,15 @@ async def send_discord_post_to_telegram(
         # - Get user
 
         user = message.guild.get_member(int(user_id))
+
+        # - Load `telegram_username_to_discord_aliases`
+
+        telegram_username_to_discord_aliases = json.loads(deps.config.telegram_username_to_discord_aliases_json)
+
+        discord_alias_to_telegram_username = {}
+        for telegram_username, discord_aliases in telegram_username_to_discord_aliases.items():
+            for discord_alias in discord_aliases:
+                discord_alias_to_telegram_username[discord_alias] = telegram_username
 
         # - Get telegram username
 
@@ -135,44 +147,28 @@ async def send_discord_post_to_telegram(
 
         # - Replace <@913095424225706005> with <@telegram_username> or <name>
 
-        message.content = message.content.replace(
+        body = body.replace(
             f"<@{user_id}>",
             f"{MENTION_CHAR_PLACEHOLDER}{telegram_username}" if telegram_username else user.display_name,
         )
 
     # -- <#1106702799938519211> -> [name](link)
 
-    for channel_id in re.findall(r"<#(\d+)>", message.content):  # <#1106702799938519211>
+    for channel_id in re.findall(r"<#(\d+)>", body):  # <#1106702799938519211>
         # - Get channel
 
         channel = message.guild.get_channel(int(channel_id))
 
         # - Replace <#1106702799938519211> with  [name](link)
 
-        message.content = message.content.replace(f"<#{channel_id}>", f"[{channel.name}]({channel.jump_url})")
+        body = body.replace(f"<#{channel_id}>", f"[{channel.name}]({channel.jump_url})")
 
     # -- <@&1106702799938519211> -> @<name>
 
-    for role_id in re.findall(r"<@&(\d+)>", message.content):  # <@&1106702799938519211>
-        # - Get role
+    for role_id in re.findall(r"<@&(\d+)>", body):  # <@&1106702799938519211>
+        body = body.replace(f"<@&{role_id}>", message.guild.get_role(int(role_id)).name)
 
-        role = message.guild.get_role(int(role_id))
-
-        # - Replace <@&1106702799938519211> with @<name>
-
-        message.content = message.content.replace(f"<@&{role_id}>", role.name)
-
-    # - Unfold message
-
-    channel_or_post_name = maybe(message).channel.name.or_else("")  # `Челленджи в EF`
-    parent_channel_name = maybe(message).channel.parent.name.or_else("")  # `?│requests`
-    title = maybe(message).channel.name.or_else("")  # `Челленджи в EF`
-    tags = [tag.name for tag in maybe(message).channel.applied_tags.or_else([])]  # `['want_a_session']`
-    body = message.content  # `Мы с другом раз в полгода...`
-    author_name = message.author.display_name  # `Mark Lidenberg`
-    url = message.jump_url  # `https://discord.com/...`
-
-    # - Get user notion properties
+    # - Get user notion properties and extract properties
 
     try:
         notion_properties = await get_notion_user_properties(
@@ -182,6 +178,9 @@ async def send_discord_post_to_telegram(
         logger.error("Failed to get user notion properties")
 
         notion_properties = {}
+
+    notion_ai_style = notion_properties.get("AI стиль постов")
+    notion_author_url = notion_properties.get("url", "")
 
     # - Generate an image cover if no images are attached
 
@@ -194,8 +193,7 @@ async def send_discord_post_to_telegram(
             )(
                 title=title,
                 body=body,
-                style=notion_properties.get("AI стиль постов")
-                or "Continuous lines very easy, clean and minimalist, black and white",
+                style=notion_ai_style or "Continuous lines very easy, clean and minimalist, black and white",
             )
 
             # - Resize image to 1280x731 (telegram max size)
@@ -269,7 +267,7 @@ async def send_discord_post_to_telegram(
                     author_name=author_name,
                     body=body,
                     url=url,
-                    author_url=notion_properties.get("url", ""),
+                    author_url=notion_author_url,
                 )
             )
             - body_size
@@ -290,7 +288,7 @@ async def send_discord_post_to_telegram(
         author_name=author_name,
         body=body,
         url=url,
-        author_url=notion_properties.get("url", ""),
+        author_url=notion_author_url,
     )
 
     # - Split files to separate message if needed
