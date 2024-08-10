@@ -33,6 +33,11 @@ def run_snapshot_tests(
 
     inline_snapshot.snapshot.func.__code__ = fixed_snapshot.func.__code__
 
+    # - Log warning if ran from __init__.py file
+
+    if not path and str(get_parent_frame_path()).endswith("__init__.py"):
+        logger.warning("Snapshot tests don't run from `__init__.py` files (investigation needed)")
+
     # - Configure loguru
 
     logger.remove()
