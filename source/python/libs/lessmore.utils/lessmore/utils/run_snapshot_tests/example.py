@@ -1,6 +1,5 @@
-from inline_snapshot import external, outsource
+from inline_snapshot import external, outsource, snapshot
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
-from lessmore.utils.run_snapshot_tests.snapshot import snapshot
 from loguru import logger
 
 

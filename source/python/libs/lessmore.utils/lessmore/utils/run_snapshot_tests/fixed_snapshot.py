@@ -15,7 +15,7 @@ from inline_snapshot._sentinels import undefined
 
 
 @repr_wrapper
-def snapshot(obj=undefined):
+def fixed_snapshot(obj=undefined):
     """Fork of original inline-snapshot snapshot.
 
     Adds this snippet:

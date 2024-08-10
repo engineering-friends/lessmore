@@ -6,9 +6,9 @@ import time
 from dataclasses import dataclass
 from typing import Any, Optional
 
+from inline_snapshot import snapshot
 from lessmore.utils.asynchronous.gather_nested import gather_nested
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
-from lessmore.utils.run_snapshot_tests.snapshot import snapshot
 from loguru import logger
 
 from better_notion_ai_autofill.column.auto_column import auto_column

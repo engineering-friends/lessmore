@@ -1,5 +1,5 @@
+from inline_snapshot import snapshot
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
-from lessmore.utils.run_snapshot_tests.snapshot import snapshot
 
 
 TEMPLATE = """{emoji} **{title}** 
