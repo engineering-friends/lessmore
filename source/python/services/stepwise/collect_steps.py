@@ -6,12 +6,12 @@ from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_te
 def collect_steps(text: str) -> list[list[str]]:
     # - Split text into lines
 
-    lines = ["SOF"] + text.strip().split("\n") + ["EOF"]
+    lines = ["SOF"] + ["    " + line for line in text.split("\n")] + ["EOF"]
 
     # - Iterate over lines
 
-    stack = [[("start", -1, "")]]
-    indents_stack = [-1]
+    stack = [[("start", -1, "")]]  # stub value
+    indents_stack = [-1]  # # stub value
     groups = []
 
     prev_i = -1
@@ -62,13 +62,19 @@ def collect_steps(text: str) -> list[list[str]]:
 
     groups += stack
 
-    # - Filter non-empty groups
+    # - Clean-up
+
+    # -- Filter non-empty groups
 
     groups = [group for group in groups if group]
 
-    # - Remove the first stub group
+    # -- Remove the first stub group
 
     groups = [group for group in groups if group != [("start", -1, "")]]
+
+    # -- Remove groups without any step
+
+    groups = [group for group in groups if any(step[0] == "step" for step in group)]
 
     # - Return the result
 
@@ -121,21 +127,23 @@ def test():
 """
     assert collect_steps(text) == snapshot(
         [
-            [("start", 19, "bar"), ("finish", 19, "bar")],
-            [("start", 24, "header"), ("step", 26, "# - 4-1"), ("step", 30, "# - 4-2"), ("finish", 32, "footer")],
             [
-                ("start", 3, "# - 1"),
-                ("step", 3, "# - 1"),
-                ("step", 6, "# - 2"),
-                ("step", 9, "# - 3"),
-                ("step", 12, "# -- 3.1"),
-                ("step", 16, "# -- 3.2"),
-                ("step", 21, "# - 4"),
-                ("finish", 32, "footer"),
+                ("start", 25, "header"),
+                ("step", 27, "# - 4-1"),
+                ("step", 31, "# - 4-2"),
+                ("finish", 33, "footer"),
             ],
-            [("start", 36, "# - A"), ("step", 36, "# - A"), ("step", 39, "# - B"), ("finish", 39, "# - B")],
-            [("start", 34, "def f2():"), ("finish", 39, "# - B")],
-            [("start", 0, "SOF")],
+            [
+                ("start", 4, "# - 1"),
+                ("step", 4, "# - 1"),
+                ("step", 7, "# - 2"),
+                ("step", 10, "# - 3"),
+                ("step", 13, "# -- 3.1"),
+                ("step", 17, "# -- 3.2"),
+                ("step", 22, "# - 4"),
+                ("finish", 33, "footer"),
+            ],
+            [("start", 37, "# - A"), ("step", 37, "# - A"), ("step", 40, "# - B"), ("finish", 40, "# - B")],
         ]
     )
 
