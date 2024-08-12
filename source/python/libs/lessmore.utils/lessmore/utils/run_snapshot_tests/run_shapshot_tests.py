@@ -33,6 +33,13 @@ def run_snapshot_tests(
 
     inline_snapshot.snapshot.func.__code__ = fixed_snapshot.func.__code__
 
+    # - Send warning if inline_snapshot version is not tested
+
+    if inline_snapshot.__version__ != "0.8.0":
+        logger.warning(
+            f"inline_snapshot version is not tested: {inline_snapshot.__version__}. The only tested version is 0.8.0"
+        )
+
     # - Log warning if ran from __init__.py file
 
     if not path and str(get_parent_frame_path()).endswith("__init__.py"):
