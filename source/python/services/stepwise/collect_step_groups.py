@@ -3,7 +3,7 @@ from lessmore.utils.functional.windowed import pairwise
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
 
 
-def collect_steps(text: str) -> list[list[str]]:
+def collect_step_groups(text: str) -> list[list[str]]:
     # - Split text into lines
 
     lines = ["SOF"] + ["    " + line for line in text.split("\n")] + ["EOF"]
@@ -125,7 +125,7 @@ def test():
         # - B
 
 """
-    assert collect_steps(text) == snapshot(
+    assert collect_step_groups(text) == snapshot(
         [
             [
                 ("start", 25, "header"),
