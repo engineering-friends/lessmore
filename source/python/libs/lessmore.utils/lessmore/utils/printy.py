@@ -55,9 +55,5 @@ def test():
     assert printy({"a": 1, "b": 2}) == '{"a": 1, "b": 2}'
 
 
-# test 1
-
 if __name__ == "__main__":
     test()
-
-# test 2
