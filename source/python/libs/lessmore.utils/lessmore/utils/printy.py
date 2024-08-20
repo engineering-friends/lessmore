@@ -51,7 +51,6 @@ def printy(
 
 def test():
     printy({"a": 1, "b": 2})
-
     assert printy({"a": 1, "b": 2}) == '{"a": 1, "b": 2}'
 
 
