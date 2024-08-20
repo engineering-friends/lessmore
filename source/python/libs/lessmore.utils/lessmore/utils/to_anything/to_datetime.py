@@ -93,7 +93,7 @@ def to_timestamp(value: DatetimeLike):
 
 
 def test():
-    assert to_datetime("2022.01.01") == datetime(year=2022, month=1, day=1)
+    assert to_datetime("2020.01.01") == datetime(year=2020, month=1, day=1)
     assert to_datetime(parse_date("2022-09-05T18:00:00+03:00")) == to_datetime("2022-09-05T15:00:00")
     assert to_datetime(parse_date("2022-09-05T18:00:00+03:00")) == to_datetime("2022-09-05T15:00:00")
     assert to_datetime(to_timestamp("2022.01.01")) == to_datetime("2022.01.01")
