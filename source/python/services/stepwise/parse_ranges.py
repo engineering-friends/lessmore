@@ -3,7 +3,7 @@ from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_te
 from more_itertools import first
 
 
-def parse_ranges(code: str) -> list:
+def parse_ranges(code: str, offset: int = 0) -> list:
     # - Return if empty code
 
     if code.strip() == "":
@@ -71,7 +71,7 @@ def parse_ranges(code: str) -> list:
         while code[end - 1].strip() == "":
             end -= 1
 
-        ranges.append((start, end))
+        ranges.append((start + offset, end + offset))
 
         # for debug
         # print('\n'.join(lines[i:j]))
