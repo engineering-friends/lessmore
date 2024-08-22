@@ -94,16 +94,16 @@ def parse_ranges(code: str) -> list:
             _ranges.append((start + block_start, end + block_start))
 
             # for debug
-            print("\n".join(lines[i:j]))
-            print("-" * 20)
-            print(block_code[start:end])
-            print("*" * 20)
+            # print("\n".join(lines[i:j]))
+            # print("-" * 20)
+            # print(block_code[start:end])
+            # print("*" * 20)
 
         ranges += _ranges
 
     # - Return the result
 
-    return ranges
+    return [(i, j) for i, j in ranges if i != j]
 
 
 def test():

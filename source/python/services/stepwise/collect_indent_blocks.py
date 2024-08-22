@@ -51,7 +51,7 @@ def parse_indent_blocks(code: str) -> list[tuple[int, int]]:
 
     # -- Init ranges list
 
-    ranges = []
+    indent_blocks = []
 
     # -- Calculate symbol positions for lines
 
@@ -63,11 +63,15 @@ def parse_indent_blocks(code: str) -> list[tuple[int, int]]:
     # -- Calculate symbol ranges
 
     for start_line, end_line in result:
-        ranges.append((line_endings[start_line - 1] + 1 if start_line != 0 else 0, line_endings[end_line - 1]))
+        indent_blocks.append((line_endings[start_line - 1] + 1 if start_line != 0 else 0, line_endings[end_line - 1]))
+
+    # -- Remove blocks with 0 length
+
+    indent_blocks = [(start, end) for start, end in indent_blocks if start != end]
 
     # -- Return the result
 
-    return ranges
+    return indent_blocks
 
 
 def test():
