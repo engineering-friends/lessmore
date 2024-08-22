@@ -1,4 +1,5 @@
 from inline_snapshot import snapshot
+from lessmore.utils.file_primitives.read_file import read_file
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
 from more_itertools import first
 from repos.lessmore.source.python.services.stepwise.collect_indent_blocks import parse_indent_blocks
@@ -26,6 +27,9 @@ def parse_ranges(code: str) -> list:
         # - Crop code
 
         block_code = code[block_start:block_end]
+
+        # print("code block")
+        # print(block_code)
 
         # - Split the lines
 
