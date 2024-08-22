@@ -1,5 +1,4 @@
 from inline_snapshot import snapshot
-from lessmore.utils.functional.windowed import pairwise
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
 
 

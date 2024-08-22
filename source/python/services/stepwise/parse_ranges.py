@@ -4,7 +4,7 @@ from more_itertools import first
 from repos.lessmore.source.python.services.stepwise.collect_indent_blocks import parse_indent_blocks
 
 
-def parse_ranges(code: str, offset: int = 0) -> list:
+def parse_ranges(code: str) -> list:
     # - Return if empty code
 
     if code.strip() == "":
@@ -91,7 +91,7 @@ def parse_ranges(code: str, offset: int = 0) -> list:
             while block_code[end - 1].strip() == "":
                 end -= 1
 
-            _ranges.append((start + offset, end + offset))
+            _ranges.append((start + start, end + start))
 
             # for debug
             # print("\n".join(lines[i:j]))
