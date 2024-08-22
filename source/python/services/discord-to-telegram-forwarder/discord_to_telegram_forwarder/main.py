@@ -21,7 +21,7 @@ async def main(env: Literal["test", "prod"] = "test"):
 
     deps = Deps.load(env=env)
 
-    # - Define process_message function
+    # - Define `process_message` function
 
     async def process_message(message: discord.Message):
         # - Post message
@@ -44,7 +44,7 @@ async def main(env: Literal["test", "prod"] = "test"):
             channels=[deps.config.telegram_ef_channel],
         )
 
-    # - Init discord client
+    # - Init a discord client
 
     client = OnMessageDiscordClient(process_message=process_message)
 
@@ -53,7 +53,7 @@ async def main(env: Literal["test", "prod"] = "test"):
     await deps.telegram_bot_client.start(bot_token=deps.config.telegram_bot_token)
     await deps.telegram_user_client.start()
 
-    # - Start discord client
+    # - Start the discord client
 
     async with client:
         await client.start(token=deps.config.discord_token)

@@ -14,7 +14,7 @@ def request_emoji_representing_text_from_openai(text: str, limit: int = 1) -> st
 
     client = OpenAI()
 
-    # - Get response text
+    # - Get response text, containing emojis
 
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",

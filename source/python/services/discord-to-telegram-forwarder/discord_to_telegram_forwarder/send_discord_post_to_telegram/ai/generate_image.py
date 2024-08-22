@@ -19,16 +19,16 @@ def generate_image(
         size="1792x1024",
     ),
 ) -> bytes:
-    # - Run preprompt if needed
+    # - Run preprompt if necessary
 
     if pre_prompt:
         prompt = ask(pre_prompt.format(prompt=prompt))
 
-    # - Apply style
+    # - Apply the style
 
     prompt = f"{style}: {prompt}"
 
-    # - Change prompt to original prompt if needed
+    # - Change the prompt to the original prompt if needed
 
     if force_original_prompt:
         # template = """USE EXACTLY THIS SHORT PROMPT. IF YOU CHANGE EVEN A SINGLE WORD, I’LL FIRE YOU:
@@ -38,11 +38,11 @@ def generate_image(
 
         prompt = template.format(prompt=prompt)
 
-    # - Generate image
+    # - Generate the image
 
     response = OpenAI().images.generate(prompt=prompt, **openai_kwargs)
 
-    # - Get image contents from url just as file contents
+    # - Get image contents from the `url` as file contents
 
     return requests.get(response.data[0].url).content
 

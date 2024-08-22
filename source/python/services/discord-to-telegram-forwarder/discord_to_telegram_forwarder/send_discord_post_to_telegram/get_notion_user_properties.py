@@ -27,7 +27,7 @@ async def get_notion_user_properties(
 
     client = EnrichedNotionAsyncClient(auth=deps.config.notion_token)
 
-    # - Get pages
+    # - Get pages from the whois page
 
     pages = list(
         await client.get_paginated_request(
@@ -38,7 +38,7 @@ async def get_notion_user_properties(
         )
     )
 
-    # - Keep only url, filled and title properties
+    # - Drop non-supported properties (relations, formulas, people)
 
     pages = [
         {
