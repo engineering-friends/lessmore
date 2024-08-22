@@ -23,7 +23,7 @@ def parse_ranges(code: str, n_block: Optional[int] = None) -> list:
     # - Iterate over indent blocks, find necessary ranges
 
     ranges = []
-    for block_start, block_end in indent_blocks:
+    for block_start, block_end in reversed(indent_blocks):
         # - Init block ranges
 
         line_ranges = []
