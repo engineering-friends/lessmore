@@ -3,10 +3,15 @@ from lessmore.utils.functional.windowed import pairwise
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
 
 
-def collect_indent_blocks(text: str) -> list[str]:
+def parse_indent_blocks(code: str) -> list[tuple[int, int]]:
+    # - Return if text is empty
+
+    if code.strip() == "":
+        return []
+
     # - Split text into lines
 
-    lines = ["SOF"] + ["    " + line for line in text.split("\n")] + ["EOF"]
+    lines = ["SOF"] + ["    " + line for line in code.split("\n")] + ["EOF"]
 
     # - Iterate over lines
 
@@ -43,13 +48,31 @@ def collect_indent_blocks(text: str) -> list[str]:
 
         assert indent == indents_stack[-1]
 
-    # - Return the result
+    # - Return the result: symbol ranges
 
-    return ["\n".join(lines[start_line:end_line]) for start_line, end_line in result]
+    # -- Init ranges list
+
+    ranges = []
+
+    # -- Calculate symbol positions for lines
+
+    lines = code.split("\n")
+    line_endings = [len(lines[0])]
+    for line in lines[1:]:
+        line_endings.append(line_endings[-1] + len(line) + 1)
+
+    # -- Calculate symbol ranges
+
+    for start_line, end_line in result:
+        ranges.append((line_endings[start_line - 1] + 1 if start_line != 0 else 0, line_endings[end_line - 1]))
+
+    # -- Return the result
+
+    return ranges
 
 
 def test():
-    text = """\
+    code = """\
     
     def f1():
 
@@ -94,116 +117,111 @@ def test():
         # - B
 
 """
-    assert collect_indent_blocks(text) == snapshot(
+    assert [code[i:j] for i, j in parse_indent_blocks(code)] == snapshot(
         [
             """\
-    
-            if f1_1:
-                bar\
+        if f1_1:
+            bar
 """,
             """\
-    
-            if:
-                header
-    
-                # - 4-1
-    
-                pass
-    
-                # - 4-2
-    
-                footer\
-""",
-            """\
-        def f1():
-    
-            # - 1
-    
-            print(1)
-    
-            # - 2
-    
-            print(2)
-    
-            # - 3
-    
-    
-            # -- 3.1
-    
+        if:
+            header
+
+            # - 4-1
+
             pass
-    
-            # -- 3.2
-    
-            if f1_1:
-                bar
-    
-            # - 4
-    
-            if:
-                header
-    
-                # - 4-1
-    
-                pass
-    
-                # - 4-2
-    
-                footer\
+
+            # - 4-2
+
+            footer
 """,
             """\
-        def f2():
-    
-            # - A
-    
-    
-            # - B
-    \
-""",
-            """\
-SOF
-        
-        def f1():
-    
-            # - 1
-    
-            print(1)
-    
-            # - 2
-    
-            print(2)
-    
-            # - 3
-    
-    
-            # -- 3.1
-    
+
+        # - 1
+
+        print(1)
+
+        # - 2
+
+        print(2)
+
+        # - 3
+
+
+        # -- 3.1
+
+        pass
+
+        # -- 3.2
+
+        if f1_1:
+            bar
+
+        # - 4
+
+        if:
+            header
+
+            # - 4-1
+
             pass
+
+            # - 4-2
+
+            footer
+""",
+            """\
+
+        # - A
+
+
+        # - B
+
+""",
+            """\
     
-            # -- 3.2
-    
-            if f1_1:
-                bar
-    
-            # - 4
-    
-            if:
-                header
-    
-                # - 4-1
-    
-                pass
-    
-                # - 4-2
-    
-                footer
-    
-        def f2():
-    
-            # - A
-    
-    
-            # - B
-    \
+    def f1():
+
+        # - 1
+
+        print(1)
+
+        # - 2
+
+        print(2)
+
+        # - 3
+
+
+        # -- 3.1
+
+        pass
+
+        # -- 3.2
+
+        if f1_1:
+            bar
+
+        # - 4
+
+        if:
+            header
+
+            # - 4-1
+
+            pass
+
+            # - 4-2
+
+            footer
+
+    def f2():
+
+        # - A
+
+
+        # - B
+
 """,
         ]
     )

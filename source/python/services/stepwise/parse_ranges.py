@@ -74,10 +74,10 @@ def parse_ranges(code: str, offset: int = 0) -> list:
         ranges.append((start + offset, end + offset))
 
         # for debug
-        # print('\n'.join(lines[i:j]))
-        # print('-' * 20)
-        # print(code[start : end])
-        # print('*' * 20)
+        print("\n".join(lines[i:j]))
+        print("-" * 20)
+        print(code[start:end])
+        print("*" * 20)
 
     # -- Return the result
 
@@ -86,7 +86,6 @@ def parse_ranges(code: str, offset: int = 0) -> list:
 
 def test():
     code = """\
-
 
 
 # - 1
