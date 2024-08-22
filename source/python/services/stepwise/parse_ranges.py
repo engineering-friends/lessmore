@@ -38,14 +38,20 @@ def parse_ranges(code: str, offset: int = 0) -> list:
         prev_step_i = None
 
         for i, line in enumerate(lines):
+            # - Skip if empty line
+
             if line.strip() == "":
                 continue
+
+            # - Add range if the line starts with "# -"
 
             if line.strip().startswith("# -"):
                 if current_start is not None:
                     line_ranges.append((current_start, i))
                 current_start = None
                 prev_step_i = i
+
+            # - Update the current start
 
             if not line.strip().startswith("# -") and current_start is None:
                 current_start = prev_step_i
@@ -78,7 +84,7 @@ def parse_ranges(code: str, offset: int = 0) -> list:
         # -- Iterate over line blocks and calculate the start and end positions
 
         for i, j in line_ranges:
-            start = line_endings[i - 1] + 1 if i != 0 else 0
+            start = line_endings[i + 1] - 1 if i != 0 else len(lines[0])
             end = line_endings[j - 1]
 
             # try to reduce the end
@@ -88,10 +94,10 @@ def parse_ranges(code: str, offset: int = 0) -> list:
             _ranges.append((start + offset, end + offset))
 
             # for debug
-            print("\n".join(lines[i:j]))
-            print("-" * 20)
-            print(block_code[start:end])
-            print("*" * 20)
+            # print("\n".join(lines[i:j]))
+            # print("-" * 20)
+            # print(block_code[start:end])
+            # print("*" * 20)
 
         ranges += _ranges
 
@@ -127,30 +133,22 @@ pass
     assert [code[i:j] for i, j in parse_ranges(code)] == snapshot(
         [
             """\
-
-
-# - 1
+ 1
 
 print(\
 """,
             """\
-
-
-# - 2
+ 2
 
 print(\
 """,
             """\
-
-
-# -- 3.1
+.1
 
 pa\
 """,
             """\
-
-
-# -- 3.2
+.2
 
 pa\
 """,
