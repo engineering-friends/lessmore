@@ -31,6 +31,10 @@ def parse_ranges(code: str) -> list:
 
         lines = block_code.split("\n")
 
+        # - Calc indent
+
+        indent = len(lines[0]) - len(lines[0].lstrip())
+
         # - Iterate over lines, add ranges to the result
 
         current_start = first([i for i, line in enumerate(lines) if line.strip() != ""])  # first non-empty line
@@ -45,7 +49,7 @@ def parse_ranges(code: str) -> list:
 
             # - Add range if the line starts with "# -"
 
-            if line.strip().startswith("# -"):
+            if line[indent:].startswith("# -"):
                 if current_start is not None:
                     line_ranges.append((current_start, i))
                 current_start = None
@@ -53,7 +57,7 @@ def parse_ranges(code: str) -> list:
 
             # - Update the current start
 
-            if not line.strip().startswith("# -") and current_start is None:
+            if not line[indent:].startswith("# -") and current_start is None:
                 current_start = prev_step_i
 
         # - Add the last one
@@ -71,6 +75,11 @@ def parse_ranges(code: str) -> list:
         if "\n".join(lines[line_ranges[0][0] : line_ranges[0][1]]).strip() == "":
             line_ranges.pop(0)
 
+        # - Remove if there is only one block (meaning no step found)
+
+        if len(line_ranges) == 1:
+            continue
+
         # - Get symbol ranges and append to the result
 
         _ranges = []
@@ -84,7 +93,7 @@ def parse_ranges(code: str) -> list:
         # -- Iterate over line blocks and calculate the start and end positions
 
         for i, j in line_ranges:
-            start = line_endings[i + 1] - 1 if i != 0 else len(lines[0])
+            start = line_endings[i + 1] - 1 if lines[i][indent:].startswith("# -") else 0
             end = line_endings[j - 1]
 
             # try to reduce the end
@@ -108,49 +117,109 @@ def parse_ranges(code: str) -> list:
 
 def test():
     code = """\
+    
+    def f1():
+
+        # - 1
+
+        print(1)
+
+        # - 2
+
+        print(2)
+
+        # - 3
 
 
-# - 1
+        # -- 3.1
 
-print(1)
+        pass
 
-# - 2
+        # -- 3.2
 
-print(2)
+        if f1_1:
+            bar
 
-# - 3
+        # - 4
+
+        if:
+            header
+
+            # - 4-1
+
+            pass
+
+            # - 4-2
+
+            footer
+
+    def f2():
+
+        # - A
 
 
-# -- 3.1
-
-pass
-
-# -- 3.2
-
-pass
+        # - B
 
 """
+
+    # for value in ["\n".join(code.split("\n")[i:j]) for i, j in parse_ranges(code)]:
+    #     print("-" * 88)
+    #     print(value)
+    #     print("*" * 88)
+
+    for i, j in parse_ranges(code):
+        print("-" * 88)
+        print(i, j)
+        print(code[i:j])
+        print("*" * 88)
+
     assert [code[i:j] for i, j in parse_ranges(code)] == snapshot(
         [
+            "            header",
             """\
 
 
-print(1)\
+            pass\
 """,
             """\
 
 
-print(2)\
+            footer\
 """,
             """\
 
 
-pass\
+        print(1)\
 """,
             """\
 
 
-pass\
+        print(2)\
+""",
+            """\
+
+
+        pass\
+""",
+            """\
+
+
+        if f1_1:
+            bar\
+""",
+            """\
+
+
+        if:
+            header
+
+            # - 4-1
+
+            pass
+
+            # - 4-2
+
+            footer\
 """,
         ]
     )

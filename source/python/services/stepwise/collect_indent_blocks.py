@@ -120,6 +120,11 @@ def test():
         # - B
 
 """
+
+    for i, j in parse_indent_blocks(code):
+        print(code[i:j])
+        print("-" * 88)
+
     assert [code[i:j] for i, j in parse_indent_blocks(code)] == snapshot(
         [
             """\
