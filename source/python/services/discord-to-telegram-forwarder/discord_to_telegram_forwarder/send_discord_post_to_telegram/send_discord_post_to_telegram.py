@@ -47,25 +47,19 @@ MESSAGE_LIMIT = 4096
 async def send_discord_post_to_telegram(
     deps: Deps,
     message: discord.Message,
-    telegram_chat_to_filter: dict[Union[str, int], Callable[[discord.Message], bool]],
-    filter_forum_post_messages: bool = True,
-    emoji: Optional[str] = None,
+    telegram_chat_to_filter: dict[
+        Union[str, int], Callable[[discord.Message], bool]
+    ],  # Telegram chat to filter function (if filter function returns True, message will be sent to this chat)
+    filter_forum_post_messages: bool = True,  # only send messages that are from forum channel and are starter message
+    emoji: Optional[str] = None,  # if not provided, will be requested from openai
 ) -> None:
-    """
-    Parameters
-    ----------
-    deps: Deps
-        Dependencies
-    message: discord.Message
-    telegram_chat_to_filter: dict
-        Telegram chat to filter function (if filter function returns True, message will be sent to this chat)
-    filter_forum_post_messages: bool
-        Filter forum post messages: if True, will only send messages that are from forum channel and are starter message
-    emoji: bool
-        Emoji to use in the message
-    Returns
-    -------
+    """Sends a discord message to telegram.
 
+    Features:
+    - Creates a cover image if no images are attached
+    - Replaces discord placeholders in the message text with telegram-compatible placeholders (like fixing usernames)
+    - Sends reactions to the message
+    - Adds `notion_author_url` to the message text
     """
 
     # - Do not send in certain cases
@@ -187,6 +181,7 @@ async def send_discord_post_to_telegram(
     if not filenames:
         try:
             # - Generate article cover
+
             image_contents = cache_on_disk(f"{deps.local_files_dir}/generate_image")(
                 retry(tries=5, delay=1)(generate_article_cover)
             )(
