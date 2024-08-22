@@ -35,14 +35,14 @@ def parse_indent_blocks(code: str) -> list[tuple[int, int]]:
         if indent < indents_stack[-1]:
             while indents_stack and indent < indents_stack[-1]:
                 start_line = start_line_number_stack.pop()
-                result.append((start_line - 1, i - 1))
+                result.append((start_line - 1, i - 1))  # -1 because of the SOF line
                 indents_stack.pop()
 
         # -- If the indent is greater than the last indent, add a new group to the stack
 
         if indent > indents_stack[-1]:
             indents_stack.append(indent)
-            start_line_number_stack.append(i - 1)
+            start_line_number_stack.append(i)
 
         # -- Assert indent is equal to the last indent
 
@@ -120,11 +120,9 @@ def test():
     assert [code[i:j] for i, j in parse_indent_blocks(code)] == snapshot(
         [
             """\
-        if f1_1:
             bar
 """,
             """\
-        if:
             header
 
             # - 4-1
@@ -136,7 +134,6 @@ def test():
             footer
 """,
             """\
-
         # - 1
 
         print(1)
@@ -171,7 +168,6 @@ def test():
             footer
 """,
             """\
-
         # - A
 
 
@@ -179,7 +175,6 @@ def test():
 
 """,
             """\
-    
     def f1():
 
         # - 1
