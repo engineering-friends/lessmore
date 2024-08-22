@@ -38,7 +38,7 @@ from retry import retry
 from telethon import functions, types
 
 
-MENTION_CHAR_PLACEHOLDER = "ç"
+MENTION_PLACEHOLDER = "ç"
 
 CAPTION_MESSAGE_LIMIT = 1024
 MESSAGE_LIMIT = 4096
@@ -70,7 +70,7 @@ async def send_discord_post_to_telegram(
 
     # - Do not send in certain cases
 
-    # -- Return if not a post message if `filter_forum_post_messages` is True
+    # -- Do not send if not a post message and `filter_forum_post_messages` is True
 
     if filter_forum_post_messages:
         is_post_message = isinstance(
@@ -81,7 +81,7 @@ async def send_discord_post_to_telegram(
             logger.info("Message is not a forum post message, skipping", message_id=message.id)
             return
 
-    # -- Return if message is in private channel and `filter_public_channels` is True
+    # -- Do not send if message is in a private channel and `filter_public_channels` is True
 
     if deps.config.filter_public_channels:
         for channel_candidate in [
@@ -95,21 +95,21 @@ async def send_discord_post_to_telegram(
                     logger.info("Channel is private, skipping", channel_id=channel_candidate.id)
                     return
 
-    # - Download attachments
+    # - Download attachments locally, build `filenames` list
 
-    files = []
+    filenames = []
     for attachment in message.attachments:
         if maybe(attachment).url.or_else(None) and maybe(attachment).filename.or_else(None):
             if attachment.filename.lower().endswith((".webp", ".bmp")):
                 # common image formats, not supported by telegram
                 temp_path = _download_as_temp_file(attachment.url, extension=os.path.splitext(attachment.filename)[1])
                 png_temp_path = to_png(temp_path)
-                files.append(png_temp_path)
+                filenames.append(png_temp_path)
             else:
                 temp_path = _download_as_temp_file(attachment.url, extension=os.path.splitext(attachment.filename)[1])
-                files.append(temp_path)
+                filenames.append(temp_path)
 
-    # - Unfold message
+    # - Unfold message to variables
 
     channel_or_post_name = maybe(message).channel.name.or_else("")  # `Челленджи в EF`
     parent_channel_name = maybe(message).channel.parent.name.or_else("")  # `?│requests`
@@ -119,9 +119,9 @@ async def send_discord_post_to_telegram(
     author_name = message.author.display_name  # `Mark Lidenberg`
     url = message.jump_url  # `https://discord.com/...`
 
-    # - Fix discord placeholders in the body: <@913095424225706005>, <#1106702799938519211>, <@&1106702799938519211> -> @marklidenberg, [name](link), @<name>
+    # - Fix discord placeholders in the `body`: <@913095424225706005>, <#1106702799938519211>, <@&1106702799938519211> -> @marklidenberg, [name](link), @<name>
 
-    # -- <@913095424225706005> -> @marklidenberg
+    # -- <@913095424225706005> -> <PLACEHOLDER>marklidenberg
 
     for user_id in re.findall(r"<@(\d+)>", message.content):  # <@913095424225706005>
         # - Get user
@@ -149,7 +149,7 @@ async def send_discord_post_to_telegram(
 
         body = body.replace(
             f"<@{user_id}>",
-            f"{MENTION_CHAR_PLACEHOLDER}{telegram_username}" if telegram_username else user.display_name,
+            f"{MENTION_PLACEHOLDER}{telegram_username}" if telegram_username else user.display_name,
         )
 
     # -- <#1106702799938519211> -> [name](link)
@@ -163,12 +163,12 @@ async def send_discord_post_to_telegram(
 
         body = body.replace(f"<#{channel_id}>", f"[{channel.name}]({channel.jump_url})")
 
-    # -- <@&1106702799938519211> -> @<name>
+    # -- <@&1106702799938519211> -> @role_name
 
     for role_id in re.findall(r"<@&(\d+)>", body):  # <@&1106702799938519211>
         body = body.replace(f"<@&{role_id}>", message.guild.get_role(int(role_id)).name)
 
-    # - Get user notion properties and extract properties
+    # - Get user notion properties, extract `notion_ai_style` and `notion_author_url`
 
     try:
         notion_properties = await get_notion_user_properties(
@@ -182,9 +182,9 @@ async def send_discord_post_to_telegram(
     notion_ai_style = notion_properties.get("AI стиль постов")
     notion_author_url = notion_properties.get("url", "")
 
-    # - Generate an image cover if no images are attached
+    # - Generate an image cover if no images are attached, override `filenames` in this case
 
-    if not files:
+    if not filenames:
         try:
             # - Generate article cover
             image_contents = cache_on_disk(f"{deps.local_files_dir}/generate_image")(
@@ -207,14 +207,15 @@ async def send_discord_post_to_telegram(
 
             filename = f"/tmp/{uuid.uuid4()}.png"
             write_file(data=image_contents, filename=filename, as_bytes=True)
-            files = [filename]
+            filenames = [filename]
         except Exception as e:
             logger.error("Failed to generate image", e=e)
-            files = []
+
+            filenames = []
 
     # - Prepare message text
 
-    # -- Get emoji
+    # -- Get emoji either from the title or from openai
 
     if not emoji:
         if emoji_lib.is_emoji(title[0]):
@@ -229,16 +230,16 @@ async def send_discord_post_to_telegram(
             # get from openai
             emoji = request_emoji_representing_text_from_openai(f"{channel_or_post_name} {title} {body}")
 
-    # -- Replace `@` for `~` in the body and title
+    # -- Replace `@` for `~` in the body and title so that it doesn't try mention non-existing telegram users
 
     title = title.replace("@", "~")
     body = body.replace("@", "~")
 
-    # -- Allow specific user mentions from discord to bypass the filter
+    # -- Replace `MENTION_PLACEHOLDER` with `@`
 
-    body = body.replace(MENTION_CHAR_PLACEHOLDER, "@")
+    body = body.replace(MENTION_PLACEHOLDER, "@")
 
-    # -- Remove prefix non-alphanumeric (or -) characters from `parent_channel_name`
+    # -- Remove prefix non-alphanumeric (or -) characters from `parent_channel_name` (name of the forum channel, where the post is located), so that it can be used as a tag
 
     def _is_alphanumeric_with_dashes(string: str) -> bool:
         return all([character.isalnum() or character == "-" for character in string])
@@ -250,9 +251,9 @@ async def send_discord_post_to_telegram(
     if first_allowed_symbol_index:
         parent_channel_name = parent_channel_name[first_allowed_symbol_index:]
 
-    # -- Format message for telegram
+    # -- Format the message for telegram
 
-    # --- Crop body if necessary
+    # --- Crop `body` if too long
 
     if body:
         body_size = len(body)
@@ -290,22 +291,22 @@ async def send_discord_post_to_telegram(
         author_url=notion_author_url,
     )
 
-    # - Split files to separate message if needed
+    # - If the message is too long, split it into two messages: one with just image caption and another with the text
 
     message_text_and_files = []
-    if files and (len(message_text) > CAPTION_MESSAGE_LIMIT):
+    if filenames and (len(message_text) > CAPTION_MESSAGE_LIMIT):
         # images have different limits, so we need to split them
-        message_text_and_files.append(("", files))
+        message_text_and_files.append(("", filenames))
         message_text_and_files.append((message_text, []))
     else:
-        message_text_and_files.append((message_text, files))
+        message_text_and_files.append((message_text, filenames))
 
-    # - Send message to telegram
+    # - Send the message to telegram
 
     for telegram_chat, filter_ in telegram_chat_to_filter.items():
         if filter_(message=message):
             for _message_text, _files in message_text_and_files:
-                # - Send message
+                # - Send the message
 
                 message = await deps.telegram_bot_client.send_message(
                     entity=telegram_chat,
