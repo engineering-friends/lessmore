@@ -23,6 +23,7 @@ def cache_on_disk(
     """
 
     # - Initialize or retrieve an existing cache object
+
     cache = Cache(ensure_path(directory))
 
     # - Define the decorator

@@ -185,9 +185,8 @@ async def send_discord_post_to_telegram(
     # - Generate an image cover if no images are attached
 
     if not files:
-        # - Generate article cover
-
         try:
+            # - Generate article cover
             image_contents = cache_on_disk(f"{deps.local_files_dir}/generate_image")(
                 retry(tries=5, delay=1)(generate_article_cover)
             )(
@@ -305,8 +304,6 @@ async def send_discord_post_to_telegram(
 
     for telegram_chat, filter_ in telegram_chat_to_filter.items():
         if filter_(message=message):
-            # - Undownloaded videos and gifs can ONLY be sent as single files
-
             for _message_text, _files in message_text_and_files:
                 # - Send message
 
@@ -354,7 +351,7 @@ async def test_send_real_message_from_discord(forum_name: str, title_contains: s
     await deps.telegram_bot_client.start(bot_token=deps.config.telegram_bot_token)
     await deps.telegram_user_client.start()
 
-    # - Get discord client
+    # - Custom discord client
 
     class CustomDiscordClient(discord.Client):
         async def on_ready(self):

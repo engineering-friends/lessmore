@@ -87,13 +87,14 @@ def test():
     def f1():
 
         # - 1
-
+    
+        print(1)
 
         # - 2
-
+        
+        print(2)
 
         # - 3
-
 
         # -- 3.1
 
@@ -128,22 +129,21 @@ def test():
     assert collect_step_groups(text) == snapshot(
         [
             [
-                ("start", 25, "header"),
-                ("step", 27, "# - 4-1"),
-                ("step", 31, "# - 4-2"),
-                ("finish", 33, "footer"),
+                ("start", 27, "header"),
+                ("step", 29, "# - 4-1"),
+                ("step", 33, "# - 4-2"),
+                ("finish", 35, "footer"),
             ],
             [
                 ("start", 4, "# - 1"),
                 ("step", 4, "# - 1"),
-                ("step", 7, "# - 2"),
-                ("step", 10, "# - 3"),
-                ("step", 13, "# -- 3.1"),
-                ("step", 17, "# -- 3.2"),
-                ("step", 22, "# - 4"),
-                ("finish", 33, "footer"),
+                ("step", 8, "# - 2"),
+                ("step", 15, "# -- 3.1"),
+                ("step", 19, "# -- 3.2"),
+                ("step", 24, "# - 4"),
+                ("finish", 35, "footer"),
             ],
-            [("start", 37, "# - A"), ("step", 37, "# - A"), ("step", 40, "# - B"), ("finish", 40, "# - B")],
+            [("start", 39, "# - A"), ("step", 42, "# - B"), ("finish", 42, "# - B")],
         ]
     )
 
