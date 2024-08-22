@@ -18,14 +18,14 @@ def parse_ranges(code: str) -> list:
 
     ranges = []
 
-    for start, end in indent_blocks:
+    for block_start, block_end in indent_blocks:
         # - Init block ranges
 
         line_ranges = []
 
         # - Crop code
 
-        block_code = code[start:end]
+        block_code = code[block_start:block_end]
 
         # - Split the lines
 
@@ -91,13 +91,13 @@ def parse_ranges(code: str) -> list:
             while block_code[end - 1].strip() == "":
                 end -= 1
 
-            _ranges.append((start + start, end + start))
+            _ranges.append((start + block_start, end + block_start))
 
             # for debug
-            # print("\n".join(lines[i:j]))
-            # print("-" * 20)
-            # print(block_code[start:end])
-            # print("*" * 20)
+            print("\n".join(lines[i:j]))
+            print("-" * 20)
+            print(block_code[start:end])
+            print("*" * 20)
 
         ranges += _ranges
 
@@ -133,24 +133,24 @@ pass
     assert [code[i:j] for i, j in parse_ranges(code)] == snapshot(
         [
             """\
- 1
 
-print(\
+
+print(1)\
 """,
             """\
- 2
 
-print(\
+
+print(2)\
 """,
             """\
-.1
 
-pa\
+
+pass\
 """,
             """\
-.2
 
-pa\
+
+pass\
 """,
         ]
     )
