@@ -1,3 +1,5 @@
+from typing import Optional
+
 from inline_snapshot import snapshot
 from lessmore.utils.file_primitives.read_file import read_file
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
@@ -5,7 +7,7 @@ from more_itertools import first
 from repos.lessmore.source.python.services.stepwise.collect_indent_blocks import parse_indent_blocks
 
 
-def parse_ranges(code: str) -> list:
+def parse_ranges(code: str, n_block: Optional[int] = None) -> list:
     # - Return if empty code
 
     if code.strip() == "":
@@ -15,10 +17,12 @@ def parse_ranges(code: str) -> list:
 
     indent_blocks = parse_indent_blocks(code)
 
+    if n_block is not None:
+        indent_blocks = [indent_blocks[n_block]]
+
     # - Iterate over indent blocks, find necessary ranges
 
     ranges = []
-
     for block_start, block_end in indent_blocks:
         # - Init block ranges
 
@@ -27,9 +31,6 @@ def parse_ranges(code: str) -> list:
         # - Crop code
 
         block_code = code[block_start:block_end]
-
-        # print("code block")
-        # print(block_code)
 
         # - Split the lines
 
@@ -97,7 +98,7 @@ def parse_ranges(code: str) -> list:
         # -- Iterate over line blocks and calculate the start and end positions
 
         for i, j in line_ranges:
-            start = line_endings[i + 1] - 1 if lines[i][indent:].startswith("# -") else 0
+            start = line_endings[i] if lines[i][indent:].startswith("# -") else 0
             end = line_endings[j - 1]
 
             # try to reduce the end
@@ -152,81 +153,18 @@ def test():
             # - 4-1
 
             pass
+    """
 
-            # - 4-2
+    for n_block, code_block in enumerate(parse_indent_blocks(code)):
+        # for n_block, code_block in [(33, parse_indent_blocks(code)[33])]:
+        print("=" * 88)
+        print("Code block", n_block)
+        print(code[code_block[0] : code_block[1]])
 
-            footer
-
-    def f2():
-
-        # - A
-
-
-        # - B
-
-"""
-
-    # for value in ["\n".join(code.split("\n")[i:j]) for i, j in parse_ranges(code)]:
-    #     print("-" * 88)
-    #     print(value)
-    #     print("*" * 88)
-
-    for i, j in parse_ranges(code):
-        print("-" * 88)
-        print(i, j)
-        print(code[i:j])
-        print("*" * 88)
-
-    assert [code[i:j] for i, j in parse_ranges(code)] == snapshot(
-        [
-            "            header",
-            """\
-
-
-            pass\
-""",
-            """\
-
-
-            footer\
-""",
-            """\
-
-
-        print(1)\
-""",
-            """\
-
-
-        print(2)\
-""",
-            """\
-
-
-        pass\
-""",
-            """\
-
-
-        if f1_1:
-            bar\
-""",
-            """\
-
-
-        if:
-            header
-
-            # - 4-1
-
-            pass
-
-            # - 4-2
-
-            footer\
-""",
-        ]
-    )
+        for i, j in parse_ranges(code, n_block=n_block):
+            print("-" * 88)
+            print(i, j)
+            print(code[i:j])
 
 
 if __name__ == "__main__":
