@@ -1,6 +1,8 @@
 
 from lessmore.utils.slugify import slugify
 
+# - Test
+
 def test():
     assert slugify('Hello World!') == 'hello-world'
 

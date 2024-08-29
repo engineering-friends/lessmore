@@ -4,7 +4,10 @@ from inline_snapshot import snapshot
 from lessmore.utils.file_primitives.read_file import read_file
 from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_tests
 from more_itertools import first
-from repos.lessmore.source.python.services.stepwise.collect_indent_blocks import parse_indent_blocks
+from stepwise.collect_indent_blocks import parse_indent_blocks
+
+
+# - Test
 
 
 def parse_ranges(code: str, n_block: Optional[int] = None) -> list:
@@ -77,12 +80,12 @@ def parse_ranges(code: str, n_block: Optional[int] = None) -> list:
 
         # - Remove the first one if it's all empty lines
 
-        if "\n".join(lines[line_ranges[0][0] : line_ranges[0][1]]).strip() == "":
+        if line_ranges and "\n".join(lines[line_ranges[0][0] : line_ranges[0][1]]).strip() == "":
             line_ranges.pop(0)
 
-        # - Remove if there is only one block (meaning no step found)
+        # - Remove if there is only one block and it doesn't start with "# -"
 
-        if len(line_ranges) == 1:
+        if len(line_ranges) == 1 and not lines[line_ranges[0][0]][indent:].startswith("# -"):
             continue
 
         # - Get symbol ranges and append to the result
@@ -107,11 +110,7 @@ def parse_ranges(code: str, n_block: Optional[int] = None) -> list:
 
             _ranges.append((start + block_start, end + block_start))
 
-            # for debug
-            # print("\n".join(lines[i:j]))
-            # print("-" * 20)
-            # print(block_code[start:end])
-            # print("*" * 20)
+        # - Add ranges
 
         ranges += _ranges
 
@@ -122,37 +121,13 @@ def parse_ranges(code: str, n_block: Optional[int] = None) -> list:
 
 def test():
     code = """\
-    
-    def f1():
 
-        # - 1
+Test
 
-        print(1)
+# - Foo
 
-        # - 2
+bar
 
-        print(2)
-
-        # - 3
-
-
-        # -- 3.1
-
-        pass
-
-        # -- 3.2
-
-        if f1_1:
-            bar
-
-        # - 4
-
-        if:
-            header
-
-            # - 4-1
-
-            pass
     """
 
     for n_block, code_block in enumerate(parse_indent_blocks(code)):
