@@ -43,6 +43,8 @@ MENTION_CHAR_PLACEHOLDER = "ç"
 CAPTION_MESSAGE_LIMIT = 1024
 MESSAGE_LIMIT = 4096
 
+IMAGE_REQUEST_KEYWORD = "#generate_image"
+
 
 async def send_discord_post_to_telegram(
     deps: Deps,
@@ -182,35 +184,35 @@ async def send_discord_post_to_telegram(
         logger.error("Failed to get user notion properties")
         notion_properties = {}
 
-    # - Generate images
+    # - Generate images if there are none or explicitly requested
+    if not files or IMAGE_REQUEST_KEYWORD in body:
+        # - Generate article cover
 
-    # - Generate article cover
+        try:
+            image_contents = cache_on_disk(f"{deps.local_files_dir}/generate_image")(
+                retry(tries=5, delay=1)(generate_article_cover)
+            )(
+                title=title,
+                body=body,
+                style=notion_properties.get("AI стиль постов")
+                or "Continuous lines very easy, clean and minimalist, black and white",
+            )
 
-    try:
-        image_contents = cache_on_disk(f"{deps.local_files_dir}/generate_image")(
-            retry(tries=5, delay=1)(generate_article_cover)
-        )(
-            title=title,
-            body=body,
-            style=notion_properties.get("AI стиль постов")
-            or "Continuous lines very easy, clean and minimalist, black and white",
-        )
+            # - Resize image to 1280x731 (telegram max size)
 
-        # - Resize image to 1280x731 (telegram max size)
+            image = Image.open(io.BytesIO(image_contents))
+            image_resized = image.resize((1280, 731), Image.LANCZOS)
+            image_contents = io.BytesIO()
+            image_resized.save(image_contents, format="PNG")
+            image_contents = image_contents.getvalue()
 
-        image = Image.open(io.BytesIO(image_contents))
-        image_resized = image.resize((1280, 731), Image.LANCZOS)
-        image_contents = io.BytesIO()
-        image_resized.save(image_contents, format="PNG")
-        image_contents = image_contents.getvalue()
+            # - Save to tmp file and add to files
 
-        # - Save to tmp file and add to files
-
-        filename = f"/tmp/{uuid.uuid4()}.png"
-        write_file(data=image_contents, filename=filename, as_bytes=True)
-        files = [filename] + files
-    except Exception as e:
-        logger.error("Failed to generate image", e=e)
+            filename = f"/tmp/{uuid.uuid4()}.png"
+            write_file(data=image_contents, filename=filename, as_bytes=True)
+            files = [filename] + files
+        except Exception as e:
+            logger.error("Failed to generate image", e=e)
 
     # - Prepare message text
 
