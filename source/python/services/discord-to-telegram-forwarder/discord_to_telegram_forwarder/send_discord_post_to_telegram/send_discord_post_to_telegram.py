@@ -43,6 +43,8 @@ MENTION_CHAR_PLACEHOLDER = "ç"
 CAPTION_MESSAGE_LIMIT = 1024
 MESSAGE_LIMIT = 4096
 
+IMAGE_REQUEST_KEYWORD = "#generate_image"
+
 
 async def send_discord_post_to_telegram(
     deps: Deps,
@@ -182,9 +184,8 @@ async def send_discord_post_to_telegram(
         logger.error("Failed to get user notion properties")
         notion_properties = {}
 
-    # - Generate images if there are none
-
-    if not files:
+    # - Generate images if there are none or explicitly requested
+    if not files or IMAGE_REQUEST_KEYWORD in body:
         # - Generate article cover
 
         try:
@@ -209,10 +210,9 @@ async def send_discord_post_to_telegram(
 
             filename = f"/tmp/{uuid.uuid4()}.png"
             write_file(data=image_contents, filename=filename, as_bytes=True)
-            files = [filename]
+            files = [filename] + files
         except Exception as e:
             logger.error("Failed to generate image", e=e)
-            files = []
 
     # - Prepare message text
 
