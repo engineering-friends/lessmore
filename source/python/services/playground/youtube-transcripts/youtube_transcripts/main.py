@@ -7,7 +7,7 @@ from lessmore.utils.file_primitives.read_file import read_file
 from lessmore.utils.file_primitives.write_file import write_file
 
 from youtube_transcripts.deps import Deps
-from youtube_transcripts.get_all_videos_with_transcripts_from_channel import (
+from youtube_transcripts.get_all_videos_with_transcripts_from_channel.get_all_videos_with_transcripts_from_channel import (
     get_all_videos_with_transcripts_from_channel,
 )
 
@@ -26,7 +26,7 @@ async def main(channel_id: str, notion_token: str, sessions_database_id: str):
     videos = get_all_videos_with_transcripts_from_channel(
         exclude_ids=state.get("processed_ids", []),
         channel_id=channel_id,
-    )[-1:]
+    )[:-1]
 
     # - Find notion page with the same title and add transcripts there
 
