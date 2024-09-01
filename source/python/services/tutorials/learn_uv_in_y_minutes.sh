@@ -32,8 +32,9 @@ rm -rf .venv
 
 # -- Create project
 
-uv init example --no-workspace
+mkdir example
 cd example
+uv init --no-workspace
 uv add ruff # will create .venv/ and install ruff
 uv run ruff check # "All checks passed!"
 cd ..

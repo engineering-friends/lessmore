@@ -4,6 +4,7 @@ import json
 import time
 
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any, Optional
 
 from inline_snapshot import snapshot
@@ -51,6 +52,17 @@ async def build_notion_page(row: Any, property_types: dict):
             properties[column_info.name][_type] = {"name": value}
         elif _type == "multi_select":
             properties[column_info.name][_type] = [{"name": x} for x in value]
+        elif _type == "date":
+            properties[column_info.name][_type] = {"start": value}
+        elif _type == "created_time":
+            # auto-filled by Notion
+            properties.pop(column_info.name)
+        elif _type == "last_edited_time":
+            # auto-filled by Notion
+            properties.pop(column_info.name)
+        elif _type == "created_by":
+            # auto-filled by Notion
+            properties.pop(column_info.name)
         else:
             raise Exception(f"Unknown property type: {_type}")
 
