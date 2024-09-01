@@ -20,10 +20,11 @@ class CreatedExport:
 if __name__ == "__main__":
     from learn_language_magic.deps import Deps
 
-    asyncio.run(
-        autofill(
-            row_cls=CreatedExport,
-            database_id="7cdccf544ce94a01b27106c955458a65",
-            notion_token=Deps.load().config.notion_token,
+    for database_id in [...]:
+        asyncio.run(
+            autofill(
+                row_cls=CreatedExport,
+                database_id=database_id,
+                notion_token=Deps.load().config.notion_token,
+            )
         )
-    )

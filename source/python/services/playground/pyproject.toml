@@ -30,7 +30,7 @@ dependencies = [
     "openai-whisper @ git+https://github.com/openai/whisper.git",
     "pytube >=15.0.0,<16",
     "pydub >=0.25.1,<0.26",
-    "google-api-python-client >=2.136.0,<3",
+    "google-api-python-client>=2.136.0,<3",
     "pillow >=10.4.0,<11",
     "imgurpython >=1.1.7,<2",
     "aiofiles >=24.1.0,<25",
@@ -43,4 +43,7 @@ dependencies = [
     "pycallgraph2 >=1.1.3,<2",
     "pyan3 >=1.2.0,<2",
     "code2flow >=2.5.1,<3",
+    "google-auth>=2.34.0",
+    "google-auth-oauthlib>=1.2.1",
+    "google-auth-httplib2>=0.2.0",
 ]

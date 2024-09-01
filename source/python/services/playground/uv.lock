@@ -764,6 +764,19 @@ wheels = [
 ]
 
 [[package]]
+name = "google-auth-oauthlib"
+version = "1.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "google-auth" },
+    { name = "requests-oauthlib" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/cc/0f/1772edb8d75ecf6280f1c7f51cbcebe274e8b17878b382f63738fd96cee5/google_auth_oauthlib-1.2.1.tar.gz", hash = "sha256:afd0cad092a2eaa53cd8e8298557d6de1034c6cb4a740500b5357b648af97263", size = 24970 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1a/8e/22a28dfbd218033e4eeaf3a0533b2b54852b6530da0c0fe934f0cc494b29/google_auth_oauthlib-1.2.1-py2.py3-none-any.whl", hash = "sha256:2d58a27262d55aa1b87678c3ba7142a080098cbc2024f903c62355deb235d91f", size = 24930 },
+]
+
+[[package]]
 name = "googleapis-common-protos"
 version = "1.65.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1879,6 +1892,9 @@ dependencies = [
     { name = "faiss-cpu" },
     { name = "fire" },
     { name = "google-api-python-client" },
+    { name = "google-auth" },
+    { name = "google-auth-httplib2" },
+    { name = "google-auth-oauthlib" },
     { name = "imgurpython" },
     { name = "inline-snapshot" },
     { name = "keyboard" },
@@ -1921,6 +1937,9 @@ requires-dist = [
     { name = "faiss-cpu", specifier = ">=1.8.0,<2" },
     { name = "fire", specifier = ">=0.6.0,<0.7" },
     { name = "google-api-python-client", specifier = ">=2.136.0,<3" },
+    { name = "google-auth", specifier = ">=2.34.0" },
+    { name = "google-auth-httplib2", specifier = ">=0.2.0" },
+    { name = "google-auth-oauthlib", specifier = ">=1.2.1" },
     { name = "imgurpython", specifier = ">=1.1.7,<2" },
     { name = "inline-snapshot", specifier = "==0.8.0" },
     { name = "keyboard", specifier = ">=0.13.5,<0.14" },

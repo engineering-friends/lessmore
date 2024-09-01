@@ -90,3 +90,4 @@ source/python/services/archive/2024-06\ family-fund/credentials/service_account_
 source/python/services/archive/2024-06\ family-fund/credentials/token.json
 source/python/services/archive/2024-06\ family-fund/family_fund/token.json
 source/python/services/archive/2024-06\ family-fund/family_fund/config.yaml
+source/python/services/playground/youtube-transcripts/youtube_transcripts/client_secret.json
