@@ -1,6 +1,7 @@
 import json
 import os
 
+from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
@@ -23,6 +24,10 @@ def get_all_videos_with_transcripts_from_channel(exclude_ids: list[str], channel
         credentials = Credentials.from_authorized_user_file(
             "client_secret_tokens.json", scopes=["https://www.googleapis.com/auth/youtube.force-ssl"]
         )
+
+        # Refresh the token if it's expired
+        if credentials and credentials.expired and credentials.refresh_token:
+            credentials.refresh(Request())
     else:
         credentials = InstalledAppFlow.from_client_secrets_file(
             client_secrets_file="client_secret.json",  # pragma: allowlist secret
@@ -63,8 +68,10 @@ def get_all_videos_with_transcripts_from_channel(exclude_ids: list[str], channel
 
 def test():
     print(
-        get_all_videos_with_transcripts_from_channel(exclude_ids=[], channel_id="UCPx8E004C7cZBZDl7rkBWdA")
-    )  # pragma: allowlist secret
+        get_all_videos_with_transcripts_from_channel(
+            exclude_ids=[], channel_id="UCPx8E004C7cZBZDl7rkBWdA"
+        )  # pragma: allowlist secret
+    )
 
 
 if __name__ == "__main__":

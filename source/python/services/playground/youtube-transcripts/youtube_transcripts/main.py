@@ -1,13 +1,19 @@
 import asyncio
+import difflib
 import json
 
 from learn_language_magic.notion_rate_limited_client import NotionRateLimitedClient
 from lessmore.utils.file_primitives.read_file import read_file
 from lessmore.utils.file_primitives.write_file import write_file
 
+from youtube_transcripts.deps import Deps
 from youtube_transcripts.get_all_videos_with_transcripts_from_channel import (
     get_all_videos_with_transcripts_from_channel,
 )
+
+
+def are_strings_similar(str1, str2, threshold=0.8):
+    return difflib.SequenceMatcher(None, str1, str2).ratio() >= threshold
 
 
 async def main(channel_id: str, notion_token: str, sessions_database_id: str):
@@ -38,7 +44,10 @@ async def main(channel_id: str, notion_token: str, sessions_database_id: str):
     # -- Find page with the same title and add transcripts there
 
     for video in videos:
-        page = next((page for page in pages if page["properties"]["Name"]["title"][0] == video["title"]), None)
+        page = next(
+            (page for page in pages if are_strings_similar(page["properties"]["Name"]["title"][0], video["title"])),
+            None,
+        )
         if page:
             page["properties"]["transcript"]["rich_text"] = video["caption"]
             await client.pages.update(page_id=page["id"], **page)
@@ -49,4 +58,10 @@ async def main(channel_id: str, notion_token: str, sessions_database_id: str):
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(
+        main(
+            channel_id="UCPx8E004C7cZBZDl7rkBWdA",  # pragma: allowlist secret
+            sessions_database_id="1a10179eea4547d9a67f0012d3112127",  # pragma: allowlist secret
+            notion_token=Deps.load().config.notion_token,
+        )
+    )
