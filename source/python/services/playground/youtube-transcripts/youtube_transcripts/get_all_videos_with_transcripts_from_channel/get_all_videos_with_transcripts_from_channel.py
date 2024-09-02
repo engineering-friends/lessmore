@@ -39,7 +39,7 @@ def get_all_videos_with_transcripts_from_channel(exclude_ids: list[str], channel
         credentials = InstalledAppFlow.from_client_secrets_file(
             client_secrets_file=SECRETS_FILE,  # pragma: allowlist secret
             scopes=["https://www.googleapis.com/auth/youtube.force-ssl"],  # pragma: allowlist secret
-        ).run_local_server(port=8080)
+        ).run_local_server(port=8080, login_hint="engineering.best.friends@gmail.com")
 
     write_file(data=credentials.to_json(), filename=CREDENTIALS_FILE)
 
