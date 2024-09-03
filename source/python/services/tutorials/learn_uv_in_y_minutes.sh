@@ -96,3 +96,11 @@ uvx pycowsay 'hello world!'
 
 uv tool install pycowsay
 pycowsay 'hello world!'
+
+# - Install project
+
+uv init --no-workspace --no-readme
+rm hello.py # clean up, keep only pyproject.toml
+uv python pin 3.12.4 # specify your python versio
+uv venv # create venv
+uv pip install -r requirements.txt # install requirements

@@ -1,10 +1,13 @@
 import asyncio
 import difflib
 import json
+import re
 
 from learn_language_magic.notion_rate_limited_client import NotionRateLimitedClient
+from lessmore.utils.file_primitives.ensure_path import ensure_path
 from lessmore.utils.file_primitives.read_file import read_file
 from lessmore.utils.file_primitives.write_file import write_file
+from loguru import logger
 
 from youtube_transcripts.deps import Deps
 from youtube_transcripts.get_all_videos_with_transcripts_from_channel.get_all_videos_with_transcripts_from_channel import (
@@ -12,8 +15,18 @@ from youtube_transcripts.get_all_videos_with_transcripts_from_channel.get_all_vi
 )
 
 
-def are_strings_similar(str1, str2, threshold=0.8):
-    return difflib.SequenceMatcher(None, str1, str2).ratio() >= threshold
+def sanitize_filename(filename):
+    # Replace any character that is not a letter, number, dot, or underscore with an underscore
+    sanitized = re.sub(r"[^\w\.\-]", "_", filename)
+    return sanitized
+
+
+def are_strings_similar(str1, str2, threshold=0.8) -> bool:
+    try:
+        return difflib.SequenceMatcher(None, str1, str2).ratio() >= threshold
+    except:
+        logger.error("Failed to compare strings", str1=str1, str2=str2)
+        return False
 
 
 async def main(channel_id: str, notion_token: str, sessions_database_id: str):
@@ -26,7 +39,7 @@ async def main(channel_id: str, notion_token: str, sessions_database_id: str):
     videos = get_all_videos_with_transcripts_from_channel(
         exclude_ids=state.get("processed_ids", []),
         channel_id=channel_id,
-    )[:-1]
+    )
 
     # - Find notion page with the same title and add transcripts there
 
@@ -36,25 +49,38 @@ async def main(channel_id: str, notion_token: str, sessions_database_id: str):
 
     # -- Get all pages
 
-    pages = await client.get_paginated_request(
-        method=client.databases.query,
-        method_kwargs=dict(database_id=sessions_database_id),
-    )
+    # pages = await client.get_paginated_request(
+    #     method=client.databases.query,
+    #     method_kwargs=dict(database_id=sessions_database_id),
+    # )
 
     # -- Find page with the same title and add transcripts there
 
     for video in videos:
-        page = next(
-            (page for page in pages if are_strings_similar(page["properties"]["Name"]["title"][0], video["title"])),
-            None,
-        )
-        if page:
-            page["properties"]["transcript"]["rich_text"] = video["caption"]
-            await client.pages.update(page_id=page["id"], **page)
+        write_file(data=video["caption"], filename=f'transcripts/{sanitize_filename(video["title"])}.txt')
+
+        # page = next(
+        #     (
+        #         page
+        #         for page in pages
+        #         if are_strings_similar(page["properties"]["Name"]["title"][0]["text"]["content"], video["title"])
+        #     ),
+        #     None,
+        # )
+        # if page:
+        #     logger.info("Found page", page_title=page["properties"]["Name"]["title"][0])
+        #     await client.pages.update(
+        #         page_id=page["id"],
+        #         **{"properties": {"transcript": {"rich_text": [{"text": {"content": video["caption"]}}]}}},
+        #     )
 
     # - Update state
 
-    # write_file(data=state, filename="state.json", writer=json.dump)
+    write_file(
+        data={"processed_ids": state.get("processed_ids", []) + [video["id"] for video in videos]},
+        filename="state.json",
+        writer=json.dump,
+    )
 
 
 if __name__ == "__main__":
