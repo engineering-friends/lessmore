@@ -28,7 +28,26 @@ function checkConditionsAndNotify() {
       // Check if distance is less than 40 and last seen status is "online"
       if (distance < 40 && lastSeenStatus.toLowerCase() === 'online') {
         // Create notification
-        alert('Notification: Found a match with distance less than 40 km and online status!');
+        fetch('https://gate.whapi.cloud/messages/text', {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'authorization': 'Bearer ...',
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            "typing_time": 0,
+            "to": "995551185124",
+            "body": "Ping"
+          })
+        })
+            .then(response => response.json())
+            .then(data => {
+              console.log('Notification sent successfully:', data);
+            })
+            .catch(error => {
+              console.error('Error sending notification:', error);
+            });
       }
     }
   });
@@ -36,11 +55,6 @@ function checkConditionsAndNotify() {
 
 // Call the function when the page loads
 window.addEventListener('load', () => {
-  // Play sound notification
-  const audio = new Audio(chrome.runtime.getURL('notification.mp3'));
-  audio.play();
-
-  // sleep for 10 seconds
   setTimeout(() => {
     checkConditionsAndNotify();
   }, 5000);
