@@ -6,8 +6,7 @@ function checkConditionsAndNotify() {
   // If alert has already fired, do nothing
   if (hasFired) return;
 
-  // Find all divs with the class "sc-ehUVza"
-  const elements = document.querySelectorAll('div.sc-ehUVza');
+  const elements = document.querySelectorAll('div.sc-jzNkva');
 
   elements.forEach((element) => {
     const giftSentText = element.querySelector('span')?.textContent || '';
