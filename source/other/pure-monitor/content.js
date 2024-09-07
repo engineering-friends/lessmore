@@ -2,7 +2,7 @@
 
 // Function to check if conditions are met and notify
 function checkConditionsAndNotify() {
-  // Find all divs with the class "sc-ehUVza"
+
   const elements = document.querySelectorAll('div.sc-jzNkva');
   console.log('Elements:', elements);
 
@@ -38,8 +38,10 @@ function checkConditionsAndNotify() {
 // Call the function when the page loads
 window.addEventListener('load', () => {
 
-  // Check the conditions after page load
-  checkConditionsAndNotify();
+  // sleep for 10 seconds
+  setTimeout(() => {
+    checkConditionsAndNotify();
+  }, 5000);
 
   // Create "Hello World" notification (for debugging purposes)
   const helloWorldDiv = document.createElement('div');
