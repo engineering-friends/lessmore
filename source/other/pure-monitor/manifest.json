@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Auto Reload & Hello World",
+  "name": "Auto Reload & Element Checker with Sound",
   "version": "1.0",
-  "description": "Reloads the page every 30 seconds and displays 'Hello World' when loaded.",
+  "description": "Reloads the page every 30 seconds, checks conditions and plays a sound notification.",
   "permissions": ["tabs", "scripting"],
   "background": {
     "service_worker": "background.js"
@@ -13,5 +13,11 @@
       "js": ["content.js"]
     }
   ],
-  "host_permissions": ["<all_urls>"]
+  "host_permissions": ["<all_urls>"],
+  "web_accessible_resources": [
+    {
+      "resources": ["notification.mp3"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

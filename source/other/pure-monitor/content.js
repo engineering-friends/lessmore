@@ -9,8 +9,7 @@ function checkConditionsAndNotify() {
   elements.forEach((element) => {
     const lastSeenSpans = element.querySelectorAll('span.sc-imwsjW span');
 
-    // Condition 1: Does not contain "Gift sent"
-    if (true || !element.textContent.includes('Gift sent')) {
+    if (!element.textContent.includes('Gift sent')) {
       let distance = 0;
       let lastSeenStatus = '';
 
@@ -37,6 +36,9 @@ function checkConditionsAndNotify() {
 
 // Call the function when the page loads
 window.addEventListener('load', () => {
+  // Play sound notification
+  const audio = new Audio(chrome.runtime.getURL('notification.mp3'));
+  audio.play();
 
   // sleep for 10 seconds
   setTimeout(() => {
