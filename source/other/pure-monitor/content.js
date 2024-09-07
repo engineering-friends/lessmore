@@ -1,31 +1,43 @@
-chrome.runtime.sendMessage({ action: "fetchBookmarks" }, (bookmarkLinks) => {
-function highlightLinks() {
-  const styleElement = document.createElement("style");
-  document.head.appendChild(styleElement);
-  const styleSheet = styleElement.sheet;
+// Function to check the elements based on your conditions
+function checkElements() {
+  const elements = document.querySelectorAll('div.sc-jzNkva');
 
-  const pageLinks = document.querySelectorAll("a");
+  elements.forEach(element => {
+    // Condition 1: Check for "km" < 40 and "online"
+    const distanceElement = element.querySelector('.sc-imwsjW span');
+    const statusElement = element.querySelector('.sc-imwsjW span:last-child');
 
-  pageLinks.forEach((linkElement, index) => {
-    const fullURL = new URL(linkElement.getAttribute('href'), window.location).toString();
-    const matchedBookmark = bookmarkLinks.find(bookmark => fullURL.startsWith(bookmark));
-    if (matchedBookmark) {
-      linkElement.classList.add(`highlighted-link-${index}`);
-      // linkElement.style.setProperty("border", "2px solid #186F65", "important");
-      // linkElement.style.setProperty("border-radius", "8px", "important");
-      // linkElement.style.setProperty("padding", "4px", "important");
-      // linkElement.style.setProperty("color", "#186F65", "important");
-      // linkElement.style.setProperty("background-color", "rgba(24, 111, 101, 0.5)", "important");
-      styleSheet.insertRule(`.highlighted-link-${index}::after { content: " ✅"; }`, 0);
+    if (distanceElement && statusElement) {
+      const distanceText = distanceElement.textContent;
+      const statusText = statusElement.textContent;
+
+      // Extract km value
+      const kmValue = parseInt(distanceText.replace(' km', ''));
+
+      // Check if km is less than 40 and the status is 'online'
+      if (kmValue < 40 && statusText.includes('online')) {
+
+        // Condition 2: Make sure it doesn't contain "Gift sent"
+        if (!element.innerHTML.includes('Gift sent')) {
+          notifyUser("Condition Met: Online user within 40km");
+        }
+      }
     }
   });
 }
 
+// Function to send a browser notification
+function notifyUser(message) {
+  chrome.runtime.sendMessage({
+    type: 'notification',
+    message: message
+  });
+}
 
+// Run the check function when the page loads
+window.onload = () => {
+  checkElements();
+};
 
-
-  highlightLinks();
-
-  // Re-apply every 5 seconds
-  setInterval(highlightLinks, 500);
-});
+// Set up an interval to check every 30 seconds
+setInterval(checkElements, 30000);

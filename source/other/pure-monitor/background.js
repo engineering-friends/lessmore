@@ -1,18 +1,18 @@
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'fetchBookmarks') {
-    chrome.bookmarks.getTree((bookmarkTreeNodes) => {
-      const bookmarkLinks = [];
-      function extractBookmarks(bookmarkNode) {
-        if (bookmarkNode.url) {
-          bookmarkLinks.push(bookmarkNode.url);
-        }
-        if (bookmarkNode.children) {
-          bookmarkNode.children.forEach(extractBookmarks);
-        }
-      }
-      bookmarkTreeNodes.forEach(extractBookmarks);
-      sendResponse(bookmarkLinks);
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.alarms.create('refreshAlarm', { periodInMinutes: 0.5 }); // 30 seconds
+});
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === 'refreshAlarm') {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.scripting.executeScript({
+        target: { tabId: tabs[0].id },
+        function: refreshPage
+      });
     });
-    return true;
   }
 });
+
+function refreshPage() {
+  window.location.reload();
+}
