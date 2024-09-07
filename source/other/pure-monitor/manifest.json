@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Page Auto Refresher & Notifier",
+  "version": "1.0",
+  "description": "Refreshes the page every 30 seconds and checks for conditions.",
+  "permissions": [
+    "activeTab", "alarms", "notifications"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  }
+}
