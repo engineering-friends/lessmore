@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Auto Reload & Element Checker with Sound",
+  "name": "Pure Monitor",
   "version": "1.0",
   "description": "Reloads the page every 30 seconds, checks conditions and plays a sound notification.",
   "permissions": ["tabs", "scripting"],

@@ -1,15 +1,20 @@
-
+// Flag to check if alert has already fired
+let hasFired = false;
 
 // Function to check if conditions are met and notify
 function checkConditionsAndNotify() {
+  // If alert has already fired, do nothing
+  if (hasFired) return;
 
-  const elements = document.querySelectorAll('div.sc-jzNkva');
-  console.log('Elements:', elements);
+  // Find all divs with the class "sc-ehUVza"
+  const elements = document.querySelectorAll('div.sc-ehUVza');
 
   elements.forEach((element) => {
+    const giftSentText = element.querySelector('span')?.textContent || '';
     const lastSeenSpans = element.querySelectorAll('span.sc-imwsjW span');
 
-    if (!element.textContent.includes('Gift sent')) {
+    // Condition 1: Does not contain "Gift sent"
+    if (!giftSentText.includes('Gift sent')) {
       let distance = 0;
       let lastSeenStatus = '';
 
@@ -19,45 +24,51 @@ function checkConditionsAndNotify() {
         lastSeenStatus = lastSeenSpans[1].textContent.trim();
       }
 
-      console.log('Distance:', distance);
-      console.log('Last seen status:', lastSeenStatus);
-      console.log('Element text:', element.textContent);
-      console.log('Spans:', lastSeenSpans);
-      console.log('---');
-
       // Check if distance is less than 40 and last seen status is "online"
       if (distance < 40 && lastSeenStatus.toLowerCase() === 'online') {
-        // Create notification
-        fetch('https://gate.whapi.cloud/messages/text', {
-          method: 'POST',
-          headers: {
-            'accept': 'application/json',
-            'authorization': 'Bearer ...',
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify({
-            "typing_time": 0,
-            "to": "995551185124",
-            "body": "Ping"
-          })
-        })
-            .then(response => response.json())
-            .then(data => {
-              console.log('Notification sent successfully:', data);
-            })
-            .catch(error => {
-              console.error('Error sending notification:', error);
-            });
+        // Set the hasFired flag to true to prevent further execution
+        hasFired = true;
+
+        // Send the POST request using fetch
+        sendNotification();
       }
     }
   });
 }
 
+// Function to send the POST request
+function sendNotification() {
+  fetch('https://gate.whapi.cloud/messages/text', {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'authorization': 'Bearer ...',
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      "typing_time": 0,
+      "to": "995551185124",
+      "body": "Ping"
+    })
+  })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Notification sent successfully:', data);
+      })
+      .catch(error => {
+        console.error('Error sending notification:', error);
+      });
+}
+
+// Reset the hasFired flag when the page is manually reloaded
+window.addEventListener('beforeunload', () => {
+  hasFired = false;
+});
+
 // Call the function when the page loads
 window.addEventListener('load', () => {
-  setTimeout(() => {
-    checkConditionsAndNotify();
-  }, 5000);
+  // Check the conditions after page load
+  checkConditionsAndNotify();
 
   // Create "Hello World" notification (for debugging purposes)
   const helloWorldDiv = document.createElement('div');
