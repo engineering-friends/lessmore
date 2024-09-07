@@ -10,5 +10,5 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 function reloadPage() {
   setInterval(() => {
     location.reload();
-  }, 5000);  // Reload every 5 seconds
+  }, 60000);  // Reload every 60 seconds
 }

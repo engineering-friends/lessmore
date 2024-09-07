@@ -1,4 +1,47 @@
+
+
+// Function to check if conditions are met and notify
+function checkConditionsAndNotify() {
+  // Find all divs with the class "sc-ehUVza"
+  const elements = document.querySelectorAll('div.sc-jzNkva');
+  console.log('Elements:', elements);
+
+  elements.forEach((element) => {
+    const lastSeenSpans = element.querySelectorAll('span.sc-imwsjW span');
+
+    // Condition 1: Does not contain "Gift sent"
+    if (true || !element.textContent.includes('Gift sent')) {
+      let distance = 0;
+      let lastSeenStatus = '';
+
+      // Get the distance and last seen status
+      if (lastSeenSpans.length >= 2) {
+        distance = parseFloat(lastSeenSpans[0].textContent);
+        lastSeenStatus = lastSeenSpans[1].textContent.trim();
+      }
+
+      console.log('Distance:', distance);
+      console.log('Last seen status:', lastSeenStatus);
+      console.log('Element text:', element.textContent);
+      console.log('Spans:', lastSeenSpans);
+      console.log('---');
+
+      // Check if distance is less than 40 and last seen status is "online"
+      if (distance < 40 && lastSeenStatus.toLowerCase() === 'online') {
+        // Create notification
+        alert('Notification: Found a match with distance less than 40 km and online status!');
+      }
+    }
+  });
+}
+
+// Call the function when the page loads
 window.addEventListener('load', () => {
+
+  // Check the conditions after page load
+  checkConditionsAndNotify();
+
+  // Create "Hello World" notification (for debugging purposes)
   const helloWorldDiv = document.createElement('div');
   helloWorldDiv.textContent = 'Hello world';
   helloWorldDiv.style.position = 'fixed';
