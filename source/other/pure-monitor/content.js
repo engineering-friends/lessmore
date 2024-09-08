@@ -9,18 +9,17 @@ function checkConditionsAndNotify() {
   // check for a new message
   if (document.querySelector('div.sc-cepbVR')) { // black dot of unread message
     hasFired = true;
-    sendNotification();
+    sendNotification("New message");
     return;
   }
 
   const elements = document.querySelectorAll('div.sc-jzNkva'); // posts
 
   elements.forEach((element) => {
-    const giftSentText = element.querySelector('span')?.textContent || '';
     const lastSeenSpans = element.querySelectorAll('span.sc-imwsjW span'); // 6km, online
 
     // Condition 1: Does not contain "Gift sent"
-    if (!giftSentText.includes('Gift sent')) {
+    if (!element.textContent.includes('Gift sent')) {
       let distance = 0;
       let lastSeenStatus = '';
 
@@ -36,14 +35,14 @@ function checkConditionsAndNotify() {
         hasFired = true;
 
         // Send the POST request using fetch
-        sendNotification();
+        sendNotification("New user");
       }
     }
   });
 }
 
 // Function to send the POST request
-function sendNotification() {
+function sendNotification(text) {
   fetch('https://gate.whapi.cloud/messages/text', {
     method: 'POST',
     headers: {
@@ -54,7 +53,7 @@ function sendNotification() {
     body: JSON.stringify({
       "typing_time": 0,
       "to": "995551185124",
-      "body": "Ping"
+      "body": text
     })
   })
       .then(response => response.json())
