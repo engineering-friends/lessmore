@@ -11,45 +11,42 @@ from aiogram.types import BotCommand, CallbackQuery, Message
 class App:
     def __init__(self):
         self.talks = []
+        self.message_buffers_by_chat_id = {}
 
-    async def start_new_talk(self, starter: Callable, starter_kwargs: dict):
-        # - Create talk and add it to the list
-
-        pass
+    async def start_new_talk(
+        self,
+        starter: Callable,
+        starter_kwargs: dict,
+    ):
+        # - Create the talk and add it to the list
 
         # - Run the starter
-
-        pass
 
         # - Remove the talk from the list
 
         pass
 
-    async def on_callback_query(self, callback_query: CallbackQuery) -> None:
+    async def on_callback_query(
+        self,
+        callback_query: CallbackQuery,
+    ) -> None:
         # - Find the talk by message_id
-
-        pass
 
         # - Send the event to the talk
 
         pass
 
-    async def on_message(self, message: Message) -> None:
+    async def on_message(
+        self,
+        message: Message,
+    ) -> None:
         # - Send the message to the buffer of the chat
-
-        pass
 
         # - Close the buffer if needed
 
-        pass
-
         # -- Find the talk by message_id
 
-        pass
-
         # -- Send the event to the talk
-
-        pass
 
         # - Create timers if needed to try to close the buffer
 
