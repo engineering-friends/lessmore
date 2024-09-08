@@ -12,31 +12,17 @@ class Talk:
     def ask(self, query: str) -> Any:
         # - Render query messages and menus
 
-        pass
-
         # - Create new messages / delete old messages / update messages
-
-        pass
 
         # - Update menus if needed
 
-        pass
-
         # - Wait for the event
-
-        pass
 
         # - Disable old messages UI
 
-        pass
-
         # - Apply on_query_reply for each message (spawn tasks in parallel)
 
-        pass
-
         # - Run and return appropriate callback with query, child_query, messages
-
-        pass
 
         # -- Useful to wrap the response in a Response class
 

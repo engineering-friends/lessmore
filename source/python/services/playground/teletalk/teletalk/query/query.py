@@ -1,6 +1,6 @@
 from typing import Any, List, Tuple
 
-from teletalk.question_message import QuestionMessage
+from teletalk.query.question_message import QuestionMessage
 
 
 class Query:
