@@ -11,18 +11,17 @@ from aiogram.types import BotCommand, CallbackQuery, Message
 class App:
     def __init__(self):
         self.talks = []
-        self.message_buffers_by_chat_id = {}
 
     async def start_new_talk(
         self,
         starter: Callable,
-        starter_kwargs: dict,
+        starter_message: Optional[Message] = None,
     ):
-        # - Create the talk and add it to the list
+        # - Create the talk and add it to the list of talks
 
-        # - Run the starter
+        # - Run the starter and wait for the result
 
-        # - Remove the talk from the list
+        # - Remove the talk from the list of talks
 
         pass
 
@@ -58,9 +57,11 @@ class App:
         default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
         commands: Optional[list[BotCommand]] = None,  # description of commands
     ) -> None:
+        # - Start supervisor talk
+
         # - Init dispatcher
 
-        # - Register callback_query and message handlers
+        # - Register callback_query and message handlers that redirect events to the supervisor talk
 
         # - Init bot from token if needed
 
