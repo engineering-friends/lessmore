@@ -46,4 +46,5 @@ dependencies = [
     "google-auth>=2.34.0",
     "google-auth-oauthlib>=1.2.1",
     "google-auth-httplib2>=0.2.0",
+    "aiogram>=2.15",
 ]

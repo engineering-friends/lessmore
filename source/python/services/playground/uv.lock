@@ -44,6 +44,20 @@ wheels = [
 ]
 
 [[package]]
+name = "aiogram"
+version = "2.15"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "aiohttp" },
+    { name = "babel" },
+    { name = "certifi" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/83/ac/233094f507329f333e8426f6e9eaf0a67bf223f9e3441dd0c56177c5537a/aiogram-2.15.tar.gz", hash = "sha256:13c740c52ee1301af8a9905e0a412754bcff03deb83dfdf1c578d9249ab35026", size = 148771 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/33/c6/dc1c3a2f08d0c70b6697064dc1d75228028530ad69932a21321edd595664/aiogram-2.15-py3-none-any.whl", hash = "sha256:5d4dae610625893fe53e07c01c9e95671fd863718caab692baac948e3746ab87", size = 184171 },
+]
+
+[[package]]
 name = "aiohappyeyeballs"
 version = "2.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -237,6 +251,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/fc/0f/aafca9af9315aee06a89ffde799a10a582fe8de76c563ee80bbcdc08b3fb/attrs-24.2.0.tar.gz", hash = "sha256:5cfb1b9148b5b086569baec03f20d7b6bf3bcacc9a42bebf87ffaaca362f6346", size = 792678 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/6a/21/5b6702a7f963e95456c0de2d495f67bf5fd62840ac655dc451586d23d39a/attrs-24.2.0-py3-none-any.whl", hash = "sha256:81921eb96de3191c8258c199618104dd27ac608d9366f5e35d011eae1867ede2", size = 63001 },
+]
+
+[[package]]
+name = "babel"
+version = "2.16.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/2a/74/f1bc80f23eeba13393b7222b11d95ca3af2c1e28edca18af487137eefed9/babel-2.16.0.tar.gz", hash = "sha256:d1f3554ca26605fe173f3de0c65f750f5a42f924499bf134de6423582298e316", size = 9348104 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ed/20/bc79bc575ba2e2a7f70e8a1155618bb1301eaa5132a8271373a6903f73f8/babel-2.16.0-py3-none-any.whl", hash = "sha256:368b5b98b37c06b7daf6696391c3240c938b37767d4584413e8438c5c435fa8b", size = 9587599 },
 ]
 
 [[package]]
@@ -1885,6 +1908,7 @@ dependencies = [
     { name = "aioboto3" },
     { name = "aiobotocore" },
     { name = "aiofiles" },
+    { name = "aiogram" },
     { name = "anyconfig" },
     { name = "beautifulsoup4" },
     { name = "code2flow" },
@@ -1930,6 +1954,7 @@ requires-dist = [
     { name = "aioboto3", specifier = ">=13.1.0,<14" },
     { name = "aiobotocore", specifier = ">=2.13.1,<3" },
     { name = "aiofiles", specifier = ">=24.1.0,<25" },
+    { name = "aiogram", specifier = ">=2.15" },
     { name = "anyconfig", extras = ["dotenv"], specifier = ">=0.14.0,<0.15" },
     { name = "beautifulsoup4", specifier = ">=4.12.3,<5" },
     { name = "code2flow", specifier = ">=2.5.1,<3" },
