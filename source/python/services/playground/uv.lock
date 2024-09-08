@@ -36,25 +36,28 @@ boto3 = [
 
 [[package]]
 name = "aiofiles"
-version = "24.1.0"
+version = "23.2.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/0b/03/a88171e277e8caa88a4c77808c20ebb04ba74cc4681bf1e9416c862de237/aiofiles-24.1.0.tar.gz", hash = "sha256:22a075c9e5a3810f0c2e48f3008c94d68c65d763b9b03857924c99e57355166c", size = 30247 }
+sdist = { url = "https://files.pythonhosted.org/packages/af/41/cfed10bc64d774f497a86e5ede9248e1d062db675504b41c320954d99641/aiofiles-23.2.1.tar.gz", hash = "sha256:84ec2218d8419404abcb9f0c02df3f34c6e0a68ed41072acfb1cef5cbc29051a", size = 32072 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a5/45/30bb92d442636f570cb5651bc661f52b610e2eec3f891a5dc3a4c3667db0/aiofiles-24.1.0-py3-none-any.whl", hash = "sha256:b4ec55f4195e3eb5d7abd1bf7e061763e864dd4954231fb8539a0ef8bb8260e5", size = 15896 },
+    { url = "https://files.pythonhosted.org/packages/c5/19/5af6804c4cc0fed83f47bff6e413a98a36618e7d40185cd36e69737f3b0e/aiofiles-23.2.1-py3-none-any.whl", hash = "sha256:19297512c647d4b27a2cf7c34caa7e405c0d60b5560618a29a9fe027b18b0107", size = 15727 },
 ]
 
 [[package]]
 name = "aiogram"
-version = "2.15"
+version = "3.13.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "aiofiles" },
     { name = "aiohttp" },
-    { name = "babel" },
     { name = "certifi" },
+    { name = "magic-filter" },
+    { name = "pydantic" },
+    { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/83/ac/233094f507329f333e8426f6e9eaf0a67bf223f9e3441dd0c56177c5537a/aiogram-2.15.tar.gz", hash = "sha256:13c740c52ee1301af8a9905e0a412754bcff03deb83dfdf1c578d9249ab35026", size = 148771 }
+sdist = { url = "https://files.pythonhosted.org/packages/2f/03/19cca07d3c68c813f15cab6b660b369026ca62cf551f66ad5373898ac2fa/aiogram-3.13.0.tar.gz", hash = "sha256:b54307447f6fbfdf2418732a1e47c75bed6f4e75c580b073a077093aa4e60860", size = 1346856 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/33/c6/dc1c3a2f08d0c70b6697064dc1d75228028530ad69932a21321edd595664/aiogram-2.15-py3-none-any.whl", hash = "sha256:5d4dae610625893fe53e07c01c9e95671fd863718caab692baac948e3746ab87", size = 184171 },
+    { url = "https://files.pythonhosted.org/packages/85/a3/2f70996eeaf1424cf54062f2a42aab4c6e5426570888a0a359a008ad3901/aiogram-3.13.0-py3-none-any.whl", hash = "sha256:1e93791441a7bebea9558fbe3590ba360cba1351c542691fab47dfc6a1750119", size = 588690 },
 ]
 
 [[package]]
@@ -251,15 +254,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/fc/0f/aafca9af9315aee06a89ffde799a10a582fe8de76c563ee80bbcdc08b3fb/attrs-24.2.0.tar.gz", hash = "sha256:5cfb1b9148b5b086569baec03f20d7b6bf3bcacc9a42bebf87ffaaca362f6346", size = 792678 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/6a/21/5b6702a7f963e95456c0de2d495f67bf5fd62840ac655dc451586d23d39a/attrs-24.2.0-py3-none-any.whl", hash = "sha256:81921eb96de3191c8258c199618104dd27ac608d9366f5e35d011eae1867ede2", size = 63001 },
-]
-
-[[package]]
-name = "babel"
-version = "2.16.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/2a/74/f1bc80f23eeba13393b7222b11d95ca3af2c1e28edca18af487137eefed9/babel-2.16.0.tar.gz", hash = "sha256:d1f3554ca26605fe173f3de0c65f750f5a42f924499bf134de6423582298e316", size = 9348104 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ed/20/bc79bc575ba2e2a7f70e8a1155618bb1301eaa5132a8271373a6903f73f8/babel-2.16.0-py3-none-any.whl", hash = "sha256:368b5b98b37c06b7daf6696391c3240c938b37767d4584413e8438c5c435fa8b", size = 9587599 },
 ]
 
 [[package]]
@@ -1317,6 +1311,15 @@ wheels = [
 ]
 
 [[package]]
+name = "magic-filter"
+version = "1.0.12"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e6/08/da7c2cc7398cc0376e8da599d6330a437c01d3eace2f2365f300e0f3f758/magic_filter-1.0.12.tar.gz", hash = "sha256:4751d0b579a5045d1dc250625c4c508c18c3def5ea6afaf3957cb4530d03f7f9", size = 11071 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cc/75/f620449f0056eff0ec7c1b1e088f71068eb4e47a46eb54f6c065c6ad7675/magic_filter-1.0.12-py3-none-any.whl", hash = "sha256:e5929e544f310c2b1f154318db8c5cdf544dd658efa998172acd2e4ba0f6c6a6", size = 11335 },
+]
+
+[[package]]
 name = "mailchecker"
 version = "6.0.8"
 source = { registry = "https://pypi.org/simple" }
@@ -1907,7 +1910,6 @@ source = { virtual = "." }
 dependencies = [
     { name = "aioboto3" },
     { name = "aiobotocore" },
-    { name = "aiofiles" },
     { name = "aiogram" },
     { name = "anyconfig" },
     { name = "beautifulsoup4" },
@@ -1953,8 +1955,7 @@ dependencies = [
 requires-dist = [
     { name = "aioboto3", specifier = ">=13.1.0,<14" },
     { name = "aiobotocore", specifier = ">=2.13.1,<3" },
-    { name = "aiofiles", specifier = ">=24.1.0,<25" },
-    { name = "aiogram", specifier = ">=2.15" },
+    { name = "aiogram", specifier = ">=3" },
     { name = "anyconfig", extras = ["dotenv"], specifier = ">=0.14.0,<0.15" },
     { name = "beautifulsoup4", specifier = ">=4.12.3,<5" },
     { name = "code2flow", specifier = ">=2.5.1,<3" },
