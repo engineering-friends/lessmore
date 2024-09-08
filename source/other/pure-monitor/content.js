@@ -6,11 +6,17 @@ function checkConditionsAndNotify() {
   // If alert has already fired, do nothing
   if (hasFired) return;
 
-  const elements = document.querySelectorAll('div.sc-jzNkva');
+  // check for a new message
+  if (document.querySelector('div.sc-cepbVR')) { // black dot of unread message
+    hasFired = true;
+    sendNotification();
+  }
+
+  const elements = document.querySelectorAll('div.sc-jzNkva'); // posts
 
   elements.forEach((element) => {
     const giftSentText = element.querySelector('span')?.textContent || '';
-    const lastSeenSpans = element.querySelectorAll('span.sc-imwsjW span');
+    const lastSeenSpans = element.querySelectorAll('span.sc-imwsjW span'); // 6km, online
 
     // Condition 1: Does not contain "Gift sent"
     if (!giftSentText.includes('Gift sent')) {
