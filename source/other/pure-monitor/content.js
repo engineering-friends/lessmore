@@ -10,6 +10,7 @@ function checkConditionsAndNotify() {
   if (document.querySelector('div.sc-cepbVR')) { // black dot of unread message
     hasFired = true;
     sendNotification();
+    return;
   }
 
   const elements = document.querySelectorAll('div.sc-jzNkva'); // posts
@@ -72,18 +73,14 @@ window.addEventListener('beforeunload', () => {
 
 // Call the function when the page loads
 window.addEventListener('load', () => {
-  // Check the conditions after page load
-  checkConditionsAndNotify();
+  // wait for 5 seconds for page to load and then check the conditions
+  setTimeout(checkConditionsAndNotify, 5000);
+});
 
-  // Create "Hello World" notification (for debugging purposes)
-  const helloWorldDiv = document.createElement('div');
-  helloWorldDiv.textContent = 'Hello world';
-  helloWorldDiv.style.position = 'fixed';
-  helloWorldDiv.style.top = '10px';
-  helloWorldDiv.style.right = '10px';
-  helloWorldDiv.style.backgroundColor = 'white';
-  helloWorldDiv.style.padding = '10px';
-  helloWorldDiv.style.border = '1px solid black';
-  helloWorldDiv.style.zIndex = '10000';
-  document.body.appendChild(helloWorldDiv);
+// Listen for the reset message from the popup
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "resetHasFired") {
+    hasFired = false;  // Reset the hasFired flag
+    console.log('Extension has been reset. hasFired is now:', hasFired);
+  }
 });
