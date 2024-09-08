@@ -1,10 +1,12 @@
 from aiogram.types import CallbackQuery, Message
 from teletalk.query.query import Query
+from teletalk.response import Response
+from teletalk.talk import Talk
 
 
 class Supervisor:
-    def __init__(self):
-        self.message_buffers_by_chat_id = {}
+    def __init__(self, talks: list[Talk]):
+        self.talks = talks
 
     def start(self):
         # - Ask default supervisor query
@@ -13,28 +15,12 @@ class Supervisor:
 
 
 class SupervisorQuery(Query):
-    async def on_callback_query(
+    async def on_message(
         self,
-        callback_query: CallbackQuery,
+        response: Response,
     ) -> None:
         # - Find the talk by message_id
 
         # - Send the event to the talk
-
-        pass
-
-    async def on_message(
-        self,
-        message: Message,
-    ) -> None:
-        # - Send the message to the buffer of the chat
-
-        # - Close the buffer if needed
-
-        # -- Find the talk by message_id
-
-        # -- Send the event to the talk
-
-        # - Create timers if needed to try to close the buffer
 
         pass

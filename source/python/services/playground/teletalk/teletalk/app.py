@@ -11,6 +11,7 @@ from aiogram.types import BotCommand, CallbackQuery, Message
 class App:
     def __init__(self):
         self.talks = []
+        self.message_buffers_by_chat_id = {}
 
     async def start_new_talk(
         self,
@@ -41,11 +42,7 @@ class App:
     ) -> None:
         # - Send the message to the buffer of the chat
 
-        # - Close the buffer if needed
-
-        # -- Find the talk by message_id
-
-        # -- Send the event to the talk
+        # - Close the buffer if needed and send the event to the supervisor talk
 
         # - Create timers if needed to try to close the buffer
 
@@ -57,11 +54,11 @@ class App:
         default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
         commands: Optional[list[BotCommand]] = None,  # description of commands
     ) -> None:
-        # - Start supervisor talk
-
         # - Init dispatcher
 
-        # - Register callback_query and message handlers that redirect events to the supervisor talk
+        # - Register callback_query and message handlers
+
+        # - Start the supervisor talk
 
         # - Init bot from token if needed
 
