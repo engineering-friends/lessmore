@@ -23,12 +23,7 @@ function checkConditionsAndNotify() {
 
         // check for a new message (disabled for now)
         if (document.querySelector('div.sc-cepbVR')) { // black dot of unread message
-            hasFired = true;
-            // Store the hasFired value in chrome.storage so it persists across reloads
-            chrome.storage.local.set({hasFired: true}, function () {
-                console.log('hasFired value stored as true.');
-            });
-            sendNotification("New message");
+            fireEventAndNotify("New message");
             return;
         }
 
@@ -49,16 +44,7 @@ function checkConditionsAndNotify() {
 
                 // Check if distance is less than 40 and last seen status is "online"
                 if (distance < 40 && lastSeenStatus.toLowerCase() === 'online') {
-                    // Set the hasFired flag to true to prevent further execution
-                    hasFired = true;
-
-                    // Store the hasFired value in chrome.storage so it persists across reloads
-                    chrome.storage.local.set({hasFired: true}, function () {
-                        console.log('hasFired value stored as true.');
-                    });
-
-                    // Send the POST request using fetch
-                    sendNotification("New user");
+                    fireEventAndNotify("New user");
 
                     break;
                 }
@@ -71,18 +57,19 @@ function checkConditionsAndNotify() {
     // check if 'body' has text "Want to keep matching?"
     if (url.includes('bumble.com')) {
         if (!document.querySelector('body').textContent.includes('Want to keep matching?')) {
-            hasFired = true;
-            // Store the hasFired value in chrome.storage so it persists across reloads
-            chrome.storage.local.set({hasFired: true}, function () {
-                console.log('hasFired value stored as true.');
-            });
-            sendNotification("New animal");
+            fireEventAndNotify("New animal");
         }
     }
 }
 
-// Function to send the POST request
-function sendNotification(text) {
+
+// A helper function to set hasFired and send notification
+function fireEventAndNotify(message) {
+    hasFired = true;
+    chrome.storage.local.set({ hasFired: true }, function () {
+        console.log('hasFired value stored as true.');
+    });
+
     fetch('https://gate.whapi.cloud/messages/text', {
         method: 'POST',
         headers: {
@@ -93,7 +80,7 @@ function sendNotification(text) {
         body: JSON.stringify({
             "typing_time": 0,
             "to": "995551185124",
-            "body": text
+            "body": message
         })
     })
         .then(response => response.json())
@@ -103,26 +90,11 @@ function sendNotification(text) {
         .catch(error => {
             console.error('Error sending notification:', error);
         });
-}
 
-// Reset the hasFired flag when the page is manually reloaded
-window.addEventListener('beforeunload', () => {
-    hasFired = false;
-});
+}
 
 // Call the function when the page loads
 window.addEventListener('load', () => {
     // wait for 5 seconds for page to load and then check the conditions
     setTimeout(checkConditionsAndNotify, 5000);
-});
-
-// Listen for the reset message from the popup
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === "resetHasFired") {
-        hasFired = false;  // Reset the hasFired flag
-        chrome.storage.local.set({hasFired: false}, function () {
-            console.log('hasFired has been reset to false.');
-        });
-        console.log('Extension has been reset. hasFired is now:', hasFired);
-    }
 });

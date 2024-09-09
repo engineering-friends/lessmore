@@ -1,9 +1,17 @@
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('resetBtn').addEventListener('click', function () {
-        // Send a message to the content script to reset the flag
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, {action: "resetHasFired"});
-            chrome.tabs.reload(tabs[0].id);
+        // - Log
+        console.log('Reset button clicked.');
+        // - Reset hasFired flag
+        chrome.storage.local.set({hasFired: false}, function () {
+            console.log('hasFired has been reset to false.');
+        });
+        // - Reload all tabs
+        chrome.tabs.query({currentWindow: true}, function(tabs) {
+            for (let tab of tabs) {
+                console.log('Reloading tab:', tab.id, tab.url);
+                chrome.tabs.reload(tab.id); // Reload each relevant tab
+            }
         });
     });
 });
