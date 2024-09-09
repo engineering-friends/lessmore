@@ -6,6 +6,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand, CallbackQuery, Message
+from teletalk.dispatch import Dispatcher as TeleTalkDispatcher
 from teletalk.talk import Talk
 
 
@@ -25,16 +26,15 @@ class App:
         # - State
 
         self.talks: list[Talk] = []
-        self.message_buffers_by_chat_id: dict[int, list[Message]] = {}
 
     async def start_new_talk(
         self,
         starter: Callable,
-        starter_message: Optional[Message] = None,
+        starter_messages: list[Message] = [],
     ):
         # - Create the talk
 
-        # - Run the starter and wait for the result
+        # - Build the response, run the starter and wait for the result
 
         # - Remove the talk
 
@@ -44,9 +44,7 @@ class App:
         self,
         callback_query: CallbackQuery,
     ) -> None:
-        # - Find the talk by `message_id`
-
-        # - Send the event to the talk
+        # - Build the response and dispatch it
 
         pass
 
@@ -56,17 +54,11 @@ class App:
     ) -> None:
         # - If the message is from the bot, update the chat talk focus and return
 
-        # - Otherwise, process user message
-
-        # -- Send the message to the buffer of the chat
-
-        # -- Close the buffer if needed and send the event to the supervisor talk (the first talk)
-
-        # -- Create timers if needed to try to close the buffer
+        # - Otherwise, build the response and dispatch it
 
         pass
 
-    async def update_chat_talk_focus(self, chat_id: int) -> None:
+    async def update_focus(self, chat_id: int) -> None:
         # - Set the chat menu as the menu of the talk with the latest message
 
         pass
@@ -74,14 +66,17 @@ class App:
     async def start_polling(
         self,
         bot: Bot | str,
+        message_starter: Callable,
+        command_starters: dict[str, Callable] = {},
+        dispatcher: Optional[Callable] = None,
         default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
         commands: Optional[list[BotCommand]] = None,  # description of commands
     ) -> None:
-        # - Init dispatcher
+        # - Init aiogram dispatcher
 
-        # - Register callback_query and message handlers
+        # - Init teletalk `dispatcher` if not provided
 
-        # - Start the supervisor talk
+        # - Register `callback_query` and `message` handlers in aiogram. Also, register updating the focus on deletion of the message
 
         # - Init bot from token if needed
 

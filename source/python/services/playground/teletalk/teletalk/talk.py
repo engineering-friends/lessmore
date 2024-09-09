@@ -2,26 +2,38 @@ import asyncio
 import uuid
 
 from asyncio import Future
-from typing import Any, Callable, List, Literal, Optional
+from typing import TYPE_CHECKING, Any, Callable, Coroutine, List, Literal, Optional
 
 from loguru import logger
 from teletalk.callback_info import CallbackInfo
 from teletalk.query import Query
 from teletalk.question_message import QuestionMessage
+from teletalk.response import Response
+
+
+if TYPE_CHECKING:
+    from teletalk.app import App
 
 
 class Talk:
     def __init__(
         self,
-        starter: Callable,
-        start_new_talk: Callable = lambda starter, starter_message: logger.info(
-            "Starting new talk", starter=starter, starter_message=starter_message
-        ),
+        coroutine: Coroutine,
+        app: "App",  # each talk has a full access to the app, mostly for managing the talks
     ):
+        """Talk is a core entity for interaction between the bot an a user, usually in a ask-reply manner.
+
+        Features:
+        - Talk keeps track of all the message history
+        - Talk handles questions for the user
+        - Talk may receive response from outside (usually, from the supervisor)
+
+        """
+
         # - Args
 
-        self.starter = starter  # Coroutine starter for the talk
-        self.start_new_talk = start_new_talk
+        self.coroutine = coroutine
+        self.app = app
 
         # - State
 
@@ -51,14 +63,15 @@ class Talk:
 
         pass
 
-    def register_question_callback(
+    async def receive_response(
         self,
-        callback: Callable,
-        query: Query,
+        response: Response,
     ):
-        _id = str(uuid.uuid4())
-        self.question_callbacks.append(CallbackInfo(callback_id=_id, callback=callback, query=query))
-        return _id
+        if self.event_channel.done():
+            logger.error("Question event is already done", event=response)
+            return
+
+        self.event_channel.set_result(response)
 
     def tell(self, **kwargs) -> None:
         # - Send the messages and add them to the `self.history`
