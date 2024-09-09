@@ -32,11 +32,11 @@ class App:
         starter: Callable,
         starter_message: Optional[Message] = None,
     ):
-        # - Create the talk and add it to the list of talks
+        # - Create the talk
 
         # - Run the starter and wait for the result
 
-        # - Remove the talk from the list of talks
+        # - Remove the talk
 
         pass
 
@@ -44,7 +44,7 @@ class App:
         self,
         callback_query: CallbackQuery,
     ) -> None:
-        # - Find the talk by message_id
+        # - Find the talk by `message_id`
 
         # - Send the event to the talk
 

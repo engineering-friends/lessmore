@@ -1,16 +1,37 @@
-from asyncio import Future
-from typing import Any, Callable, List, Literal
+import asyncio
 
-from teletalk.query.query import Query
+from asyncio import Future
+from typing import Any, Callable, List, Literal, Optional
+
+from loguru import logger
+from teletalk.callback_info import CallbackInfo
+from teletalk.query import Query
+from teletalk.question_message import QuestionMessage
 
 
 class Talk:
-    def __init__(self, starter: Callable):
+    def __init__(
+        self,
+        starter: Callable,
+        start_new_talk: Callable = lambda starter, starter_message: logger.info(
+            "Starting new talk", starter=starter, starter_message=starter_message
+        ),
+    ):
+        # - Args
+
         self.starter = starter  # Coroutine starter for the talk
-        self.question_messages = []  # List of messages related to ongoing queries
+        self.start_new_talk = start_new_talk
+
+        # - State
+
+        self.question_messages: list[QuestionMessage] = []  # List of messages related to ongoing queries
+        self.question_callbacks: list[
+            CallbackInfo
+        ] = []  # List of callbacks related to ongoing queries for all messages
+
         self.menus = []  # List of menus related to ongoing queries (for different chats)
         self.history = []  # History of interactions within the talk
-        self.event = Future()  # Future to manage asynchronous events
+        self.event_channel = asyncio.get_running_loop().create_future()  # Future to manage asynchronous events
 
     def ask(
         self,
@@ -19,17 +40,13 @@ class Talk:
     ) -> Any:
         # - Render the query messages and menus, update `self.question_messages` and `self.menus`
 
-        # - Update messages in telegram according to the update_mode. Add new messages to `self.question_messages and self.history`
+        # - Update messages in telegram according to the `update_mode`. Add new messages to `self.question_messages and self.history`
 
-        # - Wait for the response event from the global callbacks
-
-        # - Disable old messages UI
+        # - Wait for the `raw_response` event from the global callbacks
 
         # - Apply `on_query_reply` for each message (spawn tasks in parallel)
 
-        # - Run and return appropriate callback with query, child_query, messages
-
-        # -- Useful to wrap the response in a `Response` class
+        # - Build `response` and run and return appropriate callback
 
         pass
 
