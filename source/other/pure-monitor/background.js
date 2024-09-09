@@ -11,7 +11,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
             if (!hasFired) {
                 intervalId = setInterval(() => {
-                    chrome.tabs.query({currentWindow: true}, function(tabs) {
+                    chrome.tabs.query({}, function(tabs) {
                         for (let tab of tabs) {
                             console.log('Reloading tab:', tab.id, tab.url);
                             chrome.tabs.reload(tab.id); // Reload each relevant tab
