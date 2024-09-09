@@ -19,7 +19,7 @@
     {
       "matches": [
         "https://pure.app/*",
-        "https://www.bumble.com/*"
+        "https://bumble.com/*"
       ],
       "js": [
         "utils/send_notification.js",

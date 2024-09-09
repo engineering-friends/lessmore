@@ -20,56 +20,57 @@ function fireEventAndNotify(message) {
 
 // - Add listener to check 5 seconds after the page loads
 
-window.addEventListener('load', () => {
-    // wait for 5 seconds for the page to load and then check the conditions
-    setTimeout(() => {
-        // - Return if already fired
+console.log('Checking conditions...');
 
-        if (hasFired) return;
+// wait for 5 seconds for the page to load and then check the conditions
 
-        // - Get URL
+setTimeout(() => {
+    // - Return if already fired
 
-        const url = window.location.href;
+    if (hasFired) return;
 
-        // - Pure
+    // - Get URL
 
-        if (url.includes('pure.app')) {
-            // check for a new message (disabled for now)
-            if (document.querySelector('div.sc-cepbVR')) { // black dot of unread message
-                fireEventAndNotify("New message");
-                return;
-            }
+    const url = window.location.href;
 
-            const elements = document.querySelectorAll('div.sc-jzNkva'); // posts
+    // - Pure
 
-            for (let element of elements) {
-                const lastSeenSpans = element.querySelectorAll('span.sc-imwsjW span'); // 6km, online
+    if (url.includes('pure.app')) {
+        // check for a new message (disabled for now)
+        if (document.querySelector('div.sc-cepbVR')) { // black dot of unread message
+            fireEventAndNotify("New message");
+            return;
+        }
 
-                if (!element.textContent.includes('Gift sent')) {
-                    let distance = 0;
-                    let lastSeenStatus = '';
+        const elements = document.querySelectorAll('div.sc-jzNkva'); // posts
 
-                    // Get the distance and last seen status
-                    if (lastSeenSpans.length >= 2) {
-                        distance = parseFloat(lastSeenSpans[0].textContent);
-                        lastSeenStatus = lastSeenSpans[1].textContent.trim();
-                    }
+        for (let element of elements) {
+            const lastSeenSpans = element.querySelectorAll('span.sc-imwsjW span'); // 6km, online
 
-                    // Check if distance is less than 40 and last seen status is "online"
-                    if (distance < 40 && lastSeenStatus.toLowerCase() === 'online') {
-                        fireEventAndNotify("New user");
-                        break;
-                    }
+            if (!element.textContent.includes('Gift sent')) {
+                let distance = 0;
+                let lastSeenStatus = '';
+
+                // Get the distance and last seen status
+                if (lastSeenSpans.length >= 2) {
+                    distance = parseFloat(lastSeenSpans[0].textContent);
+                    lastSeenStatus = lastSeenSpans[1].textContent.trim();
+                }
+
+                // Check if distance is less than 40 and last seen status is "online"
+                if (distance < 40 && lastSeenStatus.toLowerCase() === 'online') {
+                    fireEventAndNotify("New user");
+                    break;
                 }
             }
         }
+    }
 
-        // - Bumble
-        // check if 'body' has text "Want to keep matching?"
-        if (url.includes('bumble.com')) {
-            if (!document.querySelector('body').textContent.includes('Want to keep matching?')) {
-                fireEventAndNotify("New animal");
-            }
+    // - Bumble
+    // check if 'body' has text "Want to keep matching?"
+    if (url.includes('bumble.com')) {
+        if (!document.querySelector('body').textContent.includes('Want to keep matching?')) {
+            fireEventAndNotify("New animal");
         }
-    }, 5000); // 5 second delay
-});
+    }
+}, 5000); // 5 second delay
