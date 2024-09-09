@@ -10,7 +10,20 @@ from teletalk.talk import Talk
 
 
 class App:
+    """An entrypoint class for the TeleTalk application.
+
+    Features:
+    - `start_polling` is the main entry point for the application
+    - Stores, manages and creates new Talk instances
+    - Handles incoming messages
+       - updating the chat talk focus (menu is shown for the focused talk in the chat, which corresponds to the latest message)
+       - collecting a batch of user messages and sending it to the supervisor talk
+    - Handles incoming callback queries, sending them to the relevant Talk instance
+    """
+
     def __init__(self):
+        # - State
+
         self.talks: list[Talk] = []
         self.message_buffers_by_chat_id: dict[int, list[Message]] = {}
 
@@ -43,7 +56,7 @@ class App:
     ) -> None:
         # - If the message is from the bot, update the chat talk focus and return
 
-        # - Process user message
+        # - Otherwise, process user message
 
         # -- Send the message to the buffer of the chat
 
