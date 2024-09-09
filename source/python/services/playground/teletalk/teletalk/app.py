@@ -6,12 +6,13 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand, CallbackQuery, Message
+from teletalk.talk import Talk
 
 
 class App:
     def __init__(self):
-        self.talks = []
-        self.message_buffers_by_chat_id = {}
+        self.talks: list[Talk] = []
+        self.message_buffers_by_chat_id: dict[int, list[Message]] = {}
 
     async def start_new_talk(
         self,
@@ -36,15 +37,24 @@ class App:
 
         pass
 
-    async def on_message(
+    async def on_new_message(
         self,
         message: Message,
     ) -> None:
-        # - Send the message to the buffer of the chat
+        # - If the message is from the bot, update the chat talk focus and return
 
-        # - Close the buffer if needed and send the event to the supervisor talk
+        # - Process user message
 
-        # - Create timers if needed to try to close the buffer
+        # -- Send the message to the buffer of the chat
+
+        # -- Close the buffer if needed and send the event to the supervisor talk (the first talk)
+
+        # -- Create timers if needed to try to close the buffer
+
+        pass
+
+    async def update_chat_talk_focus(self, chat_id: int) -> None:
+        # - Set the chat menu as the menu of the talk with the latest message
 
         pass
 
@@ -62,7 +72,7 @@ class App:
 
         # - Init bot from token if needed
 
-        # - Set commands for bot
+        # - Set commands for the bot
 
         # - Start polling
 
