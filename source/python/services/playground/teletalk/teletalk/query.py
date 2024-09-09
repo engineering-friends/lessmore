@@ -1,14 +1,28 @@
 import uuid
 
-from typing import Any, Callable, List, Tuple
+from dataclasses import dataclass, field
+from typing import Any, Callable, List, Optional, Tuple
 
-from teletalk.callback_info import CallbackInfo
-from teletalk.question_message import QuestionMessage
+from aiogram.types import InlineKeyboardMarkup
+
+
+@dataclass
+class QuestionMessage:
+    text: str = ""
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    on_query_reply: Callable[[Any], str] = None  # Callback to handle message after query reply
+
+
+@dataclass
+class RenderedQuery:
+    questions: dict[str, list[QuestionMessage]] = field(default_factory=dict)  # by chat_id
+    menus: dict[str, InlineKeyboardMarkup] = field(default_factory=dict)  # by chat_id
+    message_callbacks: dict[str, Callable] = field(default_factory=dict)  # by chat_id
 
 
 class Query:
     def __init__(self):
         self.children = []
 
-    def render(self, callback_wrapper: Callable) -> Tuple[List[QuestionMessage], List[Any]]:
+    def render(self, callback_wrapper: Callable) -> RenderedQuery:
         pass
