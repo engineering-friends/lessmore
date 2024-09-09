@@ -1,4 +1,4 @@
-import { sendNotification } from './send_notification.js';
+require('./send_notification.js');
 
+// Now the sendNotification function is available globally
 sendNotification('Service worker started');
-

@@ -1,4 +1,4 @@
-export function sendNotification(message) {
+function sendNotification(message) {
     return fetch('https://gate.whapi.cloud/messages/text', {
         method: 'POST',
         headers: {
@@ -22,7 +22,5 @@ export function sendNotification(message) {
             throw error;
         });
 }
-
-
 
 globalThis.sendNotification = sendNotification; // to make it available from the content script

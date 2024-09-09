@@ -2,7 +2,7 @@
 
 
 
-globalThis.sendNotification('Content worker started');
+// globalThis.sendNotification('Content worker started');
 
 // - Get hasFired from storage or set it to false by default
 
