@@ -9,19 +9,21 @@ chrome.storage.local.get(['hasFired'], function (result) {
 
 // Function to check if conditions are met and notify
 function checkConditionsAndNotify() {
+    // - Pure
+
     // If alert has already fired, do nothing
     if (hasFired) return;
 
-    // check for a new message
-    if (document.querySelector('div.sc-cepbVR')) { // black dot of unread message
-        hasFired = true;
-        // Store the hasFired value in chrome.storage so it persists across reloads
-        chrome.storage.local.set({hasFired: true}, function () {
-            console.log('hasFired value stored as true.');
-        });
-        sendNotification("New message");
-        return;
-    }
+    // check for a new message (disabled for now)
+    // if (document.querySelector('div.sc-cepbVR')) { // black dot of unread message
+    //     hasFired = true;
+    //     // Store the hasFired value in chrome.storage so it persists across reloads
+    //     chrome.storage.local.set({hasFired: true}, function () {
+    //         console.log('hasFired value stored as true.');
+    //     });
+    //     sendNotification("New message");
+    //     return;
+    // }
 
     const elements = document.querySelectorAll('div.sc-jzNkva'); // posts
 
@@ -51,10 +53,23 @@ function checkConditionsAndNotify() {
                 // Send the POST request using fetch
                 sendNotification("New user");
 
-                return;
+                break;
             }
         }
     }
+
+    // - Bumble
+
+    // check if 'body' has text "Want to keep matching?"
+    if (!document.querySelector('body').textContent.includes('Want to keep matching?')) {
+        hasFired = true;
+        // Store the hasFired value in chrome.storage so it persists across reloads
+        chrome.storage.local.set({hasFired: true}, function () {
+            console.log('hasFired value stored as true.');
+        });
+        sendNotification("New animal");
+    }
+
 }
 
 // Function to send the POST request

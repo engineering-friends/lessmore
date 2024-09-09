@@ -12,7 +12,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://pure.app/*"],
+      "matches": ["https://pure.app/*", "https://www.bumble.com/*"],
       "js": ["content.js"]
     }
   ],
