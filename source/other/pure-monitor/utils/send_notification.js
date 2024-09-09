@@ -25,3 +25,4 @@ export function sendNotification(message) {
 
 
 
+globalThis.sendNotification = sendNotification; // to make it available from the content script

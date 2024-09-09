@@ -3,7 +3,11 @@
   "name": "Pure Monitor",
   "version": "1.0",
   "description": "Reloads the page every 30 seconds, checks conditions, and sends a notification. Can be manually reset.",
-  "permissions": ["tabs", "scripting", "storage"],
+  "permissions": [
+    "tabs",
+    "scripting",
+    "storage"
+  ],
   "background": {
     "service_worker": "background.js",
     "type": "module"
@@ -13,9 +17,17 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://pure.app/*", "https://www.bumble.com/*"],
-      "js": ["content.js"]
+      "matches": [
+        "https://pure.app/*",
+        "https://www.bumble.com/*"
+      ],
+      "js": [
+        "utils/send_notification.js",
+        "content.js"
+      ]
     }
   ],
-  "host_permissions": ["<all_urls>"]
+  "host_permissions": [
+    "<all_urls>"
+  ]
 }
