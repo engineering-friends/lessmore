@@ -1,4 +1,5 @@
 import asyncio
+import uuid
 
 from asyncio import Future
 from typing import Any, Callable, List, Literal, Optional
@@ -49,6 +50,15 @@ class Talk:
         # - Build `response` and run and return appropriate callback
 
         pass
+
+    def register_question_callback(
+        self,
+        callback: Callable,
+        query: Query,
+    ):
+        _id = str(uuid.uuid4())
+        self.question_callbacks.append(CallbackInfo(callback_id=_id, callback=callback, query=query))
+        return _id
 
     def tell(self, **kwargs) -> None:
         # - Send the messages and add them to the `self.history`

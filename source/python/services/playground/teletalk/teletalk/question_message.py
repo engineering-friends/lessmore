@@ -5,8 +5,6 @@ class QuestionMessage:
     def __init__(
         self,
         chat_id: int,
-        callback_id: str,
-        callback: Callable,
         on_query_reply: Callable[[Any], str],  # Callback to handle message after query reply
     ):
         self.chat_id = chat_id
