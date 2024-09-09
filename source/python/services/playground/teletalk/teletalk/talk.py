@@ -35,6 +35,11 @@ class Talk:
         self.coroutine = coroutine
         self.app = app
 
+        # - Call tree
+
+        self.parent: Optional[Talk] = None
+        self.children: list[Talk] = []
+
         # - State
 
         self.question_messages: list[QuestionMessage] = []  # List of messages related to ongoing queries
