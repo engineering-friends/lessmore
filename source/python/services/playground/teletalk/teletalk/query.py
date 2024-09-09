@@ -22,7 +22,8 @@ class RenderedQuery:
 
 class Query:
     def __init__(self):
-        self.children = []
+        self.parent: Optional["Query"] = None
+        self.children: list["Query"] = []
 
     def render(self, callback_wrapper: Callable) -> RenderedQuery:
         pass
