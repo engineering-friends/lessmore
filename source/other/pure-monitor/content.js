@@ -9,51 +9,59 @@ chrome.storage.local.get(['hasFired'], function (result) {
 
 // Function to check if conditions are met and notify
 function checkConditionsAndNotify() {
-    // - Pure
+    // - Return if already fired
 
-    // If alert has already fired, do nothing
     if (hasFired) return;
 
-    // check for a new message (disabled for now)
-    // if (document.querySelector('div.sc-cepbVR')) { // black dot of unread message
-    //     hasFired = true;
-    //     // Store the hasFired value in chrome.storage so it persists across reloads
-    //     chrome.storage.local.set({hasFired: true}, function () {
-    //         console.log('hasFired value stored as true.');
-    //     });
-    //     sendNotification("New message");
-    //     return;
-    // }
+    // - Get url
 
-    const elements = document.querySelectorAll('div.sc-jzNkva'); // posts
+    const url = window.location.href;
 
-    for (let element of elements) {
-        const lastSeenSpans = element.querySelectorAll('span.sc-imwsjW span'); // 6km, online
+    // - Pure
 
-        if (!element.textContent.includes('Gift sent')) {
-            let distance = 0;
-            let lastSeenStatus = '';
+    if (url.includes('pure.app')) {
 
-            // Get the distance and last seen status
-            if (lastSeenSpans.length >= 2) {
-                distance = parseFloat(lastSeenSpans[0].textContent);
-                lastSeenStatus = lastSeenSpans[1].textContent.trim();
-            }
+        // check for a new message (disabled for now)
+        if (document.querySelector('div.sc-cepbVR')) { // black dot of unread message
+            hasFired = true;
+            // Store the hasFired value in chrome.storage so it persists across reloads
+            chrome.storage.local.set({hasFired: true}, function () {
+                console.log('hasFired value stored as true.');
+            });
+            sendNotification("New message");
+            return;
+        }
 
-            // Check if distance is less than 40 and last seen status is "online"
-            if (distance < 40 && lastSeenStatus.toLowerCase() === 'online') {
-                // Set the hasFired flag to true to prevent further execution
-                hasFired = true;
+        const elements = document.querySelectorAll('div.sc-jzNkva'); // posts
 
-                // Store the hasFired value in chrome.storage so it persists across reloads
-                chrome.storage.local.set({hasFired: true}, function () {
-                    console.log('hasFired value stored as true.');
-                });
+        for (let element of elements) {
+            const lastSeenSpans = element.querySelectorAll('span.sc-imwsjW span'); // 6km, online
 
-                // Send the POST request using fetch
-                sendNotification("New user");
+            if (!element.textContent.includes('Gift sent')) {
+                let distance = 0;
+                let lastSeenStatus = '';
 
-                break;
+                // Get the distance and last seen status
+                if (lastSeenSpans.length >= 2) {
+                    distance = parseFloat(lastSeenSpans[0].textContent);
+                    lastSeenStatus = lastSeenSpans[1].textContent.trim();
+                }
+
+                // Check if distance is less than 40 and last seen status is "online"
+                if (distance < 40 && lastSeenStatus.toLowerCase() === 'online') {
+                    // Set the hasFired flag to true to prevent further execution
+                    hasFired = true;
+
+                    // Store the hasFired value in chrome.storage so it persists across reloads
+                    chrome.storage.local.set({hasFired: true}, function () {
+                        console.log('hasFired value stored as true.');
+                    });
+
+                    // Send the POST request using fetch
+                    sendNotification("New user");
+
+                    break;
+                }
             }
         }
     }
@@ -61,15 +69,16 @@ function checkConditionsAndNotify() {
     // - Bumble
 
     // check if 'body' has text "Want to keep matching?"
-    if (!document.querySelector('body').textContent.includes('Want to keep matching?')) {
-        hasFired = true;
-        // Store the hasFired value in chrome.storage so it persists across reloads
-        chrome.storage.local.set({hasFired: true}, function () {
-            console.log('hasFired value stored as true.');
-        });
-        sendNotification("New animal");
+    if (url.includes('bumble.com')) {
+        if (!document.querySelector('body').textContent.includes('Want to keep matching?')) {
+            hasFired = true;
+            // Store the hasFired value in chrome.storage so it persists across reloads
+            chrome.storage.local.set({hasFired: true}, function () {
+                console.log('hasFired value stored as true.');
+            });
+            sendNotification("New animal");
+        }
     }
-
 }
 
 // Function to send the POST request
