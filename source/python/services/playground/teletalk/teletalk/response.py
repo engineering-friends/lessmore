@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Callable, Optional
 from aiogram.types import Message
 from more_itertools import first, last
 from palette.teletalk.query.query import Query
+from teletalk.bundle import Bundle
 
 
 if TYPE_CHECKING:
@@ -15,9 +16,9 @@ if TYPE_CHECKING:
 class Response:
     root_query: Optional[Query] = None
     query: Optional[Query] = None
-    messages: list[Message] = field(default_factory=list)
+    bundles: list[Bundle] = field(default_factory=list)
     talk: Optional["Talk"] = None  # circular import
 
     @property
-    def message(self) -> Optional[Message]:
-        return last(self.messages, default=None)
+    def bundle(self) -> Optional[Message]:
+        return last(self.bundles, default=None)
