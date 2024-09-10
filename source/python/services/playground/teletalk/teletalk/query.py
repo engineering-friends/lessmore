@@ -1,33 +1,29 @@
 import uuid
 
-from dataclasses import dataclass, field
 from typing import Any, Callable, List, Optional, Tuple
 
-from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup
 from teletalk.bundle_message import BundleMessage
 
 
-@dataclass
-class RenderedQuery:
-    bundles_by_chat_id: dict[str, list[BundleMessage]] = field(default_factory=dict)
-    global_menus: dict[str, ReplyKeyboardMarkup] = field(default_factory=dict)
-    global_message_callbacks: dict[str, Callable] = field(default_factory=dict)
-
-    def menus(self):
-        return {
-            chat_id: bundles[-1].reply_keyboard_markup for chat_id, bundles in self.bundles_by_chat_id.items()
-        } | self.global_menus
-
-    def message_callbacks(self):
-        return {
-            chat_id: bundles[-1].message_callback for chat_id, bundles in self.bundles_by_chat_id.items()
-        } | self.global_message_callbacks
-
-
 class Query:
-    def __init__(self):
+    """Bundle is a collection of messages grouped together in telegram (like album)"""
+
+    def __init__(self, chat_id: str):
+        # - Init
+
+        self.chat_id = chat_id
+
+        # - Tree
+
         self.parent: Optional["Query"] = None
         self.children: list["Query"] = []
 
-    def render(self, callback_wrapper: Callable) -> RenderedQuery:
-        pass
+        # - Callbacks
+
+        message_callback: Optional[Callable] = None  # def message_callback(response: Response) -> None
+        on_query_reply: Optional[Callable] = (
+            None  # what to do with the messages after the query reply, def on_query_reply(bundle_messages: list[BundleMessage]) -> None
+        )
+
+    def render(self, callback_wrapper: Callable) -> BundleMessage:
+        raise NotImplementedError

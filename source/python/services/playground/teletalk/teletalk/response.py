@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING, Callable, Optional
 from aiogram.types import Message
 from more_itertools import first, last
 from palette.teletalk.query.query import Query
-from teletalk.bundle import Bundle
+from teletalk.bundle_message import BundleMessage
+from teletalk.multi_query import MultiQuery
 
 
 if TYPE_CHECKING:
@@ -14,11 +15,12 @@ if TYPE_CHECKING:
 
 @dataclass
 class Response:
+    root_multi_query: Optional[MultiQuery] = None  # root query is the query that spawned the whole conversation
     root_query: Optional[Query] = None
     query: Optional[Query] = None
     talk: Optional["Talk"] = None  # circular import
-    bundles: list[Bundle] = field(default_factory=list)
+    bundle_messages: list[BundleMessage] = field(default_factory=list)
 
     @property
-    def bundle(self) -> Optional[Message]:
-        return last(self.bundles, default=None)
+    def bundle_message(self) -> Optional[BundleMessage]:
+        return last(self.bundle_messages, default=None)

@@ -6,7 +6,6 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand, CallbackQuery, Message
-from teletalk.dispatcher import Dispatcher as TeletalkDispatcher
 from teletalk.response import Response
 from teletalk.talk import Talk
 
