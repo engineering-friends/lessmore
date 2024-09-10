@@ -20,6 +20,7 @@ class Talk:
         self,
         coroutine: Coroutine,
         app: "App",  # each talk has a full access to the app, mostly for managing the talks
+        default_menu: Optional[Any] = None,
     ):
         """Talk is a core entity for interaction between the bot an a user, usually in a ask-reply manner.
 
@@ -34,6 +35,9 @@ class Talk:
 
         self.coroutine = coroutine
         self.app = app
+        self.default_menu = (
+            default_menu  # default keyboard menu of the talk. Will appear if the query does not have a menu
+        )
 
         # - Call tree
 
@@ -49,7 +53,7 @@ class Talk:
 
         self.menus = []  # List of menus related to ongoing queries (for different chats)
         self.history = []  # History of interactions within the talk
-        self.event_channel = asyncio.get_running_loop().create_future()  # Future to manage asynchronous events
+        self.input_channel = asyncio.Queue()  # queue to manage asynchronous events
 
     def ask(
         self,
@@ -72,11 +76,9 @@ class Talk:
         self,
         response: Response,
     ):
-        if self.event_channel.done():
-            logger.error("Question event is already done", event=response)
-            return
+        # - Add response to the input channel
 
-        self.event_channel.set_result(response)
+        pass
 
     def tell(self, **kwargs) -> None:
         # - Send the messages and add them to the `self.history`
