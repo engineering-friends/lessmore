@@ -6,7 +6,8 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand, CallbackQuery, Message
-from teletalk.dispatch import Dispatcher as TeleTalkDispatcher
+from teletalk.dispatcher import Dispatcher as TeletalkDispatcher
+from teletalk.response import Response
 from teletalk.talk import Talk
 
 
@@ -30,7 +31,7 @@ class App:
     async def start_new_talk(
         self,
         starter: Callable,
-        starter_messages: list[Message] = [],
+        initial_response: Response,
     ):
         # - Create the talk
 
@@ -54,7 +55,7 @@ class App:
     ) -> None:
         # - If the message is from the bot, update the chat talk focus and return
 
-        # - Otherwise, build the response and dispatch it
+        # - Otherwise, build the response with a flattened bundle (one bundle per message) and dispatch it
 
         pass
 
@@ -66,8 +67,8 @@ class App:
     async def start_polling(
         self,
         bot: Bot | str,
-        message_starter: Callable,
-        command_starters: dict[str, Callable] = {},
+        message_starter: Callable,  # def message_starter(response: Response) -> None
+        command_starters: dict[str, Callable] = {},  # def command_starter(response: Response) -> None
         dispatcher: Optional[Callable] = None,
         default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
         commands: Optional[list[BotCommand]] = None,  # description of commands

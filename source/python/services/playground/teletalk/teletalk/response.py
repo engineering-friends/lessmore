@@ -16,8 +16,8 @@ if TYPE_CHECKING:
 class Response:
     root_query: Optional[Query] = None
     query: Optional[Query] = None
-    bundles: list[Bundle] = field(default_factory=list)
     talk: Optional["Talk"] = None  # circular import
+    bundles: list[Bundle] = field(default_factory=list)
 
     @property
     def bundle(self) -> Optional[Message]:
