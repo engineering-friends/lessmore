@@ -4,12 +4,12 @@ import uuid
 from asyncio import Future
 from typing import TYPE_CHECKING, Any, Callable, Coroutine, List, Literal, Optional
 
-from aiogram.types import ReplyKeyboardMarkup
+from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup
 from loguru import logger
-from teletalk.callback_info import CallbackInfo
-from teletalk.query import Query
-from teletalk.question_message import QuestionMessage
-from teletalk.response import Response
+from teletalk.models.bundle_message import BundleMessage
+from teletalk.models.callback_info import CallbackInfo
+from teletalk.models.multi_query import MultiQuery
+from teletalk.models.query import Query
 
 
 if TYPE_CHECKING:
@@ -45,7 +45,7 @@ class Talk:
 
         # - State
 
-        self.question_messages: list[QuestionMessage] = []  # List of messages related to ongoing queries
+        self.question_bundle_messages: list[BundleMessage] = []  # List of messages related to ongoing queries
         self.question_callbacks: list[
             CallbackInfo
         ] = []  # List of callbacks related to ongoing queries for all messages
@@ -56,7 +56,11 @@ class Talk:
 
     def ask(
         self,
-        query: Query,
+        text: Optional[str] = None,
+        files: Optional[list[str]] = None,
+        reply_keyboard_markup: Optional[ReplyKeyboardMarkup] = None,
+        inline_keyboard_markup: Optional[InlineKeyboardMarkup] = None,
+        query: Optional[Query | MultiQuery] = None,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
     ) -> Any:
         # - Render the query messages and menus, update `self.question_messages` and `self.menus`

@@ -1,7 +1,7 @@
 from typing import Callable
 
 from aiogram.types import CallbackQuery, Message
-from teletalk.response import Response
+from teletalk.models.response import Response
 
 
 class Dispatcher:

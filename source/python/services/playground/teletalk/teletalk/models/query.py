@@ -2,7 +2,7 @@ import uuid
 
 from typing import Any, Callable, List, Optional, Tuple
 
-from teletalk.bundle_message import BundleMessage
+from teletalk.models.bundle_message import BundleMessage
 
 
 class Query:
