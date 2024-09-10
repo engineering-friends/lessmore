@@ -48,7 +48,7 @@ class App:
 
         pass
 
-    async def on_new_message(
+    async def on_message(
         self,
         message: Message,
     ) -> None:

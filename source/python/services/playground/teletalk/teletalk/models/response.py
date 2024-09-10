@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Callable, Optional
 
 from aiogram.types import Message
 from more_itertools import first, last
+from palette.teletalk.crowd.response import Response
 from palette.teletalk.query.query import Query
 from teletalk.models.bundle_message import BundleMessage
 from teletalk.models.multi_query import MultiQuery
@@ -24,3 +25,9 @@ class Response:
     @property
     def bundle_message(self) -> Optional[BundleMessage]:
         return last(self.bundle_messages, default=None)
+
+    # - Navigation
+
+    root: Optional[Response] = None
+    previous: Optional[Response] = None
+    next: Optional[Response] = None

@@ -55,7 +55,7 @@ class Talk:
         self.history = []  # History of interactions within the talk
         self.input_channel = asyncio.Queue()  # queue to manage asynchronous events
 
-    def ask(
+    async def ask(
         self,
         text: Optional[str] = None,
         files: Optional[list[str]] = None,
@@ -84,7 +84,7 @@ class Talk:
 
         pass
 
-    def tell(self, **kwargs) -> None:
+    async def tell(self, **kwargs) -> None:
         # - Send the messages and add them to the `self.history`
 
         pass
