@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, Callable, Optional
 from aiogram.types import Message
 from more_itertools import first, last
 from palette.teletalk.query.query import Query
-from teletalk.bundle_message import BundleMessage
-from teletalk.multi_query import MultiQuery
+from teletalk.models.bundle_message import BundleMessage
+from teletalk.models.multi_query import MultiQuery
 
 
 if TYPE_CHECKING:

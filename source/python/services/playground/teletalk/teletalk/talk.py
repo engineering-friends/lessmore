@@ -10,6 +10,7 @@ from teletalk.models.bundle_message import BundleMessage
 from teletalk.models.callback_info import CallbackInfo
 from teletalk.models.multi_query import MultiQuery
 from teletalk.models.query import Query
+from teletalk.models.response import Response
 
 
 if TYPE_CHECKING:

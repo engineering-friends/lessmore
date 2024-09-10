@@ -2,8 +2,8 @@ from dataclasses import dataclass, field
 from typing import Callable
 
 from aiogram.types import ReplyKeyboardMarkup
-from teletalk.bundle_message import BundleMessage
-from teletalk.query import Query
+from teletalk.models.bundle_message import BundleMessage
+from teletalk.models.query import Query
 
 
 @dataclass
