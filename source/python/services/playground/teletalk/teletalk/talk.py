@@ -4,6 +4,7 @@ import uuid
 from asyncio import Future
 from typing import TYPE_CHECKING, Any, Callable, Coroutine, List, Literal, Optional
 
+from aiogram.types import ReplyKeyboardMarkup
 from loguru import logger
 from teletalk.callback_info import CallbackInfo
 from teletalk.query import Query
@@ -20,7 +21,7 @@ class Talk:
         self,
         coroutine: Coroutine,
         app: "App",  # each talk has a full access to the app, mostly for managing the talks
-        default_menu: Optional[Any] = None,
+        default_reply_keyboard_markup: Optional[ReplyKeyboardMarkup] = None,
     ):
         """Talk is a core entity for interaction between the bot an a user, usually in a ask-reply manner.
 
@@ -35,9 +36,7 @@ class Talk:
 
         self.coroutine = coroutine
         self.app = app
-        self.default_menu = (
-            default_menu  # default keyboard menu of the talk. Will appear if the query does not have a menu
-        )
+        self.default_reply_keyboard_markup = default_reply_keyboard_markup  # default keyboard menu of the talk. Will appear if the query does not have a menu
 
         # - Call tree
 
