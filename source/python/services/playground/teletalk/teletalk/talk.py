@@ -49,7 +49,6 @@ class Talk:
         self.reply_keyboard_markups: dict[str, ReplyKeyboardMarkup] = {}  # may be different for different chats
         self.callback_infos: dict[str, CallbackInfo] = {}
         self.bundle_messages: list[BundleMessage] = []  # List of messages related to ongoing queries
-        self.history: list[BundleMessage] = []  # History of interactions within the talk
 
         # - Input channel for communication
 
@@ -68,7 +67,7 @@ class Talk:
     ) -> Any:
         # - Render the query messages and menus, update `self.question_messages` and `self.menus`
 
-        # - Update messages in telegram according to the `update_mode`. Add new messages to `self.question_messages and self.history`
+        # - Update messages in telegram according to the `update_mode`
 
         # - Wait for the `raw_response` event from the global callbacks
 
@@ -87,6 +86,6 @@ class Talk:
         pass
 
     async def tell(self, **kwargs) -> None:
-        # - Send the messages and add them to the `self.history`
+        # - The interface to send custom messages without awaiting any response
 
         pass
