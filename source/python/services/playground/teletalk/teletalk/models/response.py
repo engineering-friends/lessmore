@@ -16,18 +16,28 @@ if TYPE_CHECKING:
 
 @dataclass
 class Response:
-    root_multi_query: Optional[MultiQuery] = None  # root query is the query that spawned the whole conversation
+    # - Queries
+
+    multi_query: Optional[MultiQuery] = None  # root query is the query that spawned the whole conversation
     root_query: Optional[Query] = None
     query: Optional[Query] = None
-    talk: Optional["Talk"] = None  # circular import
+
+    # - Messages
+
     bundle_messages: list[BundleMessage] = field(default_factory=list)
 
-    @property
-    def bundle_message(self) -> Optional[BundleMessage]:
-        return last(self.bundle_messages, default=None)
+    # - Talk
+
+    talk: Optional["Talk"] = None  # circular import
 
     # - Navigation
 
     root: Optional[Response] = None
     previous: Optional[Response] = None
     next: Optional[Response] = None
+
+    # - Syntax sugar
+
+    @property
+    def bundle_message(self) -> Optional[BundleMessage]:
+        return last(self.bundle_messages, default=None)

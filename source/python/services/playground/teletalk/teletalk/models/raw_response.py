@@ -1,11 +1,11 @@
 from asyncio import Task
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Callable, Optional
 
 from aiogram.types import Message
+from teletalk.models.bundle_message import BundleMessage
 
 
 @dataclass
 class RawResponse:
     callback_id: str = ""
-    messages: Optional[Message] = None
+    bundle_messages: list[BundleMessage] = field(default_factory=list)
