@@ -53,7 +53,6 @@ Also, app updates the chat `reply_keyboard_markup` to match the focus talk.
 
 # - Todo
 """
-1. На команды мы всегда хотим начинать новый talk? Потому что сейчас по-умолчанию это не так
-2. 
+1. Флоу команд 
 
 """
