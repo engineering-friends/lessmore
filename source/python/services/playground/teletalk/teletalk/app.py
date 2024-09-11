@@ -6,6 +6,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand, CallbackQuery, Message
+from teletalk.models.raw_response import RawResponse
 from teletalk.models.response import Response
 from teletalk.talk import Talk
 
@@ -28,7 +29,7 @@ class App:
     async def start_new_talk(
         self,
         starter: Callable,
-        initial_response: Optional[Response] = None,
+        initial_response: Optional[RawResponse] = None,
     ):
         # - Create the talk
 

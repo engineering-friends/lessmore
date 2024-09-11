@@ -16,19 +16,19 @@ Also, app updates the chat `reply_keyboard_markup` to match the focus talk.
 
 # -- `on_message`
 
-"""Build `RawResponse` with one-message `BundleMessage` and runs `dispatcher` with it. Updates the chat focus (`reply_keyboard_markup`, `message_callback`)"""
+"""Builds `RawResponse` with one-message `BundleMessage` and runs `dispatcher` with it. Updates the focus talk for the chat"""
 
 # -- `on_delete_message`
 
-"""Updates the chat focus"""
+"""Updates the focus talk for the chat"""
 
 # -- `on_callback_query`
 
-"""Build `RawResponse` and send it to the dispatcher"""
+"""Builds `RawResponse` and sends it to the dispatcher"""
 
 # - `Dispatcher`
 
-""" Receives `RawResponse`, collects the buffer and when the buffer is full, builds the `Response` and sends it to the appropriate `Talk` or creates a new `Talk`"""
+""" Receives `RawResponse`, collects the buffer and when the buffer is full, builds the `RawResponse` and sends it to the appropriate `Talk` or creates a new `Talk`"""
 
 # - `Talk`
 
@@ -45,7 +45,15 @@ Also, app updates the chat `reply_keyboard_markup` to match the focus talk.
 - Renders the `MultiQuery` an gets a list of `BundleMessage`
 - Sets the current `Talk.current_reply_keyboard_markup`, which will be used when the chat focus is updated 
 - Updates the messages in telegram (creates new, deletes old, updates existing), depending on the `update_mode` argument
-- Saves a list of `CallbackInfo` for the "MultiQuery" in the `Talk.callback_infos`
+- Saves a list of `CallbackInfo` for the "MultiQuery" in the `Talk.callback_infos`, that will be used to match incoming `callback_data, or callback id to the appropriate query
 - Awaits the `RawResponse`
-- Runs and returns the appropriate callback (`message_callback` or `callback_query`)
+- Build the `Response` run appropriate callback (`message_callback` or `callback_query`)
+"""
+
+
+# - Todo
+"""
+1. На команды мы всегда хотим начинать новый talk? Потому что сейчас по-умолчанию это не так
+2. 
+
 """

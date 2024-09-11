@@ -39,7 +39,6 @@ class Talk:
 
         self.coroutine = coroutine
         self.app = app
-        self.default_reply_keyboard_markup = default_reply_keyboard_markup  # default keyboard menu of the talk. Will appear if the query does not have a menu
 
         # - Call tree
 
@@ -48,7 +47,12 @@ class Talk:
 
         # - State
 
-        self.reply_keyboard_markups: dict[str, ReplyKeyboardMarkup] = {}  # may be different for different chats
+        self.reply_keyboard_markups: dict[
+            str, ReplyKeyboardMarkup
+        ] = {}  # may be different for different chats, by default taken from the last query in the chat
+        self.message_callbacks: dict[
+            str, Callable
+        ] = {}  # may be different for different chats, by default taken from the last query in the chat
         self.callback_infos: dict[str, CallbackInfo] = {}
         self.bundle_messages: list[BundleMessage] = []  # List of messages related to ongoing queries
 
@@ -69,7 +73,9 @@ class Talk:
     ) -> Any:
         # - Render the query messages and `reply_keyboard_markup`
 
-        # - Update talk `self.reply_keyboard_markups` from the rendered messages and the `self.default_reply_keyboard_markup`
+        # - Update talk `self.reply_keyboard_markups` from the rendered messages
+
+        # - Update talk `self.message_callbacks`
 
         # - Run `self.upsert_bundle_messages` with the rendered messages
 
