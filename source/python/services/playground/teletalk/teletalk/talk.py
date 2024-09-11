@@ -16,6 +16,8 @@ from teletalk.models.response import Response
 if TYPE_CHECKING:
     from teletalk.app import App
 
+# todo maybe: 2024-09-12, add default_commands for each talk so that the commands would update to match the focus talk [@marklidenberg]
+
 
 class Talk:
     def __init__(

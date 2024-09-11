@@ -1,12 +1,22 @@
 # - `App`
 
+"""
+
+App contains current talks.
+
+Each chat has a focus talk, which is the talk with the latest message. By default, dispatcher will send the new message to the focus talk of the chat.
+
+Also, app updates the chat `reply_keyboard_markup` to match the focus talk.
+
+"""
+
 # -- Start polling
 
 """Starts telegram polling with global `App.on_message`, `App.on_delete_message` and `App.on_callback_query` handlers"""
 
 # -- `on_message`
 
-"""Build `RawResponse` with one-message `BundleMessage` and send it to the dispatcher. Updates the chat focus"""
+"""Build `RawResponse` with one-message `BundleMessage` and runs `dispatcher` with it. Updates the chat focus (`reply_keyboard_markup`, `message_callback`)"""
 
 # -- `on_delete_message`
 
@@ -15,7 +25,6 @@
 # -- `on_callback_query`
 
 """Build `RawResponse` and send it to the dispatcher"""
-
 
 # - `Dispatcher`
 

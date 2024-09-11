@@ -23,6 +23,7 @@ class App:
         # - State
 
         self.talks: list[Talk] = []
+        self.focus_talks: dict[str, Talk] = {}
 
     async def start_new_talk(
         self,
