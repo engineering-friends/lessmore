@@ -39,8 +39,9 @@ from teletalk.app import App
 - Renders the `MultiQuery` an gets a list of `BundleMessage`
 - Sets the current `Talk.current_reply_keyboard_markup`, which will be used when the chat focus is updated 
 - Updates the messages in telegram (creates new, deletes old, updates existing), depending on the `update_mode` argument
-- Saves the `CallbackInfo` for the "MultiQuery" 
-- Awaits the `RawResponse` 
-
-
+- Saves a list of `CallbackInfo` for the "MultiQuery" in the `Talk.callback_infos`
+- Awaits the `RawResponse`
+- For each `Query` runs the `on_query_reply` callback (for example, to disable buttons or show progress bars)
+(weak point, a logic is flawed here) 
+- Runs and returns the appropriate callback (`message_callback` or `callback_query`)
 """
