@@ -58,6 +58,14 @@ class App:
 
         pass
 
+    async def on_delete_message(
+        self,
+        message: Message,
+    ) -> None:
+        # - If the message is from the bot, update the chat talk focus and return<
+
+        pass
+
     async def update_focus(self, chat_id: int) -> None:
         # - Set the chat menu as the menu of the talk with the latest message
 
@@ -76,7 +84,7 @@ class App:
 
         # - Init teletalk `dispatcher` if not provided
 
-        # - Register `callback_query` and `message` handlers in aiogram. Also, register updating the focus on deletion of the message
+        # - Register `on_callback_query`, `on_message` and `on_delete_message` handlers in aiogram
 
         # - Init bot from token if needed
 
