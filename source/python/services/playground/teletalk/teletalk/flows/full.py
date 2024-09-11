@@ -53,6 +53,9 @@ Also, app updates the chat `reply_keyboard_markup` to match the focus talk.
 
 # - Todo
 """
-1. Флоу команд 
+1. Флоу комманд 
+2. multi_query -> query, query -> bundle_query 
+3. talk хранит active_query. Есть функция update_active_query. Все вторичные данные лежат внутри active_query, в т.ч. используемые messages. history в todo maybe 
+4. Пройтись по разным типичным сценариям ботов и как это будет работать 
 
 """
