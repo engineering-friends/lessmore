@@ -46,21 +46,23 @@ class Talk:
 
         # - State
 
-        self.question_bundle_messages: list[BundleMessage] = []  # List of messages related to ongoing queries
-        self.question_callbacks: list[
-            CallbackInfo
-        ] = []  # List of callbacks related to ongoing queries for all messages
+        self.reply_keyboard_markups: dict[str, ReplyKeyboardMarkup] = {}  # may be different for different chats
+        self.callback_infos: dict[str, CallbackInfo] = {}
+        self.bundle_messages: list[BundleMessage] = []  # List of messages related to ongoing queries
+        self.history: list[BundleMessage] = []  # History of interactions within the talk
 
-        self.menus = []  # List of menus related to ongoing queries (for different chats)
-        self.history = []  # History of interactions within the talk
-        self.input_channel = asyncio.Queue()  # queue to manage asynchronous events
+        # - Input channel for communication
+
+        self.input_channel = asyncio.Queue()  # a queue of input `RawResponse` objects
 
     async def ask(
         self,
         text: Optional[str] = None,
         files: Optional[list[str]] = None,
         reply_keyboard_markup: Optional[ReplyKeyboardMarkup] = None,
-        inline_keyboard_markup: Optional[InlineKeyboardMarkup] = None,
+        inline_keyboard_markup: Optional[
+            InlineKeyboardMarkup
+        ] = None,  # will return the button value if passed this way
         query: Optional[Query | MultiQuery] = None,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
     ) -> Any:

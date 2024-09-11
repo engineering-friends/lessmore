@@ -16,10 +16,7 @@ class App:
     Features:
     - `start_polling` is the main entry point for the application
     - Stores, manages and creates new Talk instances
-    - Handles incoming messages
-       - updating the chat talk focus (menu is shown for the focused talk in the chat, which corresponds to the latest message)
-       - collecting a batch of user messages and sending it to the supervisor talk
-    - Handles incoming callback queries, sending them to the relevant Talk instance
+    - Handles message updates and callback queries: update chat focus and sends the raw response to the dispatcher
     """
 
     def __init__(self):
@@ -30,11 +27,11 @@ class App:
     async def start_new_talk(
         self,
         starter: Callable,
-        initial_response: Response,
+        initial_response: Optional[Response] = None,
     ):
         # - Create the talk
 
-        # - Build the response, run the starter and wait for the result
+        # - Run the starter and wait for the result
 
         # - Remove the talk
 
@@ -44,7 +41,7 @@ class App:
         self,
         callback_query: CallbackQuery,
     ) -> None:
-        # - Build the response and dispatch it
+        # - Build the raw response and send it to the dispatcher
 
         pass
 
@@ -54,7 +51,7 @@ class App:
     ) -> None:
         # - If the message is from the bot, update the chat talk focus and return
 
-        # - Otherwise, build the response with a flattened bundle (one bundle per message) and dispatch it
+        # - Otherwise, build the raw response with a flattened bundle_message (one message in one bundle_message, e.g. for 3-message album make separate 3 bundle_messages) and send it to the dispatcher
 
         pass
 
@@ -62,11 +59,11 @@ class App:
         self,
         message: Message,
     ) -> None:
-        # - If the message is from the bot, update the chat talk focus and return<
+        # - If the message is from the bot, update the chat talk focus and return
 
         pass
 
-    async def update_focus(self, chat_id: int) -> None:
+    async def _update_focus(self, chat_id: int) -> None:
         # - Set the chat menu as the menu of the talk with the latest message
 
         pass
