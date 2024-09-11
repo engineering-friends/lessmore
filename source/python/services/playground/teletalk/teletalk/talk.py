@@ -65,16 +65,23 @@ class Talk:
         query: Optional[Query | MultiQuery] = None,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
     ) -> Any:
-        # - Render the query messages and menus, update `self.question_messages` and `self.menus`
+        # - Render the query messages and `reply_keyboard_markup`
 
-        # - Update messages in telegram according to the `update_mode`
+        # - Update talk `self.reply_keyboard_markups` from the rendered messages and the `self.default_reply_keyboard_markup`
 
-        # - Wait for the `raw_response` event from the global callbacks
+        # - Run `self.upsert_bundle_messages` with the rendered messages
 
-        # - Apply `on_query_reply` for each message (spawn tasks in parallel)
+        # - Wait for the `RawResponse` event from the global callbacks
 
-        # - Build `response` and run and return appropriate callback
+        # - Build `Response` and run and return appropriate callback
 
+        pass
+
+    async def upsert_bundle_messages(
+        self,
+        bundle_messages: list[BundleMessage],
+        update_mode: Literal["inplace", "inplace_recent", "create_new"],
+    ):
         pass
 
     async def receive_response(

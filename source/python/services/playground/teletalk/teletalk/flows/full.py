@@ -1,11 +1,8 @@
-from teletalk.app import App
-
-
 # - `App`
 
 # -- Start polling
 
-""" Starts telegram polling with global `App.on_message`, `App.on_delete_message` and `App.on_callback_query` handlers"""
+"""Starts telegram polling with global `App.on_message`, `App.on_delete_message` and `App.on_callback_query` handlers"""
 
 # -- `on_message`
 
@@ -41,7 +38,5 @@ from teletalk.app import App
 - Updates the messages in telegram (creates new, deletes old, updates existing), depending on the `update_mode` argument
 - Saves a list of `CallbackInfo` for the "MultiQuery" in the `Talk.callback_infos`
 - Awaits the `RawResponse`
-- For each `Query` runs the `on_query_reply` callback (for example, to disable buttons or show progress bars)
-(weak point, a logic is flawed here) 
 - Runs and returns the appropriate callback (`message_callback` or `callback_query`)
 """
