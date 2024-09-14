@@ -59,11 +59,15 @@ class Talk:
         page: Optional[Page | Block] = None,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
     ) -> Any:
+        # - Build page from the `text`, `files`, `reply_keyboard_markup`, `inline_keyboard_markup` if not provided
+
         # - Run `self.update_active_page`
 
-        # - Wait for the `RawResponse` event from the global callbacks
+        # - Wait for the `Response` in the `self.input_channel`
 
-        # - Build `Response` and run and return appropriate callback
+        # - Add user messages to the `self.history`
+
+        # - Find the appropriate callback from the `self.page` and their blocks and run it
 
         pass
 

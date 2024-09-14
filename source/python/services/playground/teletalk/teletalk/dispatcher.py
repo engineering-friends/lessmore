@@ -25,7 +25,7 @@ class Dispatcher:
         self.message_buffers_by_chat_id: dict[int, list[Message]] = {}
 
     def __call__(self, response: Response) -> None:
-        # - Find the talk by message_id
+        # - Find the `Talk` by message_id
 
         # - If callback_query
 
@@ -39,8 +39,10 @@ class Dispatcher:
 
         # -- If buffer is full: close the buffer and build the response
 
-        # --- If talk is found: send the event to the talk
+        # --- If a command - start a new talk with the command starter
 
-        # --- If not found: start a new talk with the proper starter (message or command)
+        # --- If not a command and the `Talk" is found: send the event to the `Talk`
+
+        # --- If not a command and the `Talk` is not found: start a new talk with the message starter
 
         pass
