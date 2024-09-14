@@ -1,14 +1,9 @@
 import asyncio
-import uuid
 
-from asyncio import Future
 from typing import TYPE_CHECKING, Any, Callable, Coroutine, List, Literal, Optional
 
-from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup
-from loguru import logger
+from aiogram.types import InlineKeyboardMarkup, Message, ReplyKeyboardMarkup
 from teletalk.models.block import Block
-from teletalk.models.block_message import BlockMessage
-from teletalk.models.callback_info import CallbackInfo
 from teletalk.models.page import Page
 from teletalk.models.response import Response
 
@@ -47,6 +42,7 @@ class Talk:
         # - State
 
         self.active_page: Optional[Page] = None
+        self.history: list[Message] = []
 
         # - Input channel for communication
 
@@ -63,13 +59,7 @@ class Talk:
         page: Optional[Page | Block] = None,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
     ) -> Any:
-        # - Render the query messages and `reply_keyboard_markup`
-
-        # - Update talk `self.reply_keyboard_markups` from the rendered messages
-
-        # - Update talk `self.message_callbacks`
-
-        # - Run `self.upsert_block_messages` with the rendered messages
+        # - Run `self.update_active_page`
 
         # - Wait for the `RawResponse` event from the global callbacks
 
@@ -82,6 +72,10 @@ class Talk:
         page: Page,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
     ):
+        # - Render all the blocks
+
+        # - Update the messages in line with `update_mode`. Add new messages to `self.history`
+
         pass
 
     async def receive_response(

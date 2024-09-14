@@ -14,17 +14,16 @@ class Block:
         self,
         chat_id: str,
         message_callback: Optional[Callable] = None,  # def message_callback(response: Response) -> None
-        reply_keyboard_markup: Optional[ReplyKeyboardMarkup] = None,
     ):
         # - Args
 
         self.chat_id = chat_id
         self.message_callback: Optional[Callable] = message_callback
-        self.reply_keyboard_markup: Optional[ReplyKeyboardMarkup] = reply_keyboard_markup
 
         # - State
 
         self.callback_infos: dict[str, CallbackInfo] = {}
+        self.rendered: Optional[BlockMessage] = None
 
         # - Tree
 
@@ -38,3 +37,7 @@ class Block:
 
     def render(self) -> BlockMessage:
         raise NotImplementedError
+
+    def render_and_cache(self):
+        self.rendered = self.render()
+        return self.rendered
