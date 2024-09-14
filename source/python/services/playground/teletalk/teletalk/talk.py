@@ -24,7 +24,6 @@ class Talk:
         self,
         coroutine: Coroutine,
         app: "App",  # each talk has a full access to the app, mostly for managing the talks
-        default_reply_keyboard_markup: Optional[ReplyKeyboardMarkup] = None,
     ):
         """Talk is a core entity for interaction between the bot an a user, usually in a ask-reply manner.
 
@@ -47,14 +46,7 @@ class Talk:
 
         # - State
 
-        self.reply_keyboard_markups: dict[
-            str, ReplyKeyboardMarkup
-        ] = {}  # may be different for different chats, by default taken from the last query in the chat
-        self.message_callbacks: dict[
-            str, Callable
-        ] = {}  # may be different for different chats, by default taken from the last query in the chat
-        self.callback_infos: dict[str, CallbackInfo] = {}
-        self.block_messages: list[BlockMessage] = []  # List of messages related to ongoing queries
+        self.active_page: Optional[Page] = None
 
         # - Input channel for communication
 
@@ -85,10 +77,10 @@ class Talk:
 
         pass
 
-    async def upsert_block_messages(
+    def update_active_page(
         self,
-        block_messages: list[BlockMessage],
-        update_mode: Literal["inplace", "inplace_recent", "create_new"],
+        page: Page,
+        update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
     ):
         pass
 
