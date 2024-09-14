@@ -21,7 +21,7 @@ class Block:
 
     def __init__(
         self,
-        chat_id: str,
+        chat_id: str = "",
         message_callback: Optional[Callable] = None,  # def message_callback(response: Response) -> None
     ):
         # - Args

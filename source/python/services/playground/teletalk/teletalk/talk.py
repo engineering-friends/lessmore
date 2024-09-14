@@ -56,7 +56,7 @@ class Talk:
         inline_keyboard_markup: Optional[
             InlineKeyboardMarkup
         ] = None,  # will return the button value if passed this way
-        page: Optional[Page | Block] = None,
+        page: Optional[Page | Block | Response] = None,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
     ) -> Any:
         # - Build page from the `text`, `files`, `reply_keyboard_markup`, `inline_keyboard_markup` if not provided
