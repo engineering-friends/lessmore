@@ -1,9 +1,19 @@
 import uuid
 
+from functools import wraps
 from typing import Any, Callable, List, Optional, Tuple
 
 from aiogram.types import ReplyKeyboardMarkup
 from teletalk.models.block_message import BlockMessage
+
+
+def cached(func):
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        setattr(self, f"_{func.__name__}", func(self, *args, **kwargs))
+        return getattr(self, f"_{func.__name__}")
+
+    return wrapper
 
 
 class Block:
@@ -21,7 +31,7 @@ class Block:
 
         # - State
 
-        self.callback_infos: dict[str, Callable] = {}
+        self.query_callbacks: dict[str, Callable] = {}
         self.rendered: Optional[BlockMessage] = None
 
         # - Tree
@@ -31,12 +41,9 @@ class Block:
 
     def get_callback_id(self, callback: Callable) -> str:
         _id = str(uuid.uuid4())
-        self.callback_infos[_id] = callback
+        self.query_callbacks[_id] = callback
         return _id
 
+    @cached
     def render(self) -> BlockMessage:
         raise NotImplementedError
-
-    def render_and_cache(self):
-        self.rendered = self.render()
-        return self.rendered
