@@ -1,23 +1,7 @@
 from dataclasses import dataclass
 from typing import Callable
 
-
-"""
-- A
-- B
-- Quit
-
-- A.1
-- A.2
-- Back
-- Cancel
-
-- B.1
-- B.2
-- Back
-- Cancel
-
-"""
+from teletalk.models.response import Response
 
 
 @dataclass
@@ -31,36 +15,20 @@ class Menu:
         self.buttons = buttons
 
 
-back = Button(text="Back", callback=lambda response: response.ask(response.previous))
-cancel = Button(text="Cancel", callback=lambda response: response.ask(response.root))
-quit = Button(text="Quit", callback=lambda response: ...)
+async def a(response: Response):
+    # - Update menu in processing mode
 
-starter = lambda response: response.ask(
-    Menu(
-        [
-            Button(
-                text="A",
-                callback=lambda response: Menu(
-                    buttons=[
-                        Button(text="A.1", callback=lambda response: (print("A.1"), response.ask(response.root))),
-                        Button(text="A.2", callback=lambda response: (print("A.2"), response.ask(response.root))),
-                        back,
-                        cancel,
-                    ]
-                ),
-            ),
-            Button(
-                text="B",
-                callback=lambda response: Menu(
-                    buttons=[
-                        Button(text="B.1", callback=lambda response: (print("B.1"), response.ask(response.root))),
-                        Button(text="B.2", callback=lambda response: (print("B.2"), response.ask(response.root))),
-                        back,
-                        cancel,
-                    ]
-                ),
-            ),
-            quit,
-        ]
-    )
-)
+    await response.tell(text="Answer the questions...", update_mode="inplace")
+
+    # - Ask questions
+
+    age = await response.ask(text="How old are you?")
+    name = await response.ask(text="What is your name?")
+    await response.tell(text=f"Hello, {name}! You are {age} years old.")
+
+    # - Go back to the menu, creating a new menu message
+
+    await response.ask(response.root)
+
+
+starter = lambda response: response.ask(Menu([Button(text="A", callback=a)]))

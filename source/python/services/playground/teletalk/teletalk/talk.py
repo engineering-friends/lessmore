@@ -90,7 +90,13 @@ class Talk:
 
         pass
 
-    async def tell(self, **kwargs) -> None:
+    async def tell(
+        self,
+        text: Optional[str] = None,
+        files: Optional[list[str]] = None,
+        page: Optional[Page | Block | Response] = None,
+        update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
+    ) -> None:
         # - The interface to send custom messages without awaiting any response
 
         pass

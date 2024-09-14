@@ -11,7 +11,7 @@ from teletalk.models.page import Page
 
 
 if TYPE_CHECKING:
-    from palette.teletalk.crowd.talk.talk import Talk
+    from teletalk.talk import Talk
 
 
 @dataclass
