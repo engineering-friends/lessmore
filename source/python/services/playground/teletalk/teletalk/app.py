@@ -53,7 +53,7 @@ class App:
     ) -> None:
         # - If the message is from the bot, update the chat talk focus and return
 
-        # - Otherwise, build the raw response with a flattened bundle_message (one message in one bundle_message, e.g. for 3-message album make separate 3 bundle_messages) and send it to the dispatcher
+        # - Otherwise, build the raw response with a flattened block_message (one message in one block_message, e.g. for 3-message album make separate 3 block_messages) and send it to the dispatcher
 
         pass
 

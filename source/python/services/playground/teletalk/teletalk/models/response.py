@@ -5,9 +5,9 @@ from typing import TYPE_CHECKING, Callable, Optional
 from aiogram.types import Message
 from more_itertools import first, last
 from palette.teletalk.crowd.response import Response
-from palette.teletalk.query.query import Query
-from teletalk.models.bundle_message import BundleMessage
-from teletalk.models.multi_query import MultiQuery
+from teletalk.models.block import Block
+from teletalk.models.block_message import BlockMessage
+from teletalk.models.page import Page
 
 
 if TYPE_CHECKING:
@@ -18,13 +18,13 @@ if TYPE_CHECKING:
 class Response:
     # - Queries
 
-    multi_query: Optional[MultiQuery] = None  # root query is the query that spawned the whole conversation
-    root_query: Optional[Query] = None
-    query: Optional[Query] = None
+    root_page: Optional[Page] = None  # root Block is the Block that spawned the whole conversation
+    root_block: Optional[Block] = None
+    block: Optional[Block] = None
 
     # - Messages
 
-    bundle_messages: list[BundleMessage] = field(default_factory=list)
+    block_messages: list[BlockMessage] = field(default_factory=list)
 
     # - Talk
 
@@ -39,5 +39,5 @@ class Response:
     # - Syntax sugar
 
     @property
-    def bundle_message(self) -> Optional[BundleMessage]:
-        return last(self.bundle_messages, default=None)
+    def block_message(self) -> Optional[BlockMessage]:
+        return last(self.block_messages, default=None)

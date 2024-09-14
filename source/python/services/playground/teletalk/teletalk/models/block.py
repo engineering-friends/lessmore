@@ -2,11 +2,11 @@ import uuid
 
 from typing import Any, Callable, List, Optional, Tuple
 
-from teletalk.models.bundle_message import BundleMessage
+from teletalk.models.block_message import BlockMessage
 
 
-class Query:
-    """Bundle is a collection of messages grouped together in telegram (like album)"""
+class Block:
+    """A collection of messages grouped together in telegram (like album)"""
 
     def __init__(
         self,
@@ -20,8 +20,8 @@ class Query:
 
         # - Tree
 
-        self.parent: Optional["Query"] = None
-        self.children: list["Query"] = []
+        self.parent: Optional["Block"] = None
+        self.children: list["Block"] = []
 
-    def render(self, callback_wrapper: Callable) -> BundleMessage:
+    def render(self, callback_wrapper: Callable) -> BlockMessage:
         raise NotImplementedError

@@ -6,10 +6,10 @@ from typing import TYPE_CHECKING, Any, Callable, Coroutine, List, Literal, Optio
 
 from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup
 from loguru import logger
-from teletalk.models.bundle_message import BundleMessage
+from teletalk.models.block import Block
+from teletalk.models.block_message import BlockMessage
 from teletalk.models.callback_info import CallbackInfo
-from teletalk.models.multi_query import MultiQuery
-from teletalk.models.query import Query
+from teletalk.models.page import Page
 from teletalk.models.response import Response
 
 
@@ -54,7 +54,7 @@ class Talk:
             str, Callable
         ] = {}  # may be different for different chats, by default taken from the last query in the chat
         self.callback_infos: dict[str, CallbackInfo] = {}
-        self.bundle_messages: list[BundleMessage] = []  # List of messages related to ongoing queries
+        self.block_messages: list[BlockMessage] = []  # List of messages related to ongoing queries
 
         # - Input channel for communication
 
@@ -68,7 +68,7 @@ class Talk:
         inline_keyboard_markup: Optional[
             InlineKeyboardMarkup
         ] = None,  # will return the button value if passed this way
-        query: Optional[Query | MultiQuery] = None,
+        page: Optional[Page | Block] = None,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
     ) -> Any:
         # - Render the query messages and `reply_keyboard_markup`
@@ -77,7 +77,7 @@ class Talk:
 
         # - Update talk `self.message_callbacks`
 
-        # - Run `self.upsert_bundle_messages` with the rendered messages
+        # - Run `self.upsert_block_messages` with the rendered messages
 
         # - Wait for the `RawResponse` event from the global callbacks
 
@@ -85,9 +85,9 @@ class Talk:
 
         pass
 
-    async def upsert_bundle_messages(
+    async def upsert_block_messages(
         self,
-        bundle_messages: list[BundleMessage],
+        block_messages: list[BlockMessage],
         update_mode: Literal["inplace", "inplace_recent", "create_new"],
     ):
         pass

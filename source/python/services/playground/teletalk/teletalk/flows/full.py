@@ -2,11 +2,11 @@
 
 """
 
-App contains current talks.
+`App` contains current `Talk`s.
 
-Each chat has a focus talk, which is the talk with the latest message. By default, dispatcher will send the new message to the focus talk of the chat.
+Each chat has a focus `Talk`, which is the `Talk` with the latest message. By default, `dispatcher` will send the new message to the focus talk of the chat.
 
-Also, app updates the chat `reply_keyboard_markup` to match the focus talk.
+Also, `App` updates the chat `reply_keyboard_markup` to match the focus talk.
 
 """
 
@@ -16,7 +16,7 @@ Also, app updates the chat `reply_keyboard_markup` to match the focus talk.
 
 # -- `on_message`
 
-"""Builds `RawResponse` with one-message `BundleMessage` and runs `dispatcher` with it. Updates the focus talk for the chat"""
+"""Builds `RawResponse` with one-message `BlockMessage` and runs `dispatcher` with it. Updates the focus talk for the chat"""
 
 # -- `on_delete_message`
 
@@ -35,17 +35,17 @@ Also, app updates the chat `reply_keyboard_markup` to match the focus talk.
 """ 
 - Talk is basically a coroutine. When the coroutine is finished, the talk is removed from the `App`
 - Talk may receive `Response` with `Talk.receive_response` method, which will put it in the queue (`Talk.input_channel`)
-- Talk can 'Talk.ask' a query and wait for the `RawResponse` (which will be awaited from the queue). You can also use the queue directly as you see fit
+- Talk can 'Talk.ask' a `Page` and wait for the `RawResponse` (which will be awaited from the queue). You can also use the queue directly as you see fit
 """
 
 # -- `Talk.ask`
 
 """ 
 
-- Renders the `MultiQuery` an gets a list of `BundleMessage`
+- Renders the `Page` an gets a list of `BlockMessage`
 - Sets the current `Talk.current_reply_keyboard_markup`, which will be used when the chat focus is updated 
 - Updates the messages in telegram (creates new, deletes old, updates existing), depending on the `update_mode` argument
-- Saves a list of `CallbackInfo` for the "MultiQuery" in the `Talk.callback_infos`, that will be used to match incoming `callback_data, or callback id to the appropriate query
+- Saves a list of `CallbackInfo` for the "Page" in the `Talk.callback_infos`, that will be used to match incoming `callback_data, or callback id to the appropriate block
 - Awaits the `RawResponse`
 - Build the `Response` run appropriate callback (`message_callback` or `callback_query`)
 """
@@ -54,8 +54,7 @@ Also, app updates the chat `reply_keyboard_markup` to match the focus talk.
 # - Todo
 """
 1. Флоу комманд 
-2. multi_query -> query, query -> bundle_query 
-3. talk хранит active_query. Есть функция update_active_query. Все вторичные данные лежат внутри active_query, в т.ч. используемые messages. history в todo maybe 
+3. talk хранит active_page. Есть функция update_active_page. Все вторичные данные лежат внутри active_page, в т.ч. используемые messages. history в todo maybe 
 4. Пройтись по разным типичным сценариям ботов и как это будет работать 
 
 """

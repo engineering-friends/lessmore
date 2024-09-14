@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Callable, Optional
 
-from teletalk.models.query import Query
+from teletalk.models.block import Block
 
 
 @dataclass
 class CallbackInfo:
     callback_id: str
     callback: Callable
-    query: Query
+    block: Block

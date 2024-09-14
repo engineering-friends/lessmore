@@ -4,8 +4,8 @@ from aiogram.types import InlineKeyboardMarkup, Message, ReplyKeyboardMarkup
 
 
 @dataclass
-class BundleMessage:
-    """Bundle is a collection of messages grouped together in telegram (like album)"""
+class BlockMessage:
+    """A collection of messages grouped together in telegram (like album)"""
 
     # - Args
 

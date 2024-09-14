@@ -4,11 +4,10 @@ from dataclasses import dataclass
 from typing import Any, Callable, Literal
 
 from aiogram.types import InlineKeyboardMarkup
-from teletalk.models.bundle_message import BundleMessage
-from teletalk.models.query import Query
+from teletalk.models.block_message import BlockMessage
 
 
-class SimpleQuery(Query):
+class SimpleQuery(Block):
     def __init__(self, text: str, buttons: list[Any]):
         self.text = text
         self.buttons = buttons
@@ -29,7 +28,7 @@ class User:
     last_read_comment_id_by_post_id: dict[str, str]
 
 
-class Thread(Query):
+class Thread(Block):
     def __init__(self, chat_id: str, user: User, post_id: str):
         self.chat_id = chat_id
         self.user = user
@@ -40,14 +39,14 @@ class Thread(Query):
         self.is_following = False
         self.tutorial_finished = False
 
-    def render(self, callback_wrapper: Callable) -> BundleMessage:
+    def render(self, callback_wrapper: Callable) -> BlockMessage:
         # - Get post status
 
         post_status: Literal["read", "unread"] = "unread"
 
         # - Get comments for the post
 
-        # - Render the query
+        # - Render the block
 
         return SimpleQuery(
             text="""
@@ -59,17 +58,17 @@ class Thread(Query):
             buttons=[
                 Button(
                     text="🔔Размьютить",
-                    callback=lambda response: (response.root_query.is_mute, response.ask(response.root)),
+                    callback=lambda response: (response.root_block.is_mute, response.ask(response.root)),
                 ),
                 Button(
                     text="⌫ Отписаться",
-                    callback=lambda response: (response.root_query.is_following, response.ask(response.root)),
+                    callback=lambda response: (response.root_block.is_following, response.ask(response.root)),
                 ),
             ],
         ).render(callback_wrapper)
 
 
-# here we run multi query: one query is multiple queries per thread
+# here we run page: one query is multiple queries per thread
 # Обучение
 # - Кидает ссылку на тестовый пост
 # - После коммента появится тред и удаляться сообщения с посылом оставить комментарий
