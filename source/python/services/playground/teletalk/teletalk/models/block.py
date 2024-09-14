@@ -4,7 +4,6 @@ from typing import Any, Callable, List, Optional, Tuple
 
 from aiogram.types import ReplyKeyboardMarkup
 from teletalk.models.block_message import BlockMessage
-from teletalk.models.callback_info import CallbackInfo
 
 
 class Block:
@@ -22,7 +21,7 @@ class Block:
 
         # - State
 
-        self.callback_infos: dict[str, CallbackInfo] = {}
+        self.callback_infos: dict[str, Callable] = {}
         self.rendered: Optional[BlockMessage] = None
 
         # - Tree
@@ -32,7 +31,7 @@ class Block:
 
     def get_callback_id(self, callback: Callable) -> str:
         _id = str(uuid.uuid4())
-        self.callback_infos[_id] = CallbackInfo(callback_id=_id, callback=callback)
+        self.callback_infos[_id] = callback
         return _id
 
     def render(self) -> BlockMessage:
