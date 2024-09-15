@@ -11,16 +11,30 @@ class SimpleBlock(Block):
     def __init__(
         self,
         text: str = "",
-        reply_keyboard_markup: Optional[ReplyKeyboardMarkup] = None,
-        inline_keyboard_markup: Optional[InlineKeyboardMarkup] = None,
+        reply_keyboard_markup: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
+        inline_keyboard_markup: Optional[InlineKeyboardMarkup | list[list[str]]] = None,
         files: list[str] = [],
         message_callback: Optional[Callable] = lambda response: "".join(
             [message.text for message in response.block_messages]
         ),
     ):
         self.text = text
-        self.reply_keyboard_markup = reply_keyboard_markup
-        self.inline_keyboard_markup = inline_keyboard_markup
+
+        if isinstance(reply_keyboard_markup, list):
+            self.reply_keyboard_markup = ReplyKeyboardMarkup(
+                keyboard=[[KeyboardButton(text=text) for text in row] for row in reply_keyboard_markup],
+                one_time_keyboard=True,
+            )
+        else:
+            self.reply_keyboard_markup = reply_keyboard_markup
+
+        if isinstance(inline_keyboard_markup, list):
+            self.inline_keyboard_markup = InlineKeyboardMarkup(
+                inline_keyboard=[[InlineKeyboardButton(text=text) for text in row] for row in inline_keyboard_markup]
+            )
+        else:
+            self.inline_keyboard_markup = inline_keyboard_markup
+
         self.files = files
 
         super().__init__(message_callback=message_callback)

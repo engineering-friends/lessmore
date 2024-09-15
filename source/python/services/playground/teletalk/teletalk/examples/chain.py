@@ -24,19 +24,16 @@ async def starter(response: Response):
 
     button_clicked = await response.ask(
         text="Click any button",
-        reply_keyboard_markup=ReplyKeyboardMarkup(
-            keyboard=[[KeyboardButton(text=text) for text in row] for row in [["A", "B"], ["C", "D", "E"]]]
-        ),
+        reply_keyboard_markup=[["A", "B"], ["C", "D", "E"]],
     )
+
     await response.tell(text=f"You clicked {button_clicked}")
 
     # - Test inline keyboard
 
     button_clicked = await response.ask(
         text="Click any button",
-        inline_keyboard_markup=InlineKeyboardMarkup(
-            inline_keyboard=[[InlineKeyboardButton(text=text) for text in row] for row in [["A", "B"], ["C", "D", "E"]]]
-        ),
+        inline_keyboard_markup=[["A", "B"], ["C", "D", "E"]],
     )
 
     await response.tell(text=f"You clicked {button_clicked}")
