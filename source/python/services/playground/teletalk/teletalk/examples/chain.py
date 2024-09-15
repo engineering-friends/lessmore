@@ -9,7 +9,7 @@ async def starter(response: Response):
     await response.tell(text="I will ask you some questions")
     age = await response.ask(text="How old are you?")
     name = await response.ask(text="What is your name?")
-    await response.tell(text=f"Hello, {name}! You are {age} years old.")
+    await response.tell(text=f"Hello, {name}! You are {age} years old :)")
 
 
 def test():

@@ -46,4 +46,5 @@ dependencies = [
     "google-auth-oauthlib>=1.2.1",
     "google-auth-httplib2>=0.2.0",
     "aiogram>=3",
+    "python-telegram-bot>=21.5",
 ]

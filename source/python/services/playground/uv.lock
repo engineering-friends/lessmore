@@ -1944,6 +1944,7 @@ dependencies = [
     { name = "pynput" },
     { name = "pytest" },
     { name = "python-benedict", extra = ["all"] },
+    { name = "python-telegram-bot" },
     { name = "pytube" },
     { name = "spacy" },
     { name = "telethon" },
@@ -1989,6 +1990,7 @@ requires-dist = [
     { name = "pynput", specifier = ">=1.7.7,<2" },
     { name = "pytest", specifier = ">=8.2.2,<9" },
     { name = "python-benedict", extras = ["all"], specifier = ">=0.33.2,<0.34" },
+    { name = "python-telegram-bot", specifier = ">=21.5" },
     { name = "pytube", specifier = ">=15.0.0,<16" },
     { name = "spacy", specifier = ">=3.7.5,<4" },
     { name = "telethon", specifier = ">=1.36.0,<2" },
@@ -4802,6 +4804,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/87/c7/5e1547c44e31da50a460df93af11a535ace568ef89d7a811069ead340c4a/python-slugify-8.0.4.tar.gz", hash = "sha256:59202371d1d05b54a9e7720c5e038f928f45daaffe41dd10822f3907b937c856", size = 10921 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a4/62/02da182e544a51a5c3ccf4b03ab79df279f9c60c5e82d5e8bec7ca26ac11/python_slugify-8.0.4-py2.py3-none-any.whl", hash = "sha256:276540b79961052b66b7d116620b36518847f52d5fd9e3a70164fc8c50faa6b8", size = 10051 },
+]
+
+[[package]]
+name = "python-telegram-bot"
+version = "21.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "httpx" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/95/7e/b23ca1d8a712085a56132c274fbfe04d5b847a029af1966114c8b7117415/python_telegram_bot-21.5.tar.gz", hash = "sha256:2d679173072cce8d6b49aac2e438d49dbfc01c1a4ef5658828c2a65951ee830b", size = 427686 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4b/d8/f4e6bf4c51fa5aec4cce8189358c536c27425b038fd230ddbbfdba740ee2/python_telegram_bot-21.5-py3-none-any.whl", hash = "sha256:1bbba653477ba164411622b717a0cfe1eb7843da016348e41df97f96c93f578e", size = 648778 },
 ]
 
 [[package]]

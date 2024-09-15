@@ -1,6 +1,7 @@
 from typing import Callable, Optional
 
 from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup
+from telegram.helpers import escape_markdown
 from teletalk.models.block import Block, persist
 from teletalk.models.block_message import BlockMessage
 
@@ -26,7 +27,7 @@ class SimpleBlock(Block):
     @persist
     def render(self) -> BlockMessage:
         return BlockMessage(
-            text=self.text,
+            text=escape_markdown(self.text, version=2),
             reply_keyboard_markup=self.reply_keyboard_markup,
             inline_keyboard_markup=self.inline_keyboard_markup,
             files=self.files,
