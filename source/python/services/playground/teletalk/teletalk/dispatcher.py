@@ -38,9 +38,6 @@ class Dispatcher:
         self,
         response: Response,
     ) -> None:
-        print(response)
-        print(self.app.talks)
-
         # - If callback_query
 
         if response.callback_id:

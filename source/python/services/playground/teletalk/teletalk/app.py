@@ -84,8 +84,6 @@ class App:
 
         self.talks.append(talk)
 
-        print(self.talks)
-
         # - Set talk for the initial response
 
         initial_response.talk = talk
