@@ -2,7 +2,7 @@ import asyncio
 
 from typing import TYPE_CHECKING, Any, Callable, Coroutine, List, Literal, Optional
 
-from aiogram.types import InlineKeyboardMarkup, Message, ReplyKeyboardMarkup
+from aiogram.types import InlineKeyboardMarkup, LinkPreviewOptions, Message, ReplyKeyboardMarkup
 from loguru import logger
 from more_itertools import last
 from teletalk.blocks.simple_block import SimpleBlock
@@ -150,11 +150,13 @@ class Talk:
                 # - Send messages to telegram using aiogram
 
                 message = await self.app.bot.send_message(
-                    entity=block_message.chat_id,
-                    message="\n".join([message.text for message in block_message.messages]),
-                    parse_mode="md",
-                    link_preview=False,
+                    chat_id=block_message.chat_id,
+                    text=block_message.text,
+                    parse_mode="MarkdownV2",
+                    link_preview_options=LinkPreviewOptions(is_disabled=True),
                 )
+
+                # - Add message to the block_message and history
 
                 block_message.messages.append(message)
                 self.history.extend([message])

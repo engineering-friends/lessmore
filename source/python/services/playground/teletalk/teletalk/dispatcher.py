@@ -25,6 +25,7 @@ class Dispatcher:
         - when the buffer is full, builds the response and sends it to the appropriate `Talk` or creates a new `Talk`"""
 
         # - Args
+
         self.app = app
         self.message_starter = message_starter
         self.command_starters = command_starters
@@ -67,10 +68,12 @@ class Dispatcher:
         if response.block_messages:
             assert len(response.block_messages) == 1
 
+            response_block_message = response.block_messages[0]
+
             # - Add the message to the buffer
 
-            self.message_buffers_by_chat_id.setdefault(response.block_message.chat_id, []).extend(
-                response.block_message.messages
+            self.message_buffers_by_chat_id.setdefault(response_block_message.chat_id, []).extend(
+                response_block_message.messages
             )
 
             # - Check if buffer is full
@@ -85,7 +88,7 @@ class Dispatcher:
 
             # - Find focused `Talk` - talk with last message in the chat
 
-            chat_id = response.block_message.chat_id
+            chat_id = response_block_message.chat_id
 
             focused_talk = max(
                 [
@@ -118,7 +121,8 @@ class Dispatcher:
                 if command in self.command_starters:
                     logger.info("Found command", command=command)
                     await self.app.start_new_talk(
-                        starter=self.command_starters[command], initial_response=buffered_response
+                        starter=self.command_starters[command],
+                        initial_response=buffered_response,
                     )
                     return
 
@@ -127,7 +131,10 @@ class Dispatcher:
             # -- If no focused `Talk` found: start a new `Talk` with the message starter
 
             if not focused_talk:
-                await self.app.start_new_talk(starter=self.message_starter, initial_response=buffered_response)
+                await self.app.start_new_talk(
+                    starter=self.message_starter,
+                    initial_response=buffered_response,
+                )
                 return
 
             # -- If focused `Talk` found: send the event to the `Talk`
