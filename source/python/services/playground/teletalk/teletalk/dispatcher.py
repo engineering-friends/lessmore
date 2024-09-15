@@ -54,6 +54,7 @@ class Dispatcher:
 
             if not talk:
                 logger.info("Didn't find the `Talk` by `Response.callback_id`", response=response)
+                return
 
             # - Send the event to the `Talk`
 

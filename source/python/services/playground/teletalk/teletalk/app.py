@@ -113,6 +113,10 @@ class App:
             response=Response(callback_id=callback_query.data),
         )
 
+        # - Answer the callback query, remove highlighted button effect
+
+        await self.bot.answer_callback_query(callback_query.id)
+
     async def on_message(
         self,
         message: Message,

@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, Optional, Tuple
 
-from teletalk.models.block import Block
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from teletalk.models.block import Block, persist
 from teletalk.models.block_message import BlockMessage
 
 
@@ -22,24 +23,37 @@ from teletalk.models.block_message import BlockMessage
 
 """
 
-
-@dataclass
-class Button(Block):
-    text: str
-    callback: Callable
-
-    def render(self) -> BlockMessage:
-        raise NotImplementedError
+#
+# @dataclass
+# class Button(Block):
+#     text: str
+#     callback: Callable
 
 
-class Menu(Block):
-    def __init__(self, buttons: list[Button]):
-        self.buttons = buttons
-
+class InlineKeyboard(Block):
+    def __init__(
+        self,
+        text: str,
+        grid: list[list[Tuple[str, Optional[Callable]]]],
+    ):
+        self.text = text
+        self.grid = grid
         super().__init__()
 
+    @persist
     def render(self) -> BlockMessage:
-        raise NotImplementedError
+        return BlockMessage(
+            text=self.text,
+            inline_keyboard_markup=InlineKeyboardMarkup(
+                inline_keyboard=[
+                    [
+                        InlineKeyboardButton(text=text, callback_data=self.register_callback(callback))
+                        for text, callback in row
+                    ]
+                    for row in self.grid
+                ]
+            ),
+        )
 
 
 back = Button(text="Back", callback=lambda response: response.ask(response.previous))

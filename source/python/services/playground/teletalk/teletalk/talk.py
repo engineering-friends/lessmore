@@ -152,6 +152,7 @@ class Talk:
                 message = await self.app.bot.send_message(
                     chat_id=block_message.chat_id,
                     text=block_message.text,
+                    reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
                     parse_mode="MarkdownV2",
                     link_preview_options=LinkPreviewOptions(is_disabled=True),
                 )
@@ -177,10 +178,12 @@ class Talk:
                 len(old_page_messages) == 1
             ), "Only single message is supported for now"  # todo later: support multiple messages [@marklidenberg]
 
+            block_message = rendered_block_messages[0]
             new_message = await self.app.bot.edit_message_text(
                 chat_id=old_page_messages[0].chat.id,
                 message_id=old_page_messages[0].message_id,
-                text=self.active_page.block_messages[0].text,
+                text=block_message.text,
+                reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
                 parse_mode="MarkdownV2",
                 link_preview_options=LinkPreviewOptions(is_disabled=True),
             )
