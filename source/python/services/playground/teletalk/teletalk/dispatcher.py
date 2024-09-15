@@ -38,21 +38,25 @@ class Dispatcher:
         if response.callback_id:
             # - Find the `Talk` by `Response.callback_id` within the `Block`s
 
-            focused_talk = None
+            talk = None
             for _talk in talks:
                 for block in _talk.active_page.blocks:
                     if block.query_callbacks:
                         for callback_id, callback in block.query_callbacks.items():
                             if callback_id == response.callback_id:
-                                focused_talk = _talk
+                                talk = _talk
                                 break
 
-            if not focused_talk:
+            if not talk:
                 logger.info("Didn't find the `Talk` by `Response.callback_id`", response=response)
 
             # - Send the event to the `Talk`
 
-            await focused_talk.receive_response(response)
+            await talk.receive_response(response)
+
+            # - Return
+
+            return
 
         # - If messages
 
