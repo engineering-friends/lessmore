@@ -24,7 +24,7 @@ class App:
     - A `Talk` is basically a coroutine. When the coroutine is finished, the `Talk` is removed from the `App`
     - The interaction with telegram is done in declarative way: we define the `Page` object (containing the `Block`s) and set current page of the `Talk`, which creates, updates and deletes the appropriate messages, defined by the `Block`s of the `Page`. `Block`s render themselves to `BlockMessage`s, which maybe be converted to the telegram messages.
     - Within the `Talk` flow there are two ways to interact with the user:
-        - `Talk.ask` method, which updates the active `Page` and waits for the `Response`
+        - `Talk.ask` method, which updates the active `Page` and waits for the `Response`, enriches it, and then runs the appropriate callback
         - `Talk.tell` method, which just updates the active `Page`
     - The `Talk` keeps all the messages in the `Talk.history` (that may contain messages out of the current `Talk.active_page`) and the `Talk.active_page` is the page that is currently being displayed to the user
     """

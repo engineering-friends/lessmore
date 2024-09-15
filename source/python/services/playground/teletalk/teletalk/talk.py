@@ -59,11 +59,13 @@ class Talk:
         page: Optional[Page | Block | Response] = None,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
     ) -> Any:
-        # - Build page from the `text`, `files`, `reply_keyboard_markup`, `inline_keyboard_markup` if not provided
+        # - Build the `Page` from the `text`, `files`, `reply_keyboard_markup`, `inline_keyboard_markup` if not provided
 
         # - Run `self.update_active_page`
 
         # - Wait for the `Response` in the `self.input_channel`
+
+        # - Enrich response with all extra data
 
         # - Add user messages to the `self.history`
 

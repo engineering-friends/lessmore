@@ -42,3 +42,9 @@ class Response:
     @property
     def block_message(self) -> Optional[BlockMessage]:
         return last(self.block_messages, default=None)
+
+    async def ask(self, *args, **kwargs):
+        return await self.talk.ask(*args, **kwargs)
+
+    async def tell(self, *args, **kwargs):
+        return await self.talk.tell(*args, **kwargs)
