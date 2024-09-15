@@ -1,6 +1,9 @@
 from typing import TYPE_CHECKING, Callable
 
 from aiogram.types import CallbackQuery, Message
+from loguru import logger
+from more_itertools import last
+from teletalk.models.block_message import BlockMessage
 from teletalk.models.response import Response
 from teletalk.talk import Talk
 
@@ -23,31 +26,98 @@ class Dispatcher:
 
         # - State
 
-        self.message_buffers_by_chat_id: dict[int, list[Message]] = {}
+        self.message_buffers_by_chat_id: dict[str, list[Message]] = {}
 
-    def __call__(
+    async def __call__(
         self,
         talks: list[Talk],
         response: Response,
     ) -> None:
-        # - Find the `Talk` by message_id
-
         # - If callback_query
 
-        # -- If didn't find the `Talk`: skip it
+        if response.callback_id:
+            # - Find the `Talk` by `Response.callback_id` within the `Block`s
 
-        # -- If found: send the event to the `Talk`
+            focused_talk = None
+            for _talk in talks:
+                for block in _talk.active_page.blocks:
+                    if block.query_callbacks:
+                        for callback_id, callback in block.query_callbacks.items():
+                            if callback_id == response.callback_id:
+                                focused_talk = _talk
+                                break
+
+            if not focused_talk:
+                logger.info("Didn't find the `Talk` by `Response.callback_id`", response=response)
+
+            # - Send the event to the `Talk`
+
+            await focused_talk.receive_response(response)
 
         # - If messages
 
-        # -- Add messages to the buffer
+        if response.block_messages:
+            assert len(response.block_messages) == 1
 
-        # -- If buffer is full: close the buffer and build the `Response` with the buffer
+            # - Add the message to the buffer
 
-        # --- If a command - start a new `Talk` with the command starter
+            self.message_buffers_by_chat_id.setdefault(response.block_message.chat_id, []).extend(
+                response.block_message.messages
+            )
 
-        # --- If not a command and the `Talk` is found: send the event to the `Talk`
+            # - Check if buffer is full
 
-        # --- If not a command and the `Talk` is not found: start a new `Talk` with the message starter
+            is_full = True  # make properly later
 
-        pass
+            # - Return if buffer is not full
+
+            if not is_full:
+                logger.info("Buffer is not full, keep waiting", response=response)
+                return
+
+            # - Find focused `Talk` - talk with last message in the chat
+
+            chat_id = response.block_message.chat_id
+
+            focused_talk = max(
+                [talk for talk in talks if [message for message in talk.history if message.chat.id == chat_id]],
+                key=lambda talk: last([message for message in talk.history if message.chat.id == chat_id]).date,
+                default=None,
+            )
+
+            # - Close the buffer and build the `Response` with the buffer
+
+            buffer = self.message_buffers_by_chat_id.pop(chat_id)
+
+            buffered_response = Response(
+                block_messages=[
+                    BlockMessage(
+                        chat_id=chat_id,
+                        text="\n".join([message.text for message in buffer]),
+                        messages=buffer,
+                    )
+                ]
+            )  # todo later: properly collect block message from the buffer [@marklidenberg]
+
+            # - Process command
+
+            if buffer[0].text.startswith("/"):
+                command = buffer[0].text.split()[0][1:]
+                if command in self.command_starters:
+                    logger.info("Found command", command=command)
+                    await focused_talk.app.start_new_talk(
+                        starter=self.command_starters[command], initial_response=buffered_response
+                    )
+                    return
+
+            # - Process simple message
+
+            # -- If no focused `Talk` found: start a new `Talk` with the message starter
+
+            if not focused_talk:
+                await focused_talk.app.start_new_talk(starter=self.message_starter, initial_response=buffered_response)
+                return
+
+            # -- If focused `Talk` found: send the event to the `Talk`
+
+            await focused_talk.receive_response(response=buffered_response)
