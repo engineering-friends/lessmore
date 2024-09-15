@@ -61,7 +61,7 @@ class Talk:
             InlineKeyboardMarkup
         ] = None,  # will return the button value if passed this way
         page: Optional[Page | Block | Response] = None,
-        update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
+        update_mode: Literal["inplace", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
     ) -> Any:
         # - Build the `Page` from the `text`, `files`, `reply_keyboard_markup`, `inline_keyboard_markup` if not provided
@@ -160,6 +160,43 @@ class Talk:
 
                 block_message.messages.append(message)
                 self.history.extend([message])
+        elif update_mode == "inplace":
+            # - Update the messages in line with `update_mode`. Add new messages to `self.history`
+
+            assert self.active_page, "Active page is not set. Can't use inplace update mode"
+
+            old_page_messages = self.active_page.messages
+
+            self.active_page = page
+
+            assert len(old_page_messages) == sum(
+                [block_message.message_count for block_message in rendered_block_messages]
+            ), "Page messages length mismatch. Can't use inplace update mode"
+
+            assert (
+                len(old_page_messages) == 1
+            ), "Only single message is supported for now"  # todo later: support multiple messages [@marklidenberg]
+
+            new_message = await self.app.bot.edit_message_text(
+                chat_id=old_page_messages[0].chat.id,
+                message_id=old_page_messages[0].message_id,
+                text=self.active_page.block_messages[0].text,
+                parse_mode="MarkdownV2",
+                link_preview_options=LinkPreviewOptions(is_disabled=True),
+            )
+
+            # - Update blocks and history
+
+            rendered_block_messages[0].messages = [
+                message
+                for message in rendered_block_messages[0].messages
+                if message.message_id != old_page_messages[0].message_id
+            ]
+            rendered_block_messages[0].messages.append(new_message)
+            self.history = [
+                message for message in self.history if message.message_id != old_page_messages[0].message_id
+            ]
+            self.history.append(new_message)
         else:
             raise Exception(f"Not implemented update_mode: {update_mode}")
 

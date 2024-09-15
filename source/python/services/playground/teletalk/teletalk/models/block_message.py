@@ -19,3 +19,7 @@ class BlockMessage:
     # - State
 
     messages: list[Message] = field(default_factory=list)  # aiogram messages
+
+    @property
+    def message_count(self) -> int:
+        return 1 if not self.files else len(self.files)

@@ -8,7 +8,7 @@ from teletalk.test_deps.test_deps import TestDeps
 async def starter(response: Response):
     await response.tell(text="I will ask you some questions")
     age = await response.ask(text="How old are you?")
-    name = await response.ask(text="What is your name?")
+    name = await response.ask(text="What is your name?", update_mode="inplace")
     await response.tell(text=f"Hello, {name}! You are {age} years old :)")
 
 
