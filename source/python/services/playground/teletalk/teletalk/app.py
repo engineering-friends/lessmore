@@ -37,7 +37,7 @@ class App:
         bot: Bot | str,
         message_starter: Callable,
         command_starters: dict[str, Callable] = {},
-        dispatcher: Optional[Callable] = None,
+        dispatcher: Optional[Callable] = None,  # dispatcher is like a low-level `Talk`
         default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
         commands: Optional[list[BotCommand]] = None,
     ):
@@ -53,6 +53,7 @@ class App:
         self.message_starter = message_starter
         self.command_starters = command_starters
         self.dispatcher = dispatcher or TeletalkDispatcher(
+            app=self,
             message_starter=message_starter,
             command_starters=command_starters,
         )
@@ -120,9 +121,9 @@ class App:
             response=Response(
                 block_messages=[
                     BlockMessage(
+                        chat_id=str(message.chat.id),
                         messages=[message],
                         text=message.text,
-                        files=message.media,
                     )
                 ]
             ),

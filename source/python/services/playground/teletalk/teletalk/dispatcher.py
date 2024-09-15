@@ -8,9 +8,14 @@ from teletalk.models.response import Response
 from teletalk.talk import Talk
 
 
+if TYPE_CHECKING:
+    from teletalk.app import App
+
+
 class Dispatcher:
     def __init__(
         self,
+        app: "App",
         message_starter: Callable,
         command_starters: dict[str, Callable] = {},
     ):
@@ -20,7 +25,7 @@ class Dispatcher:
         - when the buffer is full, builds the response and sends it to the appropriate `Talk` or creates a new `Talk`"""
 
         # - Args
-
+        self.app = app
         self.message_starter = message_starter
         self.command_starters = command_starters
 
@@ -30,7 +35,6 @@ class Dispatcher:
 
     async def __call__(
         self,
-        talks: list[Talk],
         response: Response,
     ) -> None:
         # - If callback_query
@@ -39,7 +43,7 @@ class Dispatcher:
             # - Find the `Talk` by `Response.callback_id` within the `Block`s
 
             talk = None
-            for _talk in talks:
+            for _talk in self.app.talks:
                 for block in _talk.active_page.blocks:
                     if block.query_callbacks:
                         for callback_id, callback in block.query_callbacks.items():
@@ -84,7 +88,11 @@ class Dispatcher:
             chat_id = response.block_message.chat_id
 
             focused_talk = max(
-                [talk for talk in talks if [message for message in talk.history if message.chat.id == chat_id]],
+                [
+                    talk
+                    for talk in self.app.talks
+                    if [message for message in talk.history if message.chat.id == chat_id]
+                ],
                 key=lambda talk: last([message for message in talk.history if message.chat.id == chat_id]).date,
                 default=None,
             )
@@ -109,7 +117,7 @@ class Dispatcher:
                 command = buffer[0].text.split()[0][1:]
                 if command in self.command_starters:
                     logger.info("Found command", command=command)
-                    await focused_talk.app.start_new_talk(
+                    await self.app.start_new_talk(
                         starter=self.command_starters[command], initial_response=buffered_response
                     )
                     return
@@ -119,7 +127,7 @@ class Dispatcher:
             # -- If no focused `Talk` found: start a new `Talk` with the message starter
 
             if not focused_talk:
-                await focused_talk.app.start_new_talk(starter=self.message_starter, initial_response=buffered_response)
+                await self.app.start_new_talk(starter=self.message_starter, initial_response=buffered_response)
                 return
 
             # -- If focused `Talk` found: send the event to the `Talk`
