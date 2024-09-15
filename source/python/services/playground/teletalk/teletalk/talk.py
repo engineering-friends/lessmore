@@ -62,7 +62,7 @@ class Talk:
         ] = None,  # will return the button value if passed this way
         page: Optional[Page | Block | Response] = None,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
-        default_chat_id: str = "",  # usually passed from the response
+        default_chat_id: int = 0,  # usually passed from the response
     ) -> Any:
         # - Build the `Page` from the `text`, `files`, `reply_keyboard_markup`, `inline_keyboard_markup` if not provided
 
@@ -129,7 +129,7 @@ class Talk:
         self,
         page: Page,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
-        default_chat_id: str = "",
+        default_chat_id: int = 0,
     ):
         # - Render all the blocks
 
@@ -177,7 +177,7 @@ class Talk:
         files: Optional[list[str]] = None,
         page: Optional[Page | Block | Response] = None,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
-        default_chat_id: str = "",  # usually passed from the response
+        default_chat_id: int = 0,  # usually passed from the response
     ) -> None:
         # - The interface to send custom messages without awaiting any response
 

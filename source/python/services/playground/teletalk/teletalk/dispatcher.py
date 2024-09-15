@@ -32,12 +32,15 @@ class Dispatcher:
 
         # - State
 
-        self.message_buffers_by_chat_id: dict[str, list[Message]] = {}
+        self.message_buffers_by_chat_id: dict[int, list[Message]] = {}
 
     async def __call__(
         self,
         response: Response,
     ) -> None:
+        print(response)
+        print(self.app.talks)
+
         # - If callback_query
 
         if response.callback_id:

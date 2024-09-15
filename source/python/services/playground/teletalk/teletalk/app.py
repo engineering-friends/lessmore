@@ -84,6 +84,8 @@ class App:
 
         self.talks.append(talk)
 
+        print(self.talks)
+
         # - Set talk for the initial response
 
         initial_response.talk = talk
@@ -123,7 +125,7 @@ class App:
             response=Response(
                 block_messages=[
                     BlockMessage(
-                        chat_id=str(message.chat.id),
+                        chat_id=message.chat.id,
                         messages=[message],
                         text=message.text,
                     )

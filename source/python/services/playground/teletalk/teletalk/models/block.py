@@ -28,11 +28,11 @@ class Block:
         return _id
 
     @property
-    def chat_id(self) -> str:
+    def chat_id(self) -> int:
         if not self.rendered or not self.rendered.messages:
-            return ""
+            return 0
 
-        return str(self.rendered.messages[0].chat.id)
+        return self.rendered.messages[0].chat.id
 
     def getattr(self, name: str) -> Any:
         # hack to cache the render method
