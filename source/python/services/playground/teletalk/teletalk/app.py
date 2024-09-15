@@ -19,7 +19,7 @@ class App:
     Features:
     - `start_polling` is the main entry point for the application
     - Stores, manages and creates new `Talk` instances
-    - Handles message updates and callback queries: update chat focus and sends the `Response` to the dispatcher
+    - Handles message updates and callback queries: sends the `Response` to the dispatcher
 
 
     The flow.
@@ -63,7 +63,6 @@ class App:
         # - State
 
         self.talks: list[Talk] = []
-        self._focus_talks: dict[str, Talk] = {}  # chat_id -> Talk
 
     async def start_new_talk(
         self,
@@ -105,12 +104,6 @@ class App:
         self,
         message: Message,
     ) -> None:
-        # - If the message is from the bot, update the chat talk focus and return
-
-        if message.from_user.is_bot:
-            await self._update_focus(message.chat.id)
-            return
-
         # - Otherwise, build the `Response` with a flattened `BlockMessage` and send it to the `self.dispatcher`
 
         await self.dispatcher(
@@ -127,26 +120,6 @@ class App:
             ),
         )
 
-    async def on_delete_message(
-        self,
-        message: Message,
-    ) -> None:
-        # - If the message is from the bot, update the chat talk focus and return
-
-        if message.from_user.is_bot:
-            await self._update_focus(message.chat.id)
-
-    async def _update_focus(self, chat_id: int) -> None:
-        # - Set the chat menu as the menu of the talk with the latest message
-
-        latest_talk = max(
-            (talk for talk in self.talks if any(msg.chat.id == chat_id for msg in talk.history)),
-            key=lambda talk: max(msg.date for msg in talk.history if msg.chat.id == chat_id),
-            default=None,
-        )
-        if latest_talk:
-            self._focus_talks[str(chat_id)] = latest_talk
-
     async def start_polling(self) -> None:
         # - Init aiogram dispatcher
 
@@ -156,7 +129,6 @@ class App:
 
         aiogram_dispatcher.callback_query.register(self.on_callback_query)
         aiogram_dispatcher.message.register(self.on_message)
-        aiogram_dispatcher.message.register(self.on_delete_message)
 
         # - Set commands for the bot
 

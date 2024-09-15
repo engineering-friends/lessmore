@@ -7,15 +7,6 @@ from aiogram.types import ReplyKeyboardMarkup
 from teletalk.models.block_message import BlockMessage
 
 
-def cached(func):
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        setattr(self, f"_{func.__name__}", func(self, *args, **kwargs))
-        return getattr(self, f"_{func.__name__}")
-
-    return wrapper
-
-
 class Block:
     """A collection of messages grouped together in telegram (like album)"""
 
@@ -44,6 +35,14 @@ class Block:
         self.query_callbacks[_id] = callback
         return _id
 
-    @cached
+    def getattr(self, name: str) -> Any:
+        # hack to cache the render method
+        if name == "render":
+            value = object.__getattribute__(self, name)()
+            self.rendered = value
+            return value
+        else:
+            return object.__getattribute__(self, name)
+
     def render(self) -> BlockMessage:
         raise NotImplementedError
