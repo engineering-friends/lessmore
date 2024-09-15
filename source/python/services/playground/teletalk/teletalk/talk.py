@@ -3,7 +3,11 @@ import asyncio
 from typing import TYPE_CHECKING, Any, Callable, Coroutine, List, Literal, Optional
 
 from aiogram.types import InlineKeyboardMarkup, Message, ReplyKeyboardMarkup
+from loguru import logger
+from more_itertools import last
+from teletalk.blocks.simple_block import SimpleBlock
 from teletalk.models.block import Block
+from teletalk.models.block_message import BlockMessage
 from teletalk.models.page import Page
 from teletalk.models.response import Response
 
@@ -25,7 +29,7 @@ class Talk:
         Features:
         - Talk keeps track of all the message history
         - Talk handles questions for the user
-        - Talk may receive response from outside (usually, from the supervisor)
+        - Talk may receive response from the dispatcher
 
         """
 
@@ -61,17 +65,60 @@ class Talk:
     ) -> Any:
         # - Build the `Page` from the `text`, `files`, `reply_keyboard_markup`, `inline_keyboard_markup` if not provided
 
+        if not isinstance(page, Page):
+            page = Page(
+                blocks=[
+                    SimpleBlock(
+                        text=text,
+                        files=files,
+                        reply_keyboard_markup=reply_keyboard_markup,
+                        inline_keyboard_markup=inline_keyboard_markup,
+                    )
+                ]
+            )
+
         # - Run `self.update_active_page`
+
+        self.update_active_page(page=page, update_mode=update_mode)
 
         # - Wait for the `Response` in the `self.input_channel`
 
+        response = await self.input_channel.get()
+
         # - Enrich response with all extra data
+
+        response.talk = self
+        response.root_page = self.active_page
+        response.root_block = self.active_page.blocks[0] if self.active_page.blocks else None
+        response.block = response.root_block
 
         # - Add user messages to the `self.history`
 
+        for block_message in response.block_messages:
+            self.history.extend(block_message.messages)
+
         # - Find the appropriate callback from the `self.page` and their blocks and run it
 
-        pass
+        if response.callback_id:
+            for block in self.active_page.blocks:
+                if response.callback_id in block.query_callbacks:
+                    return await block.query_callbacks[response.callback_id](response)
+            raise Exception(f"Callback not found: {response.callback_id}")
+        else:
+            chat_id = response.block_messages[0].chat_id
+
+            # - Find the last block_message in the chat
+
+            last_block = last([block for block in self.active_page.blocks if block.chat_id == chat_id])
+
+            # - Run the last block_message callback
+
+            if last_block.message_callback:
+                return await last_block.message_callback(response)
+            else:
+                logger.info("No message callback found")
+
+        return response
 
     def update_active_page(
         self,
@@ -80,9 +127,40 @@ class Talk:
     ):
         # - Render all the blocks
 
+        rendered_blocks = [block.render() for block in page.blocks]
+
         # - Update the messages in line with `update_mode`. Add new messages to `self.history`
 
-        pass
+        if update_mode == "create_new":
+            self.active_page = page
+            for block_message in rendered_blocks:
+                self.history.extend(block_message.messages)
+        else:
+            raise Exception(f"Not implemented update_mode: {update_mode}")
+        # elif update_mode == "inplace":
+        #     if self.active_page:
+        #         for i, block_message in enumerate(rendered_blocks):
+        #             if i < len(self.active_page.blocks):
+        #                 self.active_page.blocks[i] = page.blocks[i]
+        #                 self.history = [
+        #                     m for m in self.history if m not in self.active_page.blocks[i].rendered.messages
+        #                 ]
+        #                 self.history.extend(block_message.messages)
+        #             else:
+        #                 self.active_page.blocks.append(page.blocks[i])
+        #                 self.history.extend(block_message.messages)
+        #     else:
+        #         self.active_page = page
+        #         for block_message in rendered_blocks:
+        #             self.history.extend(block_message.messages)
+        # elif update_mode == "inplace_recent":
+        #     if self.active_page and self.active_page.blocks:
+        #         self.active_page.blocks[-1] = page.blocks[0]
+        #         self.history = [m for m in self.history if m not in self.active_page.blocks[-1].rendered.messages]
+        #         self.history.extend(rendered_blocks[0].messages)
+        #     else:
+        #         self.active_page = page
+        #         self.history.extend(rendered_blocks[0].messages)
 
     async def receive_response(
         self,
@@ -90,7 +168,7 @@ class Talk:
     ):
         # - Add response to the input channel
 
-        pass
+        await self.input_channel.put(response)
 
     async def tell(
         self,
@@ -101,4 +179,25 @@ class Talk:
     ) -> None:
         # - The interface to send custom messages without awaiting any response
 
-        pass
+        if not isinstance(page, Page):
+            page = Page(
+                blocks=[
+                    SimpleBlock(
+                        text=text,
+                        files=files,
+                    )
+                ]
+            )
+
+        self.update_active_page(page=page, update_mode=update_mode)
+
+    async def start_new_talk(
+        self,
+        starter: Callable,
+        initial_response: Optional[Response] = None,
+    ):
+        return await self.app.start_new_talk(
+            starter=starter,
+            initial_response=initial_response,
+            parent_talk=self,
+        )

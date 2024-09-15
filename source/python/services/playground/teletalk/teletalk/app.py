@@ -68,6 +68,7 @@ class App:
         self,
         starter: Callable,
         initial_response: Optional[Response] = None,
+        parent_talk: Optional[Talk] = None,
     ):
         # - Create the talk
 
@@ -75,6 +76,11 @@ class App:
             coroutine=starter(initial_response),
             app=self,
         )
+
+        if parent_talk:
+            talk.parent = parent_talk
+            parent_talk.children.append(talk)
+
         self.talks.append(talk)
 
         # - Run the starter and wait for the result
@@ -86,6 +92,9 @@ class App:
         # - Remove the talk
 
         logger.info("Removing talk", talk=talk)
+
+        if talk.parent:
+            talk.parent.children.remove(talk)
 
         self.talks.remove(talk)
 
@@ -111,7 +120,6 @@ class App:
             response=Response(
                 block_messages=[
                     BlockMessage(
-                        chat_id=str(message.chat.id),
                         messages=[message],
                         text=message.text,
                         files=message.media,

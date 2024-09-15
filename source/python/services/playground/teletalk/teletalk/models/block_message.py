@@ -10,7 +10,6 @@ class BlockMessage:
 
     # - Args
 
-    chat_id: str
     text: str = ""
     reply_keyboard_markup: Optional[ReplyKeyboardMarkup] = None
     inline_keyboard_markup: Optional[InlineKeyboardMarkup] = None

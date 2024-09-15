@@ -10,18 +10,10 @@ from teletalk.models.block_message import BlockMessage
 class Block:
     """A collection of messages grouped together in telegram (like album)"""
 
-    def __init__(
-        self,
-        chat_id: str = "",
-        message_callback: Optional[Callable] = None,  # def message_callback(response: Response) -> None
-    ):
-        # - Args
-
-        self.chat_id = chat_id
-        self.message_callback: Optional[Callable] = message_callback
-
+    def __init__(self):
         # - State
 
+        self.message_callback: Optional[Callable] = None
         self.query_callbacks: dict[str, Callable] = {}
         self.rendered: Optional[BlockMessage] = None
 
@@ -34,6 +26,13 @@ class Block:
         _id = str(uuid.uuid4())
         self.query_callbacks[_id] = callback
         return _id
+
+    @property
+    def chat_id(self) -> str:
+        if not self.rendered or not self.rendered.messages:
+            return ""
+
+        return str(self.rendered.messages[0].chat.id)
 
     def getattr(self, name: str) -> Any:
         # hack to cache the render method

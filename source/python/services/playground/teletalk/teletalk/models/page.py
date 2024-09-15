@@ -5,8 +5,8 @@ from teletalk.models.block_message import BlockMessage
 
 
 class Page:
-    def __init__(self):
-        self.blocks: list[Block] = []
+    def __init__(self, blocks: list[Block] = []):
+        self.blocks: list[Block] = blocks
 
     def render(self) -> list[BlockMessage]:
         return [block.render() for block in self.blocks]
