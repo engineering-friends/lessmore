@@ -63,6 +63,7 @@ class SimpleBlock(Block):
                     InlineKeyboardButton(
                         text=button.text,
                         callback_data=self.register_callback(button_callback(text=button.text)),
+                        url=button.url,
                     )
                     for button in row
                 ]
