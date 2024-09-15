@@ -8,8 +8,9 @@ from aiogram.types import InlineKeyboardMarkup, Message, ReplyKeyboardMarkup
 class BlockMessage:
     """A collection of messages grouped together in telegram (like album)"""
 
-    # - Args
+    # - Contents
 
+    chat_id: str  # always tied to the chat
     text: str = ""
     reply_keyboard_markup: Optional[ReplyKeyboardMarkup] = None
     inline_keyboard_markup: Optional[InlineKeyboardMarkup] = None

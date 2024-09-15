@@ -79,7 +79,7 @@ class Talk:
 
         # - Run `self.update_active_page`
 
-        self.update_active_page(page=page, update_mode=update_mode)
+        await self.update_active_page(page=page, update_mode=update_mode)
 
         # - Wait for the `Response` in the `self.input_channel`
 
@@ -120,7 +120,7 @@ class Talk:
 
         return response
 
-    def update_active_page(
+    async def update_active_page(
         self,
         page: Page,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
@@ -134,33 +134,19 @@ class Talk:
         if update_mode == "create_new":
             self.active_page = page
             for block_message in rendered_blocks:
-                self.history.extend(block_message.messages)
+                # - Send messages to telegram using aiogram
+
+                message = await self.app.bot.send_message(
+                    entity=block_message.chat_id,
+                    message="\n".join([message.text for message in block_message.messages]),
+                    parse_mode="md",
+                    link_preview=False,
+                )
+
+                block_message.messages.append(message)
+                self.history.extend([message])
         else:
             raise Exception(f"Not implemented update_mode: {update_mode}")
-        # elif update_mode == "inplace":
-        #     if self.active_page:
-        #         for i, block_message in enumerate(rendered_blocks):
-        #             if i < len(self.active_page.blocks):
-        #                 self.active_page.blocks[i] = page.blocks[i]
-        #                 self.history = [
-        #                     m for m in self.history if m not in self.active_page.blocks[i].rendered.messages
-        #                 ]
-        #                 self.history.extend(block_message.messages)
-        #             else:
-        #                 self.active_page.blocks.append(page.blocks[i])
-        #                 self.history.extend(block_message.messages)
-        #     else:
-        #         self.active_page = page
-        #         for block_message in rendered_blocks:
-        #             self.history.extend(block_message.messages)
-        # elif update_mode == "inplace_recent":
-        #     if self.active_page and self.active_page.blocks:
-        #         self.active_page.blocks[-1] = page.blocks[0]
-        #         self.history = [m for m in self.history if m not in self.active_page.blocks[-1].rendered.messages]
-        #         self.history.extend(rendered_blocks[0].messages)
-        #     else:
-        #         self.active_page = page
-        #         self.history.extend(rendered_blocks[0].messages)
 
     async def receive_response(
         self,
@@ -189,7 +175,7 @@ class Talk:
                 ]
             )
 
-        self.update_active_page(page=page, update_mode=update_mode)
+        await self.update_active_page(page=page, update_mode=update_mode)
 
     async def start_new_talk(
         self,
