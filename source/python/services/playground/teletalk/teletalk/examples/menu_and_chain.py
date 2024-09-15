@@ -1,21 +1,31 @@
 from dataclasses import dataclass
 from typing import Callable
 
+from teletalk.models.block import Block
+from teletalk.models.block_message import BlockMessage
 from teletalk.models.response import Response
 
 
 @dataclass
-class Button:
+class Button(Block):
     text: str
     callback: Callable
 
+    def render(self) -> BlockMessage:
+        raise NotImplementedError
 
-class Menu:
+
+class Menu(Block):
     def __init__(self, buttons: list[Button]):
         self.buttons = buttons
 
+        super().__init__()
 
-async def a(response: Response):
+    def render(self) -> BlockMessage:
+        raise NotImplementedError
+
+
+async def chain(response: Response):
     # - Update menu in processing mode
 
     await response.tell(text="Answer the questions...", update_mode="inplace")
@@ -28,7 +38,7 @@ async def a(response: Response):
 
     # - Go back to the menu, creating a new menu message
 
-    await response.ask(response.root)
+    await response.ask(page=response.root)
 
 
-starter = lambda response: response.ask(Menu([Button(text="A", callback=a)]))
+starter = lambda response: response.ask(Menu([Button(text="Chain", callback=chain)]))
