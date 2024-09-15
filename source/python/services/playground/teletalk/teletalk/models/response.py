@@ -16,15 +16,16 @@ if TYPE_CHECKING:
 
 @dataclass
 class Response:
+    # - Raw response
+
+    callback_id: str = ""
+    block_messages: list[BlockMessage] = field(default_factory=list)
+
     # - Pages and Blocks
 
     root_page: Optional[Page] = None  # root Block is the Block that spawned the whole conversation
     root_block: Optional[Block] = None
     block: Optional[Block] = None
-
-    # - Block messages
-
-    block_messages: list[BlockMessage] = field(default_factory=list)
 
     # - Talk
 

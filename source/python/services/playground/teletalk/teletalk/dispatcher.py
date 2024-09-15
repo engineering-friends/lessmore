@@ -10,10 +10,10 @@ class Dispatcher:
         message_starter: Callable,
         command_starters: dict[str, Callable] = {},
     ):
-        """Dispatcher receives the raw response from the user and dispatches it to the appropriate talk.
-        - receives the raw response
+        """Dispatcher receives the `Response` from the user and dispatches it to the appropriate `Talk`.
+        - receives the `Response`
         - collects the messages in a buffer
-        - when the buffer is full, builds the response and sends it to the appropriate talk or creates a new talk"""
+        - when the buffer is full, builds the response and sends it to the appropriate `Talk` or creates a new `Talk`"""
 
         # - Args
 
@@ -29,20 +29,20 @@ class Dispatcher:
 
         # - If callback_query
 
-        # -- If didn't find the talk: skip it
+        # -- If didn't find the `Talk`: skip it
 
-        # -- If found: send the event to the talk
+        # -- If found: send the event to the `Talk`
 
         # - If messages
 
         # -- Add messages to the buffer
 
-        # -- If buffer is full: close the buffer and build the response
+        # -- If buffer is full: close the buffer and build the `Response` with the buffer
 
-        # --- If a command - start a new talk with the command starter
+        # --- If a command - start a new `Talk` with the command starter
 
-        # --- If not a command and the `Talk" is found: send the event to the `Talk`
+        # --- If not a command and the `Talk` is found: send the event to the `Talk`
 
-        # --- If not a command and the `Talk` is not found: start a new talk with the message starter
+        # --- If not a command and the `Talk` is not found: start a new `Talk` with the message starter
 
         pass

@@ -46,7 +46,7 @@ class Talk:
 
         # - Input channel for communication
 
-        self.input_channel = asyncio.Queue()  # a queue of input `RawResponse` objects
+        self.input_channel = asyncio.Queue()  # a queue of input `Response` objects
 
     async def ask(
         self,
