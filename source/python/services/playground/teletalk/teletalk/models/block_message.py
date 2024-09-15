@@ -10,7 +10,7 @@ class BlockMessage:
 
     # - Contents
 
-    chat_id: str  # always tied to the chat
+    chat_id: str = ""  # can be specified in the constructor, or will be taken from the current chat
     text: str = ""
     reply_keyboard_markup: Optional[ReplyKeyboardMarkup] = None
     inline_keyboard_markup: Optional[InlineKeyboardMarkup] = None

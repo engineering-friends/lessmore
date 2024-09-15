@@ -84,6 +84,10 @@ class App:
 
         self.talks.append(talk)
 
+        # - Set talk for the initial response
+
+        initial_response.talk = talk
+
         # - Run the starter and wait for the result
 
         logger.info("Running talk", talk=talk)
@@ -106,7 +110,6 @@ class App:
         # - Build the `Response` and send it to the dispatcher
 
         await self.dispatcher(
-            talks=self.talks,
             response=Response(callback_id=callback_query.data),
         )
 
@@ -117,7 +120,6 @@ class App:
         # - Otherwise, build the `Response` with a flattened `BlockMessage` and send it to the `self.dispatcher`
 
         await self.dispatcher(
-            talks=self.talks,
             response=Response(
                 block_messages=[
                     BlockMessage(

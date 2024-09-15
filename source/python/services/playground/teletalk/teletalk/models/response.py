@@ -37,14 +37,27 @@ class Response:
     previous: Optional[Response] = None
     next: Optional[Response] = None
 
+    def chat_id(self):
+        chat_ids = set([block_message.chat_id for block_message in self.block_messages])
+        assert len(chat_ids) == 1, "Chat ids are not the same"
+        return chat_ids.pop()
+
     # - Syntax sugar
 
-    @property
-    def block_message(self) -> Optional[BlockMessage]:
-        return last(self.block_messages, default=None)
-
     async def ask(self, *args, **kwargs):
+        # - Set default chat id from the response chat
+
+        kwargs["default_chat_id"] = kwargs.pop("default_chat_id", self.chat_id())
+
+        # - Ask
+
         return await self.talk.ask(*args, **kwargs)
 
     async def tell(self, *args, **kwargs):
+        # - Set default chat id from the response chat
+
+        kwargs["default_chat_id"] = kwargs.pop("default_chat_id", self.chat_id())
+
+        # - Tell the talk
+
         return await self.talk.tell(*args, **kwargs)

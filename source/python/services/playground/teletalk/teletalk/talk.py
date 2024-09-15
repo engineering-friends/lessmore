@@ -62,6 +62,7 @@ class Talk:
         ] = None,  # will return the button value if passed this way
         page: Optional[Page | Block | Response] = None,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
+        default_chat_id: str = "",  # usually passed from the response
     ) -> Any:
         # - Build the `Page` from the `text`, `files`, `reply_keyboard_markup`, `inline_keyboard_markup` if not provided
 
@@ -79,7 +80,11 @@ class Talk:
 
         # - Run `self.update_active_page`
 
-        await self.update_active_page(page=page, update_mode=update_mode)
+        await self.update_active_page(
+            page=page,
+            update_mode=update_mode,
+            default_chat_id=default_chat_id,
+        )
 
         # - Wait for the `Response` in the `self.input_channel`
 
@@ -124,16 +129,24 @@ class Talk:
         self,
         page: Page,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
+        default_chat_id: str = "",
     ):
         # - Render all the blocks
 
-        rendered_blocks = [block.render() for block in page.blocks]
+        rendered_block_messages = [block.render() for block in page.blocks]
+
+        # - Set chat_id for the blocks that don't have it
+
+        for block_message in rendered_block_messages:
+            if not block_message.chat_id:
+                block_message.chat_id = default_chat_id
+            assert block_message.chat_id, "Block Message has no chat_id"
 
         # - Update the messages in line with `update_mode`. Add new messages to `self.history`
 
         if update_mode == "create_new":
             self.active_page = page
-            for block_message in rendered_blocks:
+            for block_message in rendered_block_messages:
                 # - Send messages to telegram using aiogram
 
                 message = await self.app.bot.send_message(
@@ -162,6 +175,7 @@ class Talk:
         files: Optional[list[str]] = None,
         page: Optional[Page | Block | Response] = None,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
+        default_chat_id: str = "",  # usually passed from the response
     ) -> None:
         # - The interface to send custom messages without awaiting any response
 
@@ -175,7 +189,11 @@ class Talk:
                 ]
             )
 
-        await self.update_active_page(page=page, update_mode=update_mode)
+        await self.update_active_page(
+            page=page,
+            update_mode=update_mode,
+            default_chat_id=default_chat_id,
+        )
 
     async def start_new_talk(
         self,
