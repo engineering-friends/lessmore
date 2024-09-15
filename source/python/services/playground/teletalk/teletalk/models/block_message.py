@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import Optional
 
 from aiogram.types import InlineKeyboardMarkup, Message, ReplyKeyboardMarkup
 
@@ -10,10 +11,10 @@ class BlockMessage:
     # - Args
 
     chat_id: str
-    text: str
-    reply_keyboard_markup: ReplyKeyboardMarkup
-    inline_keyboard_markup: InlineKeyboardMarkup
-    files: list[str]
+    text: str = ""
+    reply_keyboard_markup: Optional[ReplyKeyboardMarkup] = None
+    inline_keyboard_markup: Optional[InlineKeyboardMarkup] = None
+    files: list[str] = field(default_factory=list)
 
     # - State
 

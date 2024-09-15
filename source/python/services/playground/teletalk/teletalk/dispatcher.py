@@ -1,7 +1,8 @@
-from typing import Callable
+from typing import TYPE_CHECKING, Callable
 
 from aiogram.types import CallbackQuery, Message
 from teletalk.models.response import Response
+from teletalk.talk import Talk
 
 
 class Dispatcher:
@@ -24,7 +25,11 @@ class Dispatcher:
 
         self.message_buffers_by_chat_id: dict[int, list[Message]] = {}
 
-    def __call__(self, response: Response) -> None:
+    def __call__(
+        self,
+        talks: list[Talk],
+        response: Response,
+    ) -> None:
         # - Find the `Talk` by message_id
 
         # - If callback_query

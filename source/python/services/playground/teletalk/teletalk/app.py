@@ -6,6 +6,9 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand, CallbackQuery, Message
+from loguru import logger
+from teletalk.dispatcher import Dispatcher as TeletalkDispatcher
+from teletalk.models.block_message import BlockMessage
 from teletalk.models.response import Response
 from teletalk.talk import Talk
 
@@ -29,11 +32,38 @@ class App:
     - The `Talk` keeps all the messages in the `Talk.history` (that may contain messages out of the current `Talk.active_page`) and the `Talk.active_page` is the page that is currently being displayed to the user
     """
 
-    def __init__(self):
+    def __init__(
+        self,
+        bot: Bot | str,
+        message_starter: Callable,
+        command_starters: dict[str, Callable] = {},
+        dispatcher: Optional[Callable] = None,
+        default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
+        commands: Optional[list[BotCommand]] = None,
+    ):
+        # - Args
+
+        if isinstance(bot, Bot):
+            self.bot = bot
+        elif isinstance(bot, str):
+            self.bot = Bot(bot, default=default_bot_properties)
+        else:
+            raise Exception("Unknown bot type")
+
+        self.message_starter = message_starter
+        self.command_starters = command_starters
+        self.dispatcher = dispatcher or TeletalkDispatcher(
+            message_starter=message_starter,
+            command_starters=command_starters,
+        )
+
+        self.default_bot_properties = default_bot_properties
+        self.commands = commands
+
         # - State
 
         self.talks: list[Talk] = []
-        self.focus_talks: dict[str, Talk] = {}
+        self._focus_talks: dict[str, Talk] = {}  # chat_id -> Talk
 
     async def start_new_talk(
         self,
@@ -42,11 +72,23 @@ class App:
     ):
         # - Create the talk
 
+        talk = Talk(
+            coroutine=starter(initial_response),
+            app=self,
+        )
+        self.talks.append(talk)
+
         # - Run the starter and wait for the result
+
+        logger.info("Running talk", talk=talk)
+
+        await talk.coroutine
 
         # - Remove the talk
 
-        pass
+        logger.info("Removing talk", talk=talk)
+
+        self.talks.remove(talk)
 
     async def on_callback_query(
         self,
@@ -54,7 +96,10 @@ class App:
     ) -> None:
         # - Build the `Response` and send it to the dispatcher
 
-        pass
+        await self.dispatcher(
+            talks=self.talks,
+            response=Response(callback_id=callback_query.data),
+        )
 
     async def on_message(
         self,
@@ -62,9 +107,25 @@ class App:
     ) -> None:
         # - If the message is from the bot, update the chat talk focus and return
 
-        # - Otherwise, build the `Response` with a flattened block_message (one message in one block_message, e.g. for 3-message album make separate 3 block_messages) and send it to the dispatcher
+        if message.from_user.is_bot:
+            await self._update_focus(message.chat.id)
+            return
 
-        pass
+        # - Otherwise, build the `Response` with a flattened `BlockMessage` and send it to the `self.dispatcher`
+
+        await self.dispatcher(
+            talks=self.talks,
+            response=Response(
+                block_messages=[
+                    BlockMessage(
+                        chat_id=str(message.chat.id),
+                        messages=[message],
+                        text=message.text,
+                        files=message.media,
+                    )
+                ]
+            ),
+        )
 
     async def on_delete_message(
         self,
@@ -72,32 +133,36 @@ class App:
     ) -> None:
         # - If the message is from the bot, update the chat talk focus and return
 
-        pass
+        if message.from_user.is_bot:
+            await self._update_focus(message.chat.id)
 
     async def _update_focus(self, chat_id: int) -> None:
         # - Set the chat menu as the menu of the talk with the latest message
 
-        pass
+        latest_talk = max(
+            (talk for talk in self.talks if any(msg.chat.id == chat_id for msg in talk.history)),
+            key=lambda talk: max(msg.date for msg in talk.history if msg.chat.id == chat_id),
+            default=None,
+        )
+        if latest_talk:
+            self._focus_talks[str(chat_id)] = latest_talk
 
-    async def start_polling(
-        self,
-        bot: Bot | str,
-        message_starter: Callable,  # def message_starter(response: Response) -> None
-        command_starters: dict[str, Callable] = {},  # def command_starter(response: Response) -> None
-        dispatcher: Optional[Callable] = None,
-        default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
-        commands: Optional[list[BotCommand]] = None,  # description of commands
-    ) -> None:
+    async def start_polling(self) -> None:
         # - Init aiogram dispatcher
 
-        # - Init teletalk `dispatcher` if not provided
+        aiogram_dispatcher = Dispatcher()
 
         # - Register `on_callback_query`, `on_message` and `on_delete_message` handlers in aiogram
 
-        # - Init bot from token if needed
+        aiogram_dispatcher.callback_query.register(self.on_callback_query)
+        aiogram_dispatcher.message.register(self.on_message)
+        aiogram_dispatcher.message.register(self.on_delete_message)
 
         # - Set commands for the bot
 
+        if self.commands:
+            await self.bot.set_my_commands(self.commands)
+
         # - Start polling
 
-        pass
+        await aiogram_dispatcher.start_polling(self.bot)
