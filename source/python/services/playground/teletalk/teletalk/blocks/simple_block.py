@@ -18,6 +18,21 @@ class SimpleBlock(Block):
             [message.text for message in response.block_messages]
         ),
     ):
+        self.update(
+            text=text,
+            reply_keyboard_markup=reply_keyboard_markup,
+            inline_keyboard_markup=inline_keyboard_markup,
+            files=files,
+        )
+        super().__init__(message_callback=message_callback)
+
+    def update(
+        self,
+        text: str,
+        reply_keyboard_markup: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
+        inline_keyboard_markup: Optional[InlineKeyboardMarkup | list[list[str]]] = None,
+        files: list[str] = [],
+    ):
         self.text = text
 
         if isinstance(reply_keyboard_markup, list):
@@ -37,7 +52,7 @@ class SimpleBlock(Block):
 
         self.files = files
 
-        super().__init__(message_callback=message_callback)
+        return self
 
     @persist
     def render(self) -> BlockMessage:

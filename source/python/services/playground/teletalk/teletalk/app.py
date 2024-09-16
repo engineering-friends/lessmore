@@ -64,6 +64,7 @@ class App:
         # - State
 
         self.talks: list[Talk] = []
+        self.messages_by_chat_id: dict[int, list[Message]] = {}
 
     async def start_new_talk(
         self,
@@ -121,6 +122,10 @@ class App:
         self,
         message: Message,
     ) -> None:
+        # - Add message to the messages_by_chat_id
+
+        self.messages_by_chat_id.setdefault(message.chat.id, []).append(message)
+
         # - Otherwise, build the `Response` with a flattened `BlockMessage` and send it to the `self.dispatcher`
 
         await self.dispatcher(

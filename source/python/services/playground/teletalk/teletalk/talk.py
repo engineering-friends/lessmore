@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Callable, Coroutine, List, Literal, Optio
 from aiogram.types import InlineKeyboardMarkup, LinkPreviewOptions, Message, ReplyKeyboardMarkup
 from loguru import logger
 from more_itertools import last
+from pymaybe import maybe
 from teletalk.blocks.simple_block import SimpleBlock
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
@@ -54,29 +55,36 @@ class Talk:
 
     async def ask(
         self,
-        text: Optional[str] = None,
+        prompt: str | Block | Page | Response = "",
         files: Optional[list[str]] = None,
         reply_keyboard_markup: Optional[ReplyKeyboardMarkup] = None,
         inline_keyboard_markup: Optional[
             InlineKeyboardMarkup
         ] = None,  # will return the button value if passed this way
-        page: Optional[Page | Block | Response] = None,
         update_mode: Literal["inplace", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
     ) -> Any:
         # - Build the `Page` from the `text`, `files`, `reply_keyboard_markup`, `inline_keyboard_markup` if not provided
 
-        if not isinstance(page, Page):
+        if isinstance(prompt, str):
             page = Page(
                 blocks=[
                     SimpleBlock(
-                        text=text,
+                        text=prompt,
                         files=files,
                         reply_keyboard_markup=reply_keyboard_markup,
                         inline_keyboard_markup=inline_keyboard_markup,
                     )
                 ]
             )
+        elif isinstance(prompt, Block):
+            page = Page(blocks=[prompt])
+        elif isinstance(prompt, Page):
+            page = prompt
+        elif isinstance(prompt, Response):
+            page = prompt.root_page
+        else:
+            raise Exception(f"Unknown prompt type: {type(prompt)}")
 
         # - Run `self.update_active_page`
 
@@ -174,13 +182,17 @@ class Talk:
 
             block_message = rendered_block_messages[0]
 
-            # - Get last chat message
+            # - Check if the current message is the latest
 
-            # Fetch the latest message in the chat
-            latest_messages = await self.app.bot.get_chat_history(block_message.chat_id, limit=1)
-            is_latest = latest_messages[0].message_id == block_message.messages[0].message_id
+            if not block_message.messages:
+                is_most_recent = False
+            else:
+                is_most_recent = (
+                    maybe(self.app.messages_by_chat_id)[block_message.chat_id][-1].message_id
+                    == block_message.messages[0].message_id
+                )
 
-            if is_latest:
+            if is_most_recent:
                 # - Update the message
 
                 message = await self.app.bot.edit_message_text(
@@ -268,23 +280,32 @@ class Talk:
 
     async def tell(
         self,
-        text: Optional[str] = None,
+        prompt: str | Block | Page | Response = "",
         files: Optional[list[str]] = None,
-        page: Optional[Page | Block | Response] = None,
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
     ) -> None:
         # - The interface to send custom messages without awaiting any response
 
-        if not isinstance(page, Page):
+        # todo later: make proper entities for the input [@marklidenberg]
+
+        if isinstance(prompt, str):
             page = Page(
                 blocks=[
                     SimpleBlock(
-                        text=text,
+                        text=prompt,
                         files=files,
                     )
                 ]
             )
+        elif isinstance(prompt, Block):
+            page = Page(blocks=[prompt])
+        elif isinstance(prompt, Page):
+            page = prompt
+        elif isinstance(prompt, Response):
+            page = prompt.root_page
+        else:
+            raise Exception(f"Unknown prompt type: {type(prompt)}")
 
         await self.update_active_page(
             page=page,
