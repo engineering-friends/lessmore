@@ -145,7 +145,8 @@ class Talk:
         # - Update the messages in line with `update_mode`. Add new messages to `self.history`
 
         if update_mode == "create_new":
-            self.active_page = page
+            # - Process messages
+
             for block_message in rendered_block_messages:
                 # - Send messages to telegram using aiogram
 
@@ -161,6 +162,65 @@ class Talk:
 
                 block_message.messages.append(message)
                 self.history.extend([message])
+
+        elif update_mode == "inplace_recent":
+            # - Assert single-message block
+
+            assert (
+                len(rendered_block_messages) == 1
+            ), (
+                "Only single message blocks are supported for now"
+            )  # todo later: add multi-message support [@marklidenberg]
+
+            block_message = rendered_block_messages[0]
+
+            # - Get last chat message
+
+            # Fetch the latest message in the chat
+            latest_messages = await self.app.bot.get_chat_history(block_message.chat_id, limit=1)
+            is_latest = latest_messages[0].message_id == block_message.messages[0].message_id
+
+            if is_latest:
+                # - Update the message
+
+                message = await self.app.bot.edit_message_text(
+                    chat_id=block_message.chat_id,
+                    message_id=block_message.messages[0].message_id,
+                    text=block_message.text,
+                    reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
+                    parse_mode="MarkdownV2",
+                    link_preview_options=LinkPreviewOptions(is_disabled=True),
+                )
+
+                # - Update blocks and history
+
+                rendered_block_messages[0].messages = [
+                    message
+                    for message in rendered_block_messages[0].messages
+                    if message.message_id != block_message.messages[0].message_id
+                ]
+                rendered_block_messages[0].messages.append(message)
+                self.history = [
+                    message for message in self.history if message.message_id != block_message.messages[0].message_id
+                ]
+                self.history.append(message)
+
+            else:
+                # - Send new message
+
+                message = await self.app.bot.send_message(
+                    chat_id=block_message.chat_id,
+                    text=block_message.text,
+                    reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
+                    parse_mode="MarkdownV2",
+                    link_preview_options=LinkPreviewOptions(is_disabled=True),
+                )
+
+                # - Update blocks and history
+
+                rendered_block_messages[0].messages.append(message)
+                self.history.append(message)
+
         elif update_mode == "inplace":
             # - Update the messages in line with `update_mode`. Add new messages to `self.history`
 
@@ -168,17 +228,8 @@ class Talk:
 
             old_page_messages = self.active_page.messages
 
-            self.active_page = page
-
-            assert len(old_page_messages) == sum(
-                [block_message.message_count for block_message in rendered_block_messages]
-            ), "Page messages length mismatch. Can't use inplace update mode"
-
-            assert (
-                len(old_page_messages) == 1
-            ), "Only single message is supported for now"  # todo later: support multiple messages [@marklidenberg]
-
             block_message = rendered_block_messages[0]
+
             new_message = await self.app.bot.edit_message_text(
                 chat_id=old_page_messages[0].chat.id,
                 message_id=old_page_messages[0].message_id,
@@ -202,6 +253,10 @@ class Talk:
             self.history.append(new_message)
         else:
             raise Exception(f"Not implemented update_mode: {update_mode}")
+
+        # - Set active page attribute
+
+        self.active_page = page
 
     async def receive_response(
         self,
