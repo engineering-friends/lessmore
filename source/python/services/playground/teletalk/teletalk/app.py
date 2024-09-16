@@ -118,11 +118,17 @@ class App:
 
         await self.bot.answer_callback_query(callback_query.id)
 
+    async def on_bot_message(self, message: Message) -> None:
+        logger.debug("Received new bot message", id=message.message_id, chat_id=message.chat.id, text=message.text)
+
+        self.messages_by_chat_id.setdefault(message.chat.id, []).append(message)
+
     async def on_message(
         self,
         message: Message,
     ) -> None:
         # - Add message to the messages_by_chat_id
+        logger.debug("Received new message", id=message.message_id, chat_id=message.chat.id, text=message.text)
 
         self.messages_by_chat_id.setdefault(message.chat.id, []).append(message)
 
@@ -149,6 +155,19 @@ class App:
 
         aiogram_dispatcher.callback_query.register(self.on_callback_query)
         aiogram_dispatcher.message.register(self.on_message)
+
+        # - Hook send message method in the bot, to process it with a handler
+
+        # todo maybe: enrich default aiogram instead of monkey patching
+
+        old_send_message = self.bot.send_message
+
+        async def _hooked_send_message(*args, **kwargs):
+            message = await old_send_message(*args, **kwargs)
+            await self.on_bot_message(message)
+            return message
+
+        self.bot.send_message = _hooked_send_message
 
         # - Set commands for the bot
 

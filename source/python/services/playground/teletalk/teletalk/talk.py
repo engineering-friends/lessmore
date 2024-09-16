@@ -141,6 +141,11 @@ class Talk:
     ):
         # - Render all the blocks
 
+        if self.active_page is not None:
+            old_renders = [block._render for block in self.active_page.blocks]
+        else:
+            old_renders = []
+
         rendered_block_messages = [block.render() for block in page.blocks]
 
         # - Set chat_id for the blocks that don't have it
@@ -180,24 +185,33 @@ class Talk:
                 "Only single message blocks are supported for now"
             )  # todo later: add multi-message support [@marklidenberg]
 
+            old_block_message = old_renders[0]
             block_message = rendered_block_messages[0]
+
+            assert old_block_message.chat_id == block_message.chat_id, "Chat id mismatch"
 
             # - Check if the current message is the latest
 
-            if not block_message.messages:
+            if not block_message.messages or not old_renders:
                 is_most_recent = False
             else:
                 is_most_recent = (
                     maybe(self.app.messages_by_chat_id)[block_message.chat_id][-1].message_id
-                    == block_message.messages[0].message_id
+                    == old_block_message.messages[0].message_id
                 )
 
             if is_most_recent:
                 # - Update the message
 
+                logger.debug(
+                    "Updating message",
+                    text=block_message.text,
+                    chat_id=block_message.chat_id,
+                    message_id=old_block_message.messages[0].message_id,
+                )
                 message = await self.app.bot.edit_message_text(
                     chat_id=block_message.chat_id,
-                    message_id=block_message.messages[0].message_id,
+                    message_id=old_block_message.messages[0].message_id,
                     text=block_message.text,
                     reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
                     parse_mode="MarkdownV2",

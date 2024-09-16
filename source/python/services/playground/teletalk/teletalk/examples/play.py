@@ -10,9 +10,9 @@ async def starter(response: Response):
     # - Test text messages
 
     sample_block = SimpleBlock("should_be_deleted")
-    await response.tell(page=sample_block)
-    name = await response.ask(page=sample_block.update("What is your name?"), update_mode="inplace_recent")
-    age = await response.ask(page=sample_block.update("How old are you?"), update_mode="inplace_recent")
+    await response.tell(sample_block)
+    name = await response.ask(sample_block.update("What is your name?"), update_mode="inplace_recent")
+    age = await response.ask(sample_block.update("How old are you?"), update_mode="inplace_recent")
     await response.tell(f"Hello, {name}! You are {age} years old :)")
 
 
