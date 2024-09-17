@@ -147,10 +147,8 @@ class Talk:
         else:
             old_block_messages = []
 
-        for old_block_messages in old_block_messages:
-            assert (
-                len(old_block_messages.messages) == 1
-            ), "Only single message blocks are supported in all modes for now"
+        for old_block_message in old_block_messages:
+            assert len(old_block_message.messages) == 1, "Only single message blocks are supported in all modes for now"
 
         first_old_message = None if not old_block_messages else old_block_messages[0].messages[0]
 
