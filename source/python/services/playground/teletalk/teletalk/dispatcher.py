@@ -119,7 +119,7 @@ class Dispatcher:
             # - Process command
 
             if buffer[0].text.startswith("/"):
-                command = buffer[0].text.split()[0][1:]
+                command = buffer[0].text.split()[0]
                 if command in self.command_starters:
                     logger.info("Found command", command=command)
                     await self.app.start_new_talk(
@@ -133,6 +133,10 @@ class Dispatcher:
             # -- If no focused `Talk` found: start a new `Talk` with the message starter
 
             if not focused_talk:
+                if not self.message_starter:
+                    logger.info("No message starter found, skipping")
+                    return
+
                 await self.app.start_new_talk(
                     starter=self.message_starter,
                     initial_response=buffered_response,

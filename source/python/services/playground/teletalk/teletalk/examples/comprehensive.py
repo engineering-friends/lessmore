@@ -43,12 +43,7 @@ async def starter(response: Response):
             text="Menu",
             grid=[
                 [
-                    ("A", lambda response: (print("A"), starter(response))),
-                    ("B", lambda response: (print("B"), starter(response))),
-                ],
-                [
-                    ("C", lambda response: (print("C"), starter(response))),
-                    ("D", lambda response: (print("D"), starter(response))),
+                    ("A", lambda response: (print("A"), response.ask(response.root, update_mode="inplace_recent"))),
                 ],
             ],
         )
@@ -59,7 +54,7 @@ def test():
     asyncio.run(
         App(
             bot=TestDeps.load().config.telegram_bot_token,
-            message_starter=starter,
+            command_starters={"/start": starter},
         ).start_polling()
     )
 

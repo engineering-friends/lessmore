@@ -35,7 +35,7 @@ class App:
     def __init__(
         self,
         bot: Bot | str,
-        message_starter: Callable,
+        message_starter: Optional[Callable] = None,
         command_starters: dict[str, Callable] = {},
         dispatcher: Optional[Callable] = None,  # dispatcher is like a low-level `Talk`
         default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
