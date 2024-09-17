@@ -106,13 +106,14 @@ class Dispatcher:
             buffer = self.message_buffers_by_chat_id.pop(chat_id)
 
             buffered_response = Response(
+                chat_id=chat_id,
                 block_messages=[
                     BlockMessage(
                         chat_id=chat_id,
                         text="\n".join([message.text for message in buffer]),
                         messages=buffer,
                     )
-                ]
+                ],
             )  # todo later: properly collect block message from the buffer [@marklidenberg]
 
             # - Process command

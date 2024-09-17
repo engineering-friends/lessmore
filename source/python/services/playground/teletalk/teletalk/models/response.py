@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 class Response:
     # - Raw response
 
+    chat_id: int = 0
     callback_id: str = ""
     block_messages: list[BlockMessage] = field(default_factory=list)
 
@@ -37,18 +38,12 @@ class Response:
     previous: Optional[Response] = None
     next: Optional[Response] = None
 
-    def chat_id(self) -> int:
-        chat_ids = set([block_message.chat_id for block_message in self.block_messages])
-        assert len(chat_ids) != 0, "Chat id is not set"
-        assert len(chat_ids) == 1, "Chat ids are not the same"
-        return chat_ids.pop()
-
     # - Syntax sugar
 
     async def ask(self, *args, **kwargs):
         # - Set default chat id from the response chat
 
-        kwargs["default_chat_id"] = kwargs.pop("default_chat_id", self.chat_id())
+        kwargs["default_chat_id"] = kwargs.pop("default_chat_id", self.chat_id)
 
         # - Ask
 
@@ -57,7 +52,7 @@ class Response:
     async def tell(self, *args, **kwargs):
         # - Set default chat id from the response chat
 
-        kwargs["default_chat_id"] = kwargs.pop("default_chat_id", self.chat_id())
+        kwargs["default_chat_id"] = kwargs.pop("default_chat_id", self.chat_id)
 
         # - Tell the talk
 

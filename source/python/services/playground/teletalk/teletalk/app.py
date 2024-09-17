@@ -111,7 +111,10 @@ class App:
         # - Build the `Response` and send it to the dispatcher
 
         await self.dispatcher(
-            response=Response(callback_id=callback_query.data),
+            response=Response(
+                chat_id=callback_query.message.chat.id,
+                callback_id=callback_query.data,
+            ),
         )
 
         # - Answer the callback query, remove highlighted button effect
@@ -128,6 +131,7 @@ class App:
         message: Message,
     ) -> None:
         # - Add message to the messages_by_chat_id
+
         logger.debug("Received new message", id=message.message_id, chat_id=message.chat.id, text=message.text)
 
         self.messages_by_chat_id.setdefault(message.chat.id, []).append(message)
@@ -136,13 +140,14 @@ class App:
 
         await self.dispatcher(
             response=Response(
+                chat_id=message.chat.id,
                 block_messages=[
                     BlockMessage(
                         chat_id=message.chat.id,
                         messages=[message],
                         text=message.text,
                     )
-                ]
+                ],
             ),
         )
 
@@ -158,7 +163,7 @@ class App:
 
         # - Hook send message method in the bot, to process it with a handler
 
-        # todo maybe: enrich default aiogram instead of monkey patching
+        # todo maybe: enrich default aiogram instead of monkey patching [@marklidenberg]
 
         old_send_message = self.bot.send_message
 
