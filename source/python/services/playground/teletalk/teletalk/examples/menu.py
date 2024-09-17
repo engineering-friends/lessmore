@@ -1,9 +1,14 @@
+import asyncio
+
 from dataclasses import dataclass
 from typing import Callable, Optional, Tuple
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from teletalk.app import App
 from teletalk.models.block import Block, persist
 from teletalk.models.block_message import BlockMessage
+from teletalk.models.response import Response
+from teletalk.test_deps.test_deps import TestDeps
 
 
 """
@@ -23,14 +28,8 @@ from teletalk.models.block_message import BlockMessage
 
 """
 
-#
-# @dataclass
-# class Button(Block):
-#     text: str
-#     callback: Callable
 
-
-class InlineKeyboard(Block):
+class Menu(Block):
     def __init__(
         self,
         text: str,
@@ -56,51 +55,32 @@ class InlineKeyboard(Block):
         )
 
 
-back = Button(text="Back", callback=lambda response: response.ask(response.previous))
-cancel = Button(text="Cancel", callback=lambda response: response.ask(response.root))
-quit = Button(text="Quit", callback=lambda response: print("Quitting..."))
+# back = Button(text="Back", callback=lambda response: response.ask(response.previous))
+# cancel = Button(text="Cancel", callback=lambda response: response.ask(response.root))
+# quit = Button(text="Quit", callback=lambda response: print("Quitting..."))
 
 
-starter = lambda response: response.ask(
-    Menu(
-        [
-            Button(
-                text="A",
-                callback=lambda response: response.ask(
-                    page=Menu(
-                        buttons=[
-                            Button(
-                                text="A.1", callback=lambda response: (print("A.1"), response.ask(page=response.root))
-                            ),
-                            Button(
-                                text="A.2", callback=lambda response: (print("A.2"), response.ask(page=response.root))
-                            ),
-                            back,
-                            cancel,
-                        ]
-                    ),
-                    update_mode="inplace",
-                ),
-            ),
-            Button(
-                text="B",
-                callback=lambda response: response.ask(
-                    page=Menu(
-                        buttons=[
-                            Button(
-                                text="B.1", callback=lambda response: (print("B.1"), response.ask(page=response.root))
-                            ),
-                            Button(
-                                text="B.2", callback=lambda response: (print("B.2"), response.ask(page=response.root))
-                            ),
-                            back,
-                            cancel,
-                        ]
-                    ),
-                    update_mode="inplace",
-                ),
-            ),
-            quit,
-        ]
+async def starter(response: Response):
+    return await response.ask(
+        Menu(
+            text="Menu",
+            grid=[
+                [
+                    ("A", lambda response: (print("A"), response.ask(response.root, update_mode="inplace_recent"))),
+                ],
+            ],
+        )
     )
-)
+
+
+def test():
+    asyncio.run(
+        App(
+            bot=TestDeps.load().config.telegram_bot_token,
+            command_starters={"/start": starter},
+        ).start_polling()
+    )
+
+
+if __name__ == "__main__":
+    test()
