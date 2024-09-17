@@ -179,26 +179,37 @@ class Talk:
         elif update_mode == "inplace_recent":
             # - Assert single-message block
 
-            assert (
-                len(rendered_block_messages) == 1
-            ), (
-                "Only single message blocks are supported for now"
-            )  # todo later: add multi-message support [@marklidenberg]
+            assert len(rendered_block_messages) == 1, "Only single message blocks are supported for now"
 
-            old_block_message = old_renders[0]
             block_message = rendered_block_messages[0]
-
-            assert old_block_message.chat_id == block_message.chat_id, "Chat id mismatch"
 
             # - Check if the current message is the latest
 
-            if not block_message.messages or not old_renders:
+            old_block_message = None
+
+            if not old_renders:
                 is_most_recent = False
             else:
+                # - Get old block_message
+
+                old_block_message = old_renders[0]
+                assert old_block_message.chat_id == block_message.chat_id, "Chat id mismatch"
+
+                # - Check if the current message is the latest
+
                 is_most_recent = (
-                    maybe(self.app.messages_by_chat_id)[block_message.chat_id][-1].message_id
+                    int(
+                        maybe(self.app.messages_by_chat_id)[block_message.chat_id][-1].message_id.or_else(0)
+                    )  # for some reason, this is str, not int
                     == old_block_message.messages[0].message_id
                 )
+
+            logger.debug(
+                "Is most recent",
+                is_most_recent=is_most_recent,
+                chat_id=block_message.chat_id,
+                latest_message_id=int(maybe(self.app.messages_by_chat_id)[block_message.chat_id][-1].message_id),
+            )
 
             if is_most_recent:
                 # - Update the message
@@ -207,7 +218,6 @@ class Talk:
                     "Updating message",
                     text=block_message.text,
                     chat_id=block_message.chat_id,
-                    message_id=old_block_message.messages[0].message_id,
                 )
                 message = await self.app.bot.edit_message_text(
                     chat_id=block_message.chat_id,
@@ -283,6 +293,8 @@ class Talk:
         # - Set active page attribute
 
         self.active_page = page
+
+        logger.debug("Updated active page", messages=rendered_block_messages[0].messages)
 
     async def receive_response(
         self,
