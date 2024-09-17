@@ -147,23 +147,45 @@ class Talk:
         else:
             old_block_messages = []
 
-        new_block_messages = [block.render() for block in page.blocks]
+        block_messages = [block.render() for block in page.blocks]
 
         # - Set chat_id for the blocks that don't have it
 
-        for message in new_block_messages:
-            if not message.chat_id:
-                message.chat_id = default_chat_id
-            assert message.chat_id, "Block Message has no chat_id"
+        for block_message in block_messages:
+            if not block_message.chat_id:
+                block_message.chat_id = default_chat_id
+            assert block_message.chat_id, "Block Message has no chat_id"
 
         # - Helper to update messages in `new_block_message` and `self.history`
 
-        def _track_messages(block_message: BlockMessage, messages: list[Message]):
-            block_message.messages = messages
+        async def _upsert_message(block_message: BlockMessage, old_message: Optional[Message] = None):
+            # - Edit or send message
+
+            if old_message:
+                message = await self.app.bot.edit_message_text(
+                    chat_id=block_message.chat_id,
+                    message_id=old_message.message_id,
+                    text=block_message.text,
+                    reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
+                    parse_mode="MarkdownV2",
+                    link_preview_options=LinkPreviewOptions(is_disabled=True),
+                )
+            else:
+                message = await self.app.bot.send_message(
+                    chat_id=block_message.chat_id,
+                    text=block_message.text,
+                    reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
+                    parse_mode="MarkdownV2",
+                    link_preview_options=LinkPreviewOptions(is_disabled=True),
+                )
+
+            # - Track message
+
+            block_message.messages = [message]
 
             self.history = list(
                 sorted(
-                    skip_duplicates(messages + self.history, key=lambda message: message.message_id),
+                    skip_duplicates(block_message.messages + self.history, key=lambda message: message.message_id),
                     key=lambda message: message.message_id,
                 ),
             )
@@ -173,127 +195,60 @@ class Talk:
         # -- Create new
 
         if update_mode == "create_new":
-            # - Process messages
-
-            for message in new_block_messages:
-                # - Send messages to telegram using aiogram
-
-                message = await self.app.bot.send_message(
-                    chat_id=message.chat_id,
-                    text=message.text,
-                    reply_markup=message.inline_keyboard_markup or message.reply_keyboard_markup,
-                    parse_mode="MarkdownV2",
-                    link_preview_options=LinkPreviewOptions(is_disabled=True),
-                )
-
-                # - Track messages
-
-                _track_messages(block_message=message, messages=[message])
+            for block_message in block_messages:
+                await _upsert_message(block_message=block_message)
 
         # -- Inplace recent
 
         elif update_mode == "inplace_recent":
             # - Assert single-message block
 
-            assert len(self.active_page.messages) == 1, "Only single message blocks are supported for now"
-            assert len(new_block_messages) == 1, "Only single message blocks are supported for now"
+            assert len(block_messages) == 1, "Only single message blocks are supported in inplace_recent mode"
+            if old_block_messages:
+                assert (
+                    len(old_block_messages[0].messages) == 1
+                ), "Only single message blocks are supported in inplace_recent mode"
 
-            new_block_message = new_block_messages[0]
+            # - Get old and new block_message
+
+            old_message = None if not old_block_messages else old_block_messages[0].messages[0]
+            block_message = block_messages[0]
 
             # - Check if the current message is the latest
 
-            old_block_message = None
-
-            if not old_block_messages:
-                is_most_recent = False
-            else:
-                # - Get old block_message
-
-                old_block_message = old_block_messages[0].messages[0]
-                assert old_block_message.chat_id == new_block_message.chat_id, "Chat id mismatch"
-
-                # - Check if the current message is the latest
-
-                is_most_recent = (
-                    int(
-                        maybe(self.app.messages_by_chat_id)[new_block_message.chat_id][-1].message_id.or_else(0)
-                    )  # for some reason, this is str, not int
-                    == old_block_message.messages[0].message_id
-                )
-
-            logger.debug(
-                "Is most recent",
-                is_most_recent=is_most_recent,
-                chat_id=new_block_message.chat_id,
-                latest_message_id=int(maybe(self.app.messages_by_chat_id)[new_block_message.chat_id][-1].message_id),
-            )
-
-            if is_most_recent:
-                # - Update the message
-
-                logger.debug(
-                    "Updating message",
-                    text=new_block_message.text,
-                    chat_id=new_block_message.chat_id,
-                )
-                message = await self.app.bot.edit_message_text(
-                    chat_id=new_block_message.chat_id,
-                    message_id=old_block_message.messages[0].message_id,
-                    text=new_block_message.text,
-                    reply_markup=new_block_message.inline_keyboard_markup or new_block_message.reply_keyboard_markup,
-                    parse_mode="MarkdownV2",
-                    link_preview_options=LinkPreviewOptions(is_disabled=True),
-                )
-
-                # - Update blocks and history
-
-                _track_messages(block_message=new_block_message, messages=[message])
+            if (
+                old_message
+                and int(maybe(self.app.messages_by_chat_id)[block_message.chat_id][-1].message_id.or_else(0))
+                == old_message.message_id
+            ):
+                await _upsert_message(block_message=block_message, old_message=old_message)
 
             else:
-                # - Send new message
-
-                message = await self.app.bot.send_message(
-                    chat_id=message.chat_id,
-                    text=message.text,
-                    reply_markup=message.inline_keyboard_markup or message.reply_keyboard_markup,
-                    parse_mode="MarkdownV2",
-                    link_preview_options=LinkPreviewOptions(is_disabled=True),
-                )
-
-                # - Update blocks and history
-
-                _track_messages(block_message=message, messages=[message])
+                await _upsert_message(block_message=block_message)
 
         # -- Inplace
 
         elif update_mode == "inplace":
+            # - Assert single-message block
+
+            assert len(block_messages) == 1, "Only single message blocks are supported in inplace mode"
+
             # - Update the messages in line with `update_mode`. Add new messages to `self.history`
 
-            assert self.active_page, "Active page is not set. Can't use inplace update mode"
-
-            assert len(self.active_page.messages) == 1, "Only single message blocks are supported for now"
-            assert len(new_block_messages) == 1, "Only single message blocks are supported for now"
-
-            old_message = self.active_page.messages[0]
-            new_block_message = new_block_messages[0]
-
-            message = await self.app.bot.edit_message_text(
-                chat_id=old_message.chat.id,
-                message_id=old_message.message_id,
-                text=new_block_message.text,
-                reply_markup=new_block_message.inline_keyboard_markup or new_block_message.reply_keyboard_markup,
-                parse_mode="MarkdownV2",
-                link_preview_options=LinkPreviewOptions(is_disabled=True),
+            await _upsert_message(
+                block_message=block_messages[0],
+                old_message=None if not old_block_messages else old_block_messages[0].messages[0],
             )
-
-            # - Update blocks and history
-
-            _track_messages(block_message=new_block_messages[0], messages=[message])
 
         # -- Inplace by id
 
         elif update_mode == "inplace_by_id":
-            pass
+            # - Assert single-message block
+
+            assert len(block_messages) == 1, "Only single message blocks are supported in inplace_by_id mode"
+
+            old_message = None if not old_block_messages else old_block_messages[0].messages[0]
+            block_message = block_messages[0]
 
         # -- Not implemented
 
@@ -304,7 +259,7 @@ class Talk:
 
         self.active_page = page
 
-        logger.debug("Updated active page", messages=new_block_messages[0].messages)
+        logger.debug("Updated active page", messages=block_messages[0].messages)
 
     async def receive_response(
         self,
