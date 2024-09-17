@@ -152,7 +152,7 @@ class Talk:
 
         first_old_message = None if not old_block_messages else old_block_messages[0].messages[0]
 
-        # - Get block messages and set default chat_id if not provided
+        # - Render new block messages. Note: if some blocks are in the self.active_page, their renders will be reset # todo later: bad side effet,
 
         block_messages = [block.render() for block in page.blocks]
 
@@ -235,10 +235,12 @@ class Talk:
         # -- Inplace by id
 
         elif update_mode == "inplace_by_id":
-            _old_blocks_by_id = {block.id: block for block in self.active_page.blocks}
+            _old_block_messages_by_id = {
+                block.id: old_block_messages[i] for i, block in enumerate(self.active_page.blocks)
+            }
             for block in page.blocks:
-                if old_block := _old_blocks_by_id.get(block.id):
-                    _first_old_message = old_block._render.messages[0]
+                if old_block_message := _old_block_messages_by_id.get(block.id):
+                    _first_old_message = old_block_message.messages[0]
                 else:
                     _first_old_message = None
 
