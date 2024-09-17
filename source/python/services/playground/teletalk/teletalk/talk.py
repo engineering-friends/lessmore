@@ -65,6 +65,7 @@ class Talk:
         ] = None,  # will return the button value if passed this way
         update_mode: Literal["inplace", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
+        parent_response: Optional[Response] = None,
     ) -> Any:
         # - Build the `Page` from the `text`, `files`, `reply_keyboard_markup`, `inline_keyboard_markup` if not provided
 
@@ -84,7 +85,7 @@ class Talk:
         elif isinstance(prompt, Page):
             page = prompt
         elif isinstance(prompt, Response):
-            page = prompt.root_page
+            page = prompt.page
         else:
             raise Exception(f"Unknown prompt type: {type(prompt)}")
 
@@ -102,10 +103,24 @@ class Talk:
 
         # - Enrich response with all extra data
 
+        # -- Talk
         response.talk = self
-        response.root_page = self.active_page
+
+        # -- Blocks
+        response.page = self.active_page
         response.root_block = self.active_page.blocks[0] if self.active_page.blocks else None
         response.block = response.root_block
+
+        # -- Navigation
+
+        if not parent_response:
+            response.root = response
+        else:
+            response.root = parent_response.root
+
+        if not response.previous:
+            response.previous = parent_response
+            parent_response.next = response
 
         # - Add user messages to the `self.history`
 
@@ -291,7 +306,7 @@ class Talk:
         elif isinstance(prompt, Page):
             page = prompt
         elif isinstance(prompt, Response):
-            page = prompt.root_page
+            page = prompt.page
         else:
             raise Exception(f"Unknown prompt type: {type(prompt)}")
 

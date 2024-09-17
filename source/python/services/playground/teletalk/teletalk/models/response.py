@@ -24,7 +24,7 @@ class Response:
 
     # - Pages and Blocks
 
-    root_page: Optional[Page] = None  # root Block is the Block that spawned the whole conversation
+    page: Optional[Page] = None  # root Block is the Block that spawned the whole conversation
     root_block: Optional[Block] = None
     block: Optional[Block] = None
 
@@ -44,6 +44,7 @@ class Response:
         # - Set default chat id from the response chat
 
         kwargs["default_chat_id"] = kwargs.pop("default_chat_id", self.chat_id)
+        kwargs["parent_response"] = self
 
         # - Ask
 
@@ -53,6 +54,7 @@ class Response:
         # - Set default chat id from the response chat
 
         kwargs["default_chat_id"] = kwargs.pop("default_chat_id", self.chat_id)
+        kwargs["parent_response"] = self
 
         # - Tell the talk
 

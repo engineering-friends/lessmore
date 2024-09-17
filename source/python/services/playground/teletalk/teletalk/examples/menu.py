@@ -66,7 +66,12 @@ async def starter(response: Response):
             text="Menu",
             grid=[
                 [
-                    ("A", lambda response: (print("A"), response.ask(response.root, update_mode="inplace_recent"))),
+                    (
+                        "A",
+                        lambda response: response.ask(
+                            Menu(text="Menu", grid=[[("A.1", lambda response: response.ask(response.root))]])
+                        ),
+                    ),
                 ],
             ],
         )
