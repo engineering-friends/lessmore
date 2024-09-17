@@ -140,23 +140,30 @@ class Talk:
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
         default_chat_id: int = 0,
     ):
-        # - Render all the blocks
+        # - Get old block messages
 
         if self.active_page is not None:
             old_block_messages = [block._render for block in self.active_page.blocks]
         else:
             old_block_messages = []
 
-        block_messages = [block.render() for block in page.blocks]
+        for old_block_messages in old_block_messages:
+            assert (
+                len(old_block_messages.messages) == 1
+            ), "Only single message blocks are supported in all modes for now"
 
-        # - Set chat_id for the blocks that don't have it
+        first_old_message = None if not old_block_messages else old_block_messages[0].messages[0]
+
+        # - Get block messages and set default chat_id if not provided
+
+        block_messages = [block.render() for block in page.blocks]
 
         for block_message in block_messages:
             if not block_message.chat_id:
                 block_message.chat_id = default_chat_id
             assert block_message.chat_id, "Block Message has no chat_id"
 
-        # - Helper to update messages in `new_block_message` and `self.history`
+        # - Upsert message helper function
 
         async def _upsert_message(block_message: BlockMessage, old_message: Optional[Message] = None):
             # - Edit or send message
@@ -190,7 +197,7 @@ class Talk:
                 ),
             )
 
-        # - Update the messages in line with `update_mode`. Add new messages to `self.history`
+        # - Process update modes
 
         # -- Create new
 
@@ -201,27 +208,19 @@ class Talk:
         # -- Inplace recent
 
         elif update_mode == "inplace_recent":
-            # - Assert single-message block
+            # - Get block_message
 
             assert len(block_messages) == 1, "Only single message blocks are supported in inplace_recent mode"
-            if old_block_messages:
-                assert (
-                    len(old_block_messages[0].messages) == 1
-                ), "Only single message blocks are supported in inplace_recent mode"
-
-            # - Get old and new block_message
-
-            old_message = None if not old_block_messages else old_block_messages[0].messages[0]
             block_message = block_messages[0]
 
             # - Check if the current message is the latest
 
             if (
-                old_message
+                first_old_message
                 and int(maybe(self.app.messages_by_chat_id)[block_message.chat_id][-1].message_id.or_else(0))
-                == old_message.message_id
+                == first_old_message.message_id
             ):
-                await _upsert_message(block_message=block_message, old_message=old_message)
+                await _upsert_message(block_message=block_message, old_message=first_old_message)
 
             else:
                 await _upsert_message(block_message=block_message)
@@ -229,26 +228,23 @@ class Talk:
         # -- Inplace
 
         elif update_mode == "inplace":
-            # - Assert single-message block
-
             assert len(block_messages) == 1, "Only single message blocks are supported in inplace mode"
-
-            # - Update the messages in line with `update_mode`. Add new messages to `self.history`
-
             await _upsert_message(
                 block_message=block_messages[0],
-                old_message=None if not old_block_messages else old_block_messages[0].messages[0],
+                old_message=first_old_message,
             )
 
         # -- Inplace by id
 
         elif update_mode == "inplace_by_id":
-            # - Assert single-message block
+            _old_blocks_by_id = {block.id: block for block in self.active_page.blocks}
+            for block in page.blocks:
+                if old_block := _old_blocks_by_id.get(block.id):
+                    _first_old_message = old_block._render.messages[0]
+                else:
+                    _first_old_message = None
 
-            assert len(block_messages) == 1, "Only single message blocks are supported in inplace_by_id mode"
-
-            old_message = None if not old_block_messages else old_block_messages[0].messages[0]
-            block_message = block_messages[0]
+                await _upsert_message(block_message=block._render, old_message=_first_old_message)
 
         # -- Not implemented
 
