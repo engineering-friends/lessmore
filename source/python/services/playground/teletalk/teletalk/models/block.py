@@ -31,6 +31,13 @@ class Block:
         self.parent: Optional["Block"] = None
         self.children: list["Block"] = []
 
+        # - Id
+
+        self.id = str(uuid.uuid4())
+
+    def refresh_id(self):
+        self.id = str(uuid.uuid4())
+
     def register_callback(self, callback: Callable) -> str:
         _id = str(uuid.uuid4())
         self.query_callbacks[_id] = asyncify(callback)
