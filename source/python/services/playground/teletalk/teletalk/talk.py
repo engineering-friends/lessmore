@@ -3,6 +3,7 @@ import asyncio
 from typing import TYPE_CHECKING, Any, Callable, Coroutine, List, Literal, Optional
 
 from aiogram.types import InlineKeyboardMarkup, LinkPreviewOptions, Message, ReplyKeyboardMarkup
+from lessmore.utils.asynchronous.gather_nested import gather_nested
 from lessmore.utils.functional.skip_duplicates import skip_duplicates
 from loguru import logger
 from more_itertools import last
@@ -116,7 +117,7 @@ class Talk:
         if response.callback_id:
             for block in self.active_page.blocks:
                 if response.callback_id in block.query_callbacks:
-                    return await block.query_callbacks[response.callback_id](response)
+                    return await gather_nested(await block.query_callbacks[response.callback_id](response))
             raise Exception(f"Callback not found: {response.callback_id}")
         else:
             chat_id = response.block_messages[0].chat_id
@@ -128,7 +129,7 @@ class Talk:
             # - Run the last block_message callback
 
             if last_block.message_callback:
-                return await last_block.message_callback(response)
+                return await gather_nested(await last_block.message_callback(response))
             else:
                 logger.info("No message callback found")
 

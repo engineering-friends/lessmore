@@ -39,6 +39,7 @@ class Response:
 
     def chat_id(self) -> int:
         chat_ids = set([block_message.chat_id for block_message in self.block_messages])
+        assert len(chat_ids) != 0, "Chat id is not set"
         assert len(chat_ids) == 1, "Chat ids are not the same"
         return chat_ids.pop()
 

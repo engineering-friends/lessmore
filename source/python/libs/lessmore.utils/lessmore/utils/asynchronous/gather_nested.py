@@ -6,14 +6,14 @@ from typing import Any, Awaitable
 
 
 async def gather_nested(
-    value: dict | list | Awaitable | Any,
+    value: dict | list | tuple | Awaitable | Any,
     recursive: bool = True,
 ) -> dict | list | Any:
     """Run all awaitables in a nested structure concurrently."""
     if isinstance(value, dict):
         results = await asyncio.gather(*(gather_nested(v, recursive=recursive) for v in value.values()))
         return dict(zip(value.keys(), results))
-    elif isinstance(value, list):
+    elif isinstance(value, (list, tuple)):
         return await asyncio.gather(*(gather_nested(v, recursive=recursive) for v in value))
     elif inspect.isawaitable(value):
         if recursive:
