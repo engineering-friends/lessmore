@@ -54,7 +54,6 @@ class Response:
         # - Set default chat id from the response chat
 
         kwargs["default_chat_id"] = kwargs.pop("default_chat_id", self.chat_id)
-        kwargs["parent_response"] = self
 
         # - Tell the talk
 

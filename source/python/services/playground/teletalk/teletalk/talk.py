@@ -104,9 +104,11 @@ class Talk:
         # - Enrich response with all extra data
 
         # -- Talk
+
         response.talk = self
 
         # -- Blocks
+
         response.page = self.active_page
         response.root_block = self.active_page.blocks[0] if self.active_page.blocks else None
         response.block = response.root_block
@@ -117,8 +119,6 @@ class Talk:
             response.root = response
         else:
             response.root = parent_response.root
-
-        if not response.previous:
             response.previous = parent_response
             parent_response.next = response
 
