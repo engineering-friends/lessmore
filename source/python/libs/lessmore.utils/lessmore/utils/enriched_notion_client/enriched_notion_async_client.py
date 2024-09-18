@@ -585,3 +585,5 @@ class EnrichedNotionAsyncClient(AsyncClient):
                     await duplicate_block(block_id=child["id"], destination_block_id=new_child["id"])
 
         await duplicate_block(block_id=page["id"], destination_block_id=new_page["id"])
+
+        return new_page

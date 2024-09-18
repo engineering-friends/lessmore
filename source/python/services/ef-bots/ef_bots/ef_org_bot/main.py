@@ -92,22 +92,24 @@ def menu(deps: Deps):
 
         # -- Create onboarding page
 
-        await deps.notion_client().duplicate_page(
+        onboarding_page = await deps.notion_client().duplicate_page(
             page_id="8c93fa8355344cbd88544b3a076ef552",  # Шаблон онбординга, https://www.notion.so/8c93fa8355344cbd88544b3a076ef552
             destination_page_id=page["id"],  # https://www.notion.so/5caeefe3bf5645b39b0995f02fc55b82
         )
 
         # pick random emoji
 
-        await deps.notion_client().pages.update(page_id=page["id"], icon={"type": "emoji", "emoji": "🏄‍♂️"})
+        await deps.notion_client().pages.update(page_id=onboarding_page["id"], icon={"type": "emoji", "emoji": "🏄‍♂️"})
 
         # -- Set emoji for page
 
-        await response.tell(f"Создал страницу для онбоардинга: {page['url']}")
+        await response.tell(f"Создал страницу для онбоардинга: {onboarding_page['url']}")
         await response.tell(
             "Возьми у участника email в Notion и пошарь ему страницу Home в Notion: https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4"
         )
-        await response.tell(f"После этого перешли ему ссылку на онбоардинг, чтобы он заполнил: {page['url']}")
+        await response.tell(
+            f"После этого перешли ему ссылку на онбоардинг, чтобы он заполнил: {onboarding_page['url']}"
+        )
         await response.tell("Поставь себе напоминалки, чтобы убедиться, что он все заполнил")
 
         # - Return to main menu
