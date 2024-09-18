@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Callable, Optional
 
 from aiogram.types import Message
+from lessmore.utils.functional.dict.drop import drop
 from more_itertools import first, last
 from palette.teletalk.crowd.response import Response
 from teletalk.models.block import Block
@@ -42,6 +43,11 @@ class Response:
     # - Syntax sugar
 
     async def ask(self, *args, **kwargs):
+        # - Set default args as the response itself
+
+        if not args and not drop(kwargs, keys=["update_mode"]):
+            args = (self,)  # <=> response.ask(response)
+
         # - Set default chat id from the response chat
 
         kwargs["default_chat_id"] = kwargs.pop("default_chat_id", self.chat_id)

@@ -6,18 +6,22 @@ from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 
 
+async def spawn(response: Response):
+    await response.start_new_talk(
+        starter=starter,
+        initial_response=response,
+        parallel=True,
+    )
+    return await response.ask(response, update_mode="inplace_by_id")
+
+
 async def starter(response: Response):
     return await response.ask(
         Menu(
             "Click to spawn another talk",
             grid=[
                 [
-                    (
-                        "New talk!",
-                        lambda response: response.start_new_talk(
-                            starter=starter, initial_response=response, parallel=True
-                        ),
-                    ),
+                    ("New talk!", spawn),
                     ("Kill me!", lambda response: response.purge_talk()),
                 ]
             ],

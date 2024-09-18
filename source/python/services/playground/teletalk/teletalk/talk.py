@@ -147,6 +147,12 @@ class Talk:
                 response.previous = parent_response
                 parent_response.next = response
 
+        # - Add starter message to the `self.history`
+
+        if parent_response and not parent_response.prompt_page:
+            for block_message in parent_response.block_messages:
+                self.history.extend(block_message.messages)
+
         # - Add user messages to the `self.history`
 
         for block_message in response.block_messages:
@@ -195,8 +201,8 @@ class Talk:
                 return response
 
             if not response.prompt_block.message_callback:
-                logger.error("No message callback found")
-                return response
+                logger.warning("No message callback found")
+                return await response.ask(update_mode="inplace_by_id")
 
             # - Run the message callback
 
@@ -407,6 +413,7 @@ class Talk:
         parallel: bool = False,
     ):
         if not parallel:
+            print("Starting new talk in sync")
             return await self.app.start_new_talk(
                 starter=starter,
                 initial_response=initial_response,
