@@ -43,9 +43,26 @@ class SimpleBlock(Block):
         else:
             self.reply_keyboard_markup = reply_keyboard_markup
 
+        def _unfold(value):
+            if isinstance(value, str):
+                return value, None
+            elif isinstance(value, (list, tuple)):
+                return value[0], value[1]
+            else:
+                raise Exception(f"Unknown value type: {type(value)}")
+
         if isinstance(inline_keyboard_markup, list):
             self.inline_keyboard_markup = InlineKeyboardMarkup(
-                inline_keyboard=[[InlineKeyboardButton(text=text) for text in row] for row in inline_keyboard_markup]
+                inline_keyboard=[
+                    [
+                        InlineKeyboardButton(
+                            text=_unfold(value)[0],
+                            callback_data=_unfold(value)[1],  # put callback right in the callback_data
+                        )
+                        for value in row
+                    ]
+                    for row in inline_keyboard_markup
+                ]
             )
         else:
             self.inline_keyboard_markup = inline_keyboard_markup
@@ -69,7 +86,9 @@ class SimpleBlock(Block):
                 [
                     InlineKeyboardButton(
                         text=button.text,
-                        callback_data=self.register_callback(button_callback(text=button.text)),
+                        callback_data=self.register_callback(
+                            button_callback(text=button.text) if button.callback_data is None else button.callback_data
+                        ),
                         url=button.url,
                     )
                     for button in row
@@ -83,7 +102,11 @@ class SimpleBlock(Block):
                     [
                         KeyboardButton(
                             text=button.text,
-                            callback_data=self.register_callback(button_callback(text=button.text)),
+                            callback_data=self.register_callback(
+                                button_callback(text=button.text)
+                                if button.callback_data is None
+                                else button.callback_data
+                            ),
                         )
                         for button in row
                     ]
