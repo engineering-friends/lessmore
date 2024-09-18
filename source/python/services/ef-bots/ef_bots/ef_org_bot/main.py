@@ -32,10 +32,8 @@ def menu(deps: Deps):
 
             if isinstance(entity, User):
                 answer = await response.ask(
-                    SimpleBlock(
-                        f"t.me/{telegram_username}",
-                        inline_keyboard=[["✅ Все верно!", "❌ Я ошибся"]],
-                    )
+                    f"t.me/{telegram_username}",
+                    inline_keyboard=[["✅ Все верно!", "❌ Я ошибся"]],
                 )
                 if answer == "✅ Все верно!":
                     break
@@ -54,7 +52,36 @@ def menu(deps: Deps):
 
         await response.tell(f"Добавил во все чаты и каналы: {', '.join(deps.config.telegram_ef_chats.keys())}")
 
-        # - Create notion page for the user, if not exists
+        # - Get full name
+
+        full_name = f"{user.first_name} {user.last_name}"
+
+        # - Create notion page in CRM
+
+        result = await deps.notion_client().upsert_database(
+            database={
+                "id": "4675fa21409b4f46b29946279040ba96",  # pragma: allowlist secret
+            },
+            pages=[{"properties": {"Name": {"title": [{"text": {"content": full_name}}]}}}],
+            page_unique_id_func=lambda page: page["properties"]["Name"]["title"][0]["text"]["content"],
+        )
+
+        await response.tell(f"Создал новую страницу в CRM: {result.url}")
+
+        # - Create onboarding page in EF
+
+        # -- Create personal page if not exists
+
+        page = await deps.notion_client().upsert_page(
+            page={
+                "parent": {
+                    "page_id": "5caeefe3bf5645b39b0995f02fc55b82",  # персональные пространства
+                    "properties": {"title": {"title": [{"text": {"content": full_name}}]}},
+                }
+            },
+        )
+
+        # -- Create onboarding page
 
         # - Return to main menu
 

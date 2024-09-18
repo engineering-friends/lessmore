@@ -13,3 +13,7 @@ class Config(BaseSettings):
     telegram_ef_channel: Union[int, str]
 
     telegram_ef_chats: dict[str, Union[int, str]]
+
+    # - Notion
+
+    notion_token: str
