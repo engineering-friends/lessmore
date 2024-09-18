@@ -70,3 +70,6 @@ class Response:
             result.append(current_response)
             current_response = current_response.next
         return result
+
+    async def start_new_talk(self, *args, **kwargs):
+        return await self.talk.start_new_talk(*args, **kwargs)

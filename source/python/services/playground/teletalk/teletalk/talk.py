@@ -404,12 +404,22 @@ class Talk:
         self,
         starter: Callable,
         initial_response: Optional[Response] = None,
+        parallel: bool = False,
     ):
-        return await self.app.start_new_talk(
-            starter=starter,
-            initial_response=initial_response,
-            parent_talk=self,
-        )
+        if not parallel:
+            return await self.app.start_new_talk(
+                starter=starter,
+                initial_response=initial_response,
+                parent_talk=self,
+            )
+        else:
+            return asyncio.create_task(
+                self.app.start_new_talk(
+                    starter=starter,
+                    initial_response=initial_response,
+                    parent_talk=self,
+                )
+            )
 
     async def purge(self):
         for message in self.history:
