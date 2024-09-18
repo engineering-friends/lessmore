@@ -2,6 +2,7 @@ import asyncio
 
 from teletalk.app import App
 from teletalk.blocks.simple_block import SimpleBlock
+from teletalk.models.page import Page
 from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 
@@ -36,6 +37,22 @@ async def starter(response: Response):
     sample_block.refresh_id()
     await response.tell(sample_block.update(text="Message 7 - should be updated"), mode="inplace_by_id")
     await response.tell(sample_block.update(text="Message 7"), mode="inplace_by_id")
+
+    # - Test inplace by id with 2 messages
+
+    await response.tell("[Test: Inplace by id with 2 messages]")
+
+    page = Page(
+        blocks=[
+            SimpleBlock(text="Message 8 - should be updated"),
+            SimpleBlock(text="Message 9 - should be updated"),
+        ]
+    )
+
+    await response.tell(page)
+    page.blocks[0].text = "Message 8"
+    page.blocks[1].text = "Message 9"
+    await response.tell(page, mode="inplace_by_id")
 
 
 def test():
