@@ -44,13 +44,14 @@ async def starter(response: Response):
 
     page = Page(
         blocks=[
-            SimpleBlock(text="Message 8 - should be updated"),
+            SimpleBlock(text="Message 8"),
             SimpleBlock(text="Message 9 - should be updated"),
         ]
     )
 
     await response.tell(page)
-    page.blocks[0].text = "Message 8"
+    page.blocks[0].text = "Message 10"
+    page.blocks[0].refresh_id()
     page.blocks[1].text = "Message 9"
     await response.tell(page, mode="inplace_by_id")
 
