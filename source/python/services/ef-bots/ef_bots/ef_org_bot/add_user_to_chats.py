@@ -5,23 +5,12 @@ from telethon.tl.functions.channels import InviteToChannelRequest
 from telethon.tl.types import Channel, Chat
 
 
-async def add_user_to_chats(telegram_client, chats: list[str], username: str):
+async def add_user_to_chats(telegram_client, chats: list[str | int], username: str):
     # Get the channel and user objects
     user = await telegram_client.get_entity(f"@{username.replace('@', '')}")
 
     for chat in chats:
-        # - Get entity
-        entity = await telegram_client.get_entity(chat)
-
-        # - If channel, invite user
-
-        if isinstance(entity, Channel):
-            await telegram_client(InviteToChannelRequest(channel=await telegram_client.get_entity(chat), users=[user]))
-
-        # - If chat, invite user
-
-        elif isinstance(entity, Chat):
-            await telegram_client(Invite(channel=await telegram_client.get_entity(chat.id), users=[user]))
+        await telegram_client(InviteToChannelRequest(channel=await telegram_client.get_entity(chat), users=[user]))
 
 
 def test():

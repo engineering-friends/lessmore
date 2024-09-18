@@ -282,7 +282,7 @@ class Talk:
                         text=escape_markdown(block_message.text, version=2),
                         reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
                         parse_mode="MarkdownV2",
-                        link_preview_options=LinkPreviewOptions(is_disabled=True),
+                        link_preview_options=LinkPreviewOptions(is_disabled=False),
                     )
                 else:
                     message = await self.app.bot.delete_message(
@@ -295,7 +295,7 @@ class Talk:
                     text=escape_markdown(block_message.text, version=2),
                     reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
                     parse_mode="MarkdownV2",
-                    link_preview_options=LinkPreviewOptions(is_disabled=True),
+                    link_preview_options=LinkPreviewOptions(is_disabled=False),
                 )
 
             # - Track message
