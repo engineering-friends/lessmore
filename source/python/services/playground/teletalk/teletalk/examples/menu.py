@@ -11,24 +11,6 @@ from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 
 
-"""
-- A
-- B
-- Quit
-
-- A.1
-- A.2
-- Back
-- Cancel
-
-- B.1
-- B.2
-- Back
-- Cancel
-
-"""
-
-
 class Menu(Block):
     def __init__(
         self,
@@ -54,40 +36,34 @@ class Menu(Block):
         )
 
 
-# back = Button(text="Back", callback=lambda response: response.ask(response.previous))
-# cancel = Button(text="Cancel", callback=lambda response: response.ask(response.root))
-# quit = Button(text="Quit", callback=lambda response: print("Quitting..."))
+go_back = lambda response: response.ask(response.previous, update_mode="inplace")
+go_forward = lambda response: response.ask(response.next, update_mode="inplace")
+go_to_root = lambda response: response.ask(response.root, update_mode="inplace")
+cancel = lambda response: response.tell("Cancelled")
+
+
+def gen_level(name: str, sub_level: Optional[Menu] = None):
+    # - Build grid
+
+    grid = []
+
+    if sub_level:
+        grid.append([(sub_level.text, lambda response: response.ask(sub_level, update_mode="inplace"))])
+
+    grid += [[("Main menu", go_to_root), ("Back", go_back), ("Forward", go_forward), ("Cancel", cancel)]]
+
+    # - Return menu
+
+    return Menu(text=name, grid=grid)
+
+
+level_3 = gen_level("Level 3")
+level_2 = gen_level("Level 2", level_3)
+level_1 = gen_level("Level 1", level_2)
 
 
 async def starter(response: Response):
-    return await response.ask(
-        Menu(
-            text="Menu",
-            grid=[
-                [
-                    (
-                        "A",
-                        lambda response: response.ask(
-                            Menu(
-                                text="Menu",
-                                grid=[
-                                    [
-                                        (
-                                            "A.1",
-                                            lambda response: (
-                                                response.tell("A.1"),
-                                                response.ask(response.first_prompt()),
-                                            ),
-                                        )
-                                    ]
-                                ],
-                            )
-                        ),
-                    )
-                ]
-            ],
-        )
-    )
+    return await response.ask(level_1)
 
 
 def test():

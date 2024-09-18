@@ -108,8 +108,7 @@ class Talk:
         response.talk = self
 
         # -- Navigation stack
-
-        if not parent_response:
+        if not parent_response.prompt_page:  # starter response
             # First response in the stack
 
             response.root = response
