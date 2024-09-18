@@ -1,5 +1,6 @@
 import asyncio
 import random
+import textwrap
 
 from typing import Callable, Optional, Tuple
 
@@ -103,15 +104,11 @@ def menu(deps: Deps):
         # -- Set emoji for page
 
         await response.tell(f"Создал страницу для онбоардинга: {page['url']}")
-
-        await response.tell(f"""
-        Шаги, которые тебе нужно сделать: 
-        - Взять у участника email в Notion 
-        - Пошарить ему страницу Home в Notion: https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4
-        - Скинуть ссылку на онбоардинг, чтобы он заполнил: {page['url']}
-        - Поставить себе напоминалки, чтобы убедиться, что он все заполнил 
-        - Когда он заполнит, написать @ltgags, чтобы он обработал заполненную страницу онбоардинга
-""")
+        await response.tell(
+            "Возьми у участника email в Notion и пошарь ему страницу Home в Notion: https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4"
+        )
+        await response.tell(f"После этого перешли ему ссылку на онбоардинг, чтобы он заполнил: {page['url']}")
+        await response.tell("Поставь себе напоминалки, чтобы убедиться, что он все заполнил")
 
         # - Return to main menu
 
