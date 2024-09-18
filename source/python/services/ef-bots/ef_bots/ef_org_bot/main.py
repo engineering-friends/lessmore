@@ -1,4 +1,5 @@
 import asyncio
+import random
 
 from typing import Callable, Optional, Tuple
 
@@ -35,6 +36,7 @@ def menu(deps: Deps):
                     f"t.me/{telegram_username}",
                     inline_keyboard=[["✅ Все верно!", "❌ Я ошибся"]],
                 )
+                await response.tell(f"t.me/{telegram_username}", mode="inplace")
                 if answer == "✅ Все верно!":
                     break
             else:
@@ -52,13 +54,17 @@ def menu(deps: Deps):
 
         await response.tell(f"Добавил во все чаты и каналы: {', '.join(deps.config.telegram_ef_chats.keys())}")
 
+        await response.tell("Создаю страницы в Notion...")
+
         # - Get full name
 
         full_name = f"{user.first_name} {user.last_name}"
 
         # - Create notion page in CRM
 
-        result = await deps.notion_client().upsert_database(
+        # -- Create page
+
+        result, new_pages = await deps.notion_client().upsert_database(
             database={
                 "id": "4675fa21409b4f46b29946279040ba96",  # pragma: allowlist secret
             },
@@ -66,7 +72,9 @@ def menu(deps: Deps):
             page_unique_id_func=lambda page: page["properties"]["Name"]["title"][0]["text"]["content"],
         )
 
-        await response.tell(f"Создал новую страницу в CRM: {result.url}")
+        # -- Find page
+
+        await response.tell(f"Создал новую страницу в CRM: {new_pages[0]['url']}")
 
         # - Create onboarding page in EF
 
@@ -76,8 +84,8 @@ def menu(deps: Deps):
             page={
                 "parent": {
                     "page_id": "5caeefe3bf5645b39b0995f02fc55b82",  # персональные пространства
-                    "properties": {"title": {"title": [{"text": {"content": full_name}}]}},
-                }
+                },
+                "properties": {"title": {"title": [{"text": {"content": full_name}}]}},
             },
         )
 
@@ -88,13 +96,19 @@ def menu(deps: Deps):
             destination_page_id=page["id"],  # https://www.notion.so/5caeefe3bf5645b39b0995f02fc55b82
         )
 
-        await response.tell(f"Создал страницу для онбоардинга: {page.url}")
+        # pick random emoji
+
+        await deps.notion_client().pages.update(page_id=page["id"], icon={"type": "emoji", "emoji": "🏄‍♂️"})
+
+        # -- Set emoji for page
+
+        await response.tell(f"Создал страницу для онбоардинга: {page['url']}")
 
         await response.tell(f"""
         Шаги, которые тебе нужно сделать: 
         - Взять у участника email в Notion 
         - Пошарить ему страницу Home в Notion: https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4
-        - Скинуть ссылку на онбоардинг, чтобы он заполнил: {page.url}
+        - Скинуть ссылку на онбоардинг, чтобы он заполнил: {page['url']}
         - Поставить себе напоминалки, чтобы убедиться, что он все заполнил 
         - Когда он заполнит, написать @ltgags, чтобы он обработал заполненную страницу онбоардинга
 """)

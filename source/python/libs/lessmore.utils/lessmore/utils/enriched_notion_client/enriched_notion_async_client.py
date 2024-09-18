@@ -134,7 +134,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
         remove_others: bool = False,
         page_unique_id_func: Optional[Callable] = None,
         archive: Optional[bool] = None,
-    ):
+    ) -> tuple[dict, list[dict]]:
         """Upsert database with pages and children."""
 
         # - Validate pages has the same length as children
@@ -161,11 +161,13 @@ class EnrichedNotionAsyncClient(AsyncClient):
             database_id = database["id"]
 
             if pages:
-                await asyncio.gather(
+                new_pages = await asyncio.gather(
                     *[self.upsert_page(page={**{"database_id": database_id}, **page}) for page in pages]
                 )
+            else:
+                new_pages = []
 
-            return database
+            return database, new_pages
 
         assert "id" in database
 
@@ -187,7 +189,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
         # -- Return if no pages provided
 
         if not pages:
-            return database
+            return database, []
 
         # - -- Get old pages
 
@@ -241,7 +243,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
             ],
         )
 
-        await asyncio.gather(
+        new_pages = await asyncio.gather(
             *[
                 self.upsert_page(
                     page={
@@ -258,7 +260,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
             ]
         )
 
-        return database
+        return database, new_pages
 
     @tested(tests=[test_parse_markdown_table])
     @staticmethod

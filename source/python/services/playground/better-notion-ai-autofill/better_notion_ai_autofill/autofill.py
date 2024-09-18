@@ -122,7 +122,7 @@ def test():
         if not database:
             database_name = f"test_page_{uuid.uuid4()}"
 
-            database = await client.upsert_database(
+            database, new_pages = await client.upsert_database(
                 database={
                     "parent": {"page_id": deps.config.notion_test_page_id},
                     "title": [{"text": {"content": database_name}}],
@@ -145,7 +145,7 @@ def test():
                 }
             )
 
-            database = await client.upsert_database(
+            database, new_pages = await client.upsert_database(
                 database={
                     "id": database["id"],
                 },
