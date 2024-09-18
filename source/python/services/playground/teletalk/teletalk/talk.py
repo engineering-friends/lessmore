@@ -215,14 +215,13 @@ class Talk:
         new_only_blocks = [block for block in new_blocks if block.id not in [block.id for block in old_blocks]]
         common_blocks = [block for block in old_blocks if block.id in [block.id for block in new_blocks]]
 
-        # - Mark blocks with refreshed ids
-
-        for block in old_only_blocks + common_blocks + new_only_blocks:
-            block._is_refreshed = bool(not block.current_output) and bool(block.previous_output)
+        old_blocks_by_old_id = {
+            block.id if not block.is_refreshed else block.previous_id: block for block in old_blocks
+        }
 
         # - Render new block messages, will fill `current_output` for blocks with refreshed ids
 
-        block_messages = [block.render() for block in new_blocks]  # will affect common_blocks!
+        block_messages = [block.render() for block in new_blocks]  # will affect common_blocks, reset `is_refreshed`
 
         for block_message in block_messages:
             if not block_message.chat_id:
@@ -232,9 +231,11 @@ class Talk:
         # - Get old messages
 
         old_block_messages = [
-            block.current_output if block.current_output and block.current_output.messages else block.previous_output
+            block.current_output
+            if block.current_output and block.current_output.messages
+            else block.previous_output  # in case we rerendered the blocks
             for block in old_blocks
-        ]  # todo later: way too complex logic, refactor [@marklidenberg]
+        ]
 
         first_old_message = None if not old_block_messages else old_block_messages[0].messages[0]
 
@@ -329,12 +330,8 @@ class Talk:
 
             # - Upsert new messages
 
-            _old_blocks_by_id = {
-                block.id if not block._is_refreshed else block.previous_id: block for block in old_blocks
-            }
-
             for block in new_blocks:
-                if block.id not in _old_blocks_by_id:
+                if block.id not in old_blocks_by_old_id:
                     _first_old_message = None
                 else:
                     _first_old_message = block.previous_output.messages[0]

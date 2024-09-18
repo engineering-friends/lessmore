@@ -34,6 +34,7 @@ async def starter(response: Response):
     sample_block = SimpleBlock()
     await response.tell(sample_block.update(text="Message 6"))
     sample_block.refresh_id()
+    await response.tell(sample_block.update(text="Message 7 - should be updated"), update_mode="inplace_by_id")
     await response.tell(sample_block.update(text="Message 7"), update_mode="inplace_by_id")
 
 

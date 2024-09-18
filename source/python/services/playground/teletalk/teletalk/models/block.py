@@ -20,6 +20,7 @@ class Block:
 
         self.id = str(uuid.uuid4())
         self.previous_id = None  # in case of refresh
+        self.is_refreshed = None
 
         # - Output
 
@@ -54,6 +55,10 @@ class Block:
         self.previous_id = self.id
         self.id = str(uuid.uuid4())
 
+        # - Update `is_refreshed`
+
+        self.is_refreshed = True
+
     def render(
         self,
         inherit_messages: bool = False,
@@ -67,6 +72,10 @@ class Block:
         if self.current_output:
             self.previous_output = self.current_output
         self.current_output = output
+
+        # - Reset `is_refreshed`
+
+        self.is_refreshed = None
 
         # - Return output
 
