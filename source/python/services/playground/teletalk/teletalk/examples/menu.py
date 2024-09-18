@@ -36,8 +36,8 @@ class Menu(Block):
         )
 
 
-go_back = lambda response: response.ask(response.previous, update_mode="inplace")
-go_forward = lambda response: response.ask(response.next, update_mode="inplace")
+go_back = lambda response: response.ask(response.previous if response.previous else response, update_mode="inplace")
+go_forward = lambda response: response.ask(response.next if response.next else response, update_mode="inplace")
 go_to_root = lambda response: response.ask(response.root, update_mode="inplace")
 cancel = lambda response: response.tell("Cancelled")
 

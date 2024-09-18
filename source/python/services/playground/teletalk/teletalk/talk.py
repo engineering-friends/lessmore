@@ -118,18 +118,17 @@ class Talk:
 
             response.root = parent_response.root
 
-            response_stack = parent_response.response_stack()
+            response_stack = parent_response.root.response_stack()
 
             if _repeated_response := next(
                 (
                     _response
                     for _response in response_stack
-                    if _response.prompt_page and _response.prompt_page.id == response.prompt_page.id
+                    if _response.prompt_page and _response.prompt_page.id == page.id
                 ),
                 None,
             ):
                 # loop call, keep things as is
-                response.root = _repeated_response.root
                 response.previous = _repeated_response.previous
                 response.next = _repeated_response.next
             else:

@@ -62,8 +62,8 @@ class Response:
 
     def response_stack(self):
         result = []
-        current_response = self
+        current_response = self.root
         while current_response:
             result.append(current_response)
-            current_response = current_response.previous
+            current_response = current_response.next
         return result
