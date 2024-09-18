@@ -216,7 +216,7 @@ class Talk:
         common_blocks = [block for block in old_blocks if block.id in [block.id for block in new_blocks]]
 
         old_blocks_by_old_id = {
-            block.id if not block.is_refreshed else block.previous_id: block for block in old_blocks
+            block.id if not block.has_refreshed_id else block.previous_id: block for block in old_blocks
         }
 
         # - Render new block messages, will fill `current_output` for blocks with refreshed ids
