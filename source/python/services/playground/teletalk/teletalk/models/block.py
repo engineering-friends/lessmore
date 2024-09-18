@@ -15,20 +15,21 @@ class Block:
 
         self.message_callback: Optional[Callable] = asyncify(message_callback) if message_callback else None
         self.query_callbacks: dict[str, Callable] = {}
+
+        # - Id
+
+        self.id = str(uuid.uuid4())
+        self.previous_id = None  # in case of refresh
+
+        # - Output
+
         self.current_output: Optional[BlockMessage] = None  # will be updated by the `render` method
+        self.previous_output: Optional[BlockMessage] = None
 
         # - Tree
 
         self.parent: Optional["Block"] = None
         self.children: list["Block"] = []
-
-        # - Id
-
-        self.id = str(uuid.uuid4())
-        self.rendered_id = self.id
-
-    def refresh_id(self):
-        self.id = str(uuid.uuid4())
 
     def register_callback(self, callback: Callable) -> str:
         _id = str(uuid.uuid4())
@@ -42,12 +43,33 @@ class Block:
 
         return self.current_output.messages[0].chat.id
 
-    def render(self, inherit_messages: bool = False) -> BlockMessage:
+    def refresh_id(self):
+        # - Update outputs
+
+        self.previous_output = self.current_output
+        self.current_output = None
+
+        # - Update ids
+
+        self.previous_id = self.id
+        self.id = str(uuid.uuid4())
+
+    def render(
+        self,
+        inherit_messages: bool = False,
+    ) -> BlockMessage:
+        # - Update output
+
         output = self.output()
         if inherit_messages and self.current_output:
             output.messages = self.current_output.messages
+
+        if self.current_output:
+            self.previous_output = self.current_output
         self.current_output = output
-        self.rendered_id = self.id
+
+        # - Return output
+
         return output
 
     def output(self) -> BlockMessage:

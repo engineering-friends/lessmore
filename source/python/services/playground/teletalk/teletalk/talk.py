@@ -205,18 +205,14 @@ class Talk:
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
         default_chat_id: int = 0,
     ):
-        # - Get old block messages
+        # - Get old messages
+
+        old_page = self.active_page
 
         if self.active_page is not None:
-            old_block_messages = [block.current_output for block in self.active_page.blocks]
-            old_block_messages_by_id = {
-                block.rendered_id: old_block_messages[i]
-                for i, block in enumerate(self.active_page.blocks)
-                if old_block_messages
-            }
+            old_block_messages = [block.previous_output for block in old_page.blocks]
         else:
             old_block_messages = []
-            old_block_messages_by_id = {}
 
         for old_block_message in old_block_messages:
             assert len(old_block_message.messages) == 1, "Only single message blocks are supported in all modes for now"
@@ -225,7 +221,7 @@ class Talk:
 
         # - Render new block messages. Note: if some blocks are in the self.active_page, their renders will be reset # todo later: bad side effet, [@marklidenberg]
 
-        block_messages = [block.render() for block in page.blocks]  # might change block.rendered_id
+        block_messages = [block.render() for block in page.blocks]
 
         for block_message in block_messages:
             if not block_message.chat_id:
@@ -317,18 +313,20 @@ class Talk:
         elif update_mode == "inplace_by_id":
             # - Delete old messages
 
-            for old_id, old_block_message in old_block_messages_by_id.items():
-                if old_id not in [block.id for block in page.blocks]:
-                    for message in [message for message in old_block_message.messages if message.message_id]:
+            for block in old_page.blocks:
+                if block.id not in [_block.id for _block in page.blocks]:
+                    for message in [message for message in block.current_output.messages if message.message_id]:
                         await _upsert_message(block_message=None, old_message=message)
 
             # - Upsert new messages
 
+            _old_blocks_by_id = {block.id: block for block in old_page.blocks}
+
             for block in page.blocks:
-                if old_block_message := old_block_messages_by_id.get(block.id):
-                    _first_old_message = old_block_message.messages[0]
-                else:
+                if block.id not in _old_blocks_by_id:
                     _first_old_message = None
+                else:
+                    _first_old_message = block.previous_output.messages[0]
 
                 await _upsert_message(block_message=block.current_output, old_message=_first_old_message)
 
