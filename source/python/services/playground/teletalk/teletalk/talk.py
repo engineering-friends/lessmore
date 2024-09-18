@@ -209,8 +209,14 @@ class Talk:
 
         old_page = self.active_page
 
-        if self.active_page is not None:
-            old_block_messages = [block.current_output for block in old_page.blocks]
+        # old_only_blocks = [block for block in old_page.blocks if block.id not in [block.id for block in page.blocks]]
+        # new_only_blocks = [block for block in page.blocks if block.id not in [block.id for block in old_page.blocks]]
+        # common_blocks = [block for block in old_page.blocks if block.id in [block.id for block in page.blocks]]
+
+        if old_page is not None:
+            old_block_messages = [
+                block.current_output or block.previous_output for block in old_page.blocks
+            ]  # blocks could refresh ids, which would reset the current_output
         else:
             old_block_messages = []
 
@@ -221,7 +227,7 @@ class Talk:
 
         # - Render new block messages. Note: if some blocks are in the self.active_page, their renders will be reset # todo later: bad side effet, [@marklidenberg]
 
-        block_messages = [block.render() for block in page.blocks]
+        block_messages = [block.render() for block in page.blocks]  # will affect common_blocks!
 
         for block_message in block_messages:
             if not block_message.chat_id:
