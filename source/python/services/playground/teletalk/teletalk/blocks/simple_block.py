@@ -101,12 +101,7 @@ class SimpleBlock(Block):
                 keyboard=[
                     [
                         KeyboardButton(
-                            text=button.text,
-                            callback_data=self.register_callback(
-                                button_callback(text=button.text)
-                                if button.callback_data is None
-                                else button.callback_data
-                            ),
+                            text=button.text, callback_data=self.register_callback(button_callback(text=button.text))
                         )
                         for button in row
                     ]
