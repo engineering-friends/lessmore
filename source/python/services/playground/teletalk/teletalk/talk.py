@@ -108,6 +108,7 @@ class Talk:
         response.talk = self
 
         # -- Navigation stack
+
         if not parent_response.prompt_page:  # starter response
             # First response in the stack
 
@@ -119,7 +120,19 @@ class Talk:
 
             response_stack = parent_response.response_stack()
 
-            if page.id not in [_response.prompt_page.id for _response in response_stack if _response.prompt_page]:
+            if _repeated_response := next(
+                (
+                    _response
+                    for _response in response_stack
+                    if _response.prompt_page and _response.prompt_page.id == response.prompt_page.id
+                ),
+                None,
+            ):
+                # loop call, keep things as is
+                response.root = _repeated_response.root
+                response.previous = _repeated_response.previous
+                response.next = _repeated_response.next
+            else:
                 # new element in the stack!
 
                 # - Reset all responses upstream
@@ -134,9 +147,6 @@ class Talk:
 
                 response.previous = parent_response
                 parent_response.next = response
-            else:
-                # loop call, keep things as is
-                pass
 
         # - Add user messages to the `self.history`
 
