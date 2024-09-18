@@ -185,18 +185,24 @@ class Talk:
 
         # - Upsert message helper function
 
-        async def _upsert_message(block_message: BlockMessage, old_message: Optional[Message] = None):
+        async def _upsert_message(block_message: Optional[BlockMessage], old_message: Optional[Message] = None):
             # - Edit or send message
 
             if old_message:
-                message = await self.app.bot.edit_message_text(
-                    chat_id=block_message.chat_id,
-                    message_id=old_message.message_id,
-                    text=block_message.text,
-                    reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
-                    parse_mode="MarkdownV2",
-                    link_preview_options=LinkPreviewOptions(is_disabled=True),
-                )
+                if block_message:
+                    message = await self.app.bot.edit_message_text(
+                        chat_id=block_message.chat_id,
+                        message_id=old_message.message_id,
+                        text=block_message.text,
+                        reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
+                        parse_mode="MarkdownV2",
+                        link_preview_options=LinkPreviewOptions(is_disabled=True),
+                    )
+                else:
+                    message = await self.app.bot.delete_message(
+                        chat_id=old_message.chat.id, message_id=old_message.message_id
+                    )
+                    self.history = [message for message in self.history if message.message_id != old_message.message_id]
             else:
                 message = await self.app.bot.send_message(
                     chat_id=block_message.chat_id,
@@ -208,16 +214,17 @@ class Talk:
 
             # - Track message
 
-            block_message.messages = list(
-                skip_duplicates([message] + block_message.messages, key=lambda message: message.message_id),
-            )
+            if isinstance(message, Message):
+                block_message.messages = list(
+                    skip_duplicates([message] + block_message.messages, key=lambda message: message.message_id),
+                )
 
-            self.history = list(
-                sorted(
-                    skip_duplicates(block_message.messages + self.history, key=lambda message: message.message_id),
-                    key=lambda message: message.message_id,
-                ),
-            )
+                self.history = list(
+                    sorted(
+                        skip_duplicates(block_message.messages + self.history, key=lambda message: message.message_id),
+                        key=lambda message: message.message_id,
+                    ),
+                )
 
         # - Process update modes
 
@@ -261,14 +268,10 @@ class Talk:
         elif update_mode == "inplace_by_id":
             # - Delete old messages
 
-            for id, old_block_message in old_block_messages_by_id.items():
-                if id not in [block.id for block in page.blocks]:
-                    messages_to_delete = [message for message in old_block_message.messages if message.message_id]
-                    if messages_to_delete:
-                        await self.app.bot.delete_messages(
-                            chat_id=old_block_messages[0].chat_id,
-                            message_ids=[message.message_id for message in messages_to_delete],
-                        )
+            for old_id, old_block_message in old_block_messages_by_id.items():
+                if old_id not in [block.id for block in page.blocks]:
+                    for message in [message for message in old_block_message.messages if message.message_id]:
+                        await _upsert_message(block_message=None, old_message=message)
 
             # - Upsert new messages
 
