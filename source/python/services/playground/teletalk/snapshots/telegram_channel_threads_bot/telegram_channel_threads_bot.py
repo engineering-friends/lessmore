@@ -58,11 +58,11 @@ class Thread(Block):
             buttons=[
                 Button(
                     text="🔔Размьютить",
-                    callback=lambda response: (response.prompt_root_block.is_mute, response.ask(response.root)),
+                    callback=lambda response: (response.prompt_block.is_mute, response.ask(response.root)),
                 ),
                 Button(
                     text="⌫ Отписаться",
-                    callback=lambda response: (response.prompt_root_block.is_following, response.ask(response.root)),
+                    callback=lambda response: (response.prompt_block.is_following, response.ask(response.root)),
                 ),
             ],
         ).render(callback_wrapper)

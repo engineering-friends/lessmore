@@ -59,7 +59,7 @@ class SimpleBlock(Block):
 
         def button_callback(text: str):
             async def _button_callback(response: Response):
-                assert isinstance(response.prompt_block, SimpleBlock), "Block is not SimpleBlock"
+                assert isinstance(response.prompt_sub_block, SimpleBlock), "Block is not SimpleBlock"
 
                 # - Remove inline keyboard from th message
 

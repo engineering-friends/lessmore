@@ -23,19 +23,19 @@ class Response:
     block_messages: list[BlockMessage] = field(default_factory=list)
     external_payload: dict = field(default_factory=dict)
 
-    # - Pages and Blocks
-
-    prompt_page: Optional[Page] = None  # root Block is the Block that spawned the whole conversation
-    prompt_root_block: Optional[Block] = None
-    prompt_block: Optional[Block] = None
-
     # - Talk
 
     talk: Optional["Talk"] = None  # circular import
 
-    # - Navigation
+    # - Pages and Blocks
 
-    first: Optional[Response] = None
+    prompt_page: Optional[Page] = None
+    prompt_block: Optional[Block] = None
+    prompt_sub_block: Optional[Block] = None
+
+    # - Navigation: a call stack of responses for back and forth navigation
+
+    root: Optional[Response] = None  # always triggered by a text message, a starter
     previous: Optional[Response] = None
     next: Optional[Response] = None
 
@@ -60,27 +60,10 @@ class Response:
 
         return await self.talk.tell(*args, **kwargs)
 
-    def previous_prompt(self):
-        current_response = self.previous
-
-        while current_response and not current_response.prompt_page:
+    def response_stack(self):
+        result = []
+        current_response = self
+        while current_response:
+            result.append(current_response)
             current_response = current_response.previous
-
-        if not current_response:
-            return None
-
-        return current_response.prompt_page
-
-    def next_prompt(self):
-        current_response = self.next
-
-        while current_response and not current_response.prompt_page:
-            current_response = current_response.next
-
-        if not current_response:
-            return None
-
-        return current_response.prompt_page
-
-    def first_prompt(self):
-        return self.prompt_page or self.first.next_prompt()
+        return result

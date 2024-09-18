@@ -67,7 +67,7 @@ class Talk:
         default_chat_id: int = 0,  # usually passed from the response
         parent_response: Optional[Response] = None,
     ) -> Any:
-        # - Build the `Page` from the `text`, `files`, `reply_keyboard_markup`, `inline_keyboard_markup` if not provided
+        # - Build the `Page` from the prompt data
 
         if isinstance(prompt, str):
             page = Page(
@@ -111,17 +111,37 @@ class Talk:
 
         response.prompt_page = page
 
-        # -- Navigation
+        # -- Navigation stack
 
         if not parent_response:
-            response.first = response
+            # First response in the stack
+
+            response.root = response
         else:
-            if not parent_response.next:
-                response.first = parent_response.first
+            # A continuation response in the stack
+
+            response.root = parent_response.root
+
+            response_stack = parent_response.response_stack()
+
+            if page.id not in [_response.prompt_page.id for _response in response_stack]:
+                # new element in the stack!
+
+                # - Reset all responses upstream
+
+                a, b = parent_response, parent_response.next
+                while b:
+                    a.next = None
+                    b.previous = None
+                    a, b = b, b.next
+
+                # - Set `parent_response.next` to response
+
                 response.previous = parent_response
                 parent_response.next = response
             else:
-                logger.debug("Navigation is set only on the way down the tree")
+                # loop call, keep things as is
+                pass
 
         # - Add user messages to the `self.history`
 
@@ -134,14 +154,15 @@ class Talk:
             for block in self.active_page.blocks:
                 for node, parent in block.iter_nodes():
                     if response.callback_id in node.query_callbacks:
-                        response.prompt_block = node
-                        response.prompt_root_block = parent
+                        response.prompt_sub_block = node
+                        response.prompt_block = parent
                         return await gather_nested(await node.query_callbacks[response.callback_id](response))
             logger.error("No callback for query")
             return response
 
         elif response.block_messages:
             # - Get chat id
+
             chat_id = response.block_messages[0].chat_id
 
             # - Find the last block_message in the chat
@@ -156,7 +177,7 @@ class Talk:
 
             # - Set response prompt_block as the last block in the page
 
-            response.prompt_block = last_block_in_chat
+            response.prompt_sub_block = last_block_in_chat
 
             # - Run the last block_message callback
 
