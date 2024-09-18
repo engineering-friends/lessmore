@@ -53,7 +53,7 @@ class Block:
     def output(self) -> BlockMessage:
         raise NotImplementedError
 
-    def iter_nodes(self):
+    def iter_nodes(self):  # node, parent
         yield self, self
 
         for child in self.children:

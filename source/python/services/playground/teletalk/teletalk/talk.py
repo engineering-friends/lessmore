@@ -110,8 +110,6 @@ class Talk:
         # -- Blocks
 
         response.prompt_page = page
-        response.prompt_root_block = self.active_page.blocks[0] if self.active_page.blocks else None
-        response.prompt_block = response.prompt_root_block
 
         # -- Navigation
 
@@ -139,22 +137,39 @@ class Talk:
                         response.prompt_block = node
                         response.prompt_root_block = parent
                         return await gather_nested(await node.query_callbacks[response.callback_id](response))
-            raise Exception(f"Callback not found: {response.callback_id}")
-        else:
+            logger.error("No callback for query")
+            return response
+
+        elif response.block_messages:
+            # - Get chat id
             chat_id = response.block_messages[0].chat_id
 
             # - Find the last block_message in the chat
 
-            last_block = last([block for block in self.active_page.blocks if block.chat_id == chat_id])
+            last_block_in_chat = last(
+                [block for block in self.active_page.blocks if block.chat_id == chat_id], default=None
+            )
+
+            if not last_block_in_chat:
+                logger.error("No block found for chat id")
+                return response
+
+            # - Set response prompt_block as the last block in the page
+
+            response.prompt_block = last_block_in_chat
 
             # - Run the last block_message callback
 
-            if last_block.message_callback:
-                return await gather_nested(await last_block.message_callback(response))
+            if last_block_in_chat.message_callback:
+                return await gather_nested(await last_block_in_chat.message_callback(response))
             else:
-                logger.info("No message callback found")
+                logger.error("No message callback found")
+                return response
 
-        return response
+        elif response.external_payload:
+            raise Exception("External payload not implemented yet")
+        else:
+            raise Exception("Unknown response type")
 
     async def update_active_page(
         self,
