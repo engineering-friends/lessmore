@@ -107,10 +107,6 @@ class Talk:
 
         response.talk = self
 
-        # -- Blocks
-
-        response.prompt_page = page
-
         # -- Navigation stack
 
         if not parent_response:
@@ -151,41 +147,52 @@ class Talk:
         # - Find the appropriate callback from the `self.page` and their blocks and run it
 
         if response.callback_id:
+            # - Enrich response with the corresponding prompt
+
+            response.prompt_page = page
+
             for block in self.active_page.blocks:
                 for node, parent in block.iter_nodes():
                     if response.callback_id in node.query_callbacks:
                         response.prompt_sub_block = node
                         response.prompt_block = parent
-                        return await gather_nested(await node.query_callbacks[response.callback_id](response))
-            logger.error("No callback for query")
-            return response
+                        break
+
+                if response.prompt_sub_block:
+                    # break early if possible, to avoid unnecessary iteration
+                    break
+
+            if not response.prompt_sub_block:
+                logger.error("No callback for query")
+                return response
+
+            # - Run the callback
+
+            return await gather_nested(await response.prompt_sub_block.query_callbacks[response.callback_id](response))
 
         elif response.block_messages:
-            # - Get chat id
+            # - Enrich response with the corresponding prompt
 
-            chat_id = response.block_messages[0].chat_id
+            response.prompt_page = page
+            response.prompt_block = last(
+                [block for block in self.active_page.blocks if block.chat_id == response.block_messages[0].chat_id],
+                default=None,
+            )  # last block in the chat
+            response.prompt_sub_block = response.prompt_block
 
-            # - Find the last block_message in the chat
+            # - Validate message callback is present
 
-            last_block_in_chat = last(
-                [block for block in self.active_page.blocks if block.chat_id == chat_id], default=None
-            )
-
-            if not last_block_in_chat:
+            if not response.prompt_block:
                 logger.error("No block found for chat id")
                 return response
 
-            # - Set response prompt_block as the last block in the page
-
-            response.prompt_sub_block = last_block_in_chat
-
-            # - Run the last block_message callback
-
-            if last_block_in_chat.message_callback:
-                return await gather_nested(await last_block_in_chat.message_callback(response))
-            else:
+            if not response.prompt_block.message_callback:
                 logger.error("No message callback found")
                 return response
+
+            # - Run the message callback
+
+            return await gather_nested(await response.prompt_sub_block.message_callback(response))
 
         elif response.external_payload:
             raise Exception("External payload not implemented yet")
