@@ -10,10 +10,11 @@ from teletalk.models.block_message import BlockMessage
 class Block:
     """A collection of messages grouped together in telegram (like album)"""
 
-    def __init__(self, message_callback: Optional[Callable] = None):
+    def __init__(self, message_callback: Optional[Callable] = None, external_callback: Optional[Callable] = None):
         # - State
 
         self.message_callback: Optional[Callable] = asyncify(message_callback) if message_callback else None
+        self.external_callback: Optional[Callable] = asyncify(external_callback) if external_callback else None
         self.query_callbacks: dict[str, Callable] = {}
 
         # - Id

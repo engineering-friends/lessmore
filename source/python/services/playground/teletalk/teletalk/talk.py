@@ -210,7 +210,24 @@ class Talk:
             return await gather_nested(await response.prompt_sub_block.message_callback(response))
 
         elif response.external_payload:
-            raise Exception("External payload not implemented yet")
+            # - Enrich response with the corresponding prompt
+
+            response.prompt_page = page
+            response.prompt_block = last(
+                [block for block in self.active_page.blocks],
+                default=None,
+            )  # last block
+            response.prompt_sub_block = response.prompt_block
+
+            # - Validate external callback is present
+
+            if not response.prompt_block.external_callback:
+                logger.warning("No external callback found")
+                return await response.ask(mode="inplace_by_id")
+
+            # - Run the external callback
+
+            return await gather_nested(await response.prompt_sub_block.external_callback(response))
         else:
             raise Exception("Unknown response type")
 
