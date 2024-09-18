@@ -8,6 +8,7 @@ from lessmore.utils.functional.skip_duplicates import skip_duplicates
 from loguru import logger
 from more_itertools import last
 from pymaybe import maybe
+from telegram.helpers import escape_markdown
 from teletalk.blocks.simple_block import SimpleBlock
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
@@ -263,7 +264,7 @@ class Talk:
                     message = await self.app.bot.edit_message_text(
                         chat_id=block_message.chat_id,
                         message_id=old_message.message_id,
-                        text=block_message.text,
+                        text=escape_markdown(block_message.text, version=2),
                         reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
                         parse_mode="MarkdownV2",
                         link_preview_options=LinkPreviewOptions(is_disabled=True),
@@ -276,7 +277,7 @@ class Talk:
             else:
                 message = await self.app.bot.send_message(
                     chat_id=block_message.chat_id,
-                    text=block_message.text,
+                    text=escape_markdown(block_message.text, version=2),
                     reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
                     parse_mode="MarkdownV2",
                     link_preview_options=LinkPreviewOptions(is_disabled=True),

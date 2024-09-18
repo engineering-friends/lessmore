@@ -55,7 +55,7 @@ class SimpleBlock(Block):
             self.inline_keyboard_markup = InlineKeyboardMarkup(
                 inline_keyboard=[
                     [
-                        InlineKeyboardButton.model_construct(
+                        InlineKeyboardButton.model_construct(  # pydantic, but without validation
                             text=_unfold(value)[0],
                             callback_data=_unfold(value)[1],  # put callback right in the callback_data
                         )
@@ -81,27 +81,17 @@ class SimpleBlock(Block):
 
             return _button_callback
 
-        if self.inline_keyboard_markup:
-            self.inline_keyboard_markup.inline_keyboard = [
-                [
-                    InlineKeyboardButton(
-                        text=button.text,
-                        callback_data=self.register_callback(
-                            button_callback(text=button.text) if button.callback_data is None else button.callback_data
-                        ),
-                        url=button.url,
-                    )
-                    for button in row
-                ]
-                for row in self.inline_keyboard_markup.inline_keyboard
-            ]
+        # - Return
 
-        if self.reply_keyboard_markup:
-            self.reply_keyboard_markup = ReplyKeyboardMarkup(
+        return BlockMessage(
+            text=self.text,
+            files=self.files,
+            reply_keyboard_markup=ReplyKeyboardMarkup(
                 keyboard=[
                     [
                         KeyboardButton(
-                            text=button.text, callback_data=self.register_callback(button_callback(text=button.text))
+                            text=button.text,
+                            callback_data=self.register_callback(button_callback(text=button.text)),
                         )
                         for button in row
                     ]
@@ -109,12 +99,25 @@ class SimpleBlock(Block):
                 ],
                 one_time_keyboard=True,
             )
-
-        # - Return
-
-        return BlockMessage(
-            text=escape_markdown(self.text, version=2),
-            reply_keyboard_markup=self.reply_keyboard_markup,
-            inline_keyboard_markup=self.inline_keyboard_markup,
-            files=self.files,
+            if self.reply_keyboard_markup
+            else None,
+            inline_keyboard_markup=InlineKeyboardMarkup(
+                inline_keyboard=[
+                    [
+                        InlineKeyboardButton(
+                            text=button.text,
+                            callback_data=self.register_callback(
+                                button_callback(text=button.text)
+                                if button.callback_data is None
+                                else button.callback_data
+                            ),
+                            url=button.url,
+                        )
+                        for button in row
+                    ]
+                    for row in self.inline_keyboard_markup.inline_keyboard
+                ]
+            )
+            if self.inline_keyboard_markup
+            else None,
         )

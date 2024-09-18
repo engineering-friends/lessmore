@@ -46,11 +46,12 @@ class Dispatcher:
             talk = None
             for _talk in self.app.talks:
                 for block in _talk.active_page.blocks:
-                    if block.query_callbacks:
-                        for callback_id, callback in block.query_callbacks.items():
-                            if callback_id == response.callback_id:
-                                talk = _talk
-                                break
+                    for node, parent in block.iter_nodes():
+                        if node.query_callbacks:
+                            for callback_id, callback in node.query_callbacks.items():
+                                if callback_id == response.callback_id:
+                                    talk = _talk
+                                    break
 
             if not talk:
                 logger.info("Didn't find the `Talk` by `Response.callback_id`", response=response)
