@@ -55,7 +55,7 @@ class SimpleBlock(Block):
             self.inline_keyboard_markup = InlineKeyboardMarkup(
                 inline_keyboard=[
                     [
-                        InlineKeyboardButton(
+                        InlineKeyboardButton.model_construct(
                             text=_unfold(value)[0],
                             callback_data=_unfold(value)[1],  # put callback right in the callback_data
                         )
