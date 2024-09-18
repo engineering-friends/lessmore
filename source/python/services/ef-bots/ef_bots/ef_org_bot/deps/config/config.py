@@ -12,4 +12,4 @@ class Config(BaseSettings):
     telegram_bot_token: str
     telegram_ef_channel: Union[int, str]
 
-    telegram_ef_chats: list[Union[int, str]]
+    telegram_ef_chats: dict[str, Union[int, str]]

@@ -24,13 +24,16 @@ def menu(deps: Deps):
 
         # Get the channel and user objects
         user = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
-        await deps.telegram_user_client(
-            InviteToChannelRequest(
-                channel=await deps.telegram_user_client.get_entity(deps.config.telegram_ef_channel), users=[user]
-            )
-        )
+        for chat_name, chat_id in deps.config.telegram_ef_chats.items():
+            entity = await deps.telegram_user_client.get_entity(chat_id)
 
-        await response.tell("Добавил в канал EF Channel")
+            await deps.telegram_user_client(
+                InviteToChannelRequest(
+                    channel=await deps.telegram_user_client.get_entity(deps.config.telegram_ef_channel), users=[user]
+                )
+            )
+
+        await response.tell(f"Добавил в чаты и каналы: {', '.join(deps.config.telegram_ef_chats.keys())}")
 
         # - Create notion page for the user, if not exists
 
@@ -54,14 +57,12 @@ def test():
 
         await deps.telegram_user_client.start()
 
-        async for dialog in deps.telegram_user_client.iter_dialogs():
-            print(dialog.title, dialog.id)
         # # - Start bot
-        #
-        # await App(
-        #     bot=deps.config.telegram_bot_token,
-        #     command_starters={"/start": lambda response: response.ask(menu(deps))},
-        # ).start_polling()
+
+        await App(
+            bot=deps.config.telegram_bot_token,
+            command_starters={"/start": lambda response: response.ask(menu(deps))},
+        ).start_polling()
 
     asyncio.run(main())
 
