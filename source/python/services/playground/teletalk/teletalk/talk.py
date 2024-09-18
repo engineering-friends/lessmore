@@ -205,34 +205,38 @@ class Talk:
         update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
         default_chat_id: int = 0,
     ):
-        # - Get old messages
+        # - Mark blocks for easier usage
 
         old_page = self.active_page
 
-        # old_only_blocks = [block for block in old_page.blocks if block.id not in [block.id for block in page.blocks]]
-        # new_only_blocks = [block for block in page.blocks if block.id not in [block.id for block in old_page.blocks]]
-        # common_blocks = [block for block in old_page.blocks if block.id in [block.id for block in page.blocks]]
+        old_blocks = old_page.blocks if old_page else []
+        new_blocks = page.blocks
+        old_only_blocks = [block for block in old_blocks if block.id not in [block.id for block in new_blocks]]
+        new_only_blocks = [block for block in new_blocks if block.id not in [block.id for block in old_blocks]]
+        common_blocks = [block for block in old_blocks if block.id in [block.id for block in new_blocks]]
 
-        if old_page is not None:
-            old_block_messages = [
-                block.current_output or block.previous_output for block in old_page.blocks
-            ]  # blocks could refresh ids, which would reset the current_output
-        else:
-            old_block_messages = []
+        # - Mark blocks with refreshed ids
 
-        for old_block_message in old_block_messages:
-            assert len(old_block_message.messages) == 1, "Only single message blocks are supported in all modes for now"
+        for block in old_only_blocks + common_blocks + new_only_blocks:
+            block._is_refreshed = bool(not block.current_output) and bool(block.previous_output)
 
-        first_old_message = None if not old_block_messages else old_block_messages[0].messages[0]
+        # - Render new block messages, will fill `current_output` for blocks with refreshed ids
 
-        # - Render new block messages. Note: if some blocks are in the self.active_page, their renders will be reset # todo later: bad side effet, [@marklidenberg]
-
-        block_messages = [block.render() for block in page.blocks]  # will affect common_blocks!
+        block_messages = [block.render() for block in new_blocks]  # will affect common_blocks!
 
         for block_message in block_messages:
             if not block_message.chat_id:
                 block_message.chat_id = default_chat_id
             assert block_message.chat_id, "Block Message has no chat_id"
+
+        # - Get old messages
+
+        old_block_messages = [
+            block.current_output if block.current_output and block.current_output.messages else block.previous_output
+            for block in old_blocks
+        ]  # todo later: way too complex logic, refactor [@marklidenberg]
+
+        first_old_message = None if not old_block_messages else old_block_messages[0].messages[0]
 
         # - Upsert message helper function
 
@@ -319,16 +323,17 @@ class Talk:
         elif update_mode == "inplace_by_id":
             # - Delete old messages
 
-            for block in old_page.blocks:
-                if block.id not in [_block.id for _block in page.blocks]:
-                    for message in [message for message in block.current_output.messages if message.message_id]:
-                        await _upsert_message(block_message=None, old_message=message)
+            for block in old_only_blocks:
+                for message in [message for message in block.current_output.messages if message.message_id]:
+                    await _upsert_message(block_message=None, old_message=message)
 
             # - Upsert new messages
 
-            _old_blocks_by_id = {block.id: block for block in old_page.blocks}
+            _old_blocks_by_id = {
+                block.id if not block._is_refreshed else block.previous_id: block for block in old_blocks
+            }
 
-            for block in page.blocks:
+            for block in new_blocks:
                 if block.id not in _old_blocks_by_id:
                     _first_old_message = None
                 else:
