@@ -25,9 +25,9 @@ class Response:
 
     # - Pages and Blocks
 
-    page: Optional[Page] = None  # root Block is the Block that spawned the whole conversation
-    root_block: Optional[Block] = None
-    block: Optional[Block] = None
+    prompt_page: Optional[Page] = None  # root Block is the Block that spawned the whole conversation
+    prompt_root_block: Optional[Block] = None
+    prompt_block: Optional[Block] = None
 
     # - Talk
 
@@ -35,7 +35,7 @@ class Response:
 
     # - Navigation
 
-    root: Optional[Response] = None
+    first: Optional[Response] = None
     previous: Optional[Response] = None
     next: Optional[Response] = None
 
@@ -59,3 +59,28 @@ class Response:
         # - Tell the talk
 
         return await self.talk.tell(*args, **kwargs)
+
+    def previous_prompt(self):
+        current_response = self.previous
+
+        while current_response and not current_response.prompt_page:
+            current_response = current_response.previous
+
+        if not current_response:
+            return None
+
+        return current_response.prompt_page
+
+    def next_prompt(self):
+        current_response = self.next
+
+        while current_response and not current_response.prompt_page:
+            current_response = current_response.next
+
+        if not current_response:
+            return None
+
+        return current_response.prompt_page
+
+    def first_prompt(self):
+        return self.prompt_page or self.first.next_prompt()

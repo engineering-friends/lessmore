@@ -5,7 +5,7 @@ from typing import Callable, Optional, Tuple
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from teletalk.app import App
-from teletalk.models.block import Block, persist
+from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
@@ -39,8 +39,7 @@ class Menu(Block):
         self.grid = grid
         super().__init__()
 
-    @persist
-    def render(self) -> BlockMessage:
+    def output(self) -> BlockMessage:
         return BlockMessage(
             text=self.text,
             inline_keyboard_markup=InlineKeyboardMarkup(
@@ -69,10 +68,23 @@ async def starter(response: Response):
                     (
                         "A",
                         lambda response: response.ask(
-                            Menu(text="Menu", grid=[[("A.1", lambda response: response.ask(response.root))]])
+                            Menu(
+                                text="Menu",
+                                grid=[
+                                    [
+                                        (
+                                            "A.1",
+                                            lambda response: (
+                                                response.tell("A.1"),
+                                                response.ask(response.first_prompt()),
+                                            ),
+                                        )
+                                    ]
+                                ],
+                            )
                         ),
-                    ),
-                ],
+                    )
+                ]
             ],
         )
     )

@@ -85,7 +85,7 @@ class Talk:
         elif isinstance(prompt, Page):
             page = prompt
         elif isinstance(prompt, Response):
-            page = prompt.page
+            page = prompt.prompt_page
         else:
             raise Exception(f"Unknown prompt type: {type(prompt)}")
 
@@ -109,18 +109,21 @@ class Talk:
 
         # -- Blocks
 
-        response.page = self.active_page
-        response.root_block = self.active_page.blocks[0] if self.active_page.blocks else None
-        response.block = response.root_block
+        response.prompt_page = page
+        response.prompt_root_block = self.active_page.blocks[0] if self.active_page.blocks else None
+        response.prompt_block = response.prompt_root_block
 
         # -- Navigation
 
         if not parent_response:
-            response.root = response
+            response.first = response
         else:
-            response.root = parent_response.root
-            response.previous = parent_response
-            parent_response.next = response
+            if not parent_response.next:
+                response.first = parent_response.first
+                response.previous = parent_response
+                parent_response.next = response
+            else:
+                logger.debug("Navigation is set only on the way down the tree")
 
         # - Add user messages to the `self.history`
 
@@ -131,8 +134,11 @@ class Talk:
 
         if response.callback_id:
             for block in self.active_page.blocks:
-                if response.callback_id in block.query_callbacks:
-                    return await gather_nested(await block.query_callbacks[response.callback_id](response))
+                for node, parent in block.iter_nodes():
+                    if response.callback_id in node.query_callbacks:
+                        response.prompt_block = node
+                        response.prompt_root_block = parent
+                        return await gather_nested(await node.query_callbacks[response.callback_id](response))
             raise Exception(f"Callback not found: {response.callback_id}")
         else:
             chat_id = response.block_messages[0].chat_id
@@ -327,7 +333,7 @@ class Talk:
         elif isinstance(prompt, Page):
             page = prompt
         elif isinstance(prompt, Response):
-            page = prompt.page
+            page = prompt.prompt_page
         else:
             raise Exception(f"Unknown prompt type: {type(prompt)}")
 
