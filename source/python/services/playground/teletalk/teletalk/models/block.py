@@ -7,15 +7,6 @@ from lessmore.utils.asynchronous.asyncify import asyncify
 from teletalk.models.block_message import BlockMessage
 
 
-def persist(func):
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        setattr(self, f"_{func.__name__}", func(self, *args, **kwargs))
-        return getattr(self, f"_{func.__name__}")
-
-    return wrapper
-
-
 class Block:
     """A collection of messages grouped together in telegram (like album)"""
 
@@ -24,7 +15,7 @@ class Block:
 
         self.message_callback: Optional[Callable] = asyncify(message_callback) if message_callback else None
         self.query_callbacks: dict[str, Callable] = {}
-        self._render: Optional[BlockMessage] = None  # will be updated by the `render` method
+        self.current_output: Optional[BlockMessage] = None  # will be updated by the `render` method
 
         # - Tree
 
@@ -45,11 +36,17 @@ class Block:
 
     @property
     def chat_id(self) -> int:
-        if not self._render or not self._render.messages:
+        if not self.current_output or not self.current_output.messages:
             return 0
 
-        return self._render.messages[0].chat.id
+        return self.current_output.messages[0].chat.id
 
-    @persist
-    def render(self) -> BlockMessage:
+    def render(self, inherit_messages: bool = True) -> BlockMessage:
+        output = self.output()
+        if inherit_messages and self.current_output:
+            output.messages = self.current_output.messages
+        self.current_output = output
+        return output
+
+    def output(self) -> BlockMessage:
         raise NotImplementedError

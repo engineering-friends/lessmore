@@ -159,7 +159,7 @@ class Talk:
         # - Get old block messages
 
         if self.active_page is not None:
-            old_block_messages = [block._render for block in self.active_page.blocks]
+            old_block_messages = [block.current_output for block in self.active_page.blocks]
         else:
             old_block_messages = []
 
@@ -260,7 +260,7 @@ class Talk:
                 else:
                     _first_old_message = None
 
-                await _upsert_message(block_message=block._render, old_message=_first_old_message)
+                await _upsert_message(block_message=block.current_output, old_message=_first_old_message)
 
         # -- Not implemented
 

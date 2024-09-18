@@ -14,7 +14,7 @@ class Page:
 
     @property
     def block_messages(self) -> list[BlockMessage]:
-        return [block._render for block in self.blocks]
+        return [block.current_output for block in self.blocks]
 
     @property
     def messages(self) -> list[Message]:

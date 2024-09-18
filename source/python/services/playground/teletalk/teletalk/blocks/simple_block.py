@@ -2,7 +2,7 @@ from typing import Callable, Optional
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
 from telegram.helpers import escape_markdown
-from teletalk.models.block import Block, persist
+from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.response import Response
 
@@ -54,8 +54,7 @@ class SimpleBlock(Block):
 
         return self
 
-    @persist
-    def render(self) -> BlockMessage:
+    def output(self) -> BlockMessage:
         # - Wrap inline_keyboard_markup callback_data with basic callback
 
         def button_callback(text: str):
