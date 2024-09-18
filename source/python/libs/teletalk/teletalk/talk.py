@@ -60,10 +60,8 @@ class Talk:
         self,
         prompt: str | Block | Page | Response = "",
         files: Optional[list[str]] = None,
-        reply_keyboard_markup: Optional[ReplyKeyboardMarkup] = None,
-        inline_keyboard_markup: Optional[
-            InlineKeyboardMarkup
-        ] = None,  # will return the button value if passed this way
+        keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
+        inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
         mode: Literal["inplace", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
         parent_response: Optional[Response] = None,
@@ -76,8 +74,8 @@ class Talk:
                     SimpleBlock(
                         text=prompt,
                         files=files,
-                        reply_keyboard_markup=reply_keyboard_markup,
-                        inline_keyboard_markup=inline_keyboard_markup,
+                        keyboard=keyboard,
+                        inline_keyboard=inline_keyboard,
                     )
                 ]
             )

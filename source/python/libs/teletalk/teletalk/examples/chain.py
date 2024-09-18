@@ -15,15 +15,13 @@ async def starter(response: Response):
 
     # - Test reply keyboard
 
-    button_clicked = await response.ask("Click any button:", reply_keyboard_markup=[["A", "B"], ["C", "D", "E"]])
+    button_clicked = await response.ask("Click any button:", keyboard=[["A", "B"], ["C", "D", "E"]])
 
     await response.tell(f"You clicked {button_clicked}")
 
     # - Test inline keyboard
 
-    button_clicked = await response.ask(
-        "Click any inline button:", inline_keyboard_markup=[["A", "B"], ["C", "D", "E"]]
-    )
+    button_clicked = await response.ask("Click any inline button:", inline_keyboard=[["A", "B"], ["C", "D", "E"]])
 
     await response.tell(f"You clicked {button_clicked}")
 

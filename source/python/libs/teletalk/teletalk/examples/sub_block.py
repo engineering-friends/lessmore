@@ -36,8 +36,8 @@ async def starter(response: Response):
     return await response.ask(
         TwoButtons(
             buttons=[
-                SimpleBlock(text="Button1", inline_keyboard_markup=[[("Click me!", on_click)]]),
-                SimpleBlock(text="Button2", inline_keyboard_markup=[[("No, click me!", on_click)]]),
+                SimpleBlock(text="Button1", inline_keyboard=[[("Click me!", on_click)]]),
+                SimpleBlock(text="Button2", inline_keyboard=[[("No, click me!", on_click)]]),
             ]
         ),
     )

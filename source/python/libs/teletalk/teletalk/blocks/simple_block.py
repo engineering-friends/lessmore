@@ -11,8 +11,8 @@ class SimpleBlock(Block):
     def __init__(
         self,
         text: str = "",
-        reply_keyboard_markup: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
-        inline_keyboard_markup: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
+        keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
+        inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
         files: list[str] = [],
         message_callback: Optional[Callable] = lambda response: "".join(
             [message.text for message in response.block_messages]
@@ -20,8 +20,8 @@ class SimpleBlock(Block):
     ):
         self.update(
             text=text,
-            reply_keyboard_markup=reply_keyboard_markup,
-            inline_keyboard_markup=inline_keyboard_markup,
+            keyboard=keyboard,
+            inline_keyboard=inline_keyboard,
             files=files,
         )
         super().__init__(message_callback=message_callback)
@@ -29,19 +29,19 @@ class SimpleBlock(Block):
     def update(
         self,
         text: str,
-        reply_keyboard_markup: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
-        inline_keyboard_markup: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
+        keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
+        inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
         files: list[str] = [],
     ):
         self.text = text
 
-        if isinstance(reply_keyboard_markup, list):
+        if isinstance(keyboard, list):
             self.reply_keyboard_markup = ReplyKeyboardMarkup(
-                keyboard=[[KeyboardButton(text=text) for text in row] for row in reply_keyboard_markup],
+                keyboard=[[KeyboardButton(text=text) for text in row] for row in keyboard],
                 one_time_keyboard=True,
             )
         else:
-            self.reply_keyboard_markup = reply_keyboard_markup
+            self.reply_keyboard_markup = keyboard
 
         def _unfold(value):
             if isinstance(value, str):
@@ -51,7 +51,7 @@ class SimpleBlock(Block):
             else:
                 raise Exception(f"Unknown value type: {type(value)}")
 
-        if isinstance(inline_keyboard_markup, list):
+        if isinstance(inline_keyboard, list):
             self.inline_keyboard_markup = InlineKeyboardMarkup(
                 inline_keyboard=[
                     [
@@ -61,11 +61,11 @@ class SimpleBlock(Block):
                         )
                         for value in row
                     ]
-                    for row in inline_keyboard_markup
+                    for row in inline_keyboard
                 ]
             )
         else:
-            self.inline_keyboard_markup = inline_keyboard_markup
+            self.inline_keyboard_markup = inline_keyboard
 
         self.files = files
 
