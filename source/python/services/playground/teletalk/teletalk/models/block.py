@@ -25,6 +25,7 @@ class Block:
         # - Id
 
         self.id = str(uuid.uuid4())
+        self.rendered_id = self.id
 
     def refresh_id(self):
         self.id = str(uuid.uuid4())
@@ -41,11 +42,12 @@ class Block:
 
         return self.current_output.messages[0].chat.id
 
-    def render(self, inherit_messages: bool = True) -> BlockMessage:
+    def render(self, inherit_messages: bool = False) -> BlockMessage:
         output = self.output()
         if inherit_messages and self.current_output:
             output.messages = self.current_output.messages
         self.current_output = output
+        self.rendered_id = self.id
         return output
 
     def output(self) -> BlockMessage:

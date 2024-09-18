@@ -160,17 +160,23 @@ class Talk:
 
         if self.active_page is not None:
             old_block_messages = [block.current_output for block in self.active_page.blocks]
+            old_block_messages_by_id = {
+                block.rendered_id: old_block_messages[i]
+                for i, block in enumerate(self.active_page.blocks)
+                if old_block_messages
+            }
         else:
             old_block_messages = []
+            old_block_messages_by_id = {}
 
         for old_block_message in old_block_messages:
             assert len(old_block_message.messages) == 1, "Only single message blocks are supported in all modes for now"
 
         first_old_message = None if not old_block_messages else old_block_messages[0].messages[0]
 
-        # - Render new block messages. Note: if some blocks are in the self.active_page, their renders will be reset # todo later: bad side effet,
+        # - Render new block messages. Note: if some blocks are in the self.active_page, their renders will be reset # todo later: bad side effet, [@marklidenberg]
 
-        block_messages = [block.render() for block in page.blocks]
+        block_messages = [block.render() for block in page.blocks]  # might change block.rendered_id
 
         for block_message in block_messages:
             if not block_message.chat_id:
@@ -202,7 +208,9 @@ class Talk:
 
             # - Track message
 
-            block_message.messages = [message]
+            block_message.messages = list(
+                skip_duplicates([message] + block_message.messages, key=lambda message: message.message_id),
+            )
 
             self.history = list(
                 sorted(
@@ -251,11 +259,8 @@ class Talk:
         # -- Inplace by id
 
         elif update_mode == "inplace_by_id":
-            _old_block_messages_by_id = {
-                block.id: old_block_messages[i] for i, block in enumerate(self.active_page.blocks)
-            }
             for block in page.blocks:
-                if old_block_message := _old_block_messages_by_id.get(block.id):
+                if old_block_message := old_block_messages_by_id.get(block.id):
                     _first_old_message = old_block_message.messages[0]
                 else:
                     _first_old_message = None
