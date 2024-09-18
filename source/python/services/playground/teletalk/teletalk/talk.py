@@ -259,6 +259,19 @@ class Talk:
         # -- Inplace by id
 
         elif update_mode == "inplace_by_id":
+            # - Delete old messages
+
+            for id, old_block_message in old_block_messages_by_id.items():
+                if id not in [block.id for block in page.blocks]:
+                    messages_to_delete = [message for message in old_block_message.messages if message.message_id]
+                    if messages_to_delete:
+                        await self.app.bot.delete_messages(
+                            chat_id=old_block_messages[0].chat_id,
+                            message_ids=[message.message_id for message in messages_to_delete],
+                        )
+
+            # - Upsert new messages
+
             for block in page.blocks:
                 if old_block_message := old_block_messages_by_id.get(block.id):
                     _first_old_message = old_block_message.messages[0]
