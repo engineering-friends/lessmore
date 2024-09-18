@@ -120,7 +120,7 @@ class Talk:
 
             response_stack = parent_response.response_stack()
 
-            if page.id not in [_response.prompt_page.id for _response in response_stack]:
+            if page.id not in [_response.prompt_page.id for _response in response_stack if _response.prompt_page]:
                 # new element in the stack!
 
                 # - Reset all responses upstream
@@ -210,7 +210,7 @@ class Talk:
         old_page = self.active_page
 
         if self.active_page is not None:
-            old_block_messages = [block.previous_output for block in old_page.blocks]
+            old_block_messages = [block.current_output for block in old_page.blocks]
         else:
             old_block_messages = []
 
