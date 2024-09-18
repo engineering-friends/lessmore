@@ -10,7 +10,7 @@ async def starter(response: Response):
 
     await response.tell("I will ask you some questions")
     age = await response.ask("How old are you?")
-    name = await response.ask("What is your name?", update_mode="inplace")
+    name = await response.ask("What is your name?", mode="inplace")
     await response.tell(f"Hello, {name}! You are {age} years old :)")
 
     # - Test reply keyboard

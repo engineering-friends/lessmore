@@ -1,12 +1,17 @@
 import asyncio
 
+from typing import Callable
+
 from teletalk.app import App
+from teletalk.blocks.simple_block import SimpleBlock
+from teletalk.models.block import Block
+from teletalk.models.block_message import BlockMessage
 from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 
 
 async def starter(response: Response):
-    pass
+    button = SimpleBlock(inline_keyboard_markup=[["Click me!"]])
 
 
 def test():

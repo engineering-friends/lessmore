@@ -63,7 +63,7 @@ class Talk:
         inline_keyboard_markup: Optional[
             InlineKeyboardMarkup
         ] = None,  # will return the button value if passed this way
-        update_mode: Literal["inplace", "create_new"] = "create_new",
+        mode: Literal["inplace", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
         parent_response: Optional[Response] = None,
     ) -> Any:
@@ -93,7 +93,7 @@ class Talk:
 
         await self.update_active_page(
             page=page,
-            update_mode=update_mode,
+            mode=mode,
             default_chat_id=default_chat_id,
         )
 
@@ -202,7 +202,7 @@ class Talk:
 
             if not response.prompt_block.message_callback:
                 logger.warning("No message callback found")
-                return await response.ask(update_mode="inplace_by_id")
+                return await response.ask(mode="inplace_by_id")
 
             # - Run the message callback
 
@@ -216,7 +216,7 @@ class Talk:
     async def update_active_page(
         self,
         page: Page,
-        update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
+        mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
         default_chat_id: int = 0,
     ):
         # - Mark blocks for easier usage
@@ -300,13 +300,13 @@ class Talk:
 
         # -- Create new
 
-        if update_mode == "create_new":
+        if mode == "create_new":
             for block_message in block_messages:
                 await _upsert_message(block_message=block_message)
 
         # -- Inplace recent
 
-        elif update_mode == "inplace_recent":
+        elif mode == "inplace_recent":
             # - Get block_message
 
             assert len(block_messages) == 1, "Only single message blocks are supported in inplace_recent mode"
@@ -326,7 +326,7 @@ class Talk:
 
         # -- Inplace
 
-        elif update_mode == "inplace":
+        elif mode == "inplace":
             assert len(block_messages) == 1, "Only single message blocks are supported in inplace mode"
             await _upsert_message(
                 block_message=block_messages[0],
@@ -335,7 +335,7 @@ class Talk:
 
         # -- Inplace by id
 
-        elif update_mode == "inplace_by_id":
+        elif mode == "inplace_by_id":
             # - Delete old messages
 
             for block in old_only_blocks:
@@ -355,7 +355,7 @@ class Talk:
         # -- Not implemented
 
         else:
-            raise Exception(f"Not implemented update_mode: {update_mode}")
+            raise Exception(f"Not implemented mode: {mode}")
 
         # - Set active page attribute
 
@@ -375,7 +375,7 @@ class Talk:
         self,
         prompt: str | Block | Page | Response = "",
         files: Optional[list[str]] = None,
-        update_mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
+        mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
     ) -> None:
         # - The interface to send custom messages without awaiting any response
@@ -402,7 +402,7 @@ class Talk:
 
         await self.update_active_page(
             page=page,
-            update_mode=update_mode,
+            mode=mode,
             default_chat_id=default_chat_id,
         )
 

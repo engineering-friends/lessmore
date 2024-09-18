@@ -5,9 +5,9 @@ from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 
 
-go_back = lambda response: response.ask(response.previous if response.previous else response, update_mode="inplace")
-go_forward = lambda response: response.ask(response.next if response.next else response, update_mode="inplace")
-go_to_root = lambda response: response.ask(response.root, update_mode="inplace")
+go_back = lambda response: response.ask(response.previous if response.previous else response, mode="inplace")
+go_forward = lambda response: response.ask(response.next if response.next else response, mode="inplace")
+go_to_root = lambda response: response.ask(response.root, mode="inplace")
 
 
 class Menu(Block):

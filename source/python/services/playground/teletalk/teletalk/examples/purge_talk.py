@@ -9,8 +9,8 @@ from teletalk.test_deps.test_deps import TestDeps
 async def starter(response: Response):
     # - Test text messages
 
-    await response.tell("Message 1", update_mode="create_new")
-    await response.tell("Message 2", update_mode="create_new")
+    await response.tell("Message 1", mode="create_new")
+    await response.tell("Message 2", mode="create_new")
     await asyncio.sleep(1)
 
     await response.purge_talk()

@@ -14,7 +14,7 @@ def gen_level(name: str, sub_level: Optional[Menu] = None):
     grid = []
 
     if sub_level:
-        grid.append([(sub_level.text, lambda response: response.ask(sub_level, update_mode="inplace"))])
+        grid.append([(sub_level.text, lambda response: response.ask(sub_level, mode="inplace"))])
 
     grid += [
         [

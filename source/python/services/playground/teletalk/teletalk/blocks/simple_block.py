@@ -12,7 +12,7 @@ class SimpleBlock(Block):
         self,
         text: str = "",
         reply_keyboard_markup: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
-        inline_keyboard_markup: Optional[InlineKeyboardMarkup | list[list[str]]] = None,
+        inline_keyboard_markup: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
         files: list[str] = [],
         message_callback: Optional[Callable] = lambda response: "".join(
             [message.text for message in response.block_messages]
@@ -30,7 +30,7 @@ class SimpleBlock(Block):
         self,
         text: str,
         reply_keyboard_markup: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
-        inline_keyboard_markup: Optional[InlineKeyboardMarkup | list[list[str]]] = None,
+        inline_keyboard_markup: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
         files: list[str] = [],
     ):
         self.text = text
@@ -60,13 +60,6 @@ class SimpleBlock(Block):
         def button_callback(text: str):
             async def _button_callback(response: Response):
                 assert isinstance(response.prompt_sub_block, SimpleBlock), "Block is not SimpleBlock"
-
-                # - Remove inline keyboard from th message
-
-                # await response.tell(text=response.block.text) # todo later: add this back [@marklidenberg]
-
-                # - Return the button text
-
                 return text
 
             return _button_callback

@@ -12,7 +12,7 @@ async def spawn(response: Response):
         initial_response=response,
         parallel=True,
     )
-    return await response.ask(response, update_mode="inplace_by_id")
+    return await response.ask(response, mode="inplace_by_id")
 
 
 async def starter(response: Response):
