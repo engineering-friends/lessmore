@@ -44,11 +44,11 @@ def menu(deps: Deps):
 
         user = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
 
-        await add_user_to_chats(
-            telegram_client=deps.telegram_user_client,
-            username=telegram_username,
-            chats=deps.config.telegram_ef_chats.values(),
-        )
+        # await add_user_to_chats(
+        #     telegram_client=deps.telegram_user_client,
+        #     username=telegram_username,
+        #     chats=deps.config.telegram_ef_chats.values(),
+        # )
 
         await response.tell(f"Добавил во все чаты и каналы: {', '.join(deps.config.telegram_ef_chats.keys())}")
 
@@ -82,6 +82,22 @@ def menu(deps: Deps):
         )
 
         # -- Create onboarding page
+
+        await deps.notion_client().duplicate_page(
+            page_id="8c93fa8355344cbd88544b3a076ef552",  # Шаблон онбординга, https://www.notion.so/8c93fa8355344cbd88544b3a076ef552
+            destination_page_id=page["id"],  # https://www.notion.so/5caeefe3bf5645b39b0995f02fc55b82
+        )
+
+        await response.tell(f"Создал страницу для онбоардинга: {page.url}")
+
+        await response.tell(f"""
+        Шаги, которые тебе нужно сделать: 
+        - Взять у участника email в Notion 
+        - Пошарить ему страницу Home в Notion: https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4
+        - Скинуть ссылку на онбоардинг, чтобы он заполнил: {page.url}
+        - Поставить себе напоминалки, чтобы убедиться, что он все заполнил 
+        - Когда он заполнит, написать @ltgags, чтобы он обработал заполненную страницу онбоардинга
+""")
 
         # - Return to main menu
 
