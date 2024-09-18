@@ -26,7 +26,11 @@ class Menu(Block):
             inline_keyboard_markup=InlineKeyboardMarkup(
                 inline_keyboard=[
                     [
-                        InlineKeyboardButton(text=text, callback_data=self.register_callback(callback))
+                        InlineKeyboardButton(
+                            text=text,
+                            callback_data=self.register_callback(callback) if isinstance(callback, Callable) else None,
+                            url=callback if isinstance(callback, str) else None,
+                        )
                         for text, callback in row
                     ]
                     for row in self.grid

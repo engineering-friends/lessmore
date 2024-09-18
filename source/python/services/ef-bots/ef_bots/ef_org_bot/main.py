@@ -25,19 +25,22 @@ def menu(deps: Deps):
 
             # - Get user entity
 
-            entity = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
+            try:
+                entity = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
+            except:
+                entity = None
 
             if isinstance(entity, User):
                 answer = await response.ask(
                     SimpleBlock(
-                        f"t.me/{telegram_username}\nДобавляем?",
-                        inline_keyboard=[["✅ Да", "❌ Нет"]],
+                        f"t.me/{telegram_username}",
+                        inline_keyboard=[["✅ Все верно!", "❌ Я ошибся"]],
                     )
                 )
-                if answer == "✅ Да":
+                if answer == "✅ Все верно!":
                     break
             else:
-                await response.tell("Не получилось найти телеграм пользователя")
+                await response.tell("Не нашел такого пользователя")
 
         # - Add to all telegram ecosystem: ef channel, ef random coffee
 
@@ -59,7 +62,12 @@ def menu(deps: Deps):
 
     return Menu(
         "Выбери действие:",
-        grid=[[("Заонбордить участника", start_onboarding)]],
+        grid=[
+            [("Заонбордить участника", start_onboarding)],
+            [("Notion EF Org", "https://www.notion.so/Org-48f403a0d3014dc4972f08060031308e?pvs=4")],
+            [("Стратегия и задачи", "https://www.notion.so/f3f7637c9a1d4733a4d90b33796cf78e?pvs=4")],
+            [("Тексты для продажи", "https://www.notion.so/EF-f1c2d3aeceb04272a61beb6c08c92b47?pvs=4")],
+        ],
     )
 
 
