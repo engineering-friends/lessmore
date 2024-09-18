@@ -355,7 +355,7 @@ class Talk:
 
         self.active_page = page
 
-        logger.debug("Updated active page", messages=block_messages[0].messages)
+        logger.debug("Updated active page")
 
     async def receive_response(
         self,
@@ -410,3 +410,8 @@ class Talk:
             initial_response=initial_response,
             parent_talk=self,
         )
+
+    async def purge(self):
+        for message in self.history:
+            await self.app.bot.delete_message(chat_id=message.chat.id, message_id=message.message_id)
+        self.history = []

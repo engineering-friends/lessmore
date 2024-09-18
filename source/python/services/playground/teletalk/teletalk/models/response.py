@@ -60,6 +60,9 @@ class Response:
 
         return await self.talk.tell(*args, **kwargs)
 
+    async def purge_talk(self):
+        return await self.talk.purge()
+
     def response_stack(self):
         result = []
         current_response = self.root
