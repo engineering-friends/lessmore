@@ -137,7 +137,8 @@ def menu(deps: Deps):
             return await response.ask()
         except Exception as e:
             logger.error("Failed to start onboarding", error=e)
-            return await response.tell(f"Ошибка во время процесса онбординга: {str(e)}")
+            await response.tell(f"Ошибка во время процесса онбординга: {str(e)}")
+            return await response.ask()
 
     return SimpleBlock(
         "⚙️ *Выбери действие*",
