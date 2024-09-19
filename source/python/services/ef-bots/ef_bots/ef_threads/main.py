@@ -35,13 +35,13 @@ def main(env="test"):
 
         # - Define lock
 
-        lock = asyncio.Lock()  # process only one message at a time
+        locks_by_user_id: dict[int, asyncio.Lock] = dict()
 
         # - Define handler
 
         @client.on(events.NewMessage(chats=deps.config.telegram_discussion_group))
         async def on_message(event):
-            async with lock:
+            async with locks_by_user_id.get(event.message.input_sender.user_id, asyncio.Lock()):
                 # - Unfold messages
 
                 new_message = event.message
@@ -146,45 +146,48 @@ def main(env="test"):
 
         @client.on(events.Raw)
         async def handler(event):
-            if isinstance(event, types.UpdateEditMessage):
-                # - Get chat id
+            async with locks_by_user_id.get(event.message.chat_id, asyncio.Lock()):
+                if isinstance(event, types.UpdateEditMessage):
+                    # - Get chat id
 
-                chat_id = event.message.chat_id
-                message_id = event.message.id
-                reactions = event.message.reactions
+                    chat_id = event.message.chat_id
+                    message_id = event.message.id
+                    reactions = event.message.reactions
 
-                user = app.users_by_id.get(chat_id)
-                if not user:
-                    return
+                    user = app.users_by_id.get(chat_id)
+                    if not user:
+                        return
 
-                # - Get thread id
+                    # - Get thread id
 
-                thread_id = user.thread_id_by_message_id.get(message_id)
-                if not thread_id:
-                    return
+                    thread_id = user.thread_id_by_message_id.get(message_id)
+                    if not thread_id:
+                        return
 
-                # - Remove thread id from user
+                    # - Remove thread id from user
 
-                if thread_id in user.thread_ids:
-                    user.thread_ids.remove(thread_id)
+                    if thread_id in user.thread_ids:
+                        user.thread_ids.remove(thread_id)
 
-                # - Remove message ids from that thread
+                    # - Remove message ids from that thread
 
-                # message_ids_to_remove = [_message_id for _message_id in  {k:v for k, v in user.thread_id_by_message_id.items() if v == thread_id}.keys() if _message_id >= message_id]
-                message_ids_to_remove = [
-                    _message_id
-                    for _message_id in {k: v for k, v in user.thread_id_by_message_id.items() if v == thread_id}.keys()
-                ]
+                    # message_ids_to_remove = [_message_id for _message_id in  {k:v for k, v in user.thread_id_by_message_id.items() if v == thread_id}.keys() if _message_id >= message_id]
+                    message_ids_to_remove = [
+                        _message_id
+                        for _message_id in {
+                            k: v for k, v in user.thread_id_by_message_id.items() if v == thread_id
+                        }.keys()
+                    ]
 
-                logger.debug("Removing messages", message_ids=message_ids_to_remove)
+                    logger.debug("Removing messages", message_ids=message_ids_to_remove)
 
-                for message_id_to_remove in message_ids_to_remove:
-                    user.thread_id_by_message_id.pop(message_id_to_remove)
-                    await client.delete_messages(chat_id, message_id_to_remove)
+                    for message_id_to_remove in message_ids_to_remove:
+                        user.thread_id_by_message_id.pop(message_id_to_remove)
+                        await client.delete_messages(chat_id, message_id_to_remove)
 
-                # - Dump state
+                    # - Dump state
 
-                app.dump_state()
+                    app.dump_state()
 
         # - Run client
 
