@@ -5,7 +5,7 @@ from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
 from ef_bots.ef_org_bot.deps.deps import Deps
 from loguru import logger
 from teletalk.app import App
-from teletalk.blocks.simple_block import SimpleBlock
+from teletalk.blocks.simple_block import SimpleBlock, default_message_callback
 from teletalk.models.response import Response
 from telethon.tl.types import User
 
@@ -18,20 +18,24 @@ def menu(deps: Deps):
     async def start_onboarding(response: Response):
         # - Cancel callback to exit early
 
-        async def cancel_callback(response: Response):
-            if response.block_messages[-1].text == "/cancel":
-                raise CancelError("Cancelled")
-            elif response.block_messages[-1].text:
-                return await response.ask(
-                    mode="inplace", message_callback=cancel_callback
-                )  # just ask again in the same message
+        def cancel_callback(supress_messages: bool = False):
+            async def _cancel_callback(response: Response):
+                if response.block_messages[-1].text == "/cancel":
+                    raise CancelError("Cancelled")
+                elif response.block_messages[-1].text:
+                    if supress_messages:
+                        return await response.ask(mode="inplace")
+                    else:
+                        return default_message_callback(response)
+
+            return _cancel_callback
 
         # - 1. Notion access
 
         answer = await response.ask(
             "1. Для начала тебе нужно пошарить участнику доступ в Notion: [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
             inline_keyboard=[["✅ Готово"]],
-            message_callback=cancel_callback,
+            message_callback=cancel_callback(supress_messages=True),
         )
 
         # - 2. Add to all telegram ecosystem: ef channel, ef random coffee,
@@ -41,7 +45,7 @@ def menu(deps: Deps):
 
             answer = await response.ask(
                 "2. Введи телеграм участника, чтобы я добавил его в чаты и каналы:",
-                message_callback=cancel_callback,
+                message_callback=cancel_callback(),
             )
 
             telegram_username = answer.replace("@", "").replace("t.me/", "").replace("https://t.me/", "")
@@ -57,7 +61,7 @@ def menu(deps: Deps):
                 answer = await response.ask(
                     f"t.me/{telegram_username}",
                     inline_keyboard=[["✅ Все верно", "❌ Я ошибся"]],
-                    message_callback=cancel_callback,
+                    message_callback=cancel_callback(supress_messages=True),
                 )
 
                 await response.tell(f"t.me/{telegram_username}", mode="inplace")
@@ -72,7 +76,7 @@ def menu(deps: Deps):
         answer = await response.ask(
             "Добавить пользователя в наши чаты и каналы?",
             inline_keyboard=[["✅ Да", "❌ Нет"]],
-            message_callback=cancel_callback,
+            message_callback=cancel_callback(supress_messages=True),
         )
 
         if answer == "✅ Да":
@@ -94,7 +98,7 @@ def menu(deps: Deps):
         answer = await response.ask(
             "3. Введи полное имя участника (на любом языке)",
             inline_keyboard=[[f"✏️ Взять из телеги: {telegram_full_name}"]],
-            message_callback=cancel_callback,
+            message_callback=cancel_callback(),
         )
 
         full_name = telegram_full_name if "✏️" in answer else answer
@@ -130,7 +134,7 @@ def menu(deps: Deps):
         await response.ask(
             "5. Убедись, чтобы он все сделал. Как сделает, Матвей увидит и напишет пост о новом участнике, а также поможет ему сделать его первый запрос. На этом онбординг будет завершен",
             inline_keyboard=[["✅ Завершить"]],
-            message_callback=cancel_callback,
+            message_callback=cancel_callback(supress_messages=True),
         )
 
         return await response.ask()

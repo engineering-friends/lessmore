@@ -41,7 +41,7 @@ class Response:
     async def ask(self, *args, **kwargs):
         # - Set default args as the response itself
 
-        if not args and not drop(kwargs, keys=["mode"]):
+        if not args and not drop(kwargs, keys=["mode", "message_callback"]):
             args = (self,)  # <=> response.ask(response)
 
         # - Set default chat id from the response chat
