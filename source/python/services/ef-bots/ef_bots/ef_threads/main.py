@@ -1,9 +1,16 @@
 import asyncio
+import json
+import os
+
+from dataclasses import dataclass, field
 
 from aiogram.types import BotCommand
-from ef_bots.ef_org_bot.deps.deps import Deps
-from teletalk.app import App
-from telethon import events
+from ef_bots.ef_threads.app import App, User
+from ef_bots.ef_threads.deps.deps import Deps
+from lessmore.utils.file_primitives.read_file import read_file
+from lessmore.utils.file_primitives.write_file import write_file
+from loguru import logger
+from telethon import TelegramClient, events
 
 
 def main(env="test"):
@@ -14,29 +21,67 @@ def main(env="test"):
 
         # - Start client
 
-        client = deps.telegram_user_client
+        client: TelegramClient = deps.telegram_user_client
         await client.start()
 
         print("Listening for new messages in the discussion group...")
 
+        # - Init app
+
+        app = App()
+        app.load_state()
+
+        # - Define lock
+
+        lock = asyncio.Lock()  # process only one message at a time
+
         # - Define handler
 
-        # Listen to new messages in the discussion group
         @client.on(events.NewMessage(chats=deps.config.telegram_discussion_group))
         async def handler(event):
-            # Get the new message text
-            new_message = event.message
-            print(f"New message: {new_message.text}")
+            with lock:
+                new_message = event.message
 
-            # Check if the message is a reply to a thread (has a reply_to_msg_id)
-            if new_message.reply_to_msg_id:
-                # Fetch the original post (message it's replying to)
-                original_message = await client.get_messages(
-                    deps.config.telegram_discussion_group, ids=new_message.reply_to_msg_id
-                )
-                print(f"Original post: {original_message.text}")
-            else:
-                print("This message is not a reply to any post.")
+                if new_message.reply_to_msg_id:
+                    # - Get original message
+
+                    original_message = await client.get_messages(
+                        deps.config.telegram_discussion_group, ids=new_message.reply_to_msg_id
+                    )
+
+                    thread_id = original_message.id
+
+                    # - Get the message title
+
+                    title = original_message.text.split("\n")[0].replace("**", "").strip()
+
+                    # - Subscribe user, who sent the message, to the thread
+
+                    if new_message.from_user.id not in app.users_by_id:
+                        app.users.append(User(id=new_message.from_user.id, name=new_message.from_user.first_name))
+
+                    user = app.users_by_id[new_message.from_user.id]
+                    user.thread_ids = list(set(user.thread_ids + [thread_id]))
+
+                    # - Send message to all subscribed users
+
+                    for user in app.users:
+                        if thread_id in user.thread_ids:
+                            if user.current_thread_id != thread_id:
+                                await client.send_message(entity=user.id, message=title)
+                            await client.forward_messages(
+                                entity=user.id,
+                                messages=new_message.message_id,
+                                from_peer=deps.config.discussion_group,
+                            )
+                        user.current_thread_id = thread_id
+
+                    # - Dump state
+
+                    app.dump_state()
+
+                else:
+                    logger.debug("This message is not a reply to any post.", message_id=new_message.message_id)
 
         # - Run client
 
