@@ -20,9 +20,16 @@ def menu(deps: Deps):
     async def start_onboarding(response: Response):
         # - 1. Notion access
 
+        async def cancel_callback(response: Response):
+            if response.block_messages[-1].text == "/cancel":
+                return "/cancel"
+            elif response.block_messages[-1].text:
+                return await response.ask(mode="inplace")  # ask again, this won't do
+
         answer = await response.ask(
             "1. Для начала тебе нужно пошарить участнику доступ в Notion: [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
-            inline_keyboard=[["✅ Сделано!"]],
+            inline_keyboard=[["✅ Готово"]],
+            message_callback=cancel_callback,
         )
 
         if answer == "/cancel":
@@ -50,7 +57,7 @@ def menu(deps: Deps):
             if isinstance(entity, User):
                 answer = await response.ask(
                     f"t.me/{telegram_username}",
-                    inline_keyboard=[["✅ Все верно!", "❌ Я ошибся"]],
+                    inline_keyboard=[["✅ Все верно", "❌ Я ошибся"]],
                 )
 
                 if answer == "/cancel":
@@ -58,7 +65,7 @@ def menu(deps: Deps):
 
                 await response.tell(f"t.me/{telegram_username}", mode="inplace")
 
-                if answer == "✅ Все верно!":
+                if answer == "✅ Все верно":
                     break
             else:
                 await response.tell("Не нашел такого пользователя")
@@ -116,11 +123,10 @@ def menu(deps: Deps):
 
         # - 5. Write a final message
 
-        await response.tell(
-            "5. Убедись, чтобы он все сделал. Как сделает, Матвей увидит и напишет пост о новом участнике, а также поможет ему сделать его первый запрос. На этом онбординг будет завершен"
+        await response.ask(
+            "5. Убедись, чтобы он все сделал. Как сделает, Матвей увидит и напишет пост о новом участнике, а также поможет ему сделать его первый запрос. На этом онбординг будет завершен",
+            inline_keyboard=[["✅ Завершить"]],
         )
-
-        await asyncio.sleep(1)
 
         return await response.ask()
 

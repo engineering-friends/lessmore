@@ -69,6 +69,12 @@ class Response:
     async def purge_talk(self):
         return await self.talk.purge()
 
+    async def purge(self):
+        # delete all messages from the current response
+        for block_message in self.block_messages:
+            for message in block_message.messages:
+                await self.talk.upsert_message(old_message=message)
+
     def response_stack(self):
         result = []
         current_response = self.root

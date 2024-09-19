@@ -231,6 +231,47 @@ class Talk:
         else:
             raise Exception("Unknown response type")
 
+    async def upsert_message(self, block_message: Optional[BlockMessage] = None, old_message: Optional[Message] = None):
+        # - Edit or send message
+
+        if old_message:
+            if block_message:
+                message = await self.app.bot.edit_message_text(
+                    chat_id=block_message.chat_id,
+                    message_id=old_message.message_id,
+                    text=block_message.text,
+                    reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
+                    parse_mode="Markdown",
+                    link_preview_options=LinkPreviewOptions(is_disabled=False),
+                )
+            else:
+                message = await self.app.bot.delete_message(
+                    chat_id=old_message.chat.id, message_id=old_message.message_id
+                )
+                self.history = [message for message in self.history if message.message_id != old_message.message_id]
+        else:
+            message = await self.app.bot.send_message(
+                chat_id=block_message.chat_id,
+                text=block_message.text,
+                reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
+                parse_mode="Markdown",
+                link_preview_options=LinkPreviewOptions(is_disabled=False),
+            )
+
+        # - Track message
+
+        if isinstance(message, Message):
+            block_message.messages = list(
+                skip_duplicates([message] + block_message.messages, key=lambda message: message.message_id),
+            )
+
+            self.history = list(
+                sorted(
+                    skip_duplicates(block_message.messages + self.history, key=lambda message: message.message_id),
+                    key=lambda message: message.message_id,
+                ),
+            )
+
     async def update_active_page(
         self,
         page: Page,
@@ -271,56 +312,13 @@ class Talk:
 
         first_old_message = None if not old_block_messages else old_block_messages[0].messages[0]
 
-        # - Upsert message helper function
-
-        async def _upsert_message(block_message: Optional[BlockMessage], old_message: Optional[Message] = None):
-            # - Edit or send message
-
-            if old_message:
-                if block_message:
-                    message = await self.app.bot.edit_message_text(
-                        chat_id=block_message.chat_id,
-                        message_id=old_message.message_id,
-                        text=block_message.text,
-                        reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
-                        parse_mode="Markdown",
-                        link_preview_options=LinkPreviewOptions(is_disabled=False),
-                    )
-                else:
-                    message = await self.app.bot.delete_message(
-                        chat_id=old_message.chat.id, message_id=old_message.message_id
-                    )
-                    self.history = [message for message in self.history if message.message_id != old_message.message_id]
-            else:
-                message = await self.app.bot.send_message(
-                    chat_id=block_message.chat_id,
-                    text=block_message.text,
-                    reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
-                    parse_mode="Markdown",
-                    link_preview_options=LinkPreviewOptions(is_disabled=False),
-                )
-
-            # - Track message
-
-            if isinstance(message, Message):
-                block_message.messages = list(
-                    skip_duplicates([message] + block_message.messages, key=lambda message: message.message_id),
-                )
-
-                self.history = list(
-                    sorted(
-                        skip_duplicates(block_message.messages + self.history, key=lambda message: message.message_id),
-                        key=lambda message: message.message_id,
-                    ),
-                )
-
         # - Process update modes
 
         # -- Create new
 
         if mode == "create_new":
             for block_message in block_messages:
-                await _upsert_message(block_message=block_message)
+                await self.upsert_message(block_message=block_message)
 
         # -- Inplace recent
 
@@ -337,10 +335,10 @@ class Talk:
                 and int(maybe(self.app.messages_by_chat_id)[block_message.chat_id][-1].message_id.or_else(0))
                 == first_old_message.message_id
             ):
-                await _upsert_message(block_message=block_message, old_message=first_old_message)
+                await self.upsert_message(block_message=block_message, old_message=first_old_message)
 
             else:
-                await _upsert_message(block_message=block_message)
+                await self.upsert_message(block_message=block_message)
 
         # -- Inplace by id
 
@@ -349,7 +347,7 @@ class Talk:
 
             for block in old_only_blocks:
                 for message in [message for message in block.current_output.messages if message.message_id]:
-                    await _upsert_message(block_message=None, old_message=message)
+                    await self.upsert_message(block_message=None, old_message=message)
 
             # - Upsert new messages
 
@@ -359,7 +357,7 @@ class Talk:
                 else:
                     _first_old_message = block.previous_output.messages[0]
 
-                await _upsert_message(block_message=block.current_output, old_message=_first_old_message)
+                await self.upsert_message(block_message=block.current_output, old_message=_first_old_message)
 
         # -- Not implemented
 
