@@ -29,7 +29,7 @@ async def parse_telegram_username_by_whois_url(
 
     # -- Return if too soon
 
-    if last_checked_telegram_username_at_by_notion_whois_url.get(notion_url, 0) + 3600 * 12 > time.time():
+    if last_checked_telegram_username_at_by_notion_whois_url.get(notion_url, 0) + 3600 > time.time():
         logger.debug("Too soon, try to find telegram username every hour", notion_url=notion_url)
         return
 
