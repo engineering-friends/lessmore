@@ -1,11 +1,7 @@
-from asyncio import Task
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Callable, Optional
 
-from aiogram.types import Message
 from lessmore.utils.functional.dict.drop import drop
-from more_itertools import first, last
-from palette.teletalk.crowd.response import Response
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.page import Page
@@ -36,9 +32,9 @@ class Response:
 
     # - Navigation: a call stack of responses for back and forth navigation
 
-    root: Optional[Response] = None  # always triggered by a text message, a starter
-    previous: Optional[Response] = None
-    next: Optional[Response] = None
+    root: Optional["Response"] = None  # always triggered by a text message, a starter
+    previous: Optional["Response"] = None
+    next: Optional["Response"] = None
 
     # - Syntax sugar
 

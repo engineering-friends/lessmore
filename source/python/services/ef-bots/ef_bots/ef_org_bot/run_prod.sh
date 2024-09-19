@@ -2,12 +2,13 @@
 
 cd ${0%/*}
 git pull
-poetry install --no-root
+uv sync
 
 # Get directories
 
-SERVICE_PATH=$(pwd)
-MONOREPO_PATH=$SERVICE_PATH/../../../../..
+SERVICE_PATH=$(pwd)/../..
+BOT_PATH=$(pwd)
+MONOREPO_PATH=$(echo $SERVICE_PATH | sed -E 's/(.*)\/source\/.*/\1/') # Crop /a/b/c/.../lessmore/source/... -> /a/b/c/.../lessmore
 
 # - Decrypt secrets
 
@@ -17,8 +18,8 @@ $MONOREPO_PATH/git_secret/decrypt_secrets.sh
 
 export PYTHONPATH="$SERVICE_PATH:$PYTHONPATH"
 export PYTHONPATH="$MONOREPO_PATH/source/python/libs/lessmore.utils:$PYTHONPATH"
+export PYTHONPATH="$MONOREPO_PATH/source/python/libs/teletalk:$PYTHONPATH"
 
 # - Run the service
 
-poetry run python discord_to_telegram_forwarder/run.py --env prod
-#screen -dmS discord_to_telegram_forwarder_prod  -L -Logfile logs/prod.log poetry run python discord_to_telegram_forwarder/run.py --env prod
+uv run python main.py
