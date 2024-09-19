@@ -39,7 +39,7 @@ def main(env="test"):
 
         @client.on(events.NewMessage(chats=deps.config.telegram_discussion_group))
         async def handler(event):
-            with lock:
+            async with lock:
                 new_message = event.message
 
                 if new_message.reply_to_msg_id:
@@ -57,10 +57,11 @@ def main(env="test"):
 
                     # - Subscribe user, who sent the message, to the thread
 
-                    if new_message.from_user.id not in app.users_by_id:
-                        app.users.append(User(id=new_message.from_user.id, name=new_message.from_user.first_name))
+                    user_id = new_message.input_sender.user_id
+                    if user_id not in app.users_by_id:
+                        app.users.append(User(id=user_id))
 
-                    user = app.users_by_id[new_message.from_user.id]
+                    user = app.users_by_id[user_id]
                     user.thread_ids = list(set(user.thread_ids + [thread_id]))
 
                     # - Send message to all subscribed users
@@ -71,8 +72,8 @@ def main(env="test"):
                                 await client.send_message(entity=user.id, message=title)
                             await client.forward_messages(
                                 entity=user.id,
-                                messages=new_message.message_id,
-                                from_peer=deps.config.discussion_group,
+                                messages=new_message.id,
+                                from_peer=deps.config.telegram_discussion_group,
                             )
                         user.current_thread_id = thread_id
 
@@ -81,7 +82,7 @@ def main(env="test"):
                     app.dump_state()
 
                 else:
-                    logger.debug("This message is not a reply to any post.", message_id=new_message.message_id)
+                    logger.debug("This message is not a reply to any post.", message_id=new_message.id)
 
         # - Run client
 

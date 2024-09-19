@@ -12,11 +12,9 @@ from deeplay.utils.file_utils.write_file import write_file
 
 @dataclass
 class User:
-    def __init__(self, id: int, name: str):
-        self.id = id
-        self.name = name
-        self.current_thread_id: int = 0
-        self.thread_ids: list[int] = field(default_factory=list)
+    id: int
+    current_thread_id: int = 0
+    thread_ids: list[int] = field(default_factory=list)
 
 
 @dataclass
