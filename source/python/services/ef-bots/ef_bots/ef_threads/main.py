@@ -103,6 +103,12 @@ def main(env="test"):
                     except:
                         logger.error("Failed to get input entity", telegram_username=telegram_username)
 
+                logger.debug("User ids", user_ids=user_ids, telegram_usernames=telegram_usernames)
+
+                # -- Filter only test users
+
+                user_ids = [user_id for user_id in user_ids if user_id == 160773045]  # marklidenberg
+
                 # -- Subscribe users, who sent the message, to the thread
 
                 for user_id in user_ids:
