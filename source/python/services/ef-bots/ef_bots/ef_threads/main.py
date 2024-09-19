@@ -115,8 +115,8 @@ def main(env="test"):
                     if user_id not in app.users_by_id:
                         app.users.append(User(id=user_id))
 
-                        user = app.users_by_id[user_id]
-                        user.thread_ids = list(set(user.thread_ids + [thread_id]))
+                    user = app.users_by_id[user_id]
+                    user.thread_ids = list(set(user.thread_ids + [thread_id]))
 
                 # - Send message to all subscribed users
 
@@ -125,7 +125,7 @@ def main(env="test"):
                         if user.current_thread_id != thread_id:
                             message = await client.send_message(
                                 entity=user.id,
-                                message=f"{'—' * 15}\n[{title}](https://t.me/c/{str(deps.config.telegram_discussion_group)[4:]}/{thread_id}){'—' * 15}\n",
+                                message=f"[{title}](https://t.me/c/{str(deps.config.telegram_discussion_group)[4:]}/{thread_id})",
                             )
                             user.first_thread_message_id = message.id
 
