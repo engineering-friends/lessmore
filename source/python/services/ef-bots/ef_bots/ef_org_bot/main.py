@@ -10,13 +10,17 @@ from teletalk.models.response import Response
 from telethon.tl.types import User
 
 
+class CancelError(Exception):
+    pass
+
+
 def menu(deps: Deps):
     async def start_onboarding(response: Response):
         # - Cancel callback to exit early
 
         async def cancel_callback(response: Response):
             if response.block_messages[-1].text == "/cancel":
-                return "/cancel"
+                raise CancelError("Cancelled")
             elif response.block_messages[-1].text:
                 return await response.ask(mode="inplace")  # ask again, this won't do
 
@@ -28,18 +32,12 @@ def menu(deps: Deps):
             message_callback=cancel_callback,
         )
 
-        if answer == "/cancel":
-            return await response.ask()
-
-        # - 2. Add to all telegram ecosystem: ef channel, ef random coffee,
+        # - 2. Add to all telegram ecosystem: ef channel, ef random coffee, ...
 
         while True:
             # - Ask for telegram username
 
             answer = await response.ask("2. Введи телеграм участника, чтобы я добавил его в чаты и каналы:")
-
-            if answer == "/cancel":
-                return await response.ask()
 
             telegram_username = answer.replace("@", "").replace("t.me/", "").replace("https://t.me/", "")
 
@@ -66,8 +64,6 @@ def menu(deps: Deps):
             else:
                 await response.tell("Не нашел такого пользователя")
 
-        # - Add to all telegram ecosystem: ef channel, ef random coffee
-
         user = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
 
         answer = await response.ask(
@@ -76,15 +72,12 @@ def menu(deps: Deps):
             message_callback=cancel_callback,
         )
 
-        if answer == "/cancel":
-            return await response.ask()
-
         if answer == "✅ Да":
             try:
                 await add_user_to_chats(
                     telegram_client=deps.telegram_user_client,
                     username=telegram_username,
-                    chats=deps.config.telegram_ef_chats.values(),
+                    chats=list(deps.config.telegram_ef_chats.values()),
                 )
                 await response.tell(f"Добавил в чаты и каналы: {', '.join(deps.config.telegram_ef_chats.keys())}")
             except Exception as e:
@@ -94,13 +87,11 @@ def menu(deps: Deps):
         # - 3. Get full name
 
         telegram_full_name = f"{user.first_name} {user.last_name}"
+
         answer = await response.ask(
             "3. Введи полное имя участника (на любом языке)",
             inline_keyboard=[[f"✏️ Взять из телеги: {telegram_full_name}"]],
         )
-
-        if answer == "/cancel":
-            return await response.ask()
 
         full_name = telegram_full_name if "✏️" in answer else answer
 
@@ -139,10 +130,19 @@ def menu(deps: Deps):
 
         return await response.ask()
 
+    async def safe_start_onboarding(response: Response):
+        try:
+            return await start_onboarding(response)
+        except CancelError:
+            return await response.ask()
+        except Exception as e:
+            logger.error("Failed to start onboarding", error=e)
+            return await response.tell(f"Ошибка во время процесса онбординга: {str(e)}")
+
     return SimpleBlock(
         "⚙️ *Выбери действие*",
         inline_keyboard=[
-            [("Заонбордить участника", start_onboarding)],
+            [("Заонбордить участника", safe_start_onboarding)],
             [("Notion EF Org", "https://www.notion.so/Org-48f403a0d3014dc4972f08060031308e?pvs=4")],
             [("Стратегия и задачи", "https://www.notion.so/f3f7637c9a1d4733a4d90b33796cf78e?pvs=4")],
             [("Тексты кандидатам", "https://www.notion.so/EF-f1c2d3aeceb04272a61beb6c08c92b47?pvs=4")],
