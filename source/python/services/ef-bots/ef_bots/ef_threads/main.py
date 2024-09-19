@@ -146,8 +146,8 @@ def main(env="test"):
 
         @client.on(events.Raw)
         async def handler(event):
-            async with locks_by_user_id.get(event.message.chat_id, asyncio.Lock()):
-                if isinstance(event, types.UpdateEditMessage):
+            if isinstance(event, types.UpdateEditMessage):
+                async with locks_by_user_id.get(event.message.chat_id, asyncio.Lock()):
                     # - Get chat id
 
                     chat_id = event.message.chat_id
