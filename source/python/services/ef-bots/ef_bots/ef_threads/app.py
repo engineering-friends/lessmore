@@ -6,8 +6,7 @@ from dataclasses import asdict, dataclass, field
 import dacite
 
 from lessmore.utils.file_primitives.read_file import read_file
-
-from deeplay.utils.file_utils.write_file import write_file
+from lessmore.utils.file_primitives.write_file import write_file
 
 
 @dataclass
