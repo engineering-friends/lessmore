@@ -1,14 +1,17 @@
 import asyncio
 import re
+import time
 
 from ef_bots.ef_threads.deps.deps import Deps
 from lessmore.utils.enriched_notion_client.enriched_notion_async_client import EnrichedNotionAsyncClient
+from loguru import logger
 
 
 async def parse_telegram_username_by_whois_url(
     text: str,
     notion_client: EnrichedNotionAsyncClient,
-    cache: dict = {},
+    telegram_usernames_by_notion_whois_url: dict = {},
+    last_checked_telegram_username_at_by_notion_whois_url: dict = {},
 ) -> dict:
     # - Parse notion url
 
@@ -19,22 +22,40 @@ async def parse_telegram_username_by_whois_url(
 
     notion_url = notion_url.replace("?pvs=4", "")
 
-    if notion_url not in cache:
-        pages = list(
-            await notion_client.get_paginated_request(
-                method=notion_client.databases.query,
-                method_kwargs=dict(
-                    database_id="0b1e5db6cdfe4dcea0c818109ce44a26",  # whois_database_id
-                ),
-            )
+    if notion_url in telegram_usernames_by_notion_whois_url:
+        return telegram_usernames_by_notion_whois_url[notion_url]
+
+    # - Try to get telegram username from notion
+
+    # -- Return if too soon
+
+    if last_checked_telegram_username_at_by_notion_whois_url.get(notion_url, 0) + 3600 > time.time():
+        logger.debug("Too soon, try to find telegram username every hour", notion_url=notion_url)
+        return
+
+    # - Get pages and update cache
+
+    pages = list(
+        await notion_client.get_paginated_request(
+            method=notion_client.databases.query,
+            method_kwargs=dict(
+                database_id="0b1e5db6cdfe4dcea0c818109ce44a26",  # whois_database_id
+            ),
         )
+    )
 
     for page in pages:
-        cache[page["url"]] = "".join([value["plain_text"] for value in page["properties"]["TG_username"]["rich_text"]])
+        telegram_usernames_by_notion_whois_url[page["url"]] = "".join(
+            [value["plain_text"] for value in page["properties"]["TG_username"]["rich_text"]]
+        )
+
+    # - Update time
+
+    last_checked_telegram_username_at_by_notion_whois_url[notion_url] = time.time()
 
     # - Check if user is in the database
 
-    return cache.get(notion_url)
+    return telegram_usernames_by_notion_whois_url.get(notion_url)
 
 
 def test():

@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from aiogram.types import BotCommand
 from ef_bots.ef_threads.app import App, User
 from ef_bots.ef_threads.deps.deps import Deps
+from ef_bots.ef_threads.parse_telegram_username_by_whois_url import parse_telegram_username_by_whois_url
 from lessmore.utils.file_primitives.read_file import read_file
 from lessmore.utils.file_primitives.write_file import write_file
 from loguru import logger
@@ -56,13 +57,33 @@ def main(env="test"):
                     title = original_message.text.split("\n")[0].replace("**", "").strip()
 
                     # - Subscribe user, who sent the message, to the thread
+                    user_ids = []
 
-                    user_id = new_message.input_sender.user_id
-                    if user_id not in app.users_by_id:
-                        app.users.append(User(id=user_id))
+                    user_ids.append(new_message.input_sender.user_id)
 
-                    user = app.users_by_id[user_id]
-                    user.thread_ids = list(set(user.thread_ids + [thread_id]))
+                    # -- Try to find telegram username by text
+
+                    telegram_username = await parse_telegram_username_by_whois_url(
+                        text=new_message.text,
+                        notion_client=deps.notion_client(),
+                        telegram_usernames_by_notion_whois_url=app.telegram_usernames_by_notion_whois_url,
+                        last_checked_telegram_username_at_by_notion_whois_url=app.last_checked_telegram_username_at_by_notion_whois_url,
+                    )
+
+                    if telegram_username:
+                        # - Get user id by telegram username
+
+                        input_entity = await deps.telegram_user_client.get_input_entity(telegram_username)
+                        user_ids.append(input_entity.user_id)
+
+                    # -- Subscribe users, who sent the message, to the thread
+
+                    for user_id in user_ids:
+                        if user_id not in app.users_by_id:
+                            app.users.append(User(id=user_id))
+
+                            user = app.users_by_id[user_id]
+                            user.thread_ids = list(set(user.thread_ids + [thread_id]))
 
                     # - Send message to all subscribed users
 
