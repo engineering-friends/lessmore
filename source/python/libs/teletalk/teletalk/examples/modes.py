@@ -25,8 +25,8 @@ async def starter(response: Response):
     await response.tell("[Test: Inplace recent mode]")
     sample_block = SimpleBlock("Message 4 - should be updated")
     await response.tell(sample_block)
-    name = await response.ask(sample_block.update("Message 4. Say anything"), mode="inplace_recent")
-    await response.tell(sample_block.update("Message 5"), mode="inplace_recent")
+    name = await response.ask(sample_block.update("Message 4. Say anything"), mode="inplace_recent_one")
+    await response.tell(sample_block.update("Message 5"), mode="inplace_recent_one")
 
     # - Test inplace by id
 
@@ -35,8 +35,8 @@ async def starter(response: Response):
     sample_block = SimpleBlock()
     await response.tell(sample_block.update(text="Message 6"))
     sample_block.refresh_id()
-    await response.tell(sample_block.update(text="Message 7 - should be updated"), mode="inplace_by_id")
-    await response.tell(sample_block.update(text="Message 7"), mode="inplace_by_id")
+    await response.tell(sample_block.update(text="Message 7 - should be updated"), mode="inplace")
+    await response.tell(sample_block.update(text="Message 7"), mode="inplace")
 
     # - Test inplace by id with 2 messages
 
@@ -53,7 +53,7 @@ async def starter(response: Response):
     page.blocks[0].text = "Message 10"
     page.blocks[0].refresh_id()
     page.blocks[1].text = "Message 9"
-    await response.tell(page, mode="inplace_by_id")
+    await response.tell(page, mode="inplace")
 
 
 def test():

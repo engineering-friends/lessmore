@@ -201,7 +201,7 @@ class Talk:
 
             if not response.prompt_block.message_callback:
                 logger.warning("No message callback found")
-                return await response.ask(mode="inplace_by_id")
+                return await response.ask(mode="inplace")
 
             # - Run the message callback
 
@@ -221,7 +221,7 @@ class Talk:
 
             if not response.prompt_block.external_callback:
                 logger.warning("No external callback found")
-                return await response.ask(mode="inplace_by_id")
+                return await response.ask(mode="inplace")
 
             # - Run the external callback
 
@@ -232,7 +232,7 @@ class Talk:
     async def update_active_page(
         self,
         page: Page,
-        mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
+        mode: Literal["inplace", "inplace_recent_one", "create_new"] = "create_new",
         default_chat_id: int = 0,
     ):
         # - Mark blocks for easier usage
@@ -322,10 +322,10 @@ class Talk:
 
         # -- Inplace recent
 
-        elif mode == "inplace_recent":
+        elif mode == "inplace_recent_one":
             # - Get block_message
 
-            assert len(block_messages) == 1, "Only single message blocks are supported in inplace_recent mode"
+            assert len(block_messages) == 1, "Only single message blocks are supported in inplace_recent_one mode"
             block_message = block_messages[0]
 
             # - Check if the current message is the latest
@@ -340,18 +340,9 @@ class Talk:
             else:
                 await _upsert_message(block_message=block_message)
 
-        # -- Inplace
-
-        elif mode == "inplace":
-            assert len(block_messages) == 1, "Only single message blocks are supported in inplace mode"
-            await _upsert_message(
-                block_message=block_messages[0],
-                old_message=first_old_message,
-            )
-
         # -- Inplace by id
 
-        elif mode == "inplace_by_id":
+        elif mode == "inplace":
             # - Delete old messages
 
             for block in old_only_blocks:
@@ -391,7 +382,7 @@ class Talk:
         self,
         prompt: str | Block | Page | Response = "",
         files: Optional[list[str]] = None,
-        mode: Literal["inplace", "inplace_recent", "create_new"] = "create_new",
+        mode: Literal["inplace", "inplace_recent_one", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
     ) -> None:
         # - The interface to send custom messages without awaiting any response

@@ -31,7 +31,7 @@ class TwoButtons(Block):
 async def starter(response: Response):
     async def on_click(response: Response):
         response.prompt_sub_block.text += random.choice(["!", "1"])
-        return await response.ask(mode="inplace_by_id")
+        return await response.ask(mode="inplace")
 
     return await response.ask(
         TwoButtons(

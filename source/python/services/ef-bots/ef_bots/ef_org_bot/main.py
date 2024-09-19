@@ -135,7 +135,10 @@ def test():
         await App(
             bot=deps.config.telegram_bot_token,
             command_starters={"/start": lambda response: response.ask(menu(deps))},
-            commands=[BotCommand(command="start", description="Start the bot")],
+            commands=[
+                BotCommand(command="start", description="Start the bot"),
+                BotCommand(command="cancel", description="Cancel the current operation"),
+            ],
         ).start_polling()
 
     asyncio.run(main())
