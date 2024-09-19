@@ -14,22 +14,21 @@ class CancelError(Exception):
     pass
 
 
+def cancel_callback(supress_messages: bool = False):
+    async def _cancel_callback(response: Response):
+        if response.block_messages[-1].text == "/cancel":
+            raise CancelError("Cancelled")
+        elif response.block_messages[-1].text:
+            if supress_messages:
+                return await response.ask(mode="inplace")
+            else:
+                return default_message_callback(response)
+
+    return _cancel_callback
+
+
 def menu(deps: Deps):
     async def start_onboarding(response: Response):
-        # - Cancel callback to exit early
-
-        def cancel_callback(supress_messages: bool = False):
-            async def _cancel_callback(response: Response):
-                if response.block_messages[-1].text == "/cancel":
-                    raise CancelError("Cancelled")
-                elif response.block_messages[-1].text:
-                    if supress_messages:
-                        return await response.ask(mode="inplace")
-                    else:
-                        return default_message_callback(response)
-
-            return _cancel_callback
-
         # - 1. Notion access
 
         answer = await response.ask(
@@ -64,8 +63,6 @@ def menu(deps: Deps):
                     message_callback=cancel_callback(supress_messages=True),
                 )
 
-                await response.tell(f"t.me/{telegram_username}", mode="inplace")
-
                 if answer == "✅ Все верно":
                     break
             else:
@@ -96,7 +93,7 @@ def menu(deps: Deps):
         telegram_full_name = f"{user.first_name} {user.last_name}"
 
         answer = await response.ask(
-            "3. Введи полное имя участника (на любом языке)",
+            "3. Введи полное имя участника на любом языке",
             inline_keyboard=[[f"✏️ Взять из телеги: {telegram_full_name}"]],
             message_callback=cancel_callback(),
         )
@@ -107,7 +104,7 @@ def menu(deps: Deps):
 
         # -- Prompt
 
-        await response.tell("4. Создаю страницу онбординга в Notion, если ее еще нет. Перешли ее участнику")
+        await response.tell("4. Перешли страницу онбординга участнику:")
 
         # -- Create page
 
@@ -157,6 +154,7 @@ def menu(deps: Deps):
             [("Стратегия и задачи", "https://www.notion.so/f3f7637c9a1d4733a4d90b33796cf78e?pvs=4")],
             [("Тексты кандидатам", "https://www.notion.so/EF-f1c2d3aeceb04272a61beb6c08c92b47?pvs=4")],
         ],
+        message_callback=lambda response: response.ask(mode="inplace"),
     )
 
 
