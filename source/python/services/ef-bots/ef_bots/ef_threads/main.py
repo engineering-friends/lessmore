@@ -12,7 +12,7 @@ from ef_bots.ef_threads.parse_telegram_username_by_whois_url import parse_telegr
 from lessmore.utils.file_primitives.read_file import read_file
 from lessmore.utils.file_primitives.write_file import write_file
 from loguru import logger
-from telethon import TelegramClient, events
+from telethon import TelegramClient, events, types
 
 
 def main(env="test"):
@@ -127,14 +127,60 @@ def main(env="test"):
                                 entity=user.id,
                                 message=f"[{title}](https://t.me/c/{str(deps.config.telegram_discussion_group)[4:]}/{thread_id})",
                             )
-                            user.first_thread_message_id = message.id
+                            user.thread_id_by_message_id[message.id] = thread_id
 
-                        await client.forward_messages(
+                        message = await client.forward_messages(
                             entity=user.id,
                             messages=new_message.id,
                             from_peer=deps.config.telegram_discussion_group,
                         )
-                    user.current_thread_id = thread_id
+                        user.thread_id_by_message_id[message.id] = thread_id
+
+                        user.current_thread_id = thread_id
+
+                # - Dump state
+
+                app.dump_state()
+
+        # - Subscribe to emoji reactions
+
+        @client.on(events.Raw)
+        async def handler(event):
+            if isinstance(event, types.UpdateEditMessage):
+                # - Get chat id
+
+                chat_id = event.message.chat_id
+                message_id = event.message.id
+                reactions = event.message.reactions
+
+                user = app.users_by_id.get(chat_id)
+                if not user:
+                    return
+
+                # - Get thread id
+
+                thread_id = user.thread_id_by_message_id.get(message_id)
+                if not thread_id:
+                    return
+
+                # - Remove thread id from user
+
+                if thread_id in user.thread_ids:
+                    user.thread_ids.remove(thread_id)
+
+                # - Remove message ids from that thread
+
+                # message_ids_to_remove = [_message_id for _message_id in  {k:v for k, v in user.thread_id_by_message_id.items() if v == thread_id}.keys() if _message_id >= message_id]
+                message_ids_to_remove = [
+                    _message_id
+                    for _message_id in {k: v for k, v in user.thread_id_by_message_id.items() if v == thread_id}.keys()
+                ]
+
+                logger.debug("Removing messages", message_ids=message_ids_to_remove)
+
+                for message_id_to_remove in message_ids_to_remove:
+                    user.thread_id_by_message_id.pop(message_id_to_remove)
+                    await client.delete_messages(chat_id, message_id_to_remove)
 
                 # - Dump state
 
