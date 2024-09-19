@@ -1,56 +1,9 @@
 import asyncio
 
 from aiogram.types import BotCommand
-from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
 from ef_bots.ef_org_bot.deps.deps import Deps
-from loguru import logger
 from teletalk.app import App
-from teletalk.blocks.simple_block import SimpleBlock, default_message_callback
-from teletalk.models.response import Response
-from telethon.tl.types import User
-
-
-class CancelError(Exception):
-    pass
-
-
-def cancel_callback(supress_messages: bool = False):
-    async def _cancel_callback(response: Response):
-        if response.block_messages[-1].text == "/cancel":
-            raise CancelError("Cancelled")
-        elif response.block_messages[-1].text:
-            if supress_messages:
-                return await response.ask(mode="inplace")
-            else:
-                return default_message_callback(response)
-
-    return _cancel_callback
-
-
-def menu(deps: Deps):
-    async def start_onboarding(response: Response):
-        return await response.ask()
-
-    async def safe_start_onboarding(response: Response):
-        try:
-            return await start_onboarding(response)
-        except CancelError:
-            return await response.ask()
-        except Exception as e:
-            logger.error("Failed to start onboarding", error=e)
-            await response.tell(f"Ошибка во время процесса онбординга: {str(e)}")
-            return await response.ask()
-
-    return SimpleBlock(
-        "⚙️ *Выбери действие*",
-        inline_keyboard=[
-            [("Заонбордить участника", safe_start_onboarding)],
-            [("Notion EF Org", "https://www.notion.so/Org-48f403a0d3014dc4972f08060031308e?pvs=4")],
-            [("Стратегия и задачи", "https://www.notion.so/f3f7637c9a1d4733a4d90b33796cf78e?pvs=4")],
-            [("Тексты кандидатам", "https://www.notion.so/EF-f1c2d3aeceb04272a61beb6c08c92b47?pvs=4")],
-        ],
-        message_callback=lambda response: response.ask(mode="inplace"),
-    )
+from telethon import events
 
 
 def main(env="test"):
@@ -59,20 +12,35 @@ def main(env="test"):
 
         deps = Deps.load(env=env)
 
-        # - Start user
+        # - Start client
 
-        await deps.telegram_user_client.start()
+        client = deps.telegram_user_client
+        await client.start()
 
-        # # - Start bot
+        print("Listening for new messages in the discussion group...")
 
-        await App(
-            bot=deps.config.telegram_bot_token,
-            command_starters={"/start": lambda response: response.ask(menu(deps))},
-            commands=[
-                BotCommand(command="start", description="Start the bot"),
-                BotCommand(command="cancel", description="Cancel the current operation"),
-            ],
-        ).start_polling()
+        # - Define handler
+
+        # Listen to new messages in the discussion group
+        @client.on(events.NewMessage(chats=deps.config.telegram_discussion_group))
+        async def handler(event):
+            # Get the new message text
+            new_message = event.message
+            print(f"New message: {new_message.text}")
+
+            # Check if the message is a reply to a thread (has a reply_to_msg_id)
+            if new_message.reply_to_msg_id:
+                # Fetch the original post (message it's replying to)
+                original_message = await client.get_messages(
+                    deps.config.telegram_discussion_group, ids=new_message.reply_to_msg_id
+                )
+                print(f"Original post: {original_message.text}")
+            else:
+                print("This message is not a reply to any post.")
+
+        # - Run client
+
+        await client.run_until_disconnected()
 
     asyncio.run(_main())
 
