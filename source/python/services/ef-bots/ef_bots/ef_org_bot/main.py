@@ -10,7 +10,6 @@ from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
 from ef_bots.ef_org_bot.deps.deps import Deps
 from loguru import logger
 from teletalk.app import App
-from teletalk.blocks.menu import Menu, go_back, go_forward, go_to_root
 from teletalk.blocks.simple_block import SimpleBlock
 from teletalk.models.response import Response
 from telethon.tl.functions.channels import InviteToChannelRequest
@@ -146,9 +145,9 @@ def menu(deps: Deps):
 
         return await response.ask()
 
-    return Menu(
+    return SimpleBlock(
         "⚙️ *Выбери действие*",
-        grid=[
+        inline_keyboard=[
             [("Заонбордить участника", start_onboarding)],
             [("Notion EF Org", "https://www.notion.so/Org-48f403a0d3014dc4972f08060031308e?pvs=4")],
             [("Стратегия и задачи", "https://www.notion.so/f3f7637c9a1d4733a4d90b33796cf78e?pvs=4")],

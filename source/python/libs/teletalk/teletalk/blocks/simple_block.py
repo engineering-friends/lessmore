@@ -10,6 +10,11 @@ from teletalk.models.response import Response
 default_message_callback = lambda response: "".join([message.text for message in response.block_messages])
 
 
+go_back = lambda response: response.ask(response.previous if response.previous else response, mode="inplace")
+go_forward = lambda response: response.ask(response.next if response.next else response, mode="inplace")
+go_to_root = lambda response: response.ask(response.root, mode="inplace")
+
+
 class SimpleBlock(Block):
     def __init__(
         self,
