@@ -6,6 +6,7 @@ git pull
 # - Install uv if not installed
 
 uv --version || curl -LsSf https://astral.sh/uv/install.sh | sh
+source $HOME/.cargo/env
 
 # - Sync uv
 
