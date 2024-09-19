@@ -10,8 +10,6 @@ class Config(BaseSettings):
     telegram_api_hash: str
     telegram_bot_name: str
     telegram_bot_token: str
-    telegram_ef_channel: Union[int, str]
-
     telegram_ef_chats: dict[str, Union[int, str]]
 
     # - Notion

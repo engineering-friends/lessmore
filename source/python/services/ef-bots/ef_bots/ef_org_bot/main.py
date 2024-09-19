@@ -74,13 +74,23 @@ def menu(deps: Deps):
 
         user = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
 
-        # await add_user_to_chats(
-        #     telegram_client=deps.telegram_user_client,
-        #     username=telegram_username,
-        #     chats=deps.config.telegram_ef_chats.values(),
-        # )
+        answer = await response.ask(
+            "Добавить пользователя в наши чаты и каналы?",
+            inline_keyboard=[["✅ Да", "❌ Нет"]],
+            message_callback=cancel_callback,
+        )
 
-        await response.tell(f"Добавил в чаты и каналы: {', '.join(deps.config.telegram_ef_chats.keys())}")
+        if answer == "/cancel":
+            return await response.ask()
+
+        if answer == "✅ Да":
+            await add_user_to_chats(
+                telegram_client=deps.telegram_user_client,
+                username=telegram_username,
+                chats=deps.config.telegram_ef_chats.values(),
+            )
+
+            await response.tell(f"Добавил в чаты и каналы: {', '.join(deps.config.telegram_ef_chats.keys())}")
 
         # - 3. Get full name
 
