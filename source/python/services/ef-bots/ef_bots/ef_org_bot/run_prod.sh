@@ -28,6 +28,8 @@ export PYTHONPATH="$SERVICE_PATH:$PYTHONPATH"
 export PYTHONPATH="$MONOREPO_PATH/source/python/libs/lessmore.utils:$PYTHONPATH"
 export PYTHONPATH="$MONOREPO_PATH/source/python/libs/teletalk:$PYTHONPATH"
 
-# - Run the service
+# - Run the service in screen
 
-uv run python main.py
+screen -X -S ef_bot_org quit
+screen -S ef_bot_org -L -Logfile logs/prod.log uv run python main.py # `ctrl+a d` to detach
+#screen -S ef_bot_org uv run python main.py # macos
