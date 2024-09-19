@@ -129,14 +129,14 @@ def main(env="test"):
                             )
                             user.thread_id_by_message_id[message.id] = thread_id
 
+                            user.current_thread_id = thread_id
+
                         message = await client.forward_messages(
                             entity=user.id,
                             messages=new_message.id,
                             from_peer=deps.config.telegram_discussion_group,
                         )
                         user.thread_id_by_message_id[message.id] = thread_id
-
-                        user.current_thread_id = thread_id
 
                 # - Dump state
 
