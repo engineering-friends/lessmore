@@ -30,13 +30,13 @@ class Deps:
 
         config = Config(**read_config([f"{str(Path(__file__).parent)}/config/config.yaml"]))
 
-        local_files_dir = ensure_path(Path(__file__).parent / "../data/dynamic/")
+        local_files_dir = Path(__file__).parent / "../data/dynamic"
 
         return Deps(
             config=config,
             local_files_dir=str(local_files_dir),
             telegram_bot_client=TelegramClient(
-                session=str(local_files_dir / "telegram_bot.session"),
+                session=ensure_path(str(local_files_dir / "telegram_bot.session")),
                 api_id=int(config.telegram_api_id),
                 api_hash=config.telegram_api_hash,
             ),
