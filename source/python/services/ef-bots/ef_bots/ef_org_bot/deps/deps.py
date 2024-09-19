@@ -30,7 +30,7 @@ class Deps:
 
         config = Config(**read_config([f"{str(Path(__file__).parent)}/config/config.yaml"]))
 
-        local_files_dir = ensure_path(Path(__file__).parent / "../data/dynamic")
+        local_files_dir = ensure_path(Path(__file__).parent / "../data/dynamic/")
 
         return Deps(
             config=config,
