@@ -1,6 +1,7 @@
 import asyncio
 import json
 import os
+import re
 
 from dataclasses import dataclass, field
 
@@ -57,11 +58,14 @@ def main(env="test"):
                     title = original_message.text.split("\n")[0].replace("**", "").strip()
 
                     # - Subscribe user, who sent the message, to the thread
+
                     user_ids = []
 
                     user_ids.append(new_message.input_sender.user_id)
 
                     # -- Try to find telegram username by text
+
+                    telegram_usernames = []
 
                     telegram_username = await parse_telegram_username_by_whois_url(
                         text=new_message.text,
@@ -73,6 +77,14 @@ def main(env="test"):
                     if telegram_username:
                         # - Get user id by telegram username
 
+                        telegram_usernames.append(telegram_username)
+
+                    # -- Parse all @usernames from the message
+
+                    for telegram_username in re.findall(r"@(\w+)", new_message.text):
+                        telegram_usernames.append(telegram_username)
+
+                    for telegram_username in telegram_usernames:
                         input_entity = await deps.telegram_user_client.get_input_entity(telegram_username)
                         user_ids.append(input_entity.user_id)
 
