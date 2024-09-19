@@ -38,7 +38,7 @@ def main(env="test"):
         # - Define handler
 
         @client.on(events.NewMessage(chats=deps.config.telegram_discussion_group))
-        async def handler(event):
+        async def on_message(event):
             async with lock:
                 new_message = event.message
 
@@ -69,10 +69,11 @@ def main(env="test"):
                     for user in app.users:
                         if thread_id in user.thread_ids:
                             if user.current_thread_id != thread_id:
-                                await client.send_message(
+                                message = await client.send_message(
                                     entity=user.id,
                                     message=f"{'—' * 15}\n[{title}](https://t.me/c/{str(deps.config.telegram_discussion_group)[4:]}/{thread_id}){'—' * 15}\n",
                                 )
+                                user.first_thread_message_id = message.id
 
                             await client.forward_messages(
                                 entity=user.id,

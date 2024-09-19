@@ -15,6 +15,7 @@ class User:
     id: int
     current_thread_id: int = 0
     thread_ids: list[int] = field(default_factory=list)
+    first_thread_message_id: int = 0
 
 
 @dataclass
