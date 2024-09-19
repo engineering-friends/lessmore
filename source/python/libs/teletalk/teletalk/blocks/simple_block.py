@@ -63,7 +63,12 @@ class SimpleBlock(Block):
                     [
                         InlineKeyboardButton.model_construct(  # pydantic, but without validation
                             text=_unfold(value)[0],
-                            callback_data=_unfold(value)[1],  # put callback right in the callback_data
+                            callback_data=_unfold(value)[1]
+                            if isinstance(_unfold(value)[1], Callable)
+                            else None,  # put callback right in the callback_data
+                            url=_unfold(value)[1]
+                            if isinstance(_unfold(value)[1], str)
+                            else None,  # put callback right in the callback_data
                         )
                         for value in row
                     ]
