@@ -1,18 +1,12 @@
 import asyncio
-import random
-import textwrap
-
-from typing import Callable, Optional, Tuple
 
 from aiogram.types import BotCommand
-from diskcache.core import full_name
 from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
 from ef_bots.ef_org_bot.deps.deps import Deps
 from loguru import logger
 from teletalk.app import App
 from teletalk.blocks.simple_block import SimpleBlock
 from teletalk.models.response import Response
-from telethon.tl.functions.channels import InviteToChannelRequest
 from telethon.tl.types import User
 
 
