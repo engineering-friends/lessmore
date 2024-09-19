@@ -64,8 +64,6 @@ def menu(deps: Deps):
                     message_callback=cancel_callback(supress_messages=True),
                 )
 
-                await response.tell(f"t.me/{telegram_username}", mode="inplace")
-
                 if answer == "✅ Все верно":
                     break
             else:
