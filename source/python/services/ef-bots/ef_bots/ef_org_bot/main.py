@@ -19,13 +19,15 @@ from telethon.tl.types import User
 
 def menu(deps: Deps):
     async def start_onboarding(response: Response):
-        # - 1. Notion access
+        # - Cancel callback to exit early
 
         async def cancel_callback(response: Response):
             if response.block_messages[-1].text == "/cancel":
                 return "/cancel"
             elif response.block_messages[-1].text:
                 return await response.ask(mode="inplace")  # ask again, this won't do
+
+        # - 1. Notion access
 
         answer = await response.ask(
             "1. Для начала тебе нужно пошарить участнику доступ в Notion: [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
