@@ -42,12 +42,16 @@ def main(env="test"):
         @client.on(events.NewMessage(chats=deps.config.telegram_discussion_group))
         async def on_message(event):
             async with lock:
+                # - Unfold messages
+
                 new_message = event.message
+
+                # - Return if not a reply to any post
 
                 if not new_message.reply_to_msg_id:
                     logger.debug("This message is not a reply to any post.", message_id=new_message.id)
 
-                # - Get original message
+                # - Get original message with thread id (original message id)
 
                 original_message = await client.get_messages(
                     deps.config.telegram_discussion_group, ids=new_message.reply_to_msg_id
@@ -59,13 +63,19 @@ def main(env="test"):
 
                 title = original_message.text.split("\n")[0].replace("**", "").strip()
 
-                # - Subscribe user, who sent the message, to the thread
+                # - Subscribe users to the thread
+
+                # -- Collect users ids
 
                 user_ids = []
 
+                # --- Sender of the message
+
                 user_ids.append(new_message.input_sender.user_id)
 
-                # -- Try to find telegram username by text
+                # --- Telegram usernames
+
+                # --- - Message author
 
                 telegram_usernames = []
 
@@ -77,18 +87,21 @@ def main(env="test"):
                 )
 
                 if telegram_username:
-                    # - Get user id by telegram username
-
                     telegram_usernames.append(telegram_username)
 
-                # -- Parse all @usernames from the message
+                # --- - Tags
 
                 for telegram_username in re.findall(r"@(\w+)", new_message.text):
                     telegram_usernames.append(telegram_username)
 
+                # --- Get user ids by telegram usernames
+
                 for telegram_username in telegram_usernames:
-                    input_entity = await deps.telegram_user_client.get_input_entity(telegram_username)
-                    user_ids.append(input_entity.user_id)
+                    try:
+                        input_entity = await deps.telegram_user_client.get_input_entity(telegram_username)
+                        user_ids.append(input_entity.user_id)
+                    except:
+                        logger.error("Failed to get input entity", telegram_username=telegram_username)
 
                 # -- Subscribe users, who sent the message, to the thread
 
