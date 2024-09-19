@@ -38,7 +38,7 @@ def menu(deps: Deps):
             message_callback=cancel_callback(supress_messages=True),
         )
 
-        # - 2. Add to all telegram ecosystem: ef channel, ef random coffee,
+        # - 2. Add to all telegram ecosystem: ef channel, ef random coffee, ...
 
         while True:
             # - Ask for telegram username
