@@ -14,22 +14,21 @@ class CancelError(Exception):
     pass
 
 
+def cancel_callback(supress_messages: bool = False):
+    async def _cancel_callback(response: Response):
+        if response.block_messages[-1].text == "/cancel":
+            raise CancelError("Cancelled")
+        elif response.block_messages[-1].text:
+            if supress_messages:
+                return await response.ask(mode="inplace")
+            else:
+                return default_message_callback(response)
+
+    return _cancel_callback
+
+
 def menu(deps: Deps):
     async def start_onboarding(response: Response):
-        # - Cancel callback to exit early
-
-        def cancel_callback(supress_messages: bool = False):
-            async def _cancel_callback(response: Response):
-                if response.block_messages[-1].text == "/cancel":
-                    raise CancelError("Cancelled")
-                elif response.block_messages[-1].text:
-                    if supress_messages:
-                        return await response.ask(mode="inplace")
-                    else:
-                        return default_message_callback(response)
-
-            return _cancel_callback
-
         # - 1. Notion access
 
         answer = await response.ask(
@@ -155,6 +154,7 @@ def menu(deps: Deps):
             [("Стратегия и задачи", "https://www.notion.so/f3f7637c9a1d4733a4d90b33796cf78e?pvs=4")],
             [("Тексты кандидатам", "https://www.notion.so/EF-f1c2d3aeceb04272a61beb6c08c92b47?pvs=4")],
         ],
+        message_callback=lambda response: response.ask(mode="inplace"),
     )
 
 
