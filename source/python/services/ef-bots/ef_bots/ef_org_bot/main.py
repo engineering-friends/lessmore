@@ -28,7 +28,7 @@ def menu(deps: Deps):
         if answer == "❌ Отмена":
             return await response.ask()
 
-        # - 2. Add to all telegram ecosystem: ef channel, ef random coffee, ...
+        # - 2. Add to all telegram ecosystem: ef channel, ef random coffee,
 
         while True:
             # - Ask for telegram username
@@ -70,13 +70,18 @@ def menu(deps: Deps):
 
         telegram_full_name = f"{user.first_name} {user.last_name}"
         answer = await response.ask(
-            f"3. Введи полное имя участника (на любом языке). Имя в телеге: {telegram_full_name}",
-            inline_keyboard=[["✏️ Взять, как в телеге"]],
+            "3. Введи полное имя участника (на любом языке)",
+            inline_keyboard=[[f"✏️ Взять из телеги: {telegram_full_name}"]],
         )
-        full_name = telegram_full_name if answer == "✏️ Взять, как в телеге" else answer
+        full_name = telegram_full_name if "✏️" in answer else answer
 
         # - 4. Create onboarding page in Notion
-        await response.tell("4. Создаю страницу онбординга в Notion, если ее еще нет...")
+
+        # -- Prompt
+
+        await response.tell("4. Создаю страницу онбординга в Notion, если ее еще нет. Перешли ее участнику")
+
+        # -- Create page
 
         result, new_pages = await deps.notion_client().upsert_database(
             database={
@@ -86,22 +91,26 @@ def menu(deps: Deps):
             page_unique_id_func=lambda page: page["properties"]["Name"]["title"][0]["text"]["content"],
         )
 
+        # -- Fill the template
+
+        await asyncio.sleep(0.5)
+
         await response.tell(
-            f"Твоя страница онбординга! [Онбординг {full_name}]({new_pages[0]['url']}). Заполни ее, там все расписано!"
+            f"Твоя страница онбординга: [онбординг {full_name}]({new_pages[0]['url']}). Заполни ее, там все расписано!"
         )
 
-        await response.tell("Перешли это участнику, чтобы он заполнил")
+        await asyncio.sleep(1)
 
         # - 5. Write a final message
 
         await response.tell(
-            "5. Убедись, чтобы он все сделал. Как сделает, Матвей это увидит и напишет пост о новом участнике, а также поможет ему сделать его первый запрос. На этом онбординг будет завершен"
+            "5. Убедись, чтобы он все сделал. Как сделает, Матвей увидит и напишет пост о новом участнике, а также поможет ему сделать его первый запрос. На этом онбординг будет завершен"
         )
 
         return await response.ask()
 
     return Menu(
-        "Выбери действие:",
+        "⚙️ *Выбери действие*",
         grid=[
             [("Заонбордить участника", start_onboarding)],
             [("Notion EF Org", "https://www.notion.so/Org-48f403a0d3014dc4972f08060031308e?pvs=4")],
