@@ -2,6 +2,13 @@
 
 cd ${0%/*}
 git pull
+
+# - Install uv if not installed
+
+uv --version || curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# - Sync uv
+
 uv sync
 
 # Get directories
