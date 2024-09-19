@@ -279,7 +279,7 @@ class Talk:
                     message = await self.app.bot.edit_message_text(
                         chat_id=block_message.chat_id,
                         message_id=old_message.message_id,
-                        text=escape_markdown(block_message.text, version=2),
+                        text=block_message.text,
                         reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
                         parse_mode="MarkdownV2",
                         link_preview_options=LinkPreviewOptions(is_disabled=False),
@@ -292,7 +292,7 @@ class Talk:
             else:
                 message = await self.app.bot.send_message(
                     chat_id=block_message.chat_id,
-                    text=escape_markdown(block_message.text, version=2),
+                    text=block_message.text,
                     reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
                     parse_mode="MarkdownV2",
                     link_preview_options=LinkPreviewOptions(is_disabled=False),

@@ -5,6 +5,7 @@ import textwrap
 from typing import Callable, Optional, Tuple
 
 from aiogram.types import BotCommand
+from diskcache.core import full_name
 from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
 from ef_bots.ef_org_bot.deps.deps import Deps
 from teletalk.app import App
@@ -17,12 +18,22 @@ from telethon.tl.types import User
 
 def menu(deps: Deps):
     async def start_onboarding(response: Response):
-        # - Ask for telegram username
+        # - 1. Notion access
+
+        answer = await response.ask(
+            "1. Для начала тебе пошарить участнику доступ в Notion: [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
+            inline_keyboard=[["✅ Сделано!", "❌ Отмена"]],
+        )
+
+        if answer == "❌ Отмена":
+            return await response.ask()
+
+        # - 2. Add to all telegram ecosystem: ef channel, ef random coffee, ...
 
         while True:
             # - Ask for telegram username
 
-            telegram_username = await response.ask("Введи телегу участника:")
+            telegram_username = await response.tell("2. Введи телеграм участника, чтобы я добавил его в чаты и каналы:")
             telegram_username = telegram_username.replace("@", "").replace("t.me/", "").replace("https://t.me/", "")
 
             # - Get user entity
@@ -35,7 +46,7 @@ def menu(deps: Deps):
             if isinstance(entity, User):
                 answer = await response.ask(
                     f"t.me/{telegram_username}",
-                    inline_keyboard=[["✅ Все верно!", "❌ Я ошибся"]],
+                    inline_keyboard=[["✅ Все верно!", "❌ Что-то не так"]],
                 )
                 await response.tell(f"t.me/{telegram_username}", mode="inplace")
                 if answer == "✅ Все верно!":
@@ -47,72 +58,41 @@ def menu(deps: Deps):
 
         user = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
 
-        # await add_user_to_chats(
-        #     telegram_client=deps.telegram_user_client,
-        #     username=telegram_username,
-        #     chats=deps.config.telegram_ef_chats.values(),
-        # )
+        await add_user_to_chats(
+            telegram_client=deps.telegram_user_client,
+            username=telegram_username,
+            chats=deps.config.telegram_ef_chats.values(),
+        )
 
-        await response.tell(f"Добавил во все чаты и каналы: {', '.join(deps.config.telegram_ef_chats.keys())}")
+        await response.tell(f"Добавил везде, где нужно! ({', '.join(deps.config.telegram_ef_chats.keys())})")
 
-        await response.tell("Создаю страницы в Notion...")
+        # - 3. Get full name
 
-        # - Get full name
+        telegram_full_name = f"{user.first_name} {user.last_name}"
+        answer = await response.ask(
+            f"3. Введи полное имя участника (на любом языке). Имя в телеге: {telegram_full_name}",
+            inline_keyboard=[["✏️ Взять имя в телеге"]],
+        )
+        full_name = telegram_full_name if answer == "✏️ Взять имя в телеге" else answer
 
-        full_name = f"{user.first_name} {user.last_name}"
-
-        # - Create notion page in CRM
-
-        # -- Create page
+        # - 4. Create onboarding page in Notion
+        await response.tell("4. Создаю страницу онбординга в Notion, если ее еще нет...")
 
         result, new_pages = await deps.notion_client().upsert_database(
             database={
-                "id": "4675fa21409b4f46b29946279040ba96",  # pragma: allowlist secret
+                "id": "106b738eed9a80cf8669e76dc12144b7",  # pragma: allowlist secret
             },
             pages=[{"properties": {"Name": {"title": [{"text": {"content": full_name}}]}}}],
             page_unique_id_func=lambda page: page["properties"]["Name"]["title"][0]["text"]["content"],
         )
 
-        # -- Find page
+        await response.tell(f"Страница онбординга для {full_name}: {new_pages[0]['url']}")
 
-        await response.tell(f"Создал новую страницу в CRM: {new_pages[0]['url']}")
+        # - 5. Write a final message
 
-        # - Create onboarding page in EF
-
-        # -- Create personal page if not exists
-
-        page = await deps.notion_client().upsert_page(
-            page={
-                "parent": {
-                    "page_id": "5caeefe3bf5645b39b0995f02fc55b82",  # персональные пространства
-                },
-                "properties": {"title": {"title": [{"text": {"content": full_name}}]}},
-            },
-        )
-
-        # -- Create onboarding page
-
-        onboarding_page = await deps.notion_client().duplicate_page(
-            page_id="8c93fa8355344cbd88544b3a076ef552",  # Шаблон онбординга, https://www.notion.so/8c93fa8355344cbd88544b3a076ef552
-            destination_page_id=page["id"],  # https://www.notion.so/5caeefe3bf5645b39b0995f02fc55b82
-        )
-
-        # pick random emoji
-
-        await deps.notion_client().pages.update(page_id=onboarding_page["id"], icon={"type": "emoji", "emoji": "🏄‍♂️"})
-
-        # -- Set emoji for page
-
-        await response.tell(f"Создал страницу для онбоардинга: {onboarding_page['url']}")
         await response.tell(
-            "Возьми у участника email в Notion и пошарь ему страницу Home в Notion: https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4"
+            "5. Теперь твоя задача убедиться, чтобы участник заполнил эту страницу. Как он заполнит, Матвей это увидит и сделает пост о новом участнике, а также поможет ему сделать его первый запрос"
         )
-        await response.tell(
-            f"После этого перешли ему ссылку на онбоардинг, чтобы он заполнил: {onboarding_page['url']}"
-        )
-        await response.tell("Поставь себе напоминалки, чтобы убедиться, что он все заполнил")
-
-        # - Return to main menu
 
         return await response.ask()
 
