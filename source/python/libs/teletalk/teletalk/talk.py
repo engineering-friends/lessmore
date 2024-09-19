@@ -281,7 +281,7 @@ class Talk:
                         message_id=old_message.message_id,
                         text=block_message.text,
                         reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
-                        parse_mode="MarkdownV2",
+                        parse_mode="Markdown",
                         link_preview_options=LinkPreviewOptions(is_disabled=False),
                     )
                 else:
@@ -294,7 +294,7 @@ class Talk:
                     chat_id=block_message.chat_id,
                     text=block_message.text,
                     reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
-                    parse_mode="MarkdownV2",
+                    parse_mode="Markdown",
                     link_preview_options=LinkPreviewOptions(is_disabled=False),
                 )
 

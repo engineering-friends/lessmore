@@ -21,7 +21,7 @@ def menu(deps: Deps):
         # - 1. Notion access
 
         answer = await response.ask(
-            "1. Для начала тебе пошарить участнику доступ в Notion: [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
+            "1. Для начала тебе нужно пошарить участнику доступ в Notion: [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
             inline_keyboard=[["✅ Сделано!", "❌ Отмена"]],
         )
 
@@ -33,7 +33,7 @@ def menu(deps: Deps):
         while True:
             # - Ask for telegram username
 
-            telegram_username = await response.tell("2. Введи телеграм участника, чтобы я добавил его в чаты и каналы:")
+            telegram_username = await response.ask("2. Введи телеграм участника, чтобы я добавил его в чаты и каналы:")
             telegram_username = telegram_username.replace("@", "").replace("t.me/", "").replace("https://t.me/", "")
 
             # - Get user entity
@@ -46,7 +46,7 @@ def menu(deps: Deps):
             if isinstance(entity, User):
                 answer = await response.ask(
                     f"t.me/{telegram_username}",
-                    inline_keyboard=[["✅ Все верно!", "❌ Что-то не так"]],
+                    inline_keyboard=[["✅ Все верно!", "❌ Я ошибся"]],
                 )
                 await response.tell(f"t.me/{telegram_username}", mode="inplace")
                 if answer == "✅ Все верно!":
@@ -58,22 +58,22 @@ def menu(deps: Deps):
 
         user = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
 
-        await add_user_to_chats(
-            telegram_client=deps.telegram_user_client,
-            username=telegram_username,
-            chats=deps.config.telegram_ef_chats.values(),
-        )
+        # await add_user_to_chats(
+        #     telegram_client=deps.telegram_user_client,
+        #     username=telegram_username,
+        #     chats=deps.config.telegram_ef_chats.values(),
+        # )
 
-        await response.tell(f"Добавил везде, где нужно! ({', '.join(deps.config.telegram_ef_chats.keys())})")
+        await response.tell(f"Добавил везде, где нужно: {', '.join(deps.config.telegram_ef_chats.keys())}")
 
         # - 3. Get full name
 
         telegram_full_name = f"{user.first_name} {user.last_name}"
         answer = await response.ask(
             f"3. Введи полное имя участника (на любом языке). Имя в телеге: {telegram_full_name}",
-            inline_keyboard=[["✏️ Взять имя в телеге"]],
+            inline_keyboard=[["✏️ Взять, как в телеге"]],
         )
-        full_name = telegram_full_name if answer == "✏️ Взять имя в телеге" else answer
+        full_name = telegram_full_name if answer == "✏️ Взять, как в телеге" else answer
 
         # - 4. Create onboarding page in Notion
         await response.tell("4. Создаю страницу онбординга в Notion, если ее еще нет...")
@@ -86,12 +86,16 @@ def menu(deps: Deps):
             page_unique_id_func=lambda page: page["properties"]["Name"]["title"][0]["text"]["content"],
         )
 
-        await response.tell(f"Страница онбординга для {full_name}: {new_pages[0]['url']}")
+        await response.tell(
+            f"Твоя страница онбординга! [Онбординг {full_name}]({new_pages[0]['url']}). Заполни ее, там все расписано!"
+        )
+
+        await response.tell("Перешли это участнику, чтобы он заполнил")
 
         # - 5. Write a final message
 
         await response.tell(
-            "5. Теперь твоя задача убедиться, чтобы участник заполнил эту страницу. Как он заполнит, Матвей это увидит и сделает пост о новом участнике, а также поможет ему сделать его первый запрос"
+            "5. Убедись, чтобы он все сделал. Как сделает, Матвей это увидит и напишет пост о новом участнике, а также поможет ему сделать его первый запрос. На этом онбординг будет завершен"
         )
 
         return await response.ask()
