@@ -95,3 +95,5 @@ source/python/services/playground/youtube-transcripts/youtube_transcripts/get_al
 source/python/services/playground/youtube-transcripts/youtube_transcripts/get_all_videos_with_transcripts_from_channel/client_secret_tokens.json
 source/python/services/ef-bots/ef_bots/ef_org_bot/deps/config/config.test.yaml
 source/python/services/ef-bots/ef_bots/ef_org_bot/deps/config/config.prod.yaml
+source/python/services/ef-bots/ef_bots/ef_threads/deps/config/config.test.yaml
+source/python/services/ef-bots/ef_bots/ef_threads/deps/config/config.prod.yaml
