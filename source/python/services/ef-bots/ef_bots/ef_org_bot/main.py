@@ -8,6 +8,7 @@ from aiogram.types import BotCommand
 from diskcache.core import full_name
 from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
 from ef_bots.ef_org_bot.deps.deps import Deps
+from loguru import logger
 from teletalk.app import App
 from teletalk.blocks.menu import Menu, go_back, go_forward, go_to_root
 from teletalk.blocks.simple_block import SimpleBlock
@@ -84,13 +85,16 @@ def menu(deps: Deps):
             return await response.ask()
 
         if answer == "✅ Да":
-            await add_user_to_chats(
-                telegram_client=deps.telegram_user_client,
-                username=telegram_username,
-                chats=deps.config.telegram_ef_chats.values(),
-            )
-
-            await response.tell(f"Добавил в чаты и каналы: {', '.join(deps.config.telegram_ef_chats.keys())}")
+            try:
+                await add_user_to_chats(
+                    telegram_client=deps.telegram_user_client,
+                    username=telegram_username,
+                    chats=deps.config.telegram_ef_chats.values(),
+                )
+                await response.tell(f"Добавил в чаты и каналы: {', '.join(deps.config.telegram_ef_chats.keys())}")
+            except Exception as e:
+                logger.error("Failed to add user to chats", error=e)
+                await response.tell(f"Не удалось добавить пользователя в часть чатов и каналов. Ошибка: {str(e)}")
 
         # - 3. Get full name
 
