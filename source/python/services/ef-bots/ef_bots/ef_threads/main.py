@@ -94,7 +94,7 @@ def menu(deps: Deps):
         telegram_full_name = f"{user.first_name} {user.last_name}"
 
         answer = await response.ask(
-            "3. Введи полное имя участника (на любом языке)",
+            "3. Введи полное имя участника на любом языке",
             inline_keyboard=[[f"✏️ Взять из телеги: {telegram_full_name}"]],
             message_callback=cancel_callback(),
         )
@@ -105,7 +105,7 @@ def menu(deps: Deps):
 
         # -- Prompt
 
-        await response.tell("4. Создаю страницу онбординга в Notion, если ее еще нет. Перешли ее участнику")
+        await response.tell("4. Перешли страницу онбординга участнику:")
 
         # -- Create page
 
