@@ -22,7 +22,7 @@ def menu(deps: Deps):
             if response.block_messages[-1].text == "/cancel":
                 raise CancelError("Cancelled")
             elif response.block_messages[-1].text:
-                return await response.ask(mode="inplace")  # ask again, this won't do
+                return await response.ask(mode="inplace")  # just ask again in the same message
 
         # - 1. Notion access
 
@@ -53,9 +53,6 @@ def menu(deps: Deps):
                     f"t.me/{telegram_username}",
                     inline_keyboard=[["✅ Все верно", "❌ Я ошибся"]],
                 )
-
-                if answer == "/cancel":
-                    return await response.ask()
 
                 await response.tell(f"t.me/{telegram_username}", mode="inplace")
 
