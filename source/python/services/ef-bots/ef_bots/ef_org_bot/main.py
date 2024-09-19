@@ -22,7 +22,9 @@ def menu(deps: Deps):
             if response.block_messages[-1].text == "/cancel":
                 raise CancelError("Cancelled")
             elif response.block_messages[-1].text:
-                return await response.ask(mode="inplace")  # just ask again in the same message
+                return await response.ask(
+                    mode="inplace", message_callback=cancel_callback
+                )  # just ask again in the same message
 
         # - 1. Notion access
 
@@ -32,12 +34,15 @@ def menu(deps: Deps):
             message_callback=cancel_callback,
         )
 
-        # - 2. Add to all telegram ecosystem: ef channel, ef random coffee, ...
+        # - 2. Add to all telegram ecosystem: ef channel, ef random coffee,
 
         while True:
             # - Ask for telegram username
 
-            answer = await response.ask("2. Введи телеграм участника, чтобы я добавил его в чаты и каналы:")
+            answer = await response.ask(
+                "2. Введи телеграм участника, чтобы я добавил его в чаты и каналы:",
+                message_callback=cancel_callback,
+            )
 
             telegram_username = answer.replace("@", "").replace("t.me/", "").replace("https://t.me/", "")
 
@@ -52,6 +57,7 @@ def menu(deps: Deps):
                 answer = await response.ask(
                     f"t.me/{telegram_username}",
                     inline_keyboard=[["✅ Все верно", "❌ Я ошибся"]],
+                    message_callback=cancel_callback,
                 )
 
                 await response.tell(f"t.me/{telegram_username}", mode="inplace")
@@ -88,6 +94,7 @@ def menu(deps: Deps):
         answer = await response.ask(
             "3. Введи полное имя участника (на любом языке)",
             inline_keyboard=[[f"✏️ Взять из телеги: {telegram_full_name}"]],
+            message_callback=cancel_callback,
         )
 
         full_name = telegram_full_name if "✏️" in answer else answer
@@ -123,6 +130,7 @@ def menu(deps: Deps):
         await response.ask(
             "5. Убедись, чтобы он все сделал. Как сделает, Матвей увидит и напишет пост о новом участнике, а также поможет ему сделать его первый запрос. На этом онбординг будет завершен",
             inline_keyboard=[["✅ Завершить"]],
+            message_callback=cancel_callback,
         )
 
         return await response.ask()
