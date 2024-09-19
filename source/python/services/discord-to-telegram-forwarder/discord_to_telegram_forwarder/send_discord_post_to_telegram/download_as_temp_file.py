@@ -19,7 +19,7 @@ def _download_as_temp_file(url: str, extension: str = None) -> str:
     response = requests.get(url, allow_redirects=True)
     write_file(data=response.content, filename=filename, as_bytes=True)
 
-    # - Return
+    # - Return filename
 
     return filename
 

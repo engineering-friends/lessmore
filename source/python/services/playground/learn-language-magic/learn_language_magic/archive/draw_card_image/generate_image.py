@@ -75,10 +75,10 @@ def test():
         await asyncio.gather(
             *[
                 # run(prompt="Continuous lines very easy, clean and minimalist, black background, lines are glowing as light"),
-                run(prompt="style of secret of kells, old paper, celtic art, a pet"),
-                run(prompt="style of secret of kells, old paper, celtic art, a pet"),
-                run(prompt="style of secret of kells, old paper, celtic art, a pet"),
-                run(prompt="style of secret of kells, old paper, celtic art, a pet"),
+                run(prompt="The elder scrolls, thick black outlines, soft rays of light, dust particles, 4k, photorealistic, simulation, ultrasharp, steampunk, engineering process"),
+                run(prompt="The elder scrolls, thick black outlines, soft rays of light, dust particles, 4k, photorealistic, simulation, ultrasharp, steampunk, engineering process"),
+                run(prompt="The elder scrolls, thick black outlines, soft rays of light, dust particles, 4k, photorealistic, simulation, ultrasharp, steampunk, engineering process"),
+                run(prompt="The elder scrolls, thick black outlines, soft rays of light, dust particles, 4k, photorealistic, simulation, ultrasharp, steampunk, engineering process"),
             ]
         )
 

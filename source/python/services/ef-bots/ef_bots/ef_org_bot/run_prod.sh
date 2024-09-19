@@ -1,0 +1,25 @@
+# - Go to the service directory
+
+cd ${0%/*}
+git pull
+uv sync
+
+# Get directories
+
+SERVICE_PATH=$(pwd)/../..
+BOT_PATH=$(pwd)
+MONOREPO_PATH=$(echo $SERVICE_PATH | sed -E 's/(.*)\/source\/.*/\1/') # Crop /a/b/c/.../lessmore/source/... -> /a/b/c/.../lessmore
+
+# - Decrypt secrets
+
+$MONOREPO_PATH/git_secret/decrypt_secrets.sh
+
+# - Set PYTHONPATH
+
+export PYTHONPATH="$SERVICE_PATH:$PYTHONPATH"
+export PYTHONPATH="$MONOREPO_PATH/source/python/libs/lessmore.utils:$PYTHONPATH"
+export PYTHONPATH="$MONOREPO_PATH/source/python/libs/teletalk:$PYTHONPATH"
+
+# - Run the service
+
+uv run python main.py

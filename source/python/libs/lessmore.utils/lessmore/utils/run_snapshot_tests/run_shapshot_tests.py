@@ -11,6 +11,7 @@ from lessmore.utils.file_primitives.read_file import read_file
 from lessmore.utils.file_primitives.write_file import write_file
 from lessmore.utils.get_frame_path.get_frame_path import get_parent_frame_path
 from lessmore.utils.loguru_utils.formatters.format_as_colored_json.format_as_colored_json import format_as_colored_json
+from lessmore.utils.run_snapshot_tests.fixed_snapshot import fixed_snapshot
 from loguru import logger
 
 
@@ -22,19 +23,27 @@ def run_snapshot_tests(
 
     A helper over inline-snapshot library with better interface + prettier logs.
 
-    Requires custom `inline-shapshot` fork:
-
     Parameters
     ----------
     path : str, optional
         Path to the file to run tests from. If not provided, the current file is used.
     """
 
-    # - Assert inline_snapshot is ^0.8.0, forked by marklidenberg
+    # - Monkey patch inline_snapshot.snapshot
 
-    assert (
-        inline_snapshot.__version__ == "0.8.0-marklidenberg-1.0.0"
-    ), "Works only with https://github.com/marklidenberg/inline-snapshot 0.8.0 fork. If you use poetry, run `poetry add git+https://github.com/marklidenberg/inline-snapshot`"
+    inline_snapshot.snapshot.func.__code__ = fixed_snapshot.func.__code__
+
+    # - Send warning if inline_snapshot version is not tested
+
+    if inline_snapshot.__version__ != "0.8.0":
+        logger.warning(
+            f"inline_snapshot version is not tested: {inline_snapshot.__version__}. The only tested version is 0.8.0"
+        )
+
+    # - Log warning if ran from __init__.py file
+
+    if not path and str(get_parent_frame_path()).endswith("__init__.py"):
+        logger.warning("Snapshot tests don't run from `__init__.py` files (investigation needed)")
 
     # - Configure loguru
 

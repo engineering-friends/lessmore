@@ -7,20 +7,26 @@ async def search_telegram_messages(
     channel: str | int,
     query: str,
 ) -> list[Message]:
-    # - Set cache key
+    # - Define cache key for the search
 
     cache_key = ("search_telegram_messages", channel, query)
 
-    # - Set value in cache if not exists
+    # - Return the value from cache if exists
 
-    if cache_key not in deps.cache:
-        deps.cache[cache_key] = [
-            message async for message in deps.telegram_user_client.iter_messages(channel, search=query)
-        ]
+    if cache_key in deps.cache:
+        return deps.cache[cache_key]
 
-    # - Return value from cache
+    # - Search messages
 
-    return deps.cache[cache_key]
+    messages = [message async for message in deps.telegram_user_client.iter_messages(channel, search=query)]
+
+    # - Set the cache value
+
+    deps.cache[cache_key] = messages
+
+    # - Return messages
+
+    return messages
 
 
 async def test():

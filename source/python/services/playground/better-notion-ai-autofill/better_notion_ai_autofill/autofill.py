@@ -71,7 +71,7 @@ async def autofill(
 
     await asyncio.gather(*[prefetch_all_cached_properties(row) for row in rows])
 
-    # - Get notion pages
+    # - Build notion pages
 
     logger.info("Building notion pages")
 
@@ -93,6 +93,8 @@ async def autofill(
     # - Update notion pages
 
     logger.info("Updating notion pages")
+
+    logger.debug("Sample page", page=new_pages[0])
 
     await client.upsert_database(
         database={"id": database_id},
@@ -120,7 +122,7 @@ def test():
         if not database:
             database_name = f"test_page_{uuid.uuid4()}"
 
-            database = await client.upsert_database(
+            database, new_pages = await client.upsert_database(
                 database={
                     "parent": {"page_id": deps.config.notion_test_page_id},
                     "title": [{"text": {"content": database_name}}],
@@ -143,7 +145,7 @@ def test():
                 }
             )
 
-            database = await client.upsert_database(
+            database, new_pages = await client.upsert_database(
                 database={
                     "id": database["id"],
                 },

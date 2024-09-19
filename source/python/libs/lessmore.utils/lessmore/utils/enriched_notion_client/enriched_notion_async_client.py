@@ -7,6 +7,7 @@ from loguru import logger
 from more_itertools import first, only
 from notion_client import AsyncClient
 
+from lessmore.utils.enriched_notion_client.test_duplicate_page import test_duplicate_page
 from lessmore.utils.enriched_notion_client.test_paginated_request import test_paginated_request
 from lessmore.utils.enriched_notion_client.test_parse_markdown_table import test_parse_markdown_table
 from lessmore.utils.enriched_notion_client.test_plainify_database_property import test_plainify_database_property
@@ -24,6 +25,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
     @tested(tests=[test_paginated_request])
     async def get_paginated_request(method, method_kwargs):
         """Request all pages at once from paginated method"""
+
         # - Init
 
         result = []
@@ -48,6 +50,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
         children: Optional[list] = None,
     ):
         """Upsert page with children. Old page is used to avoid unnecessary updates."""
+
         # - Prepare kwargs
 
         # Note: it's very important to filter None values, or Notion will throw an ambiguous error
@@ -131,8 +134,9 @@ class EnrichedNotionAsyncClient(AsyncClient):
         remove_others: bool = False,
         page_unique_id_func: Optional[Callable] = None,
         archive: Optional[bool] = None,
-    ):
+    ) -> tuple[dict, list[dict]]:
         """Upsert database with pages and children."""
+
         # - Validate pages has the same length as children
 
         if children_list is not None:
@@ -157,11 +161,13 @@ class EnrichedNotionAsyncClient(AsyncClient):
             database_id = database["id"]
 
             if pages:
-                await asyncio.gather(
+                new_pages = await asyncio.gather(
                     *[self.upsert_page(page={**{"database_id": database_id}, **page}) for page in pages]
                 )
+            else:
+                new_pages = []
 
-            return database
+            return database, new_pages
 
         assert "id" in database
 
@@ -183,7 +189,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
         # -- Return if no pages provided
 
         if not pages:
-            return database
+            return database, []
 
         # - -- Get old pages
 
@@ -237,7 +243,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
             ],
         )
 
-        await asyncio.gather(
+        new_pages = await asyncio.gather(
             *[
                 self.upsert_page(
                     page={
@@ -254,7 +260,7 @@ class EnrichedNotionAsyncClient(AsyncClient):
             ]
         )
 
-        return database
+        return database, new_pages
 
     @tested(tests=[test_parse_markdown_table])
     @staticmethod
@@ -546,3 +552,57 @@ class EnrichedNotionAsyncClient(AsyncClient):
             return "".join([text["plain_text"] for text in property["rich_text"]])
         else:
             raise ValueError(f"Unknown property type: {property['type']}")
+
+    @tested(tests=[test_duplicate_page])
+    async def duplicate_page(
+        self,
+        page_id: str,
+        parent_page_id: Optional[str] = None,
+        target_page_id: Optional[str] = None,
+    ):
+        """Duplicate page with new id"""
+
+        # - Get page to duplicate
+
+        page = await self.pages.retrieve(page_id=page_id)
+
+        # - Get or create target page
+
+        if target_page_id:
+            # - Get target page
+
+            target_page = await self.pages.retrieve(page_id=target_page_id)
+
+            # - Delete all old content of the target page
+
+            result = await self.blocks.children.list(block_id=target_page["id"])
+            for block in result["results"]:
+                await self.blocks.delete(block_id=block["id"])
+        else:
+            assert parent_page_id, "Parent page id or target page id must be provided"
+            target_page = await self.pages.create(
+                parent={"type": "page_id", "page_id": parent_page_id},
+                properties={
+                    "title": [
+                        {
+                            "type": "text",
+                            "text": {"content": page["properties"]["title"]["title"][0]["text"]["content"]},
+                        }
+                    ]
+                },
+            )
+
+        # - Duplicate blocks
+
+        async def duplicate_block(block_id: str, target_block_id: str):
+            children = await self.get_paginated_request(
+                method=self.blocks.children.list, method_kwargs=dict(block_id=block_id)
+            )
+            result = await self.blocks.children.append(target_block_id, children=children)
+            for child, new_child in zip(children, result["results"]):
+                if child["has_children"]:
+                    await duplicate_block(block_id=child["id"], target_block_id=new_child["id"])
+
+        await duplicate_block(block_id=page["id"], target_block_id=target_page["id"])
+
+        return target_page

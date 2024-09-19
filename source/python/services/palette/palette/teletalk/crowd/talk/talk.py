@@ -19,7 +19,9 @@ if TYPE_CHECKING:
 
 @dataclass
 class Talk:
-    chat: "Chat"  # circular import
+    # - Basic state
+
+    chat: "Chat"  # parent import
     starter_message: Optional[Message] = None
     is_bot_thinking: bool = False  # will be set to True when making a response to a user message
 

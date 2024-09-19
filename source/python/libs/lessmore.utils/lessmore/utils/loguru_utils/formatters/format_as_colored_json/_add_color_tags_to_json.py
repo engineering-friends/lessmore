@@ -20,7 +20,7 @@ def _add_color_tags_to_json(
         color_key = {
             "ts": "green",
             "module": "cyan",
-            "message": "level",
+            "msg": "level",
             "error": "red",
             "traceback": "red",
         }.get(key, "magenta")
@@ -28,7 +28,7 @@ def _add_color_tags_to_json(
         color_value = {
             "ts": "green",
             "module": "cyan",
-            "message": "level",
+            "msg": "level",
             "error": "red",
             "traceback": "red",
         }.get(key, "yellow")

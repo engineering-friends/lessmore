@@ -47,8 +47,8 @@ def format_as_colored_json(append_non_json_traceback: bool = True):
         # - Create record_dic that will be serialized as json
 
         record_dic = {
-            "message": record["message"],
-            "module": record["module"],
+            "msg": record["message"],
+            # "module": record["module"],
             "ts": to_datetime(record["time"]).strftime("%Y-%m-%d %H:%M:%S.%f")[:-3],  # 2023-03-26 13:04:09.512
             "source": record["extra"].get("source", ""),
         }
@@ -67,8 +67,8 @@ def format_as_colored_json(append_non_json_traceback: bool = True):
                 record_dic.items(),
                 key=lambda kv: {
                     "ts": 0,
-                    "module": 1,
-                    "message": 2,
+                    # "module": 1,
+                    "msg": 2,
                     "source": 3,
                     "extra": 4,
                     "error": 5,

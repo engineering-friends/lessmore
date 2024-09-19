@@ -21,6 +21,7 @@ opencv-python = "^4.10.0.82"
 pillow = "^10.3.0"
 fluent = "^0.10.0"
 fluent-runtime = "^0.4.0"
+more-itertools = "^10.4.0"
 
 
 [build-system]

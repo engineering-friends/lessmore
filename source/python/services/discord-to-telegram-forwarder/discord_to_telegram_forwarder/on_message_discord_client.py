@@ -44,7 +44,7 @@ async def test():
 
     deps = Deps.load()
 
-    # - Define process_discord_post
+    # - Define `process_message`
 
     async def process_message(message):
         logger.info("Processing discord post", message=message)

@@ -4,6 +4,7 @@ import inspect
 import json
 
 from functools import lru_cache, wraps
+from typing import Any, Callable
 
 from diskcache import Cache
 
@@ -14,7 +15,7 @@ from lessmore.utils.file_primitives.ensure_path import ensure_path
 def cache_on_disk(
     directory: str = "/tmp/cache_on_disk",
     reset: bool = False,
-) -> callable:
+) -> Callable:
     """
     Decorator factory for caching the results of a function to disk.
 
@@ -26,18 +27,15 @@ def cache_on_disk(
     cache = Cache(ensure_path(directory))
 
     # - Define the decorator
-
-    def _get_key(func, args, kwargs):
+    def _get_key(func: Callable, args: tuple, kwargs: dict) -> str:
         # - Generate a unique key based on function arguments and their values
 
         # -- Get full kwargs
-
         bound_arguments = inspect.signature(func).bind(*args, **kwargs)
         bound_arguments.apply_defaults()
         full_kwargs = bound_arguments.arguments
 
         # -- Generate the key
-
         hasher = hashlib.sha256()
 
         # Include function name in the hash
@@ -61,7 +59,7 @@ def cache_on_disk(
 
         return hasher.hexdigest()
 
-    def decorator(func):
+    def decorator(func: Callable) -> Callable:
         @wraps(func)
         def sync_wrapper(*args, **kwargs):
             # - Get key
