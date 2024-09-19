@@ -22,10 +22,10 @@ def menu(deps: Deps):
 
         answer = await response.ask(
             "1. Для начала тебе нужно пошарить участнику доступ в Notion: [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
-            inline_keyboard=[["✅ Сделано!", "❌ Отмена"]],
+            inline_keyboard=[["✅ Сделано!"]],
         )
 
-        if answer == "❌ Отмена":
+        if answer == "/cancel":
             return await response.ask()
 
         # - 2. Add to all telegram ecosystem: ef channel, ef random coffee,
@@ -33,8 +33,12 @@ def menu(deps: Deps):
         while True:
             # - Ask for telegram username
 
-            telegram_username = await response.ask("2. Введи телеграм участника, чтобы я добавил его в чаты и каналы:")
-            telegram_username = telegram_username.replace("@", "").replace("t.me/", "").replace("https://t.me/", "")
+            answer = await response.ask("2. Введи телеграм участника, чтобы я добавил его в чаты и каналы:")
+
+            if answer == "/cancel":
+                return await response.ask()
+
+            telegram_username = answer.replace("@", "").replace("t.me/", "").replace("https://t.me/", "")
 
             # - Get user entity
 
@@ -48,7 +52,12 @@ def menu(deps: Deps):
                     f"t.me/{telegram_username}",
                     inline_keyboard=[["✅ Все верно!", "❌ Я ошибся"]],
                 )
+
+                if answer == "/cancel":
+                    return await response.ask()
+
                 await response.tell(f"t.me/{telegram_username}", mode="inplace")
+
                 if answer == "✅ Все верно!":
                     break
             else:
@@ -64,7 +73,7 @@ def menu(deps: Deps):
         #     chats=deps.config.telegram_ef_chats.values(),
         # )
 
-        await response.tell(f"Добавил везде, где нужно: {', '.join(deps.config.telegram_ef_chats.keys())}")
+        await response.tell(f"Добавил в чаты и каналы: {', '.join(deps.config.telegram_ef_chats.keys())}")
 
         # - 3. Get full name
 
@@ -73,6 +82,10 @@ def menu(deps: Deps):
             "3. Введи полное имя участника (на любом языке)",
             inline_keyboard=[[f"✏️ Взять из телеги: {telegram_full_name}"]],
         )
+
+        if answer == "/cancel":
+            return await response.ask()
+
         full_name = telegram_full_name if "✏️" in answer else answer
 
         # - 4. Create onboarding page in Notion
@@ -106,6 +119,8 @@ def menu(deps: Deps):
         await response.tell(
             "5. Убедись, чтобы он все сделал. Как сделает, Матвей увидит и напишет пост о новом участнике, а также поможет ему сделать его первый запрос. На этом онбординг будет завершен"
         )
+
+        await asyncio.sleep(1)
 
         return await response.ask()
 

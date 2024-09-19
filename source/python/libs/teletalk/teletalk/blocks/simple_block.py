@@ -7,6 +7,9 @@ from teletalk.models.block_message import BlockMessage
 from teletalk.models.response import Response
 
 
+default_message_callback = lambda response: "".join([message.text for message in response.block_messages])
+
+
 class SimpleBlock(Block):
     def __init__(
         self,
@@ -14,9 +17,7 @@ class SimpleBlock(Block):
         keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
         inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
         files: list[str] = [],
-        message_callback: Optional[Callable] = lambda response: "".join(
-            [message.text for message in response.block_messages]
-        ),
+        message_callback: Optional[Callable] = default_message_callback,
     ):
         self.update(
             text=text,
