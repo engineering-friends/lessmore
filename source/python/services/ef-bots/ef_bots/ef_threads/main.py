@@ -69,7 +69,11 @@ def main(env="test"):
                     for user in app.users:
                         if thread_id in user.thread_ids:
                             if user.current_thread_id != thread_id:
-                                await client.send_message(entity=user.id, message=title)
+                                await client.send_message(
+                                    entity=user.id,
+                                    message=f"{'—' * 15}\n[{title}](https://t.me/c/{str(deps.config.telegram_discussion_group)[4:]}/{thread_id}){'—' * 15}\n",
+                                )
+
                             await client.forward_messages(
                                 entity=user.id,
                                 messages=new_message.id,
