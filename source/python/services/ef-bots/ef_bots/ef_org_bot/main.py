@@ -150,11 +150,11 @@ def menu(deps: Deps):
     )
 
 
-def test():
-    async def main():
+def main(env="test"):
+    async def _main():
         # - Init deps
 
-        deps = Deps.load()
+        deps = Deps.load(env=env)
 
         # - Start user
 
@@ -171,8 +171,10 @@ def test():
             ],
         ).start_polling()
 
-    asyncio.run(main())
+    asyncio.run(_main())
 
 
 if __name__ == "__main__":
-    test()
+    import fire
+
+    fire.Fire(main)

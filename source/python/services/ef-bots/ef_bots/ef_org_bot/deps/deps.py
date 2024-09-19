@@ -21,16 +21,16 @@ class Deps:
     telegram_user_client: TelegramClient
 
     @staticmethod
-    def load(log_level="DEBUG") -> "Deps":
+    def load(log_level="DEBUG", env: str = "test") -> "Deps":
         # - Setup loguru
 
         setup_json_loguru(level=log_level)
 
         # - Init config
 
-        config = Config(**read_config([f"{str(Path(__file__).parent)}/config/config.yaml"]))
+        config = Config(**read_config([f"{str(Path(__file__).parent)}/config/config.{env}.yaml"]))
 
-        local_files_dir = Path(__file__).parent / "../data/dynamic"
+        local_files_dir = Path(__file__).parent / f"../data/dynamic/{env}"
 
         return Deps(
             config=config,
