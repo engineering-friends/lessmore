@@ -35,6 +35,7 @@ class App:
     def __init__(
         self,
         bot: Bot | str,
+        initial_starters: list[Callable] = [],
         message_starter: Optional[Callable] = None,
         command_starters: dict[str, Callable] = {},
         dispatcher: Optional[Callable] = None,  # dispatcher is like a low-level `Talk`
@@ -50,6 +51,7 @@ class App:
         else:
             raise Exception("Unknown bot type")
 
+        self.initial_starters = initial_starters
         self.message_starter = message_starter
         self.command_starters = command_starters
         self.dispatcher = dispatcher or TeletalkDispatcher(
@@ -69,7 +71,7 @@ class App:
     async def start_new_talk(
         self,
         starter: Callable,
-        initial_response: Optional[Response] = None,
+        initial_response: Response,
         parent_talk: Optional[Talk] = None,
     ):
         # - Create the talk
@@ -178,6 +180,11 @@ class App:
 
         if self.commands:
             await self.bot.set_my_commands(self.commands)
+
+        # - Run initial starters
+
+        for starter in self.initial_starters:
+            await self.dispatcher(Response(starter=starter))
 
         # - Start polling
 

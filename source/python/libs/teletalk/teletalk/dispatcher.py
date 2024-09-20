@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, Optional
 
 from aiogram.types import CallbackQuery, Message
 from loguru import logger
@@ -36,7 +36,7 @@ class Dispatcher:
 
     async def __call__(
         self,
-        response: Response,
+        response: Optional[Response] = None,
     ) -> None:
         # - If callback_query
 
@@ -150,3 +150,8 @@ class Dispatcher:
             # -- If focused `Talk` found: send the event to the `Talk`
 
             await focused_talk.receive_response(response=buffered_response)
+        elif response.starter:
+            await self.app.start_new_talk(
+                starter=response.starter,
+                initial_response=response,
+            )

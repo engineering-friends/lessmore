@@ -19,6 +19,7 @@ class Response:
     callback_id: str = ""
     block_messages: list[BlockMessage] = field(default_factory=list)
     external_payload: dict = field(default_factory=dict)
+    starter: Optional[Callable] = None
 
     # - Talk
 
