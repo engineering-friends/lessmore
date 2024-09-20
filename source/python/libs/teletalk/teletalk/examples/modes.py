@@ -7,10 +7,11 @@ from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 
 
-async def starter(response: Response, chat_id: int):
+async def starter(response: Response, chat_id: int = 0):
     # - Set chat id
 
-    response.chat_id = chat_id
+    if chat_id:
+        response.chat_id = chat_id
 
     # - Test create_new and inplace modes
 
@@ -66,6 +67,7 @@ def test():
         App(
             bot=TestDeps.load().config.telegram_bot_token,
             initial_starters=[starter],
+            message_starter=starter,
         ).start_polling()
     )
 

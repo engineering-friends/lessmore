@@ -8,10 +8,10 @@ from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 
 
-async def starter(response: Response, chat_id: int):
+async def starter(response: Response, chat_id: int = 0):
     # - Set chat id
-
-    response.chat_id = chat_id
+    if chat_id:
+        response.chat_id = chat_id
 
     # - Test text messages
 
@@ -49,6 +49,7 @@ def test():
         App(
             bot=deps.config.telegram_bot_token,
             initial_starters=[partial(starter, chat_id=deps.config.telegram_test_chat_id)],
+            message_starter=starter,
         ).start_polling()
     )
 

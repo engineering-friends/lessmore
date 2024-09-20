@@ -17,8 +17,9 @@ async def spawn(response: Response):
     return await response.ask(response, mode="inplace")
 
 
-async def starter(response: Response, chat_id: int):
-    response.chat_id = chat_id
+async def starter(response: Response, chat_id: int = 0):
+    if chat_id:
+        response.chat_id = chat_id
     return await response.ask(
         SimpleBlock(
             "Click to spawn another talk",
@@ -38,6 +39,7 @@ def test():
         App(
             bot=deps.config.telegram_bot_token,
             initial_starters=[partial(starter, chat_id=deps.config.telegram_test_chat_id)],
+            message_starter=starter,
         ).start_polling()
     )
 

@@ -29,8 +29,9 @@ class TwoButtons(Block):
         )
 
 
-async def starter(response: Response, chat_id: int):
-    response.chat_id = chat_id
+async def starter(response: Response, chat_id: int = 0):
+    if chat_id:
+        response.chat_id = chat_id
 
     async def on_click(response: Response):
         response.prompt_sub_block.text += random.choice(["!", "1"])
@@ -52,6 +53,7 @@ def test():
         App(
             bot=deps.config.telegram_bot_token,
             initial_starters=[partial(starter, chat_id=deps.config.telegram_test_chat_id)],
+            message_starter=starter,
         ).start_polling()
     )
 
