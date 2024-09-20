@@ -128,9 +128,17 @@ def main(env="test"):
                                 message=f"[{title}](https://t.me/c/{str(deps.config.telegram_discussion_group)[4:]}/{new_message.id}?thread={thread_id})",
                             )
                             user.thread_id_by_message_id[message.id] = thread_id
-
+                            user.current_thread_id_message_id = message.id
                             user.current_thread_id = thread_id
 
+                        # todo maybe: update message text to reference LAST message in the thread [@marklidenberg]
+                        # else:
+                        #     if user.current_thread_id_message_id:
+                        #         await client.edit_message(
+                        #             message=user.current_thread_id_message_id,
+                        #             entity=user.id,
+                        #             text=f"[{title}](https://t.me/c/{str(deps.config.telegram_discussion_group)[4:]}/{new_message.id}?thread={thread_id})",
+                        #         )
                         message = await client.forward_messages(
                             entity=user.id,
                             messages=new_message.id,

@@ -10,6 +10,7 @@ from rocksdict import Rdict
 class User:
     id: int
     current_thread_id: int = 0
+    current_thread_id_message_id: int = 0
     thread_ids: list[int] = field(default_factory=list)
     thread_id_by_message_id: dict[int, int] = field(default_factory=dict)
 
