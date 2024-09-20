@@ -51,4 +51,5 @@ dependencies = [
     "dacite>=1.8.1",
     "better-exceptions>=0.3.3",
     "python-box>=7.2.0",
+    "rocksdict>=0.3.23",
 ]
