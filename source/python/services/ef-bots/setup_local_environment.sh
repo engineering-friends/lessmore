@@ -1,3 +1,6 @@
+# - Go to the service directory
+
+cd ${0%/*}
 
 # - Deactivate virtualenv if active
 
@@ -12,4 +15,4 @@ source $HOME/.cargo/env
 
 uv sync
 
-echo "Installed local environment to `.venv/` directory"
+echo "Installed local environment to .venv/ directory"
