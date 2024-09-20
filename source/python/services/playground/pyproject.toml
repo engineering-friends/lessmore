@@ -48,4 +48,5 @@ dependencies = [
     "aiogram>=3",
     "python-telegram-bot>=21.5",
     "pymaybe>=0.1.6",
+    "rocksdict>=0.3.23",
 ]
