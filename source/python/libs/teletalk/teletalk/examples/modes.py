@@ -11,8 +11,8 @@ async def starter(response: Response):
     # - Test create_new and inplace modes
 
     await response.tell("[Test: Create new mode]")
-    await response.tell("Message 1", mode="create_new")
-    await response.tell("Message 2", mode="create_new")
+    await response.tell("Message 1", mode="create_new")  # default
+    await response.tell("Message 2", mode="create_new")  # default
 
     # - Test inplace mode
 
