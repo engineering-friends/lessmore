@@ -1,6 +1,7 @@
 import asyncio
 
 from telethon import TelegramClient
+from telethon_playground.deps.deps import Deps
 
 
 def test():
@@ -19,8 +20,8 @@ def test():
         # - Remove all "saved messages"
 
         async for message in client.iter_messages(entity=me):
-            print(message.text)
-            break
+            await client.delete_messages(entity=me, message_ids=[message.id])
+            await asyncio.sleep(0.5)
 
     asyncio.run(main())
 
