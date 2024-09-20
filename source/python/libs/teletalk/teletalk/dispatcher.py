@@ -45,6 +45,9 @@ class Dispatcher:
 
             talk = None
             for _talk in self.app.talks:
+                if not _talk.active_page:
+                    continue
+
                 for block in _talk.active_page.blocks:
                     for node, parent in block.iter_nodes():
                         if node.query_callbacks:
@@ -111,7 +114,7 @@ class Dispatcher:
                 block_messages=[
                     BlockMessage(
                         chat_id=chat_id,
-                        text="\n".join([message.text for message in buffer]),
+                        text="\n".join([message.text or "" for message in buffer]),
                         messages=buffer,
                     )
                 ],

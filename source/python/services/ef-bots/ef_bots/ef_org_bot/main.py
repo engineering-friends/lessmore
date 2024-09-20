@@ -16,7 +16,7 @@ def menu(deps: Deps):
 
         answer = await response.ask(
             "1. Для начала тебе нужно пошарить участнику доступ в Notion: [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
-            inline_keyboard=[["✅ Готово"]],
+            inline_keyboard=[["✅ Доступ есть"]],
         )
 
         # - 2. Add to all telegram ecosystem: ef channel, ef random coffee,
@@ -62,7 +62,7 @@ def menu(deps: Deps):
                 )
                 await response.tell(f"Добавил в чаты и каналы: {', '.join(deps.config.telegram_ef_chats.keys())}")
             except Exception as e:
-                logger.error("Failed to add user to chats", error=e)
+                logger.exception("Failed to add user to chats", error=e)
                 await response.tell(f"Не удалось добавить пользователя в часть чатов и каналов. Ошибка: {str(e)}")
 
         # - 3. Get full name
@@ -98,7 +98,7 @@ def menu(deps: Deps):
         await asyncio.sleep(0.5)
 
         await response.tell(
-            f"Твоя страница онбординга: [онбординг {full_name}]({new_pages[0]['url']}). Заполни ее, там все расписано!"
+            f"Твоя страница онбординга! Заполни ее, там все расписано\n\n[🏄‍♂️ Онбординг в EF для {full_name}]({new_pages[0]['url']})"
         )
 
         await asyncio.sleep(1)
@@ -118,7 +118,7 @@ def menu(deps: Deps):
         except CancelError:
             return await response.ask()
         except Exception as e:
-            logger.error("Failed to start onboarding", error=e)
+            logger.exception("Failed to start onboarding", error=e)
             await response.tell(f"Ошибка во время процесса онбординга: {str(e)}")
             return await response.ask()
 

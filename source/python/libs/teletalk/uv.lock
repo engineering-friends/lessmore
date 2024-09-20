@@ -269,6 +269,18 @@ wheels = [
 ]
 
 [[package]]
+name = "better-exceptions"
+version = "0.3.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/26/d8/30b745b965765c08ee132fd590fca46c31296e8f1a606de0c53cc6b5a68f/better_exceptions-0.3.3.tar.gz", hash = "sha256:e4e6bc18444d5f04e6e894b10381e5e921d3d544240418162c7db57e9eb3453b", size = 30156 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ed/50/abf6850135f1e95d321a525d0a36e05255a039b3fc118b7d88413e8a8207/better_exceptions-0.3.3-py3-none-any.whl", hash = "sha256:9c70b1c61d5a179b84cd2c9d62c3324b667d74286207343645ed4306fdaad976", size = 11857 },
+]
+
+[[package]]
 name = "black"
 version = "24.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1901,103 +1913,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f5/52/0763d1d976d5c262df53ddda8d8d4719eedf9594d046f117c25a27261a19/platformdirs-4.2.2.tar.gz", hash = "sha256:38b7b51f512eed9e84a22788b4bce1de17c0adb134d6becb09836e37d8654cd3", size = 20916 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl", hash = "sha256:2d7a1657e36a80ea911db832a8a6ece5ee53d8de21edd5cc5879af6530b1bfee", size = 18146 },
-]
-
-[[package]]
-name = "playground"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "aioboto3" },
-    { name = "aiobotocore" },
-    { name = "aiogram" },
-    { name = "anyconfig" },
-    { name = "beautifulsoup4" },
-    { name = "code2flow" },
-    { name = "diskcache" },
-    { name = "faiss-cpu" },
-    { name = "fire" },
-    { name = "google-api-python-client" },
-    { name = "google-auth" },
-    { name = "google-auth-httplib2" },
-    { name = "google-auth-oauthlib" },
-    { name = "imgurpython" },
-    { name = "inline-snapshot" },
-    { name = "keyboard" },
-    { name = "langchain" },
-    { name = "langchain-openai" },
-    { name = "langgraph" },
-    { name = "loguru" },
-    { name = "memray" },
-    { name = "nltk" },
-    { name = "notion-client" },
-    { name = "openai" },
-    { name = "openai-whisper" },
-    { name = "pandas" },
-    { name = "pendulum" },
-    { name = "pillow" },
-    { name = "prefect" },
-    { name = "pyan3" },
-    { name = "pycallgraph2" },
-    { name = "pydantic-settings" },
-    { name = "pydub" },
-    { name = "pymaybe" },
-    { name = "pynput" },
-    { name = "pytest" },
-    { name = "python-benedict", extra = ["all"] },
-    { name = "python-telegram-bot" },
-    { name = "pytube" },
-    { name = "spacy" },
-    { name = "telethon" },
-    { name = "toml" },
-    { name = "yadisk" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "aioboto3", specifier = ">=13.1.0,<14" },
-    { name = "aiobotocore", specifier = ">=2.13.1,<3" },
-    { name = "aiogram", specifier = ">=3" },
-    { name = "anyconfig", extras = ["dotenv"], specifier = ">=0.14.0,<0.15" },
-    { name = "beautifulsoup4", specifier = ">=4.12.3,<5" },
-    { name = "code2flow", specifier = ">=2.5.1,<3" },
-    { name = "diskcache", specifier = ">=5.6.3,<6" },
-    { name = "faiss-cpu", specifier = ">=1.8.0,<2" },
-    { name = "fire", specifier = ">=0.6.0,<0.7" },
-    { name = "google-api-python-client", specifier = ">=2.136.0,<3" },
-    { name = "google-auth", specifier = ">=2.34.0" },
-    { name = "google-auth-httplib2", specifier = ">=0.2.0" },
-    { name = "google-auth-oauthlib", specifier = ">=1.2.1" },
-    { name = "imgurpython", specifier = ">=1.1.7,<2" },
-    { name = "inline-snapshot", specifier = "==0.8.0" },
-    { name = "keyboard", specifier = ">=0.13.5,<0.14" },
-    { name = "langchain", specifier = ">=0.2,<0.3" },
-    { name = "langchain-openai", specifier = ">=0.1.7,<0.2" },
-    { name = "langgraph", specifier = ">=0.0.55,<0.1" },
-    { name = "loguru", specifier = ">=0.7.2,<0.8" },
-    { name = "memray", specifier = ">=1.12.0,<2" },
-    { name = "nltk", specifier = ">=3.8.1,<4" },
-    { name = "notion-client", specifier = ">=2.2.1,<3" },
-    { name = "openai", specifier = ">=1.30.1,<2" },
-    { name = "openai-whisper", git = "https://github.com/openai/whisper.git" },
-    { name = "pandas", specifier = ">=2.2.2,<3" },
-    { name = "pendulum", specifier = ">=3.0.0,<4" },
-    { name = "pillow", specifier = ">=10.4.0,<11" },
-    { name = "prefect", specifier = ">=2.19.8,<3" },
-    { name = "pyan3", specifier = ">=1.2.0,<2" },
-    { name = "pycallgraph2", specifier = ">=1.1.3,<2" },
-    { name = "pydantic-settings", specifier = ">=2.2.1,<3" },
-    { name = "pydub", specifier = ">=0.25.1,<0.26" },
-    { name = "pymaybe", specifier = ">=0.1.6" },
-    { name = "pynput", specifier = ">=1.7.7,<2" },
-    { name = "pytest", specifier = ">=8.2.2,<9" },
-    { name = "python-benedict", extras = ["all"], specifier = ">=0.33.2,<0.34" },
-    { name = "python-telegram-bot", specifier = ">=21.5" },
-    { name = "pytube", specifier = ">=15.0.0,<16" },
-    { name = "spacy", specifier = ">=3.7.5,<4" },
-    { name = "telethon", specifier = ">=1.36.0,<2" },
-    { name = "toml", specifier = ">=0.10.2,<0.11" },
-    { name = "yadisk", specifier = ">=2.1.0,<3" },
 ]
 
 [[package]]
@@ -5250,6 +5165,105 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/cc/67/b4dc53ce8de52cc9c3d75ffd93477b802659db093f97c8b6d63c917e5616/tbb-2021.13.1-py2.py3-none-manylinux1_x86_64.whl", hash = "sha256:d916359dc685579d09e4b344241550afc1cc034f7f5ec7234c258b6680912d70", size = 5386608 },
     { url = "https://files.pythonhosted.org/packages/fb/8a/5062b00c378c051e26507e5eca8d3b5c91ed63f8a2139f6f0f422be84b02/tbb-2021.13.1-py3-none-win32.whl", hash = "sha256:00f5e5a70051650ddd0ab6247c0549521968339ec21002e475cd23b1cbf46d66", size = 248994 },
     { url = "https://files.pythonhosted.org/packages/9b/24/84ce997e8ae6296168a74d0d9c4dde572d90fb23fd7c0b219c30ff71e00e/tbb-2021.13.1-py3-none-win_amd64.whl", hash = "sha256:cbf024b2463fdab3ebe3fa6ff453026358e6b903839c80d647e08ad6d0796ee9", size = 286908 },
+]
+
+[[package]]
+name = "teletalk"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "aioboto3" },
+    { name = "aiobotocore" },
+    { name = "aiogram" },
+    { name = "anyconfig" },
+    { name = "beautifulsoup4" },
+    { name = "better-exceptions" },
+    { name = "code2flow" },
+    { name = "diskcache" },
+    { name = "faiss-cpu" },
+    { name = "fire" },
+    { name = "google-api-python-client" },
+    { name = "google-auth" },
+    { name = "google-auth-httplib2" },
+    { name = "google-auth-oauthlib" },
+    { name = "imgurpython" },
+    { name = "inline-snapshot" },
+    { name = "keyboard" },
+    { name = "langchain" },
+    { name = "langchain-openai" },
+    { name = "langgraph" },
+    { name = "loguru" },
+    { name = "memray" },
+    { name = "nltk" },
+    { name = "notion-client" },
+    { name = "openai" },
+    { name = "openai-whisper" },
+    { name = "pandas" },
+    { name = "pendulum" },
+    { name = "pillow" },
+    { name = "prefect" },
+    { name = "pyan3" },
+    { name = "pycallgraph2" },
+    { name = "pydantic-settings" },
+    { name = "pydub" },
+    { name = "pymaybe" },
+    { name = "pynput" },
+    { name = "pytest" },
+    { name = "python-benedict", extra = ["all"] },
+    { name = "python-telegram-bot" },
+    { name = "pytube" },
+    { name = "spacy" },
+    { name = "telethon" },
+    { name = "toml" },
+    { name = "yadisk" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "aioboto3", specifier = ">=13.1.0,<14" },
+    { name = "aiobotocore", specifier = ">=2.13.1,<3" },
+    { name = "aiogram", specifier = ">=3" },
+    { name = "anyconfig", extras = ["dotenv"], specifier = ">=0.14.0,<0.15" },
+    { name = "beautifulsoup4", specifier = ">=4.12.3,<5" },
+    { name = "better-exceptions", specifier = ">=0.3.3" },
+    { name = "code2flow", specifier = ">=2.5.1,<3" },
+    { name = "diskcache", specifier = ">=5.6.3,<6" },
+    { name = "faiss-cpu", specifier = ">=1.8.0,<2" },
+    { name = "fire", specifier = ">=0.6.0,<0.7" },
+    { name = "google-api-python-client", specifier = ">=2.136.0,<3" },
+    { name = "google-auth", specifier = ">=2.34.0" },
+    { name = "google-auth-httplib2", specifier = ">=0.2.0" },
+    { name = "google-auth-oauthlib", specifier = ">=1.2.1" },
+    { name = "imgurpython", specifier = ">=1.1.7,<2" },
+    { name = "inline-snapshot", specifier = "==0.8.0" },
+    { name = "keyboard", specifier = ">=0.13.5,<0.14" },
+    { name = "langchain", specifier = ">=0.2,<0.3" },
+    { name = "langchain-openai", specifier = ">=0.1.7,<0.2" },
+    { name = "langgraph", specifier = ">=0.0.55,<0.1" },
+    { name = "loguru", specifier = ">=0.7.2,<0.8" },
+    { name = "memray", specifier = ">=1.12.0,<2" },
+    { name = "nltk", specifier = ">=3.8.1,<4" },
+    { name = "notion-client", specifier = ">=2.2.1,<3" },
+    { name = "openai", specifier = ">=1.30.1,<2" },
+    { name = "openai-whisper", git = "https://github.com/openai/whisper.git" },
+    { name = "pandas", specifier = ">=2.2.2,<3" },
+    { name = "pendulum", specifier = ">=3.0.0,<4" },
+    { name = "pillow", specifier = ">=10.4.0,<11" },
+    { name = "prefect", specifier = ">=2.19.8,<3" },
+    { name = "pyan3", specifier = ">=1.2.0,<2" },
+    { name = "pycallgraph2", specifier = ">=1.1.3,<2" },
+    { name = "pydantic-settings", specifier = ">=2.2.1,<3" },
+    { name = "pydub", specifier = ">=0.25.1,<0.26" },
+    { name = "pymaybe", specifier = ">=0.1.6" },
+    { name = "pynput", specifier = ">=1.7.7,<2" },
+    { name = "pytest", specifier = ">=8.2.2,<9" },
+    { name = "python-benedict", extras = ["all"], specifier = ">=0.33.2,<0.34" },
+    { name = "python-telegram-bot", specifier = ">=21.5" },
+    { name = "pytube", specifier = ">=15.0.0,<16" },
+    { name = "spacy", specifier = ">=3.7.5,<4" },
+    { name = "telethon", specifier = ">=1.36.0,<2" },
+    { name = "toml", specifier = ">=0.10.2,<0.11" },
+    { name = "yadisk", specifier = ">=2.1.0,<3" },
 ]
 
 [[package]]
