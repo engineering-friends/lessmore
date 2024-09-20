@@ -2,6 +2,8 @@
 
 EF Org Bot
 
+Run it to see what it does.
+
 # Configs 
 
 Set test/prod configs in `deps/config/config.test.yaml` and `deps/config/config.prod.yaml`
