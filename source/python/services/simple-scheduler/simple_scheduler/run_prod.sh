@@ -32,5 +32,6 @@ export PYTHONPATH="$MONOREPO_PATH/source/python/services/playground/telethon-pla
 # - Run the service in screen
 
 screen -X -S simple_scheduler quit
-screen -S simple_scheduler -L -Logfile logs/prod.log uv run python main.py --env prod # `ctrl+a d` to detach
+#screen -S simple_scheduler -L -Logfile logs/prod.log uv run python main.py --env prod # `ctrl+a d` to detach
+uv run python main.py --env prod # `ctrl+a d` to detach
 #screen -S ef_bot_org uv run python main.py # macos
