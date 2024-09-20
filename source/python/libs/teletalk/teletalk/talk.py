@@ -2,6 +2,7 @@ import asyncio
 
 from typing import TYPE_CHECKING, Any, Callable, Coroutine, List, Literal, Optional
 
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import InlineKeyboardMarkup, LinkPreviewOptions, Message, ReplyKeyboardMarkup
 from lessmore.utils.asynchronous.gather_nested import gather_nested
 from lessmore.utils.functional.skip_duplicates import skip_duplicates
@@ -9,7 +10,7 @@ from loguru import logger
 from more_itertools import last
 from pymaybe import maybe
 from telegram.helpers import escape_markdown
-from teletalk.blocks.simple_block import SimpleBlock, default_message_callback
+from teletalk.blocks.simple_block import SimpleBlock, build_default_message_callback
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.page import Page
@@ -56,17 +57,25 @@ class Talk:
 
         self.input_channel = asyncio.Queue()  # a queue of input `Response` objects
 
+    # buttons -> almost always suppress
+    # but sometimes do not supress
+
     async def ask(
         self,
         prompt: str | Block | Page | Response = "",
         files: Optional[list[str]] = None,
         keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
         inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
-        message_callback: Optional[Callable] = default_message_callback,
+        message_callback: Optional[Callable | str] = "default",
         mode: Literal["inplace", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
         parent_response: Optional[Response] = None,
     ) -> Any:
+        # - Define message callback:
+
+        if message_callback == "default":
+            message_callback = build_default_message_callback(supress_messages=bool(inline_keyboard))
+
         # - Build the `Page` from the prompt data
 
         if isinstance(prompt, str):
@@ -236,14 +245,23 @@ class Talk:
 
         if old_message:
             if block_message:
-                message = await self.app.bot.edit_message_text(
-                    chat_id=block_message.chat_id,
-                    message_id=old_message.message_id,
-                    text=block_message.text,
-                    reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
-                    parse_mode="Markdown",
-                    link_preview_options=LinkPreviewOptions(is_disabled=False),
-                )
+                try:
+                    message = await self.app.bot.edit_message_text(
+                        chat_id=block_message.chat_id,
+                        message_id=old_message.message_id,
+                        text=block_message.text,
+                        reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
+                        parse_mode="Markdown",
+                        link_preview_options=LinkPreviewOptions(is_disabled=False),
+                    )
+                except TelegramBadRequest as e:
+                    if "Bad Request: message is not modified" in str(e):
+                        return
+                    else:
+                        raise
+                except Exception as e:
+                    logger.exception("Failed to edit message", error=e)
+                    raise
             else:
                 message = await self.app.bot.delete_message(
                     chat_id=old_message.chat.id, message_id=old_message.message_id

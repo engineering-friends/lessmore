@@ -5,7 +5,7 @@ from pathlib import Path
 
 import openai
 
-from ef_bots.ef_org_bot.deps.config.config import Config
+from ef_bots.ef_threads.deps.config.config import Config
 from lessmore.utils.enriched_notion_client.enriched_notion_async_client import EnrichedNotionAsyncClient
 from lessmore.utils.file_primitives.ensure_path import ensure_path
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
@@ -17,7 +17,7 @@ from telethon import TelegramClient
 class Deps:
     config: Config
     local_files_dir: str
-    telegram_bot_client: TelegramClient
+    telegram_bot_client: TelegramClient  # not used, keep for now just in case  we need it in the future
     telegram_user_client: TelegramClient
 
     @staticmethod

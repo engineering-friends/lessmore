@@ -3,12 +3,12 @@ import asyncio
 from typing import Callable, Optional, Tuple
 
 from teletalk.app import App
-from teletalk.blocks.menu import Menu, go_back, go_forward, go_to_root
+from teletalk.blocks.simple_block import SimpleBlock, go_back, go_forward, go_to_root
 from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 
 
-def gen_level(name: str, sub_level: Optional[Menu] = None):
+def gen_level(name: str, sub_level: Optional[SimpleBlock] = None):
     # - Build grid
 
     grid = []
@@ -27,7 +27,7 @@ def gen_level(name: str, sub_level: Optional[Menu] = None):
 
     # - Return menu
 
-    return Menu(text=name, grid=grid)
+    return SimpleBlock(text=name, inline_keyboard=grid)
 
 
 level_3 = gen_level("Level 3")

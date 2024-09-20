@@ -17,7 +17,7 @@ def write_file(
     # - Ensure path
 
     if ensure_path:
-        os.makedirs(os.path.dirname(str(filename)), exist_ok=True)
+        os.makedirs(os.path.dirname(os.path.abspath(str(filename))), exist_ok=True)
 
     # - Write file
 

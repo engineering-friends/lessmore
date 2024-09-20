@@ -1,19 +1,12 @@
 import asyncio
-import random
-import textwrap
-
-from typing import Callable, Optional, Tuple
 
 from aiogram.types import BotCommand
-from diskcache.core import full_name
 from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
 from ef_bots.ef_org_bot.deps.deps import Deps
 from loguru import logger
 from teletalk.app import App
-from teletalk.blocks.menu import Menu, go_back, go_forward, go_to_root
-from teletalk.blocks.simple_block import SimpleBlock
+from teletalk.blocks.simple_block import CancelError, SimpleBlock, build_default_message_callback
 from teletalk.models.response import Response
-from telethon.tl.functions.channels import InviteToChannelRequest
 from telethon.tl.types import User
 
 
@@ -21,20 +14,10 @@ def menu(deps: Deps):
     async def start_onboarding(response: Response):
         # - 1. Notion access
 
-        async def cancel_callback(response: Response):
-            if response.block_messages[-1].text == "/cancel":
-                return "/cancel"
-            elif response.block_messages[-1].text:
-                return await response.ask(mode="inplace")  # ask again, this won't do
-
         answer = await response.ask(
             "1. Для начала тебе нужно пошарить участнику доступ в Notion: [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
-            inline_keyboard=[["✅ Готово"]],
-            message_callback=cancel_callback,
+            inline_keyboard=[["✅ Доступ есть"]],
         )
-
-        if answer == "/cancel":
-            return await response.ask()
 
         # - 2. Add to all telegram ecosystem: ef channel, ef random coffee,
 
@@ -42,9 +25,6 @@ def menu(deps: Deps):
             # - Ask for telegram username
 
             answer = await response.ask("2. Введи телеграм участника, чтобы я добавил его в чаты и каналы:")
-
-            if answer == "/cancel":
-                return await response.ask()
 
             telegram_username = answer.replace("@", "").replace("t.me/", "").replace("https://t.me/", "")
 
@@ -61,51 +41,39 @@ def menu(deps: Deps):
                     inline_keyboard=[["✅ Все верно", "❌ Я ошибся"]],
                 )
 
-                if answer == "/cancel":
-                    return await response.ask()
-
-                await response.tell(f"t.me/{telegram_username}", mode="inplace")
-
                 if answer == "✅ Все верно":
                     break
             else:
                 await response.tell("Не нашел такого пользователя")
-
-        # - Add to all telegram ecosystem: ef channel, ef random coffee
 
         user = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
 
         answer = await response.ask(
             "Добавить пользователя в наши чаты и каналы?",
             inline_keyboard=[["✅ Да", "❌ Нет"]],
-            message_callback=cancel_callback,
         )
-
-        if answer == "/cancel":
-            return await response.ask()
 
         if answer == "✅ Да":
             try:
                 await add_user_to_chats(
                     telegram_client=deps.telegram_user_client,
                     username=telegram_username,
-                    chats=deps.config.telegram_ef_chats.values(),
+                    chats=list(deps.config.telegram_ef_chats.values()),
                 )
                 await response.tell(f"Добавил в чаты и каналы: {', '.join(deps.config.telegram_ef_chats.keys())}")
             except Exception as e:
-                logger.error("Failed to add user to chats", error=e)
+                logger.exception("Failed to add user to chats", error=e)
                 await response.tell(f"Не удалось добавить пользователя в часть чатов и каналов. Ошибка: {str(e)}")
 
         # - 3. Get full name
 
         telegram_full_name = f"{user.first_name} {user.last_name}"
-        answer = await response.ask(
-            "3. Введи полное имя участника (на любом языке)",
-            inline_keyboard=[[f"✏️ Взять из телеги: {telegram_full_name}"]],
-        )
 
-        if answer == "/cancel":
-            return await response.ask()
+        answer = await response.ask(
+            "3. Введи полное имя участника на любом языке",
+            inline_keyboard=[[f"✏️ Взять из телеги: {telegram_full_name}"]],
+            message_callback=build_default_message_callback(supress_messages=False),
+        )
 
         full_name = telegram_full_name if "✏️" in answer else answer
 
@@ -113,7 +81,7 @@ def menu(deps: Deps):
 
         # -- Prompt
 
-        await response.tell("4. Создаю страницу онбординга в Notion, если ее еще нет. Перешли ее участнику")
+        await response.tell("4. Перешли страницу онбординга участнику:")
 
         # -- Create page
 
@@ -130,7 +98,7 @@ def menu(deps: Deps):
         await asyncio.sleep(0.5)
 
         await response.tell(
-            f"Твоя страница онбординга: [онбординг {full_name}]({new_pages[0]['url']}). Заполни ее, там все расписано!"
+            f"Твоя страница онбординга! Заполни ее, там все расписано\n\n[🏄‍♂️ Онбординг в EF для {full_name}]({new_pages[0]['url']})"
         )
 
         await asyncio.sleep(1)
@@ -144,22 +112,33 @@ def menu(deps: Deps):
 
         return await response.ask()
 
-    return Menu(
+    async def safe_start_onboarding(response: Response):
+        try:
+            return await start_onboarding(response)
+        except CancelError:
+            return await response.ask()
+        except Exception as e:
+            logger.exception("Failed to start onboarding", error=e)
+            await response.tell(f"Ошибка во время процесса онбординга: {str(e)}")
+            return await response.ask()
+
+    return SimpleBlock(
         "⚙️ *Выбери действие*",
-        grid=[
-            [("Заонбордить участника", start_onboarding)],
+        inline_keyboard=[
+            [("Заонбордить участника", safe_start_onboarding)],
             [("Notion EF Org", "https://www.notion.so/Org-48f403a0d3014dc4972f08060031308e?pvs=4")],
             [("Стратегия и задачи", "https://www.notion.so/f3f7637c9a1d4733a4d90b33796cf78e?pvs=4")],
             [("Тексты кандидатам", "https://www.notion.so/EF-f1c2d3aeceb04272a61beb6c08c92b47?pvs=4")],
         ],
+        message_callback=lambda response: response.ask(mode="inplace"),
     )
 
 
-def test():
-    async def main():
+def main(env="test"):
+    async def _main():
         # - Init deps
 
-        deps = Deps.load()
+        deps = Deps.load(env=env)
 
         # - Start user
 
@@ -176,8 +155,10 @@ def test():
             ],
         ).start_polling()
 
-    asyncio.run(main())
+    asyncio.run(_main())
 
 
 if __name__ == "__main__":
-    test()
+    import fire
+
+    fire.Fire(main)

@@ -269,6 +269,18 @@ wheels = [
 ]
 
 [[package]]
+name = "better-exceptions"
+version = "0.3.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/26/d8/30b745b965765c08ee132fd590fca46c31296e8f1a606de0c53cc6b5a68f/better_exceptions-0.3.3.tar.gz", hash = "sha256:e4e6bc18444d5f04e6e894b10381e5e921d3d544240418162c7db57e9eb3453b", size = 30156 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ed/50/abf6850135f1e95d321a525d0a36e05255a039b3fc118b7d88413e8a8207/better_exceptions-0.3.3-py3-none-any.whl", hash = "sha256:9c70b1c61d5a179b84cd2c9d62c3324b667d74286207343645ed4306fdaad976", size = 11857 },
+]
+
+[[package]]
 name = "black"
 version = "24.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -536,6 +548,14 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/8a/77/70f8b77c4db30e5765092033e283aadd51ad78364f10cd2d331a1f158fcb/cymem-2.0.8-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a2cc38930ff5409f8d61f69a01e39ecb185c175785a1c9bec13bcd3ac8a614ba", size = 44170 },
     { url = "https://files.pythonhosted.org/packages/3b/59/1cc0df0f8a5fb90412cfc7eb084ceeb079f4349232c422e10e502eb255c3/cymem-2.0.8-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7bf49e3ea2c441f7b7848d5c61b50803e8cbd49541a70bb41ad22fce76d87603", size = 46653 },
     { url = "https://files.pythonhosted.org/packages/35/e0/34b11adc80502f0760ce2892dfdfcd8a7f450acd3147156c98620cb4071d/cymem-2.0.8-cp312-cp312-win_amd64.whl", hash = "sha256:ecd12e3bacf3eed5486e4cd8ede3c12da66ee0e0a9d0ae046962bc2bb503acef", size = 39052 },
+]
+
+[[package]]
+name = "dacite"
+version = "1.8.1"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/21/0f/cf0943f4f55f0fbc7c6bd60caf1343061dff818b02af5a0d444e473bb78d/dacite-1.8.1-py3-none-any.whl", hash = "sha256:cc31ad6fdea1f49962ea42db9421772afe01ac5442380d9a99fcf3d188c61afe", size = 14309 },
 ]
 
 [[package]]
@@ -1913,7 +1933,9 @@ dependencies = [
     { name = "aiogram" },
     { name = "anyconfig" },
     { name = "beautifulsoup4" },
+    { name = "better-exceptions" },
     { name = "code2flow" },
+    { name = "dacite" },
     { name = "diskcache" },
     { name = "faiss-cpu" },
     { name = "fire" },
@@ -1960,7 +1982,9 @@ requires-dist = [
     { name = "aiogram", specifier = ">=3" },
     { name = "anyconfig", extras = ["dotenv"], specifier = ">=0.14.0,<0.15" },
     { name = "beautifulsoup4", specifier = ">=4.12.3,<5" },
+    { name = "better-exceptions", specifier = ">=0.3.3" },
     { name = "code2flow", specifier = ">=2.5.1,<3" },
+    { name = "dacite", specifier = ">=1.8.1" },
     { name = "diskcache", specifier = ">=5.6.3,<6" },
     { name = "faiss-cpu", specifier = ">=1.8.0,<2" },
     { name = "fire", specifier = ">=0.6.0,<0.7" },
