@@ -10,7 +10,7 @@ from teletalk.models.response import Response
 from telethon.tl.types import User
 
 
-def menu(deps: Deps):
+def build_main_menu(deps: Deps):
     async def start_onboarding(response: Response):
         # - 1. Notion access
 
@@ -147,7 +147,7 @@ def main(env="test"):
 
         await App(
             bot=deps.config.telegram_bot_token,
-            command_starters={"/start": lambda response: response.ask(menu(deps))},
+            command_starters={"/start": lambda response: response.ask(build_main_menu(deps))},
             commands=[
                 BotCommand(command="start", description="Start the bot"),
                 BotCommand(command="cancel", description="Cancel the current operation"),
