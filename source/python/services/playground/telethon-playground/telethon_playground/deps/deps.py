@@ -52,6 +52,10 @@ class Deps:
     def notion_client(self) -> EnrichedNotionAsyncClient:
         return EnrichedNotionAsyncClient(auth=self.config.notion_token)
 
+    async def started_telegram_user_client(self) -> TelegramClient:
+        await self.telegram_user_client.start()
+        return self.telegram_user_client
+
 
 def test():
     print(Deps.load().config)
