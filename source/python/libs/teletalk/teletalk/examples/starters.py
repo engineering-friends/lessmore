@@ -13,9 +13,7 @@ def test():
             bot=deps.config.telegram_bot_token,
             initial_starters={deps.config.telegram_test_chat_id: lambda response: response.tell("Initial starter")},
             message_starter=lambda response: response.tell("Message starter"),
-            command_starters={
-                "/start": lambda response: response.tell("Message starter"),
-            },
+            command_starters={"/start": lambda response: response.tell("Command starter")},
             persistant_state_path="/tmp/state.json",
             # reset_state=True,
         ).start_polling()
