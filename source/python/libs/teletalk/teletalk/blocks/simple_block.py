@@ -45,6 +45,13 @@ class SimpleBlock(Block):
         files: list[str] = [],
         message_callback: Optional[Callable | str] = "default",
     ):
+        # - Define message callback:
+
+        if message_callback == "default":
+            message_callback = build_default_message_callback(supress_messages=bool(inline_keyboard))
+
+        # - Update block
+
         self.update(
             text=text,
             keyboard=keyboard,
@@ -52,6 +59,9 @@ class SimpleBlock(Block):
             one_time_keyboard=one_time_keyboard,
             files=files,
         )
+
+        # - Init parent response
+
         super().__init__(message_callback=message_callback)
 
     def update(

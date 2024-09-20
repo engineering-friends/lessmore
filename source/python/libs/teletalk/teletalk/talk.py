@@ -1,5 +1,6 @@
 import asyncio
 
+from asyncio import iscoroutinefunction
 from typing import TYPE_CHECKING, Any, Callable, Coroutine, List, Literal, Optional
 
 from aiogram.exceptions import TelegramBadRequest
@@ -72,11 +73,6 @@ class Talk:
         default_chat_id: int = 0,  # usually passed from the response
         parent_response: Optional[Response] = None,
     ) -> Any:
-        # - Define message callback:
-
-        if message_callback == "default":
-            message_callback = build_default_message_callback(supress_messages=bool(inline_keyboard))
-
         # - Build the `Page` from the prompt data
 
         if isinstance(prompt, str):
@@ -211,11 +207,10 @@ class Talk:
             if not response.prompt_block:
                 logger.error("No block found for chat id")
                 return response
-
             if not response.prompt_block.message_callback:
                 logger.warning("No message callback found")
                 return await response.ask(mode="inplace")
-            print(response.prompt_block.message_callback)
+
             # - Run the message callback
 
             return await gather_nested(await response.prompt_sub_block.message_callback(response))
@@ -248,6 +243,15 @@ class Talk:
         if old_message:
             if block_message:
                 try:
+                    logger.debug(
+                        "Editing message",
+                        chat_id=block_message.chat_id,
+                        message_id=old_message.message_id,
+                        text=block_message.text,
+                        reply_markup=block_message.inline_keyboard_markup,
+                        parse_mode="Markdown",
+                        link_preview_options=LinkPreviewOptions(is_disabled=False),
+                    )
                     message = await self.app.bot.edit_message_text(
                         chat_id=block_message.chat_id,
                         message_id=old_message.message_id,
@@ -258,6 +262,11 @@ class Talk:
                     )
                 except TelegramBadRequest as e:
                     if "Bad Request: message is not modified" in str(e):
+                        logger.debug(
+                            "Message is not modified, skipping",
+                            chat_id=block_message.chat_id,
+                            message_id=old_message.message_id,
+                        )
                         return
                     else:
                         raise
