@@ -14,7 +14,7 @@ uv sync
 
 # Get directories
 
-SERVICE_PATH=$(pwd)/../..
+SERVICE_PATH=$(pwd)/..
 BOT_PATH=$(pwd)
 MONOREPO_PATH=$(echo $SERVICE_PATH | sed -E 's/(.*)\/source\/.*/\1/') # Crop /a/b/c/.../lessmore/source/... -> /a/b/c/.../lessmore
 
