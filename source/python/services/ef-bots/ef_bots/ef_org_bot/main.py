@@ -96,9 +96,7 @@ def build_main_menu(deps: Deps):
 
         await asyncio.sleep(0.5)
 
-        await response.tell(
-            f"Твоя страница онбординга! Заполни ее, там все расписано\n\n[🏄‍♂️ Онбординг в EF для {full_name}]({new_pages[0]['url']})"
-        )
+        await response.tell(f"[🏄‍♂️ Онбординг в EF для {full_name}]({new_pages[0]['url']})")
 
         await asyncio.sleep(2)
 
