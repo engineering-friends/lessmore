@@ -148,13 +148,13 @@ def main(env="test"):
 
         chat_ids_to_run_at_startup = []
 
-        rdict = Rdict(path=str(deps.local_files_dir / "app_state"))
+        user_states = Rdict(path=str(deps.local_files_dir / "app_state"))
 
-        for chat_id, user in rdict.items():
+        for chat_id, user in user_states.items():
             if maybe(user)["messages"][-1]["from_user"]["is_bot"].or_else(False):
                 chat_ids_to_run_at_startup.append(chat_id)
 
-        rdict.close()
+        user_states.close()
 
         logger.info("Chats to run at startup", chat_ids=chat_ids_to_run_at_startup)
 

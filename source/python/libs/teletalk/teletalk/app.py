@@ -83,9 +83,9 @@ class App:
 
             # - Init state
 
-            self.state = Rdict(path=ensure_path(persistant_state_path))
+            self.user_states = Rdict(path=ensure_path(persistant_state_path))
         else:
-            self.state = None
+            self.user_states = None
 
         # - State
 
@@ -161,8 +161,8 @@ class App:
 
         # - Update state (beta)
 
-        if self.state:
-            self.state[str(message.chat.id)] = self.state.get(str(message.chat.id), {}) | {
+        if self.user_states:
+            self.user_states[str(message.chat.id)] = self.user_states.get(str(message.chat.id), {}) | {
                 "messages": [
                     {
                         "message_id": _message.message_id,
@@ -175,7 +175,7 @@ class App:
                     for _message in self.messages_by_chat_id.get(message.chat.id, [])
                 ]
             }
-            self.state.flush()
+            self.user_states.flush()
 
     async def on_message(
         self,
@@ -189,8 +189,8 @@ class App:
 
         # - Update state (beta)
 
-        if self.state:
-            self.state[str(message.chat.id)] = self.state.get(str(message.chat.id), {}) | {
+        if self.user_states:
+            self.user_states[str(message.chat.id)] = self.user_states.get(str(message.chat.id), {}) | {
                 "messages": [
                     {
                         "message_id": _message.message_id,
@@ -203,7 +203,7 @@ class App:
                     for _message in self.messages_by_chat_id.get(message.chat.id, [])
                 ]
             }
-            self.state.flush()
+            self.user_states.flush()
 
         # - Otherwise, build the `Response` with a flattened `BlockMessage` and send it to the `self.dispatcher`
 
@@ -223,7 +223,7 @@ class App:
     async def load_state(self):
         # - Init data from state, if specified (beta)
 
-        for chat_id, chat_state in self.state.items():
+        for chat_id, chat_state in self.user_states.items():
             messages = [Box(message) for message in chat_state["messages"]]
 
             self.messages_by_chat_id[int(chat_id)] = [
@@ -235,7 +235,7 @@ class App:
                 )
                 for message in messages
             ]
-        logger.info("Loaded state", state=dict(self.state))
+        logger.info("Loaded state", state=dict(self.user_states))
 
     async def start_polling(self) -> None:
         # - Init aiogram dispatcher
@@ -267,8 +267,9 @@ class App:
 
         # - Init data from state, if specified (beta)
 
-        if self.state:
+        if self.user_states:
             await self.load_state()
+            logger.debug("Current userse", users=self.messages_by_chat_id.keys())
 
         # - Run initial starters
 
