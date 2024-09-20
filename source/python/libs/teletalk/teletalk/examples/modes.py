@@ -25,8 +25,8 @@ async def starter(response: Response):
     await response.tell("[Test: Inplace recent mode]")
     sample_block = SimpleBlock("Message 4 - should be updated")
     await response.tell(sample_block)
-    name = await response.ask(sample_block.update("Message 4. Say anything"), mode="inplace_recent_one")
-    await response.tell(sample_block.update("Message 5"), mode="inplace_recent_one")
+    name = await response.ask(sample_block.update("Message 4. Say anything"), mode="inplace_latest")
+    await response.tell(sample_block.update("Message 5"), mode="inplace_latest")
 
     # - Test inplace by id
 

@@ -8,7 +8,10 @@ from teletalk.test_deps.test_deps import TestDeps
 
 def build_starter(text: str, chat_id: int = 0):
     async def starter(response: Response):
-        await response.tell(text, default_chat_id=chat_id)
+        if chat_id:
+            await response.tell(text, default_chat_id=chat_id)
+        else:
+            await response.tell(text)
 
     return starter
 
@@ -20,6 +23,8 @@ def test():
             initial_starters=[build_starter(text="Initial starter", chat_id=160773045)],  # marklidenberg
             message_starter=build_starter(text="Message starter"),
             command_starters={"/start": build_starter(text="Command starter")},
+            persistant_state_path="/tmp/state.json",
+            # reset_state=True,
         ).start_polling()
     )
 

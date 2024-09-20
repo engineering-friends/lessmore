@@ -295,7 +295,7 @@ class Talk:
     async def update_active_page(
         self,
         page: Page,
-        mode: Literal["inplace", "inplace_recent_one", "create_new"] = "create_new",
+        mode: Literal["inplace", "inplace_latest", "create_new"] = "create_new",
         default_chat_id: int = 0,
     ):
         # - Mark blocks for easier usage
@@ -342,23 +342,42 @@ class Talk:
 
         # -- Inplace recent
 
-        elif mode == "inplace_recent_one":
+        # deprecated logic [@marklidenberg]
+        # elif mode == "inplace_recent_one":
+        #     # - Get block_message
+        #
+        #     assert len(block_messages) == 1, "Only single message blocks are supported in inplace_recent_one mode"
+        #     block_message = block_messages[0]
+        #
+        #     # - Check if the current message is the latest
+        #
+        #     if (
+        #         first_old_message
+        #         and int(maybe(self.app.messages_by_chat_id)[block_message.chat_id][-1].message_id.or_else(0))
+        #         == first_old_message.message_id
+        #     ):
+        #         await self.upsert_message(block_message=block_message, old_message=first_old_message)
+        #
+        #     else:
+        #         await self.upsert_message(block_message=block_message)
+
+        # -- Inplace recent
+
+        elif mode == "inplace_latest":
             # - Get block_message
 
-            assert len(block_messages) == 1, "Only single message blocks are supported in inplace_recent_one mode"
+            assert len(block_messages) == 1, "Only single message blocks are supported in inplace_latest mode"
             block_message = block_messages[0]
 
             # - Check if the current message is the latest
 
-            if (
-                first_old_message
-                and int(maybe(self.app.messages_by_chat_id)[block_message.chat_id][-1].message_id.or_else(0))
-                == first_old_message.message_id
-            ):
-                await self.upsert_message(block_message=block_message, old_message=first_old_message)
+            latest_message = maybe(self.app.messages_by_chat_id)[block_message.chat_id][-1].or_else(None)
 
-            else:
+            if not latest_message or not latest_message.from_user.is_bot:
+                # just send a new one
                 await self.upsert_message(block_message=block_message)
+            else:
+                await self.upsert_message(block_message=block_message, old_message=latest_message)
 
         # -- Inplace by id
 
@@ -403,7 +422,7 @@ class Talk:
         prompt: str | Block | Page | Response = "",
         files: Optional[list[str]] = None,
         keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
-        mode: Literal["inplace", "inplace_recent_one", "create_new"] = "create_new",
+        mode: Literal["inplace", "inplace_latest", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
     ) -> None:
         # - The interface to send custom messages without awaiting any response

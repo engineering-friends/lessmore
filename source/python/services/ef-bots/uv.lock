@@ -1967,6 +1967,7 @@ dependencies = [
     { name = "pynput" },
     { name = "pytest" },
     { name = "python-benedict", extra = ["all"] },
+    { name = "python-box" },
     { name = "python-telegram-bot" },
     { name = "pytube" },
     { name = "spacy" },
@@ -2016,6 +2017,7 @@ requires-dist = [
     { name = "pynput", specifier = ">=1.7.7,<2" },
     { name = "pytest", specifier = ">=8.2.2,<9" },
     { name = "python-benedict", extras = ["all"], specifier = ">=0.33.2,<0.34" },
+    { name = "python-box", specifier = ">=7.2.0" },
     { name = "python-telegram-bot", specifier = ">=21.5" },
     { name = "pytube", specifier = ">=15.0.0,<16" },
     { name = "spacy", specifier = ">=3.7.5,<4" },
@@ -4788,6 +4790,18 @@ all = [
     { name = "toml" },
     { name = "xlrd" },
     { name = "xmltodict" },
+]
+
+[[package]]
+name = "python-box"
+version = "7.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d2/e4/8de6f91bb2a3c07eab631a2d8fc100fa759529b8576ea01c1c5d83ef886c/python_box-7.2.0.tar.gz", hash = "sha256:551af20bdab3a60a2a21e3435120453c4ca32f7393787c3a5036e1d9fc6a0ede", size = 45135 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/dc/13/39a808760ce42eba8435577dd74abd15e43dc0149d14d96769febc99f172/python_box-7.2.0-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:2a2d664c6a27f7515469b6f1e461935a2038ee130b7d194b4b4db4e85d363618", size = 1797264 },
+    { url = "https://files.pythonhosted.org/packages/af/06/953f932c34fe117f0c1b016332055c64c7ed5b284851d402ea570d7dbea4/python_box-7.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e8a5a7365db1aaf600d3e8a2747fcf6833beb5d45439a54318548f02e302e3ec", size = 4239520 },
+    { url = "https://files.pythonhosted.org/packages/91/0d/f5548978dd4cfc26c562a266bd2d077427eaf3577d8b88c4c3deac793332/python_box-7.2.0-cp312-cp312-win_amd64.whl", hash = "sha256:739f827056ea148cbea3122d4617c994e829b420b1331183d968b175304e3a4f", size = 1175886 },
+    { url = "https://files.pythonhosted.org/packages/46/46/1a162759b3b753c29c59979495586fddb125ff70597fca582691e17f11ab/python_box-7.2.0-py3-none-any.whl", hash = "sha256:a3c90832dd772cb0197fdb5bc06123b6e1b846899a1b53d9c39450d27a584829", size = 29192 },
 ]
 
 [[package]]
