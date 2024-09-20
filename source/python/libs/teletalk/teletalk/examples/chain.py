@@ -1,5 +1,6 @@
 import asyncio
 
+from aiogram.types import ReplyKeyboardRemove
 from teletalk.app import App
 from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
@@ -15,9 +16,19 @@ async def starter(response: Response):
 
     # - Test reply keyboard
 
-    button_clicked = await response.ask("Click any button:", keyboard=[["A", "B"], ["C", "D", "E"]])
+    button_clicked = await response.ask(
+        "Click any button:", keyboard=[["A", "B"], ["C", "D", "E"]], one_time_keyboard=False
+    )
 
     await response.tell(f"You clicked {button_clicked}")
+
+    button_clicked = await response.ask("Click any button:")  # note: the keyboard is still present
+
+    await response.tell(f"You clicked {button_clicked}")
+
+    await response.tell(
+        "Remove keyboard", keyboard=ReplyKeyboardRemove()
+    )  # have to remove the keyboard with a separate message
 
     # - Test inline keyboard
 

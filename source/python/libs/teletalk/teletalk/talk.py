@@ -65,6 +65,7 @@ class Talk:
         prompt: str | Block | Page | Response = "",
         files: Optional[list[str]] = None,
         keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
+        one_time_keyboard: bool = True,
         inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
         message_callback: Optional[Callable | str] = "default",
         mode: Literal["inplace", "create_new"] = "create_new",
@@ -85,6 +86,7 @@ class Talk:
                         text=prompt,
                         files=files,
                         keyboard=keyboard,
+                        one_time_keyboard=one_time_keyboard,
                         inline_keyboard=inline_keyboard,
                         message_callback=message_callback,
                     )
@@ -250,7 +252,7 @@ class Talk:
                         chat_id=block_message.chat_id,
                         message_id=old_message.message_id,
                         text=block_message.text,
-                        reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
+                        reply_markup=block_message.inline_keyboard_markup,
                         parse_mode="Markdown",
                         link_preview_options=LinkPreviewOptions(is_disabled=False),
                     )
@@ -400,6 +402,7 @@ class Talk:
         self,
         prompt: str | Block | Page | Response = "",
         files: Optional[list[str]] = None,
+        keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
         mode: Literal["inplace", "inplace_recent_one", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
     ) -> None:
@@ -413,6 +416,7 @@ class Talk:
                     SimpleBlock(
                         text=prompt,
                         files=files,
+                        keyboard=keyboard,
                     )
                 ]
             )
