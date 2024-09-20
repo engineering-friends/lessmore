@@ -49,8 +49,7 @@ def menu(deps: Deps):
         user = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
 
         answer = await response.ask(
-            "Добавить пользователя в наши чаты и каналы?",
-            inline_keyboard=[["✅ Да", "❌ Нет"]],
+            "Добавить пользователя в наши чаты и каналы?", inline_keyboard=[["✅ Да", "❌ Нет"]]
         )
 
         if answer == "✅ Да":
