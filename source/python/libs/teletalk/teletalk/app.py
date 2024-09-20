@@ -221,23 +221,6 @@ class App:
             ),
         )
 
-    async def load_state(self):
-        # - Init data from state, if specified (beta)
-
-        for chat_id, chat_state in self.user_states.items():
-            messages = [Box(message) for message in chat_state["messages"]]
-
-            self.messages_by_chat_id[int(chat_id)] = [
-                Message.model_construct(
-                    message_id=message.message_id,
-                    date=message.date,
-                    chat=Box(id=message.chat.id),
-                    from_user=Box(is_bot=message.from_user.is_bot),
-                )
-                for message in messages
-            ]
-        logger.info("Loaded state", state=dict(self.user_states))
-
     async def start_polling(self) -> None:
         # - Init aiogram dispatcher
 
@@ -269,8 +252,20 @@ class App:
         # - Init data from state, if specified (beta)
 
         if self.user_states:
-            await self.load_state()
-            logger.debug("Current users", users=list(self.messages_by_chat_id.keys()))
+            # - Init data from state, if specified (beta)
+
+            for chat_id, chat_state in self.user_states.items():
+                messages = [Box(message) for message in chat_state["messages"]]
+
+                self.messages_by_chat_id[int(chat_id)] = [
+                    Message.model_construct(
+                        message_id=message.message_id,
+                        date=message.date,
+                        chat=Box(id=message.chat.id),
+                        from_user=Box(is_bot=message.from_user.is_bot),
+                    )
+                    for message in messages
+                ]
 
         # - Run initial starters
 
