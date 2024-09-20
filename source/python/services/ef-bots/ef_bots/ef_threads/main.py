@@ -112,20 +112,20 @@ def main(env="test"):
                 # -- Subscribe users, who sent the message, to the thread
 
                 for user_id in user_ids:
-                    if user_id not in app.users_by_id:
-                        app.users.append(User(id=user_id))
+                    if user_id not in app.users:
+                        app.users[user_id] = User(id=user_id)
 
-                    user = app.users_by_id[user_id]
+                    user = app.users[user_id]
                     user.thread_ids = list(set(user.thread_ids + [thread_id]))
 
                 # - Send message to all subscribed users
 
-                for user in app.users:
+                for user in app.users.values():
                     if thread_id in user.thread_ids:
                         if user.current_thread_id != thread_id:
                             message = await client.send_message(
                                 entity=user.id,
-                                message=f"[{title}](https://t.me/c/{str(deps.config.telegram_discussion_group)[4:]}/{thread_id})",
+                                message=f"[{title}](https://t.me/c/{str(deps.config.telegram_discussion_group)[4:]}/{new_message.id}?thread={thread_id})",
                             )
                             user.thread_id_by_message_id[message.id] = thread_id
 
@@ -154,7 +154,7 @@ def main(env="test"):
                     message_id = event.message.id
                     reactions = event.message.reactions
 
-                    user = app.users_by_id.get(chat_id)
+                    user = app.users.get(chat_id)
                     if not user:
                         return
 

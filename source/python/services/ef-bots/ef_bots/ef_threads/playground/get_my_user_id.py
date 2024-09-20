@@ -15,7 +15,13 @@ def test():
 
         # - Get telegram username
 
-        print((await deps.telegram_user_client.get_me()).id)
+        # - Send message
+
+        await client.send_message(
+            entity="marklidenberg",
+            message="[URL](https://t.me/c/2219948749/84?thread=81)",
+            parse_mode="markdown",
+        )
 
     asyncio.run(main())
 
