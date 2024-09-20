@@ -41,7 +41,7 @@ class App:
     def __init__(
         self,
         bot: Bot | str,
-        initial_starters: list[Callable] | dict[str, Callable] = [],
+        initial_starters: list[Callable] | dict[int, Callable] = [],
         message_starter: Optional[Callable] = None,
         command_starters: dict[str, Callable] = {},
         dispatcher: Optional[Callable] = None,  # dispatcher is like a low-level `Talk`
@@ -220,6 +220,23 @@ class App:
             ),
         )
 
+    async def load_state(self):
+        # - Init data from state, if specified (beta)
+
+        for chat_id, chat_state in self.state.items():
+            messages = [Box(message) for message in chat_state["messages"]]
+
+            self.messages_by_chat_id[int(chat_id)] = [
+                Message.model_construct(
+                    message_id=message.message_id,
+                    date=message.date,
+                    chat=Box(id=message.chat.id),
+                    from_user=Box(is_bot=message.from_user.is_bot),
+                )
+                for message in messages
+            ]
+        logger.info("Loaded state", state=dict(self.state))
+
     async def start_polling(self) -> None:
         # - Init aiogram dispatcher
 
@@ -251,19 +268,7 @@ class App:
         # - Init data from state, if specified (beta)
 
         if self.state:
-            for chat_id, chat_state in self.state.items():
-                messages = [Box(message) for message in chat_state["messages"]]
-
-                self.messages_by_chat_id[int(chat_id)] = [
-                    Message.model_construct(
-                        message_id=message.message_id,
-                        date=message.date,
-                        chat=Box(id=message.chat.id),
-                        from_user=Box(is_bot=message.from_user.is_bot),
-                    )
-                    for message in messages
-                ]
-            logger.info("Loaded state", state=dict(self.state))
+            await self.load_state()
 
         # - Run initial starters
 

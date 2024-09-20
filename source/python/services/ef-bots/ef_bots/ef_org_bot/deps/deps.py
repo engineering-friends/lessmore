@@ -16,7 +16,7 @@ from telethon import TelegramClient
 @dataclass
 class Deps:
     config: Config
-    local_files_dir: str
+    local_files_dir: Path
     telegram_bot_client: TelegramClient
     telegram_user_client: TelegramClient
 
@@ -36,7 +36,7 @@ class Deps:
 
         return Deps(
             config=config,
-            local_files_dir=str(local_files_dir),
+            local_files_dir=local_files_dir,
             telegram_bot_client=TelegramClient(
                 session=ensure_path(str(local_files_dir / "telegram_bot.session")),
                 api_id=int(config.telegram_api_id),

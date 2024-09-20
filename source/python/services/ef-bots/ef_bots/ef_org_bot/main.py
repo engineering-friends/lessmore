@@ -4,6 +4,9 @@ from aiogram.types import BotCommand
 from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
 from ef_bots.ef_org_bot.deps.deps import Deps
 from loguru import logger
+from more_itertools import last
+from pymaybe import maybe
+from rocksdict import Rdict
 from teletalk.app import App
 from teletalk.blocks.simple_block import CancelError, SimpleBlock, build_default_message_callback
 from teletalk.models.response import Response
@@ -141,15 +144,34 @@ def main(env="test"):
 
         await deps.telegram_user_client.start()
 
-        # # - Start bot
+        # - Load chat_ids to run at startup - the ones which have last message from the bot (usually the menu message). Needed for user not to press /start if bot has been restarted, and just used the menu of the last message
+
+        chat_ids_to_run_at_startup = []
+
+        rdict = Rdict(path=str(deps.local_files_dir / "app_state"))
+
+        for chat_id, user in rdict.items():
+            if maybe(user)["messages"][-1]["from_user"]["is_bot"].or_else(False):
+                chat_ids_to_run_at_startup.append(chat_id)
+
+        rdict.close()
+
+        logger.info("Chats to run at startup", chat_ids=chat_ids_to_run_at_startup)
+
+        # - Run app
 
         await App(
             bot=deps.config.telegram_bot_token,
+            initial_starters={
+                chat_id: lambda response: response.ask(build_main_menu(deps), mode="inplace_latest")
+                for chat_id in chat_ids_to_run_at_startup
+            },  # in case of restart, we will start from the last bot message
             command_starters={"/start": lambda response: response.ask(build_main_menu(deps))},
             commands=[
                 BotCommand(command="start", description="Start the bot"),
                 BotCommand(command="cancel", description="Cancel the current operation"),
             ],
+            persistant_state_path=str(deps.local_files_dir / "app_state"),
         ).start_polling()
 
     asyncio.run(_main())
