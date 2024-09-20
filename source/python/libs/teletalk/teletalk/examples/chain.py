@@ -28,7 +28,7 @@ async def starter(response: Response):
 
     await response.tell(
         "Remove keyboard", keyboard=ReplyKeyboardRemove()
-    )  # have to remove the keyboard with a separate message
+    )  # have to remove the keyboard with a separate message, can't be inline message, as only one markup is allowed
 
     # - Test inline keyboard
 
