@@ -29,9 +29,6 @@ def main(env="test"):
             trigger=CronTrigger(minute="*/15"),
         )
 
-        # scheduler.add_job(func=foo, trigger=IntervalTrigger(seconds=10))
-        # scheduler.add_job(func=foo, trigger=DateTrigger())
-
         try:
             scheduler.start()
 
