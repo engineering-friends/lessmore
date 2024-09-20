@@ -26,7 +26,7 @@ def menu(deps: Deps):
 
             answer = await response.ask("2. Введи телеграм участника, чтобы я добавил его в чаты и каналы:")
 
-            telegram_username = answer.replace("@", "").replace("t.me/", "").replace("https://t.me/", "")
+            telegram_username = answer.replace("@", "").replace("https://t.me/", "").replace("t.me/", "")
 
             # - Get user entity
 
