@@ -175,6 +175,7 @@ class App:
                     for _message in self.messages_by_chat_id.get(message.chat.id, [])
                 ]
             }
+
             self.user_states.flush()
 
     async def on_message(
@@ -269,7 +270,7 @@ class App:
 
         if self.user_states:
             await self.load_state()
-            logger.debug("Current userse", users=self.messages_by_chat_id.keys())
+            logger.debug("Current users", users=list(self.messages_by_chat_id.keys()))
 
         # - Run initial starters
 

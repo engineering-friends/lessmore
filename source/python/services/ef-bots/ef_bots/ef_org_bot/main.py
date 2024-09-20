@@ -101,12 +101,12 @@ def build_main_menu(deps: Deps):
 
         await response.tell(f"[🏄‍♂️ Онбординг в EF для {full_name}]({new_pages[0]['url']})")
 
-        await asyncio.sleep(2)
+        await asyncio.sleep(0.5)
 
         # - 5. Write a final message
 
         await response.ask(
-            "5. Убедись, чтобы он все сделал. Как сделает, Матвей увидит и напишет пост о новом участнике, а также поможет ему сделать его первый запрос. На этом онбординг будет завершен",
+            "5. Твоя задача: убедиться, чтобы он все заполнил! Как сделает, Матвею придет уведомление, после чего он напишет пост о новом участнике, а также поможет ему сделать его первый запрос. На этом онбординг будет завершен, мерси боку! ",
             inline_keyboard=[["✅ Завершить"]],
         )
 
@@ -148,11 +148,16 @@ def main(env="test"):
 
         chat_ids_to_run_at_startup = []
 
-        user_states = Rdict(path=str(deps.local_files_dir / "app_state"))
+        # -- Reset state if needed
 
+        # Rdict.destroy(str(deps.local_files_dir / "app_state"))
+
+        # -- Load state
+
+        user_states = Rdict(path=str(deps.local_files_dir / "app_state"))
         for chat_id, user in user_states.items():
             if maybe(user)["messages"][-1]["from_user"]["is_bot"].or_else(False):
-                chat_ids_to_run_at_startup.append(chat_id)
+                chat_ids_to_run_at_startup.append(int(chat_id))
 
         user_states.close()
 

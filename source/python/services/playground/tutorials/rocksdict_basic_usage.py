@@ -8,7 +8,7 @@ path = str("./test_dict")
 
 # create a Rdict with default options at `path`
 db = Rdict(path)
-print(db.get("a"))
+
 db[1.0] = 1
 db["huge integer"] = 2343546543243564534233536434567543
 db["good"] = True
