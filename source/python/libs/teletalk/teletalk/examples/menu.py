@@ -36,6 +36,7 @@ level_1 = gen_level("Level 1", level_2)
 
 
 async def starter(response: Response):
+    response.chat_id = 160773045  # marklidenberg
     return await response.ask(level_1)
 
 
@@ -43,7 +44,7 @@ def test():
     asyncio.run(
         App(
             bot=TestDeps.load().config.telegram_bot_token,
-            command_starters={"/start": starter},
+            initial_starters=[starter],
         ).start_polling()
     )
 

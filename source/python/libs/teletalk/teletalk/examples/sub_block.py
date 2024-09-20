@@ -29,6 +29,8 @@ class TwoButtons(Block):
 
 
 async def starter(response: Response):
+    response.chat_id = 160773045  # marklidenberg
+
     async def on_click(response: Response):
         response.prompt_sub_block.text += random.choice(["!", "1"])
         return await response.ask(mode="inplace")

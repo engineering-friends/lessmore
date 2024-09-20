@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 from typing import Callable, Optional
@@ -96,38 +97,45 @@ class App:
         starter: Callable,
         initial_response: Response,
         parent_talk: Optional[Talk] = None,
+        is_async: bool = False,
     ):
-        # - Create the talk
+        async def _start_new_talk():
+            # - Create the talk
 
-        talk = Talk(
-            coroutine=starter(initial_response),
-            app=self,
-        )
+            talk = Talk(
+                coroutine=starter(initial_response),
+                app=self,
+            )
 
-        if parent_talk:
-            talk.parent = parent_talk
-            parent_talk.children.append(talk)
+            if parent_talk:
+                talk.parent = parent_talk
+                parent_talk.children.append(talk)
 
-        self.talks.append(talk)
+            self.talks.append(talk)
 
-        # - Set talk for the initial response
+            # - Set talk for the initial response
 
-        initial_response.talk = talk
+            initial_response.talk = talk
 
-        # - Run the starter and wait for the result
+            # - Run the starter and wait for the result
 
-        logger.info("Running talk", talk=talk)
+            logger.info("Running talk", talk=talk)
 
-        await talk.coroutine
+            await talk.coroutine
 
-        # - Remove the talk
+            # - Remove the talk
 
-        logger.info("Removing talk", talk=talk)
+            logger.info("Removing talk", talk=talk)
 
-        if talk.parent:
-            talk.parent.children.remove(talk)
+            if talk.parent:
+                talk.parent.children.remove(talk)
 
-        self.talks.remove(talk)
+            self.talks.remove(talk)
+
+        if is_async:
+            asyncio.create_task(_start_new_talk())
+        else:
+            await _start_new_talk()
 
     async def on_callback_query(
         self,

@@ -16,6 +16,7 @@ async def spawn(response: Response):
 
 
 async def starter(response: Response):
+    response.chat_id = 160773045  # marklidenberg
     return await response.ask(
         Menu(
             "Click to spawn another talk",
@@ -33,7 +34,7 @@ def test():
     asyncio.run(
         App(
             bot=TestDeps.load().config.telegram_bot_token,
-            message_starter=starter,
+            initial_starters=[starter],
         ).start_polling()
     )
 

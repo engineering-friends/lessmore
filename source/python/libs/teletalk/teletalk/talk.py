@@ -375,8 +375,10 @@ class Talk:
 
             if not latest_message or not latest_message.from_user.is_bot:
                 # just send a new one
+                logger.debug("Sending new message in inplace_latest mode")
                 await self.upsert_message(block_message=block_message)
             else:
+                logger.debug("Updating message in inplace_latest mode")
                 await self.upsert_message(block_message=block_message, old_message=latest_message)
 
         # -- Inplace by id

@@ -154,4 +154,5 @@ class Dispatcher:
             await self.app.start_new_talk(
                 starter=response.starter,
                 initial_response=response,
+                is_async=True,
             )

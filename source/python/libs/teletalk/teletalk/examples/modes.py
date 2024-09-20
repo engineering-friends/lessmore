@@ -8,6 +8,10 @@ from teletalk.test_deps.test_deps import TestDeps
 
 
 async def starter(response: Response):
+    # - Set chat id
+
+    response.chat_id = 160773045
+
     # - Test create_new and inplace modes
 
     await response.tell("[Test: Create new mode]")
@@ -60,7 +64,7 @@ def test():
     asyncio.run(
         App(
             bot=TestDeps.load().config.telegram_bot_token,
-            message_starter=starter,
+            initial_starters=[starter],
         ).start_polling()
     )
 
