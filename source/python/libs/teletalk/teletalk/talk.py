@@ -215,7 +215,7 @@ class Talk:
             if not response.prompt_block.message_callback:
                 logger.warning("No message callback found")
                 return await response.ask(mode="inplace")
-
+            print(response.prompt_block.message_callback)
             # - Run the message callback
 
             return await gather_nested(await response.prompt_sub_block.message_callback(response))

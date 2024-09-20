@@ -41,7 +41,7 @@ class App:
     def __init__(
         self,
         bot: Bot | str,
-        initial_starters: list[Callable] = [],
+        initial_starters: list[Callable] | dict[str, Callable] = [],
         message_starter: Optional[Callable] = None,
         command_starters: dict[str, Callable] = {},
         dispatcher: Optional[Callable] = None,  # dispatcher is like a low-level `Talk`
@@ -267,8 +267,12 @@ class App:
 
         # - Run initial starters
 
-        for starter in self.initial_starters:
-            await self.dispatcher(Response(starter=starter))
+        if isinstance(self.initial_starters, list):
+            for starter in self.initial_starters:
+                await self.dispatcher(Response(starter=starter))
+        elif isinstance(self.initial_starters, dict):
+            for chat_id, starter in self.initial_starters.items():
+                await self.dispatcher(Response(chat_id=chat_id, starter=starter))
 
         # - Start polling
 

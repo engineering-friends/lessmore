@@ -36,9 +36,7 @@ level_2 = gen_level("Level 2", level_3)
 level_1 = gen_level("Level 1", level_2)
 
 
-async def starter(response: Response, chat_id: int = 0):
-    if chat_id:
-        response.chat_id = chat_id
+async def starter(response: Response):
     return await response.ask(level_1)
 
 
@@ -47,7 +45,7 @@ def test():
     asyncio.run(
         App(
             bot=deps.config.telegram_bot_token,
-            initial_starters=[partial(starter, chat_id=deps.config.telegram_test_chat_id)],
+            initial_starters={deps.config.telegram_test_chat_id: starter},
             message_starter=starter,
         ).start_polling()
     )

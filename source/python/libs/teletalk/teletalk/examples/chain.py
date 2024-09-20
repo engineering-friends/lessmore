@@ -8,11 +8,7 @@ from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 
 
-async def starter(response: Response, chat_id: int = 0):
-    # - Set chat id
-    if chat_id:
-        response.chat_id = chat_id
-
+async def starter(response: Response):
     # - Test text messages
 
     await response.tell("I will ask you some questions")
@@ -48,7 +44,7 @@ def test():
     asyncio.run(
         App(
             bot=deps.config.telegram_bot_token,
-            initial_starters=[partial(starter, chat_id=deps.config.telegram_test_chat_id)],
+            initial_starters={deps.config.telegram_test_chat_id: starter},
             message_starter=starter,
         ).start_polling()
     )
