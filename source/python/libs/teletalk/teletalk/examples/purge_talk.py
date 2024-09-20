@@ -1,13 +1,15 @@
 import asyncio
 
+from functools import partial
+
 from teletalk.app import App
 from teletalk.models.page import Page
 from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 
 
-async def starter(response: Response):
-    response.chat_id = 160773045  # marklidenberg
+async def starter(response: Response, chat_id: int):
+    response.chat_id = chat_id
 
     await response.tell("Message 1", mode="create_new")
     await response.tell("Message 2", mode="create_new")
@@ -17,10 +19,11 @@ async def starter(response: Response):
 
 
 def test():
+    deps = TestDeps.load()
     asyncio.run(
         App(
-            bot=TestDeps.load().config.telegram_bot_token,
-            initial_starters=[starter],
+            bot=deps.config.telegram_bot_token,
+            initial_starters=[partial(starter, chat_id=deps.config.telegram_test_chat_id)],
         ).start_polling()
     )
 

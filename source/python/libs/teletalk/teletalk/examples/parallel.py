@@ -1,7 +1,9 @@
 import asyncio
 
+from functools import partial
+
 from teletalk.app import App
-from teletalk.blocks.menu import Menu
+from teletalk.blocks.simple_block import SimpleBlock
 from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 
@@ -15,12 +17,12 @@ async def spawn(response: Response):
     return await response.ask(response, mode="inplace")
 
 
-async def starter(response: Response):
-    response.chat_id = 160773045  # marklidenberg
+async def starter(response: Response, chat_id: int):
+    response.chat_id = chat_id
     return await response.ask(
-        Menu(
+        SimpleBlock(
             "Click to spawn another talk",
-            grid=[
+            inline_keyboard=[
                 [
                     ("New talk!", spawn),
                     ("Kill me!", lambda response: response.purge_talk()),
@@ -31,10 +33,11 @@ async def starter(response: Response):
 
 
 def test():
+    deps = TestDeps.load()
     asyncio.run(
         App(
-            bot=TestDeps.load().config.telegram_bot_token,
-            initial_starters=[starter],
+            bot=deps.config.telegram_bot_token,
+            initial_starters=[partial(starter, chat_id=deps.config.telegram_test_chat_id)],
         ).start_polling()
     )
 

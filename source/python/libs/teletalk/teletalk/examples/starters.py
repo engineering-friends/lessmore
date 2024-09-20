@@ -17,10 +17,11 @@ def build_starter(text: str, chat_id: int = 0):
 
 
 def test():
+    deps = TestDeps.load()
     asyncio.run(
         App(
-            bot=TestDeps.load().config.telegram_bot_token,
-            initial_starters=[build_starter(text="Initial starter", chat_id=160773045)],  # marklidenberg
+            bot=deps.config.telegram_bot_token,
+            initial_starters=[build_starter(text="Initial starter", chat_id=deps.config.telegram_test_chat_id)],
             message_starter=build_starter(text="Message starter"),
             command_starters={"/start": build_starter(text="Command starter")},
             persistant_state_path="/tmp/state.json",

@@ -1,6 +1,7 @@
 import asyncio
 import random
 
+from functools import partial
 from typing import Callable
 
 from aiogram.types import InlineKeyboardMarkup
@@ -28,8 +29,8 @@ class TwoButtons(Block):
         )
 
 
-async def starter(response: Response):
-    response.chat_id = 160773045  # marklidenberg
+async def starter(response: Response, chat_id: int):
+    response.chat_id = chat_id
 
     async def on_click(response: Response):
         response.prompt_sub_block.text += random.choice(["!", "1"])
@@ -46,10 +47,11 @@ async def starter(response: Response):
 
 
 def test():
+    deps = TestDeps.load()
     asyncio.run(
         App(
-            bot=TestDeps.load().config.telegram_bot_token,
-            message_starter=starter,
+            bot=deps.config.telegram_bot_token,
+            initial_starters=[partial(starter, chat_id=deps.config.telegram_test_chat_id)],
         ).start_polling()
     )
 
