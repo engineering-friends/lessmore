@@ -7,7 +7,21 @@ from teletalk.models.block_message import BlockMessage
 from teletalk.models.response import Response
 
 
-default_message_callback = lambda response: "".join([message.text for message in response.block_messages])
+class CancelError(Exception):
+    pass
+
+
+def build_default_message_callback(supress_messages: bool = False):
+    async def _callback(response: Response):
+        if response.block_messages[-1].text == "/cancel":
+            raise CancelError("Cancelled")
+        elif response.block_messages[-1].text:
+            if supress_messages:
+                return await response.ask(mode="inplace")
+            else:
+                return "".join([message.text for message in response.block_messages])
+
+    return _callback
 
 
 go_back = lambda response: response.ask(response.previous if response.previous else response, mode="inplace")
@@ -22,7 +36,7 @@ class SimpleBlock(Block):
         keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
         inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
         files: list[str] = [],
-        message_callback: Optional[Callable] = default_message_callback,
+        message_callback: Optional[Callable | str] = "default",
     ):
         self.update(
             text=text,
@@ -83,9 +97,9 @@ class SimpleBlock(Block):
         return self
 
     def output(self) -> BlockMessage:
-        # - Wrap inline_keyboard_markup callback_data with basic callback
+        # - Button callback
 
-        def button_callback(text: str):
+        def build_button_callback(text: str):
             async def _button_callback(response: Response):
                 assert isinstance(response.prompt_sub_block, SimpleBlock), "Block is not SimpleBlock"
                 return text
@@ -102,7 +116,7 @@ class SimpleBlock(Block):
                     [
                         KeyboardButton(
                             text=button.text,
-                            callback_data=self.register_callback(button_callback(text=button.text)),
+                            callback_data=self.register_callback(build_button_callback(text=button.text)),
                         )
                         for button in row
                     ]
@@ -118,7 +132,7 @@ class SimpleBlock(Block):
                         InlineKeyboardButton(
                             text=button.text,
                             callback_data=self.register_callback(
-                                button_callback(text=button.text)
+                                build_button_callback(text=button.text)
                                 if button.callback_data is None
                                 else button.callback_data
                             ),

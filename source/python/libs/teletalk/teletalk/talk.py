@@ -9,7 +9,7 @@ from loguru import logger
 from more_itertools import last
 from pymaybe import maybe
 from telegram.helpers import escape_markdown
-from teletalk.blocks.simple_block import SimpleBlock, default_message_callback
+from teletalk.blocks.simple_block import SimpleBlock, build_default_message_callback, default_message_callback
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.page import Page
@@ -56,17 +56,25 @@ class Talk:
 
         self.input_channel = asyncio.Queue()  # a queue of input `Response` objects
 
+    # buttons -> almost always suppress
+    # but sometimes do not supress
+
     async def ask(
         self,
         prompt: str | Block | Page | Response = "",
         files: Optional[list[str]] = None,
         keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
         inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
-        message_callback: Optional[Callable] = default_message_callback,
+        message_callback: Optional[Callable | str] = "default",
         mode: Literal["inplace", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
         parent_response: Optional[Response] = None,
     ) -> Any:
+        # - Define message callback:
+
+        if message_callback == "default":
+            message_callback = build_default_message_callback(supress_messages=inline_keyboard is None)
+
         # - Build the `Page` from the prompt data
 
         if isinstance(prompt, str):
