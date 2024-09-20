@@ -1,4 +1,7 @@
 
+# - Deactivate virtualenv if active
+
+deactivate
 
 # - Install uv globally if not installed
 
