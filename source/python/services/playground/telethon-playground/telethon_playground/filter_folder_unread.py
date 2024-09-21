@@ -1,10 +1,21 @@
 import asyncio
 
+from typing import Any
+
 from loguru import logger
 from telethon import TelegramClient
 from telethon.tl.functions.messages import GetDialogFiltersRequest, UpdateDialogFilterRequest
 from telethon.tl.types import DialogFilter, InputPeerChannel, InputPeerChat, InputPeerSelf
 from telethon_playground.deps.deps import Deps
+
+
+def get_entity_name(obj: Any) -> str:
+    return (
+        getattr(obj, "title")
+        or getattr(obj, "username")
+        or (getattr(obj, "first_name") or "" + getattr(obj, "last_name") or "")
+        or str(obj.id)
+    )
 
 
 async def filter_folder_unread(client: TelegramClient, folder_name: str = "Groups"):
@@ -37,19 +48,19 @@ async def filter_folder_unread(client: TelegramClient, folder_name: str = "Group
         dialog = next((d for d in all_dialogs if d.entity == entity), None)
 
         if not dialog:
-            logger.debug("Dialog not found", chat_title=entity.title or entity.username)
+            logger.debug("Dialog not found", chat_title=get_entity_name(entity))
             continue
 
         if dialog.unread_count == 0:
             logger.debug(
                 "No unread messages found, excluding folder",
-                chat_title=entity.username or entity.last_name or entity.first_name,
+                chat_title=get_entity_name(entity),
             )
             updated_exclude.append(chat)
         else:
             logger.debug(
                 "Unread messages found, including folder",
-                chat_title=entity.username or entity.last_name or entity.first_name,
+                chat_title=get_entity_name(entity),
             )
             updated_include.append(chat)
 
