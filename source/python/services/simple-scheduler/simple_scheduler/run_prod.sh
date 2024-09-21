@@ -14,7 +14,7 @@ uv sync
 
 # Get directories
 
-SERVICE_PATH=$(pwd)/../..
+SERVICE_PATH=$(pwd)/..
 BOT_PATH=$(pwd)
 MONOREPO_PATH=$(echo $SERVICE_PATH | sed -E 's/(.*)\/source\/.*/\1/') # Crop /a/b/c/.../lessmore/source/... -> /a/b/c/.../lessmore
 
@@ -27,9 +27,10 @@ $MONOREPO_PATH/git_secret/decrypt_secrets.sh
 export PYTHONPATH="$SERVICE_PATH:$PYTHONPATH"
 export PYTHONPATH="$MONOREPO_PATH/source/python/libs/lessmore.utils:$PYTHONPATH"
 export PYTHONPATH="$MONOREPO_PATH/source/python/libs/teletalk:$PYTHONPATH"
+export PYTHONPATH="$MONOREPO_PATH/source/python/services/playground/telethon-playground:$PYTHONPATH"
 
 # - Run the service in screen
 
-screen -X -S ef_org_bot quit
-screen -S ef_org_bot -L -Logfile logs/prod.log uv run python main.py --env prod # `ctrl+a d` to detach
-#screen -S ef_org_bot uv run python main.py # macos
+screen -X -S simple_scheduler quit
+screen -S simple_scheduler -L -Logfile logs/prod.log uv run python main.py --env prod # `ctrl+a d` to detach
+#screen -S ef_bot_org uv run python main.py # macos

@@ -1,5 +1,8 @@
 import asyncio
 
+from functools import partial
+
+from aiogram.types import ReplyKeyboardRemove
 from teletalk.app import App
 from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
@@ -15,9 +18,19 @@ async def starter(response: Response):
 
     # - Test reply keyboard
 
-    button_clicked = await response.ask("Click any button:", keyboard=[["A", "B"], ["C", "D", "E"]])
+    button_clicked = await response.ask(
+        "Click any button:", keyboard=[["A", "B"], ["C", "D", "E"]], one_time_keyboard=False
+    )
 
     await response.tell(f"You clicked {button_clicked}")
+
+    button_clicked = await response.ask("Click any button:")  # note: the keyboard is still present
+
+    await response.tell(f"You clicked {button_clicked}")
+
+    await response.tell(
+        "Remove keyboard", keyboard=ReplyKeyboardRemove()
+    )  # have to remove the keyboard with a separate message, can't be inline message, as only one markup is allowed
 
     # - Test inline keyboard
 
@@ -27,9 +40,11 @@ async def starter(response: Response):
 
 
 def test():
+    deps = TestDeps.load()
     asyncio.run(
         App(
-            bot=TestDeps.load().config.telegram_bot_token,
+            bot=deps.config.telegram_bot_token,
+            initial_starters={deps.config.telegram_test_chat_id: starter},
             message_starter=starter,
         ).start_polling()
     )

@@ -107,30 +107,40 @@ def main(env="test"):
 
                 # -- Filter only test users
 
-                user_ids = [user_id for user_id in user_ids if user_id == 160773045]  # marklidenberg
+                user_ids = [
+                    user_id for user_id in user_ids if user_id in [160773045, 291560340, 407931344]
+                ]  # marklidenberg, petr lavrov, mikhail vodolagin
 
                 # -- Subscribe users, who sent the message, to the thread
 
                 for user_id in user_ids:
-                    if user_id not in app.users_by_id:
-                        app.users.append(User(id=user_id))
+                    if user_id not in app.users:
+                        app.users[user_id] = User(id=user_id)
 
-                    user = app.users_by_id[user_id]
+                    user = app.users[user_id]
                     user.thread_ids = list(set(user.thread_ids + [thread_id]))
 
                 # - Send message to all subscribed users
 
-                for user in app.users:
+                for user in app.users.values():
                     if thread_id in user.thread_ids:
                         if user.current_thread_id != thread_id:
                             message = await client.send_message(
                                 entity=user.id,
-                                message=f"[{title}](https://t.me/c/{str(deps.config.telegram_discussion_group)[4:]}/{thread_id})",
+                                message=f"[{title}](https://t.me/c/{str(deps.config.telegram_discussion_group)[4:]}/{new_message.id}?thread={thread_id})",
                             )
                             user.thread_id_by_message_id[message.id] = thread_id
-
+                            user.current_thread_id_message_id = message.id
                             user.current_thread_id = thread_id
 
+                        # todo maybe: update message text to reference LAST message in the thread [@marklidenberg]
+                        # else:
+                        #     if user.current_thread_id_message_id:
+                        #         await client.edit_message(
+                        #             message=user.current_thread_id_message_id,
+                        #             entity=user.id,
+                        #             text=f"[{title}](https://t.me/c/{str(deps.config.telegram_discussion_group)[4:]}/{new_message.id}?thread={thread_id})",
+                        #         )
                         message = await client.forward_messages(
                             entity=user.id,
                             messages=new_message.id,
@@ -154,7 +164,7 @@ def main(env="test"):
                     message_id = event.message.id
                     reactions = event.message.reactions
 
-                    user = app.users_by_id.get(chat_id)
+                    user = app.users.get(chat_id)
                     if not user:
                         return
 

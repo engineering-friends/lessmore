@@ -1,3 +1,6 @@
+import asyncio
+import os
+
 from typing import Callable, Optional
 
 import aiogram
@@ -6,7 +9,10 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand, CallbackQuery, Message
+from box import Box
+from lessmore.utils.file_primitives.ensure_path import ensure_path
 from loguru import logger
+from rocksdict import Rdict
 from teletalk.dispatcher import Dispatcher as TeletalkDispatcher
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.response import Response
@@ -35,11 +41,15 @@ class App:
     def __init__(
         self,
         bot: Bot | str,
+        initial_starters: list[Callable] | dict[int, Callable] = [],
         message_starter: Optional[Callable] = None,
         command_starters: dict[str, Callable] = {},
         dispatcher: Optional[Callable] = None,  # dispatcher is like a low-level `Talk`
         default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
         commands: Optional[list[BotCommand]] = None,
+        # - Beta
+        persistant_state_path: str = "",
+        reset_state: bool = False,
     ):
         # - Args
 
@@ -50,6 +60,7 @@ class App:
         else:
             raise Exception("Unknown bot type")
 
+        self.initial_starters = initial_starters
         self.message_starter = message_starter
         self.command_starters = command_starters
         self.dispatcher = dispatcher or TeletalkDispatcher(
@@ -60,6 +71,21 @@ class App:
 
         self.default_bot_properties = default_bot_properties
         self.commands = commands
+        self.persistent_state = persistant_state_path
+
+        # - Init state (beta)
+
+        if persistant_state_path:
+            # - Delete state if reset_state is True
+
+            if reset_state and os.path.exists(persistant_state_path):
+                Rdict.destroy(str(persistant_state_path))
+
+            # - Init state
+
+            self.user_states = Rdict(path=ensure_path(persistant_state_path))
+        else:
+            self.user_states = None
 
         # - State
 
@@ -69,40 +95,47 @@ class App:
     async def start_new_talk(
         self,
         starter: Callable,
-        initial_response: Optional[Response] = None,
+        initial_response: Response,
         parent_talk: Optional[Talk] = None,
+        is_async: bool = False,
     ):
-        # - Create the talk
+        async def _start_new_talk():
+            # - Create the talk
 
-        talk = Talk(
-            coroutine=starter(initial_response),
-            app=self,
-        )
+            talk = Talk(
+                coroutine=starter(initial_response),
+                app=self,
+            )
 
-        if parent_talk:
-            talk.parent = parent_talk
-            parent_talk.children.append(talk)
+            if parent_talk:
+                talk.parent = parent_talk
+                parent_talk.children.append(talk)
 
-        self.talks.append(talk)
+            self.talks.append(talk)
 
-        # - Set talk for the initial response
+            # - Set talk for the initial response
 
-        initial_response.talk = talk
+            initial_response.talk = talk
 
-        # - Run the starter and wait for the result
+            # - Run the starter and wait for the result
 
-        logger.info("Running talk", talk=talk)
+            logger.info("Running talk", talk=talk)
 
-        await talk.coroutine
+            await talk.coroutine
 
-        # - Remove the talk
+            # - Remove the talk
 
-        logger.info("Removing talk", talk=talk)
+            logger.info("Removing talk", talk=talk)
 
-        if talk.parent:
-            talk.parent.children.remove(talk)
+            if talk.parent:
+                talk.parent.children.remove(talk)
 
-        self.talks.remove(talk)
+            self.talks.remove(talk)
+
+        if is_async:
+            asyncio.create_task(_start_new_talk())
+        else:
+            await _start_new_talk()
 
     async def on_callback_query(
         self,
@@ -126,6 +159,25 @@ class App:
 
         self.messages_by_chat_id.setdefault(message.chat.id, []).append(message)
 
+        # - Update state (beta)
+
+        if self.user_states:
+            self.user_states[str(message.chat.id)] = self.user_states.get(str(message.chat.id), {}) | {
+                "messages": [
+                    {
+                        "message_id": _message.message_id,
+                        "date": _message.date,
+                        "chat": {
+                            "id": _message.chat.id,
+                        },
+                        "from_user": {"is_bot": _message.from_user.is_bot},
+                    }
+                    for _message in self.messages_by_chat_id.get(message.chat.id, [])
+                ]
+            }
+
+            self.user_states.flush()
+
     async def on_message(
         self,
         message: Message,
@@ -135,6 +187,24 @@ class App:
         logger.debug("Received new message", id=message.message_id, chat_id=message.chat.id, text=message.text)
 
         self.messages_by_chat_id.setdefault(message.chat.id, []).append(message)
+
+        # - Update state (beta)
+
+        if self.user_states:
+            self.user_states[str(message.chat.id)] = self.user_states.get(str(message.chat.id), {}) | {
+                "messages": [
+                    {
+                        "message_id": _message.message_id,
+                        "date": _message.date,
+                        "chat": {
+                            "id": _message.chat.id,
+                        },
+                        "from_user": {"is_bot": _message.from_user.is_bot},
+                    }
+                    for _message in self.messages_by_chat_id.get(message.chat.id, [])
+                ]
+            }
+            self.user_states.flush()
 
         # - Otherwise, build the `Response` with a flattened `BlockMessage` and send it to the `self.dispatcher`
 
@@ -178,6 +248,33 @@ class App:
 
         if self.commands:
             await self.bot.set_my_commands(self.commands)
+
+        # - Init data from state, if specified (beta)
+
+        if self.user_states:
+            # - Init data from state, if specified (beta)
+
+            for chat_id, chat_state in self.user_states.items():
+                messages = [Box(message) for message in chat_state["messages"]]
+
+                self.messages_by_chat_id[int(chat_id)] = [
+                    Message.model_construct(
+                        message_id=message.message_id,
+                        date=message.date,
+                        chat=Box(id=message.chat.id),
+                        from_user=Box(is_bot=message.from_user.is_bot),
+                    )
+                    for message in messages
+                ]
+
+        # - Run initial starters
+
+        if isinstance(self.initial_starters, list):
+            for starter in self.initial_starters:
+                await self.dispatcher(Response(starter=starter))
+        elif isinstance(self.initial_starters, dict):
+            for chat_id, starter in self.initial_starters.items():
+                await self.dispatcher(Response(chat_id=chat_id, starter=starter))
 
         # - Start polling
 

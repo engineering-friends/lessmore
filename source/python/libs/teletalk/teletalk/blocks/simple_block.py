@@ -1,6 +1,12 @@
 from typing import Callable, Optional
 
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
+from aiogram.types import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    KeyboardButton,
+    ReplyKeyboardMarkup,
+    ReplyKeyboardRemove,
+)
 from telegram.helpers import escape_markdown
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
@@ -34,22 +40,35 @@ class SimpleBlock(Block):
         self,
         text: str = "",
         keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
+        one_time_keyboard: bool = True,
         inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
         files: list[str] = [],
         message_callback: Optional[Callable | str] = "default",
     ):
+        # - Define message callback:
+
+        if message_callback == "default":
+            message_callback = build_default_message_callback(supress_messages=bool(inline_keyboard))
+
+        # - Update block
+
         self.update(
             text=text,
             keyboard=keyboard,
             inline_keyboard=inline_keyboard,
+            one_time_keyboard=one_time_keyboard,
             files=files,
         )
+
+        # - Init parent response
+
         super().__init__(message_callback=message_callback)
 
     def update(
         self,
         text: str,
         keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
+        one_time_keyboard: bool = False,
         inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
         files: list[str] = [],
     ):
@@ -62,6 +81,8 @@ class SimpleBlock(Block):
             )
         else:
             self.reply_keyboard_markup = keyboard
+
+        self.one_time_keyboard = one_time_keyboard
 
         def _unfold(value):
             if isinstance(value, str):
@@ -107,11 +128,12 @@ class SimpleBlock(Block):
             return _button_callback
 
         # - Return
-
         return BlockMessage(
             text=self.text,
             files=self.files,
-            reply_keyboard_markup=ReplyKeyboardMarkup(
+            reply_keyboard_markup=ReplyKeyboardRemove()
+            if isinstance(self.reply_keyboard_markup, ReplyKeyboardRemove)
+            else ReplyKeyboardMarkup(
                 keyboard=[
                     [
                         KeyboardButton(
@@ -122,7 +144,7 @@ class SimpleBlock(Block):
                     ]
                     for row in self.reply_keyboard_markup.keyboard
                 ],
-                one_time_keyboard=True,
+                one_time_keyboard=self.one_time_keyboard,
             )
             if self.reply_keyboard_markup
             else None,

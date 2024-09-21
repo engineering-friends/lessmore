@@ -208,6 +208,20 @@ wheels = [
 ]
 
 [[package]]
+name = "apscheduler"
+version = "3.10.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytz" },
+    { name = "six" },
+    { name = "tzlocal" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5e/34/5dcb368cf89f93132d9a31bd3747962a9dc874480e54333b0c09fa7d56ac/APScheduler-3.10.4.tar.gz", hash = "sha256:e6df071b27d9be898e486bc7940a7be50b4af2e9da7c08f0744a96d4bd4cef4a", size = 100832 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/13/b5/7af0cb920a476dccd612fbc9a21a3745fb29b1fcd74636078db8f7ba294c/APScheduler-3.10.4-py3-none-any.whl", hash = "sha256:fb91e8a768632a4756a585f79ec834e0e27aad5860bac7eaa523d9ccefd87661", size = 59303 },
+]
+
+[[package]]
 name = "asgi-lifespan"
 version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -266,6 +280,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b3/ca/824b1195773ce6166d388573fc106ce56d4a805bd7427b624e063596ec58/beautifulsoup4-4.12.3.tar.gz", hash = "sha256:74e3d1928edc070d21748185c46e3fb33490f22f52a3addee9aee0f4f7781051", size = 581181 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b1/fe/e8c672695b37eecc5cbf43e1d0638d88d66ba3a44c4d321c796f4e59167f/beautifulsoup4-4.12.3-py3-none-any.whl", hash = "sha256:b80878c9f40111313e55da8ba20bdba06d8fa3969fc68304167741bbf9e082ed", size = 147925 },
+]
+
+[[package]]
+name = "better-exceptions"
+version = "0.3.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/26/d8/30b745b965765c08ee132fd590fca46c31296e8f1a606de0c53cc6b5a68f/better_exceptions-0.3.3.tar.gz", hash = "sha256:e4e6bc18444d5f04e6e894b10381e5e921d3d544240418162c7db57e9eb3453b", size = 30156 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ed/50/abf6850135f1e95d321a525d0a36e05255a039b3fc118b7d88413e8a8207/better_exceptions-0.3.3-py3-none-any.whl", hash = "sha256:9c70b1c61d5a179b84cd2c9d62c3324b667d74286207343645ed4306fdaad976", size = 11857 },
 ]
 
 [[package]]
@@ -536,6 +562,14 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/8a/77/70f8b77c4db30e5765092033e283aadd51ad78364f10cd2d331a1f158fcb/cymem-2.0.8-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a2cc38930ff5409f8d61f69a01e39ecb185c175785a1c9bec13bcd3ac8a614ba", size = 44170 },
     { url = "https://files.pythonhosted.org/packages/3b/59/1cc0df0f8a5fb90412cfc7eb084ceeb079f4349232c422e10e502eb255c3/cymem-2.0.8-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7bf49e3ea2c441f7b7848d5c61b50803e8cbd49541a70bb41ad22fce76d87603", size = 46653 },
     { url = "https://files.pythonhosted.org/packages/35/e0/34b11adc80502f0760ce2892dfdfcd8a7f450acd3147156c98620cb4071d/cymem-2.0.8-cp312-cp312-win_amd64.whl", hash = "sha256:ecd12e3bacf3eed5486e4cd8ede3c12da66ee0e0a9d0ae046962bc2bb503acef", size = 39052 },
+]
+
+[[package]]
+name = "dacite"
+version = "1.8.1"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/21/0f/cf0943f4f55f0fbc7c6bd60caf1343061dff818b02af5a0d444e473bb78d/dacite-1.8.1-py3-none-any.whl", hash = "sha256:cc31ad6fdea1f49962ea42db9421772afe01ac5442380d9a99fcf3d188c61afe", size = 14309 },
 ]
 
 [[package]]
@@ -1901,105 +1935,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f5/52/0763d1d976d5c262df53ddda8d8d4719eedf9594d046f117c25a27261a19/platformdirs-4.2.2.tar.gz", hash = "sha256:38b7b51f512eed9e84a22788b4bce1de17c0adb134d6becb09836e37d8654cd3", size = 20916 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl", hash = "sha256:2d7a1657e36a80ea911db832a8a6ece5ee53d8de21edd5cc5879af6530b1bfee", size = 18146 },
-]
-
-[[package]]
-name = "playground"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "aioboto3" },
-    { name = "aiobotocore" },
-    { name = "aiogram" },
-    { name = "anyconfig" },
-    { name = "beautifulsoup4" },
-    { name = "code2flow" },
-    { name = "diskcache" },
-    { name = "faiss-cpu" },
-    { name = "fire" },
-    { name = "google-api-python-client" },
-    { name = "google-auth" },
-    { name = "google-auth-httplib2" },
-    { name = "google-auth-oauthlib" },
-    { name = "imgurpython" },
-    { name = "inline-snapshot" },
-    { name = "keyboard" },
-    { name = "langchain" },
-    { name = "langchain-openai" },
-    { name = "langgraph" },
-    { name = "loguru" },
-    { name = "memray" },
-    { name = "nltk" },
-    { name = "notion-client" },
-    { name = "openai" },
-    { name = "openai-whisper" },
-    { name = "pandas" },
-    { name = "pendulum" },
-    { name = "pillow" },
-    { name = "prefect" },
-    { name = "pyan3" },
-    { name = "pycallgraph2" },
-    { name = "pydantic-settings" },
-    { name = "pydub" },
-    { name = "pymaybe" },
-    { name = "pynput" },
-    { name = "pytest" },
-    { name = "python-benedict", extra = ["all"] },
-    { name = "python-telegram-bot" },
-    { name = "pytube" },
-    { name = "rocksdict" },
-    { name = "spacy" },
-    { name = "telethon" },
-    { name = "toml" },
-    { name = "yadisk" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "aioboto3", specifier = ">=13.1.0,<14" },
-    { name = "aiobotocore", specifier = ">=2.13.1,<3" },
-    { name = "aiogram", specifier = ">=3" },
-    { name = "anyconfig", extras = ["dotenv"], specifier = ">=0.14.0,<0.15" },
-    { name = "beautifulsoup4", specifier = ">=4.12.3,<5" },
-    { name = "code2flow", specifier = ">=2.5.1,<3" },
-    { name = "diskcache", specifier = ">=5.6.3,<6" },
-    { name = "faiss-cpu", specifier = ">=1.8.0,<2" },
-    { name = "fire", specifier = ">=0.6.0,<0.7" },
-    { name = "google-api-python-client", specifier = ">=2.136.0,<3" },
-    { name = "google-auth", specifier = ">=2.34.0" },
-    { name = "google-auth-httplib2", specifier = ">=0.2.0" },
-    { name = "google-auth-oauthlib", specifier = ">=1.2.1" },
-    { name = "imgurpython", specifier = ">=1.1.7,<2" },
-    { name = "inline-snapshot", specifier = "==0.8.0" },
-    { name = "keyboard", specifier = ">=0.13.5,<0.14" },
-    { name = "langchain", specifier = ">=0.2,<0.3" },
-    { name = "langchain-openai", specifier = ">=0.1.7,<0.2" },
-    { name = "langgraph", specifier = ">=0.0.55,<0.1" },
-    { name = "loguru", specifier = ">=0.7.2,<0.8" },
-    { name = "memray", specifier = ">=1.12.0,<2" },
-    { name = "nltk", specifier = ">=3.8.1,<4" },
-    { name = "notion-client", specifier = ">=2.2.1,<3" },
-    { name = "openai", specifier = ">=1.30.1,<2" },
-    { name = "openai-whisper", git = "https://github.com/openai/whisper.git" },
-    { name = "pandas", specifier = ">=2.2.2,<3" },
-    { name = "pendulum", specifier = ">=3.0.0,<4" },
-    { name = "pillow", specifier = ">=10.4.0,<11" },
-    { name = "prefect", specifier = ">=2.19.8,<3" },
-    { name = "pyan3", specifier = ">=1.2.0,<2" },
-    { name = "pycallgraph2", specifier = ">=1.1.3,<2" },
-    { name = "pydantic-settings", specifier = ">=2.2.1,<3" },
-    { name = "pydub", specifier = ">=0.25.1,<0.26" },
-    { name = "pymaybe", specifier = ">=0.1.6" },
-    { name = "pynput", specifier = ">=1.7.7,<2" },
-    { name = "pytest", specifier = ">=8.2.2,<9" },
-    { name = "python-benedict", extras = ["all"], specifier = ">=0.33.2,<0.34" },
-    { name = "python-telegram-bot", specifier = ">=21.5" },
-    { name = "pytube", specifier = ">=15.0.0,<16" },
-    { name = "rocksdict", specifier = ">=0.3.23" },
-    { name = "spacy", specifier = ">=3.7.5,<4" },
-    { name = "telethon", specifier = ">=1.36.0,<2" },
-    { name = "toml", specifier = ">=0.10.2,<0.11" },
-    { name = "yadisk", specifier = ">=2.1.0,<3" },
 ]
 
 [[package]]
@@ -4769,6 +4704,18 @@ all = [
 ]
 
 [[package]]
+name = "python-box"
+version = "7.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d2/e4/8de6f91bb2a3c07eab631a2d8fc100fa759529b8576ea01c1c5d83ef886c/python_box-7.2.0.tar.gz", hash = "sha256:551af20bdab3a60a2a21e3435120453c4ca32f7393787c3a5036e1d9fc6a0ede", size = 45135 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/dc/13/39a808760ce42eba8435577dd74abd15e43dc0149d14d96769febc99f172/python_box-7.2.0-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:2a2d664c6a27f7515469b6f1e461935a2038ee130b7d194b4b4db4e85d363618", size = 1797264 },
+    { url = "https://files.pythonhosted.org/packages/af/06/953f932c34fe117f0c1b016332055c64c7ed5b284851d402ea570d7dbea4/python_box-7.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e8a5a7365db1aaf600d3e8a2747fcf6833beb5d45439a54318548f02e302e3ec", size = 4239520 },
+    { url = "https://files.pythonhosted.org/packages/91/0d/f5548978dd4cfc26c562a266bd2d077427eaf3577d8b88c4c3deac793332/python_box-7.2.0-cp312-cp312-win_amd64.whl", hash = "sha256:739f827056ea148cbea3122d4617c994e829b420b1331183d968b175304e3a4f", size = 1175886 },
+    { url = "https://files.pythonhosted.org/packages/46/46/1a162759b3b753c29c59979495586fddb125ff70597fca582691e17f11ab/python_box-7.2.0-py3-none-any.whl", hash = "sha256:a3c90832dd772cb0197fdb5bc06123b6e1b846899a1b53d9c39450d27a584829", size = 29192 },
+]
+
+[[package]]
 name = "python-dateutil"
 version = "2.9.0.post0"
 source = { registry = "https://pypi.org/simple" }
@@ -5110,6 +5057,113 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/58/15/8b3609fd3830ef7b27b655beb4b4e9c62313a4e8da8c676e142cc210d58e/shellingham-1.5.4.tar.gz", hash = "sha256:8dbca0739d487e5bd35ab3ca4b36e11c4078f3a234bfce294b0a0291363404de", size = 10310 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e0/f9/0595336914c5619e5f28a1fb793285925a8cd4b432c9da0a987836c7f822/shellingham-1.5.4-py2.py3-none-any.whl", hash = "sha256:7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686", size = 9755 },
+]
+
+[[package]]
+name = "simple-scheduler"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "aioboto3" },
+    { name = "aiobotocore" },
+    { name = "aiogram" },
+    { name = "anyconfig" },
+    { name = "apscheduler" },
+    { name = "beautifulsoup4" },
+    { name = "better-exceptions" },
+    { name = "code2flow" },
+    { name = "dacite" },
+    { name = "diskcache" },
+    { name = "faiss-cpu" },
+    { name = "fire" },
+    { name = "google-api-python-client" },
+    { name = "google-auth" },
+    { name = "google-auth-httplib2" },
+    { name = "google-auth-oauthlib" },
+    { name = "imgurpython" },
+    { name = "inline-snapshot" },
+    { name = "keyboard" },
+    { name = "langchain" },
+    { name = "langchain-openai" },
+    { name = "langgraph" },
+    { name = "loguru" },
+    { name = "memray" },
+    { name = "nltk" },
+    { name = "notion-client" },
+    { name = "openai" },
+    { name = "openai-whisper" },
+    { name = "pandas" },
+    { name = "pendulum" },
+    { name = "pillow" },
+    { name = "prefect" },
+    { name = "pyan3" },
+    { name = "pycallgraph2" },
+    { name = "pydantic-settings" },
+    { name = "pydub" },
+    { name = "pymaybe" },
+    { name = "pynput" },
+    { name = "pytest" },
+    { name = "python-benedict", extra = ["all"] },
+    { name = "python-box" },
+    { name = "python-telegram-bot" },
+    { name = "pytube" },
+    { name = "rocksdict" },
+    { name = "spacy" },
+    { name = "telethon" },
+    { name = "toml" },
+    { name = "yadisk" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "aioboto3", specifier = ">=13.1.0,<14" },
+    { name = "aiobotocore", specifier = ">=2.13.1,<3" },
+    { name = "aiogram", specifier = ">=3" },
+    { name = "anyconfig", extras = ["dotenv"], specifier = ">=0.14.0,<0.15" },
+    { name = "apscheduler", specifier = ">=3.10.4" },
+    { name = "beautifulsoup4", specifier = ">=4.12.3,<5" },
+    { name = "better-exceptions", specifier = ">=0.3.3" },
+    { name = "code2flow", specifier = ">=2.5.1,<3" },
+    { name = "dacite", specifier = ">=1.8.1" },
+    { name = "diskcache", specifier = ">=5.6.3,<6" },
+    { name = "faiss-cpu", specifier = ">=1.8.0,<2" },
+    { name = "fire", specifier = ">=0.6.0,<0.7" },
+    { name = "google-api-python-client", specifier = ">=2.136.0,<3" },
+    { name = "google-auth", specifier = ">=2.34.0" },
+    { name = "google-auth-httplib2", specifier = ">=0.2.0" },
+    { name = "google-auth-oauthlib", specifier = ">=1.2.1" },
+    { name = "imgurpython", specifier = ">=1.1.7,<2" },
+    { name = "inline-snapshot", specifier = "==0.8.0" },
+    { name = "keyboard", specifier = ">=0.13.5,<0.14" },
+    { name = "langchain", specifier = ">=0.2,<0.3" },
+    { name = "langchain-openai", specifier = ">=0.1.7,<0.2" },
+    { name = "langgraph", specifier = ">=0.0.55,<0.1" },
+    { name = "loguru", specifier = ">=0.7.2,<0.8" },
+    { name = "memray", specifier = ">=1.12.0,<2" },
+    { name = "nltk", specifier = ">=3.8.1,<4" },
+    { name = "notion-client", specifier = ">=2.2.1,<3" },
+    { name = "openai", specifier = ">=1.30.1,<2" },
+    { name = "openai-whisper", git = "https://github.com/openai/whisper.git" },
+    { name = "pandas", specifier = ">=2.2.2,<3" },
+    { name = "pendulum", specifier = ">=3.0.0,<4" },
+    { name = "pillow", specifier = ">=10.4.0,<11" },
+    { name = "prefect", specifier = ">=2.19.8,<3" },
+    { name = "pyan3", specifier = ">=1.2.0,<2" },
+    { name = "pycallgraph2", specifier = ">=1.1.3,<2" },
+    { name = "pydantic-settings", specifier = ">=2.2.1,<3" },
+    { name = "pydub", specifier = ">=0.25.1,<0.26" },
+    { name = "pymaybe", specifier = ">=0.1.6" },
+    { name = "pynput", specifier = ">=1.7.7,<2" },
+    { name = "pytest", specifier = ">=8.2.2,<9" },
+    { name = "python-benedict", extras = ["all"], specifier = ">=0.33.2,<0.34" },
+    { name = "python-box", specifier = ">=7.2.0" },
+    { name = "python-telegram-bot", specifier = ">=21.5" },
+    { name = "pytube", specifier = ">=15.0.0,<16" },
+    { name = "rocksdict", specifier = ">=0.3.23" },
+    { name = "spacy", specifier = ">=3.7.5,<4" },
+    { name = "telethon", specifier = ">=1.36.0,<2" },
+    { name = "toml", specifier = ">=0.10.2,<0.11" },
+    { name = "yadisk", specifier = ">=2.1.0,<3" },
 ]
 
 [[package]]

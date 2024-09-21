@@ -48,7 +48,7 @@ def _add_color_tags_to_json(
 
         if record:
             record["extra"][f"_extra_{2 * i}"] = key
-            record["extra"][f"_extra_{2 * i + 1}"] = json.dumps(value, default=str)
+            record["extra"][f"_extra_{2 * i + 1}"] = json.dumps(value, ensure_ascii=False, default=str)
 
     # - Add traceback on new line
 

@@ -5,12 +5,12 @@ from pathlib import Path
 
 import openai
 
-from ef_bots.ef_org_bot.deps.config.config import Config
 from lessmore.utils.enriched_notion_client.enriched_notion_async_client import EnrichedNotionAsyncClient
 from lessmore.utils.file_primitives.ensure_path import ensure_path
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.read_config.read_config import read_config
 from telethon import TelegramClient
+from telethon_playground.deps.config.config import Config
 
 
 @dataclass
@@ -51,6 +51,10 @@ class Deps:
 
     def notion_client(self) -> EnrichedNotionAsyncClient:
         return EnrichedNotionAsyncClient(auth=self.config.notion_token)
+
+    async def started_telegram_user_client(self) -> TelegramClient:
+        await self.telegram_user_client.start()
+        return self.telegram_user_client
 
 
 def test():

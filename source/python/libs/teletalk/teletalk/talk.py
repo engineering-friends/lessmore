@@ -1,5 +1,6 @@
 import asyncio
 
+from asyncio import iscoroutinefunction
 from typing import TYPE_CHECKING, Any, Callable, Coroutine, List, Literal, Optional
 
 from aiogram.exceptions import TelegramBadRequest
@@ -65,17 +66,13 @@ class Talk:
         prompt: str | Block | Page | Response = "",
         files: Optional[list[str]] = None,
         keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
+        one_time_keyboard: bool = True,
         inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
         message_callback: Optional[Callable | str] = "default",
         mode: Literal["inplace", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
         parent_response: Optional[Response] = None,
     ) -> Any:
-        # - Define message callback:
-
-        if message_callback == "default":
-            message_callback = build_default_message_callback(supress_messages=bool(inline_keyboard))
-
         # - Build the `Page` from the prompt data
 
         if isinstance(prompt, str):
@@ -85,6 +82,7 @@ class Talk:
                         text=prompt,
                         files=files,
                         keyboard=keyboard,
+                        one_time_keyboard=one_time_keyboard,
                         inline_keyboard=inline_keyboard,
                         message_callback=message_callback,
                     )
@@ -209,7 +207,6 @@ class Talk:
             if not response.prompt_block:
                 logger.error("No block found for chat id")
                 return response
-
             if not response.prompt_block.message_callback:
                 logger.warning("No message callback found")
                 return await response.ask(mode="inplace")
@@ -246,16 +243,30 @@ class Talk:
         if old_message:
             if block_message:
                 try:
+                    logger.debug(
+                        "Editing message",
+                        chat_id=block_message.chat_id,
+                        message_id=old_message.message_id,
+                        text=block_message.text,
+                        reply_markup=block_message.inline_keyboard_markup,
+                        parse_mode="Markdown",
+                        link_preview_options=LinkPreviewOptions(is_disabled=False),
+                    )
                     message = await self.app.bot.edit_message_text(
                         chat_id=block_message.chat_id,
                         message_id=old_message.message_id,
                         text=block_message.text,
-                        reply_markup=block_message.inline_keyboard_markup or block_message.reply_keyboard_markup,
+                        reply_markup=block_message.inline_keyboard_markup,
                         parse_mode="Markdown",
                         link_preview_options=LinkPreviewOptions(is_disabled=False),
                     )
                 except TelegramBadRequest as e:
                     if "Bad Request: message is not modified" in str(e):
+                        logger.debug(
+                            "Message is not modified, skipping",
+                            chat_id=block_message.chat_id,
+                            message_id=old_message.message_id,
+                        )
                         return
                     else:
                         raise
@@ -293,7 +304,7 @@ class Talk:
     async def update_active_page(
         self,
         page: Page,
-        mode: Literal["inplace", "inplace_recent_one", "create_new"] = "create_new",
+        mode: Literal["inplace", "inplace_latest", "create_new"] = "create_new",
         default_chat_id: int = 0,
     ):
         # - Mark blocks for easier usage
@@ -340,23 +351,44 @@ class Talk:
 
         # -- Inplace recent
 
-        elif mode == "inplace_recent_one":
+        # deprecated logic [@marklidenberg]
+        # elif mode == "inplace_recent_one":
+        #     # - Get block_message
+        #
+        #     assert len(block_messages) == 1, "Only single message blocks are supported in inplace_recent_one mode"
+        #     block_message = block_messages[0]
+        #
+        #     # - Check if the current message is the latest
+        #
+        #     if (
+        #         first_old_message
+        #         and int(maybe(self.app.messages_by_chat_id)[block_message.chat_id][-1].message_id.or_else(0))
+        #         == first_old_message.message_id
+        #     ):
+        #         await self.upsert_message(block_message=block_message, old_message=first_old_message)
+        #
+        #     else:
+        #         await self.upsert_message(block_message=block_message)
+
+        # -- Inplace recent
+
+        elif mode == "inplace_latest":
             # - Get block_message
 
-            assert len(block_messages) == 1, "Only single message blocks are supported in inplace_recent_one mode"
+            assert len(block_messages) == 1, "Only single message blocks are supported in inplace_latest mode"
             block_message = block_messages[0]
 
             # - Check if the current message is the latest
 
-            if (
-                first_old_message
-                and int(maybe(self.app.messages_by_chat_id)[block_message.chat_id][-1].message_id.or_else(0))
-                == first_old_message.message_id
-            ):
-                await self.upsert_message(block_message=block_message, old_message=first_old_message)
+            latest_message = maybe(self.app.messages_by_chat_id)[block_message.chat_id][-1].or_else(None)
 
-            else:
+            if not latest_message or not latest_message.from_user.is_bot:
+                # just send a new one
+                logger.debug("Sending new message in inplace_latest mode")
                 await self.upsert_message(block_message=block_message)
+            else:
+                logger.debug("Updating message in inplace_latest mode")
+                await self.upsert_message(block_message=block_message, old_message=latest_message)
 
         # -- Inplace by id
 
@@ -400,7 +432,8 @@ class Talk:
         self,
         prompt: str | Block | Page | Response = "",
         files: Optional[list[str]] = None,
-        mode: Literal["inplace", "inplace_recent_one", "create_new"] = "create_new",
+        keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
+        mode: Literal["inplace", "inplace_latest", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
     ) -> None:
         # - The interface to send custom messages without awaiting any response
@@ -413,6 +446,7 @@ class Talk:
                     SimpleBlock(
                         text=prompt,
                         files=files,
+                        keyboard=keyboard,
                     )
                 ]
             )

@@ -1,5 +1,5 @@
 [project]
-name = "playground"
+name = "simple-scheduler"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -48,5 +48,9 @@ dependencies = [
     "aiogram>=3",
     "python-telegram-bot>=21.5",
     "pymaybe>=0.1.6",
+    "dacite>=1.8.1",
+    "better-exceptions>=0.3.3",
+    "python-box>=7.2.0",
     "rocksdict>=0.3.23",
+    "apscheduler>=3.10.4",
 ]

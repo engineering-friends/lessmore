@@ -97,3 +97,6 @@ source/python/services/ef-bots/ef_bots/ef_org_bot/deps/config/config.test.yaml
 source/python/services/ef-bots/ef_bots/ef_org_bot/deps/config/config.prod.yaml
 source/python/services/ef-bots/ef_bots/ef_threads/deps/config/config.test.yaml
 source/python/services/ef-bots/ef_bots/ef_threads/deps/config/config.prod.yaml
+source/python/services/playground/telethon-playground/telethon_playground/deps/config/config.test.yaml
+source/python/services/simple-scheduler/simple_scheduler/deps/config/config.test.yaml
+source/python/services/simple-scheduler/simple_scheduler/deps/config/config.prod.yaml
