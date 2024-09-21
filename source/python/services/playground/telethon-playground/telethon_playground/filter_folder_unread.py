@@ -8,6 +8,8 @@ from telethon_playground.deps.deps import Deps
 
 
 async def filter_folder_unread(client: TelegramClient, folder_name: str = "Groups"):
+    logger.info("Filtering folder unread", folder_name=folder_name)
+
     # - Fetch all existing dialog folders
 
     filters = (await client(GetDialogFiltersRequest())).filters

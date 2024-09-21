@@ -103,6 +103,8 @@ async def mute_unrecent_chats(client: TelegramClient, offset: timedelta = timede
 
 
 async def start_muting_unmuting_recent_chats(client: TelegramClient, offset: timedelta = timedelta(hours=4)):
+    logger.info("Starting muting-unmuting recent chats")
+
     # - Define unmute handler
 
     @client.on(events.NewMessage(outgoing=True))
