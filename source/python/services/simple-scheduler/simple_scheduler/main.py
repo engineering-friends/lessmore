@@ -6,6 +6,7 @@ from functools import partial
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
+from apscheduler.triggers.interval import IntervalTrigger
 from simple_scheduler.deps.deps import Deps
 from simple_scheduler.log_execution import log_execution
 from telethon import TelegramClient
@@ -36,11 +37,11 @@ def main(env="test"):
 
         scheduler.add_job(
             func=partial(log_execution(archive_all_chats), client=client),
-            trigger=CronTrigger(minute="*/15"),
+            trigger=IntervalTrigger(minutes=15),
         )
         scheduler.add_job(
             func=partial(log_execution(filter_folder_unread), client=client, folder_name="Groups"),
-            trigger=CronTrigger(minute="*/15"),
+            trigger=IntervalTrigger(minutes=15),
         )
 
         try:
