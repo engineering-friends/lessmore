@@ -11,7 +11,7 @@ from telethon.tl.types import InputPeerNotifySettings
 from telethon_playground.deps.deps import Deps
 
 
-async def mute_unmute_recent_chats(telegram_client: TelegramClient):
+async def mute_unmute_recent_chats(telegram_client: TelegramClient, offset: timedelta = timedelta(hours=4)):
     # - Get my id
 
     me = await telegram_client.get_me()
@@ -21,7 +21,7 @@ async def mute_unmute_recent_chats(telegram_client: TelegramClient):
     async for dialog in telegram_client.iter_dialogs():
         # - Skip chats that were updated more than 4 hours ago
 
-        if dialog.date.replace(tzinfo=None) <= to_datetime("now") - timedelta(hours=4):
+        if dialog.date.replace(tzinfo=None) <= to_datetime("now") - offset:
             logger.info(f"Skipping chat: {dialog.title}, because it was updated more than 4 hours ago: {dialog.date}")
             continue
 
@@ -33,12 +33,31 @@ async def mute_unmute_recent_chats(telegram_client: TelegramClient):
 
         # - Get the chat history
 
+        # -- Get message that was sent 4 hours ago
+
         history = await telegram_client(
             GetHistoryRequest(
                 peer=chat,
-                limit=100,  # Checking up to 100 messages for efficiency
-                offset_date=None,
+                limit=1,
+                offset_date=to_datetime("now") - timedelta(hours=4),
                 offset_id=0,
+                max_id=0,
+                min_id=0,
+                add_offset=0,
+                hash=0,
+            )
+        )
+        if not history.messages:
+            continue
+
+        start_id = history.messages[-1].id + 1
+
+        history = await telegram_client(
+            GetHistoryRequest(
+                peer=chat,
+                limit=0,
+                offset_date=None,
+                offset_id=start_id,
                 max_id=0,
                 min_id=0,
                 add_offset=0,
@@ -52,7 +71,7 @@ async def mute_unmute_recent_chats(telegram_client: TelegramClient):
 
         for message in history.messages:
             if message.from_id.user_id == me.id:  # Check if the message is from us
-                if to_datetime("now") - timedelta(hours=4) < message.date.replace(
+                if to_datetime("now") - offset < message.date.replace(
                     tzinfo=None
                 ):  # Check if the message is within the last 4 hours
                     has_recent_messages = True
