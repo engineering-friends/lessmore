@@ -20,17 +20,25 @@ async def mute_unrecent_chats(client: TelegramClient, offset: timedelta = timede
     # - Process chats
 
     async for dialog in client.iter_dialogs():
-        logger.info(f"Processing chat: {dialog.title}")
+        logger.trace("Processing chat", chat_title=dialog.title)
+
+        # - Skip me
+
+        if dialog.entity.id == me.id:
+            logger.trace("Skipping me", chat_title=dialog.title)
+            continue
 
         # - Skip muted chats
 
-        if not dialog.dialog.notify_settings.mute_until or dialog.dialog.notify_settings.mute_until.replace(
+        if dialog.dialog.notify_settings.mute_until and dialog.dialog.notify_settings.mute_until.replace(
             tzinfo=None
         ) != to_datetime("1970.01.01"):
-            logger.info(f"Skipping muted chat: {dialog.title}")
+            logger.trace("Skipping muted chat", chat_title=dialog.title)
             continue
 
-        # - Get the chat history
+        # - Get if has recent messages
+
+        has_recent_messages = False
 
         # -- Get message that was sent 4 hours ago
 
@@ -46,42 +54,39 @@ async def mute_unrecent_chats(client: TelegramClient, offset: timedelta = timede
                 hash=0,
             )
         )
-        if not history.messages:
-            continue
 
-        start_id = history.messages[-1].id + 1
+        if history.messages:
+            start_id = history.messages[-1].id + 1
 
-        # -- Get the chat history
+            # -- Get the chat history
 
-        history = await client(
-            GetHistoryRequest(
-                peer=dialog.entity,
-                limit=0,
-                offset_date=None,
-                offset_id=0,
-                max_id=0,
-                min_id=start_id,
-                add_offset=0,
-                hash=0,
+            history = await client(
+                GetHistoryRequest(
+                    peer=dialog.entity,
+                    limit=0,
+                    offset_date=None,
+                    offset_id=0,
+                    max_id=0,
+                    min_id=start_id,
+                    add_offset=0,
+                    hash=0,
+                )
             )
-        )
 
-        # - Flag to determine if we have any recent messages
+            # - Flag to determine if we have any recent messages
 
-        has_recent_messages = False
-
-        for message in history.messages:
-            if message.sender_id == me.id:  # Check if the message is from us
-                if to_datetime("now") - offset < message.date.replace(
-                    tzinfo=None
-                ):  # Check if the message is within the last 4 hours
-                    has_recent_messages = True
-                    break
+            for message in history.messages:
+                if message.sender_id == me.id:  # Check if the message is from us
+                    if to_datetime("now") - offset < message.date.replace(
+                        tzinfo=None
+                    ):  # Check if the message is within the last 4 hours
+                        has_recent_messages = True
+                        break
 
         # - Mute or unmute the chat based on message presence
 
         if has_recent_messages:
-            logger.info(f"Skipping chat: {dialog.title}, because it has recent messages")
+            logger.trace("No recent messages", chat_title=dialog.title)
             continue
 
         # - Mute the chat indefinitely
@@ -92,7 +97,9 @@ async def mute_unrecent_chats(client: TelegramClient, offset: timedelta = timede
                 settings=InputPeerNotifySettings(mute_until=2**31 - 1),  # Mute indefinitely
             )
         )
-        print(f"Muted chat: {dialog.title}")
+
+        await asyncio.sleep(2.5)  # to avoid rate limit (a rough estimate is around 30 requests per minute)
+        logger.debug("Muted chat", chat_title=dialog.title)
 
 
 def test():
@@ -103,25 +110,25 @@ def test():
 
         # - Get telegram client
 
-        client = await deps.telegram_user_client
+        client = deps.telegram_user_client
 
         # - Define unmute handler
 
-        @client.on(events.NewMessage(incoming=True))
+        @client.on(events.NewMessage(outgoing=True))
         async def handler(event):
-            # Get the chat object where the message was sent
+            logger.info("New message received")
+            # - Get the chat object where the message was sent
             chat = await event.get_chat()
 
-            if chat.muted:  # Check if the chat is muted
-                # Unmute the chat
-                await client(
-                    functions.account.UpdateNotifySettingsRequest(
-                        peer=chat,
-                        settings=types.InputPeerNotifySettings(mute_until=None),
-                    )
+            # - Unmute the chat
+            await client(
+                functions.account.UpdateNotifySettingsRequest(
+                    peer=chat,
+                    settings=types.InputPeerNotifySettings(mute_until=None),
                 )
+            )
 
-                logger.info(f'Chat "{chat.title}" has been unmuted.')
+            logger.info("Chat has been unmuted", chat_title=chat.username or chat.first_name or chat.phone or chat.id)
 
         # - Start the client
 
@@ -131,7 +138,7 @@ def test():
 
         async def muting_loop():
             while True:
-                await mute_unrecent_chats(client)
+                await mute_unrecent_chats(client, offset=timedelta(hours=4))
                 await asyncio.sleep(300)
 
         asyncio.create_task(muting_loop())
