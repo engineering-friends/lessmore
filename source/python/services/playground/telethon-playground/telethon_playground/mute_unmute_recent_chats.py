@@ -102,46 +102,44 @@ async def mute_unrecent_chats(client: TelegramClient, offset: timedelta = timede
         logger.debug("Muted chat", chat_title=dialog.title)
 
 
+async def start_muting_unmuting_recent_chats(client: TelegramClient, offset: timedelta = timedelta(hours=4)):
+    # - Define unmute handler
+
+    @client.on(events.NewMessage(outgoing=True))
+    async def handler(event):
+        logger.info("New message received")
+        # - Get the chat object where the message was sent
+        chat = await event.get_chat()
+
+        # - Unmute the chat
+        await client(
+            functions.account.UpdateNotifySettingsRequest(
+                peer=chat,
+                settings=types.InputPeerNotifySettings(mute_until=None),
+            )
+        )
+
+        logger.info("Chat has been unmuted", chat_title=chat.username or chat.first_name or chat.phone or chat.id)
+
+    # - Spawn muting task indefinitely in a loop
+
+    async def muting_loop():
+        while True:
+            await mute_unrecent_chats(client, offset=timedelta(hours=4))
+            await asyncio.sleep(300)
+
+    asyncio.create_task(muting_loop())
+
+
 def test():
     async def main():
-        # - Init deps
-
-        deps = Deps.load(env="test")
-
         # - Get telegram client
 
-        client = deps.telegram_user_client
-
-        # - Define unmute handler
-
-        @client.on(events.NewMessage(outgoing=True))
-        async def handler(event):
-            logger.info("New message received")
-            # - Get the chat object where the message was sent
-            chat = await event.get_chat()
-
-            # - Unmute the chat
-            await client(
-                functions.account.UpdateNotifySettingsRequest(
-                    peer=chat,
-                    settings=types.InputPeerNotifySettings(mute_until=None),
-                )
-            )
-
-            logger.info("Chat has been unmuted", chat_title=chat.username or chat.first_name or chat.phone or chat.id)
+        client = await Deps.load(env="test").started_telegram_user_client()
 
         # - Start the client
 
-        await client.start()
-
-        # - Spawn muting task indefinitely in a loop
-
-        async def muting_loop():
-            while True:
-                await mute_unrecent_chats(client, offset=timedelta(hours=4))
-                await asyncio.sleep(300)
-
-        asyncio.create_task(muting_loop())
+        await start_muting_unmuting_recent_chats(client, offset=timedelta(hours=4))
 
         # - Start polling
 
