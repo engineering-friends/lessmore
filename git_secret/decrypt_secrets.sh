@@ -4,6 +4,7 @@
 
 cd ${0%/*}/..
 
+
 # - Find all .secret files and add them to the git secret
 
 find . -type f -name "*.secret" | while read -r filename; do
@@ -68,6 +69,7 @@ do
 
   fi
 done <<< "$(git secret list)"
+
 
 # - Find all git secret files and decrypt them
 
