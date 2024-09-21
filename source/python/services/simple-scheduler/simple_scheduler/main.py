@@ -10,6 +10,7 @@ from simple_scheduler.deps.deps import Deps
 from simple_scheduler.log_execution import log_execution
 from telethon import TelegramClient
 from telethon_playground.archive_all_chats import archive_all_chats
+from telethon_playground.filter_folder_unread import filter_folder_unread
 from telethon_playground.mute_unmute_recent_chats import start_muting_unmuting_recent_chats
 
 
@@ -33,9 +34,12 @@ def main(env="test"):
 
         # - Clean messages every 15 minutes
 
-        scheduler.add_job(func=partial(log_execution(archive_all_chats), client=client))
         scheduler.add_job(
             func=partial(log_execution(archive_all_chats), client=client),
+            trigger=CronTrigger(minute="*/15"),
+        )
+        scheduler.add_job(
+            func=partial(log_execution(filter_folder_unread), client=client, folder_name="Groups"),
             trigger=CronTrigger(minute="*/15"),
         )
 
