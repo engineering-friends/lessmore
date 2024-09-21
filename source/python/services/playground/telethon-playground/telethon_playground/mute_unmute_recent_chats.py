@@ -19,6 +19,12 @@ async def mute_unmute_recent_chats(telegram_client: TelegramClient):
     # - Process chats
 
     async for dialog in telegram_client.iter_dialogs():
+        # - Skip chats that were updated more than 4 hours ago
+
+        if dialog.date.replace(tzinfo=None) <= to_datetime("now") - timedelta(hours=4):
+            logger.info(f"Skipping chat: {dialog.title}, because it was updated more than 4 hours ago: {dialog.date}")
+            continue
+
         # - Unfold chat
 
         chat = dialog.entity
