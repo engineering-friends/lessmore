@@ -11,9 +11,9 @@ from telethon_playground.deps.deps import Deps
 
 def get_entity_name(obj: Any) -> str:
     return (
-        getattr(obj, "title")
-        or getattr(obj, "username")
-        or (getattr(obj, "first_name") or "" + getattr(obj, "last_name") or "")
+        getattr(obj, "title", "")
+        or getattr(obj, "username", "")
+        or (getattr(obj, "first_name", "") or "" + getattr(obj, "last_name", "") or "")
         or str(obj.id)
     )
 
@@ -40,16 +40,16 @@ async def filter_folder_unread(client: TelegramClient, folder_name: str = "Group
     updated_include = [InputPeerSelf()]  # need at least one chat in a folder
     updated_exclude = []
 
-    all_dialogs = await client.get_dialogs(limit=20)
+    all_dialogs = await client.get_dialogs()
 
     for chat in target_folder.include_peers + target_folder.exclude_peers:
         entity = await client.get_entity(chat)
 
-        dialog = next((d for d in all_dialogs if d.entity == entity), None)
+        dialog = next((d for d in all_dialogs if d.id == entity.id), None)
 
         if not dialog:
             logger.debug("Dialog not found", chat_title=get_entity_name(entity))
-            continue
+            raise Exception("Dialog not found")
 
         if dialog.unread_count == 0:
             logger.debug(
@@ -92,7 +92,7 @@ async def filter_folder_unread(client: TelegramClient, folder_name: str = "Group
 
 def test():
     async def main():
-        await filter_folder_unread(client=await Deps.load().started_telegram_user_client(), folder_name="Groups")
+        await filter_folder_unread(client=await Deps.load().started_telegram_user_client(), folder_name="Daily")
 
     asyncio.run(main())
 

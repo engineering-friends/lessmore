@@ -38,12 +38,8 @@ def main(env="test"):
             trigger=IntervalTrigger(minutes=15),
         )
         scheduler.add_job(
-            func=partial(log_execution(filter_folder_unread), client=client, folder_name="Groups"),
-            trigger=IntervalTrigger(minutes=15),
-        )
-        scheduler.add_job(
             func=partial(log_execution(filter_folder_unread), client=client, folder_name="Daily"),
-            trigger=IntervalTrigger(minutes=15),
+            trigger=IntervalTrigger(minutes=60),
         )
 
         try:
