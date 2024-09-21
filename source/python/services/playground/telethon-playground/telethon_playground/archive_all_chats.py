@@ -4,10 +4,10 @@ from telethon import TelegramClient
 from telethon_playground.deps.deps import Deps
 
 
-async def archive_all_chats(telegram_client: TelegramClient):
-    async for dialog in telegram_client.iter_dialogs():
+async def archive_all_chats(client: TelegramClient):
+    async for dialog in client.iter_dialogs():
         if not dialog.archived:
-            await telegram_client.edit_folder(entity=dialog, folder=1)
+            await client.edit_folder(entity=dialog, folder=1)
 
 
 def test():

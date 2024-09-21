@@ -1,6 +1,7 @@
 import asyncio
 import time
 
+from datetime import timedelta
 from functools import partial
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -9,6 +10,7 @@ from simple_scheduler.deps.deps import Deps
 from simple_scheduler.log_execution import log_execution
 from telethon import TelegramClient
 from telethon_playground.archive_all_chats import archive_all_chats
+from telethon_playground.mute_unmute_recent_chats import start_muting_unmuting_recent_chats
 
 
 def main(env="test"):
@@ -17,15 +19,23 @@ def main(env="test"):
 
         deps = Deps.load(env=env)
 
+        # - Get telegram client
+
+        client = await deps.started_telegram_user_client()
+
+        # - Mute-unmute recent chats
+
+        await start_muting_unmuting_recent_chats(client=client, offset=timedelta(hours=4))
+
         # - Start scheduler
 
         scheduler = AsyncIOScheduler()
 
         # - Clean messages every 15 minutes
 
-        scheduler.add_job(func=partial(log_execution(archive_all_chats), await deps.started_telegram_user_client()))
+        scheduler.add_job(func=partial(log_execution(archive_all_chats), client=client))
         scheduler.add_job(
-            func=partial(log_execution(archive_all_chats), await deps.started_telegram_user_client()),
+            func=partial(log_execution(archive_all_chats), client=client),
             trigger=CronTrigger(minute="*/15"),
         )
 
