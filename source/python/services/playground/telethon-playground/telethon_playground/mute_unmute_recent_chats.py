@@ -98,7 +98,9 @@ async def mute_unrecent_chats(client: TelegramClient, offset: timedelta = timede
             )
         )
 
-        await asyncio.sleep(5)  # to avoid rate limit (a rough estimate is around 30 requests per minute)
+        await asyncio.sleep(
+            5
+        )  # to avoid rate limit (a rough estimate is around 30 requests per minute, in practice not enough)
         logger.debug("Muted chat", chat_title=dialog.title)
 
 
