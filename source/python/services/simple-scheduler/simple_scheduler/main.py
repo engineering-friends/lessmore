@@ -33,8 +33,6 @@ def main(env="test"):
 
         scheduler = AsyncIOScheduler()
 
-        # - Clean messages every 15 minutes
-
         scheduler.add_job(
             func=partial(log_execution(archive_all_chats), client=client),
             trigger=IntervalTrigger(minutes=15),
