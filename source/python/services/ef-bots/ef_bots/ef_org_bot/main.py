@@ -37,7 +37,9 @@ def build_main_menu(deps: Deps):
         while True:
             # - Ask for telegram username
 
-            answer = await response.ask("2. Введи телеграм участника, чтобы я добавил его в чаты и каналы:")
+            answer = await response.ask(
+                "2. Введи телеграм участника, чтобы я добавил его в чаты и каналы (в любом формате)"
+            )
 
             telegram_username = answer.replace("@", "").replace("https://t.me/", "").replace("t.me/", "")
 
