@@ -25,6 +25,8 @@ def build_main_menu(deps: Deps):
 
         # - 2. Add to all telegram ecosystem: ef channel, ef random coffee,
 
+        # -- Ask for telegram username
+
         while True:
             # - Ask for telegram username
 
@@ -39,6 +41,8 @@ def build_main_menu(deps: Deps):
             except:
                 entity = None
 
+            # - If user if found and it's correct, break the loop
+
             if isinstance(entity, User):
                 answer = await response.ask(
                     f"t.me/{telegram_username}",
@@ -50,7 +54,10 @@ def build_main_menu(deps: Deps):
             else:
                 await response.tell("Не нашел такого пользователя")
 
+        # -- Get user
         user = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
+
+        # -- Add user to chats
 
         answer = await response.ask(
             "Добавить пользователя в наши чаты и каналы?", inline_keyboard=[["✅ Да", "❌ Нет"]]
