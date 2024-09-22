@@ -18,6 +18,9 @@ from telethon.tl.types import User
 Ideas: 
 - Send reminders for the user to check if the member has filled the form
 - Send messages to the member? 
+- Send messages to Matvey?
+
+Make a convenient state? How?  
 """
 
 
