@@ -21,7 +21,7 @@ def find_word_timestamp(srt: str, word: str) -> int:
     """
     1
     00:00:00,000 --> 00:00:03,000
-    Meine Mama sagte immer, Wunder passieren an jedem Tag.
+    Meine Mama sagte immer, Wunder passieren an jedem Tag. sdf
 
     2
     00:00:03,000 --> 00:00:06,000
