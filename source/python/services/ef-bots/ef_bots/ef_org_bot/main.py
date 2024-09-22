@@ -14,6 +14,13 @@ from teletalk.models.response import Response
 from telethon.tl.types import User
 
 
+"""
+Ideas: 
+- Send reminders for the user to check if the member has filled the form
+- Send messages to the member? 
+"""
+
+
 def build_main_menu(deps: Deps):
     async def start_onboarding(response: Response):
         # - 1. Notion access
@@ -55,12 +62,14 @@ def build_main_menu(deps: Deps):
                 await response.tell("Не нашел такого пользователя")
 
         # -- Get user
+
         user = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
 
         # -- Add user to chats
 
         answer = await response.ask(
-            "Добавить пользователя в наши чаты и каналы?", inline_keyboard=[["✅ Да", "❌ Нет"]]
+            "Добавить пользователя в наши чаты и каналы?",
+            inline_keyboard=[["✅ Да", "❌ Нет"]],
         )
 
         if answer == "✅ Да":
@@ -126,7 +135,7 @@ def build_main_menu(deps: Deps):
 
         # -- Send a reminder in 3 days  to check if the user has filled the form
 
-        # todo
+        # todo later:  [@marklidenberg]
 
         # -- Send the final message for the user
 
