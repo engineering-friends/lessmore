@@ -91,7 +91,7 @@ def build_main_menu(deps: Deps):
             database={
                 "id": "106b738eed9a80cf8669e76dc12144b7",  # pragma: allowlist secret
             },
-            pages=[{"properties": {"Name": {"title": [{"text": {"content": full_name}}]}}}],
+            pages=[{"properties": {"Name": {"title": [{"text": {"content": f"🏄‍♂️ Онбординг в EF для {full_name}"}}]}}}],
             page_unique_id_func=lambda page: page["properties"]["Name"]["title"][0]["text"]["content"],
         )
 

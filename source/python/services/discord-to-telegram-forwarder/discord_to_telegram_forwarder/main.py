@@ -34,6 +34,7 @@ async def main(env: Literal["test", "prod"] = "test"):
                 not in [tag.name for tag in maybe(message).channel.applied_tags.or_else([])]
                 and message.guild.name == deps.config.guild_name,
             },
+            filter_public_channels=deps.config.filter_public_channels,
         )
 
         # - Update comments counter
