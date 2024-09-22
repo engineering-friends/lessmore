@@ -20,7 +20,11 @@ Ideas:
 - Send messages to the member? 
 - Send messages to Matvey?
 
-Make a convenient state? How?  
+Make a convenient state? How? Get response chat_id. If there is a scheduled message - send it. 
+Need a convenient scheduler with the state. State should run a function 
+
+Make a more convenient init state access
+
 """
 
 
