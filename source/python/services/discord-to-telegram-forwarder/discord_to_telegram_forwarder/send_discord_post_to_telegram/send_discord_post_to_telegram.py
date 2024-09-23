@@ -45,7 +45,6 @@ MESSAGE_LIMIT = 4096
 
 
 async def send_discord_post_to_telegram(
-    deps: Deps,
     message: discord.Message,
     telegram_user_client: TelegramClient,
     telegram_chat_to_filter: dict[
@@ -414,7 +413,6 @@ async def test():
     # - Send message
 
     await send_discord_post_to_telegram(
-        deps=deps,
         message=Box(  # note: test won't work with user_id, as it is not a discord.Message
             {
                 "channel": {
