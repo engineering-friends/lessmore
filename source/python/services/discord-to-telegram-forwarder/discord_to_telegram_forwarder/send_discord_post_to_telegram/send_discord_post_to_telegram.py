@@ -35,7 +35,7 @@ from loguru import logger
 from PIL import Image
 from pymaybe import maybe
 from retry import retry
-from telethon import functions, types
+from telethon import TelegramClient, functions, types
 
 
 MENTION_PLACEHOLDER = "ç"
@@ -431,6 +431,7 @@ async def test():
         filter_public_channels=True,
         telegram_chat_to_filter={deps.config.telegram_ef_channel: lambda message: True},
         filter_forum_post_messages=False,
+        telegram_user_client=deps.telegram_user_client,
     )
 
 

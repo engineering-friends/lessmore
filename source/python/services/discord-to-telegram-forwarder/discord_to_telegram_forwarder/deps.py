@@ -34,13 +34,13 @@ class Deps:
         # - Init logger
 
         setup_json_loguru(
-            append_non_json_traceback=(env == "Test"),
+            append_non_json_traceback=(env.lower() == "test"),
             level=log_level,
         )
 
         # - Get data path
 
-        local_files_dir = ensure_path(Path(__file__).parent / f"../data/dynamic/{env}")
+        local_files_dir = ensure_path(Path(__file__).parent / f"../data/dynamic/{env}", is_dir=True)
 
         return Deps(
             config=config,
