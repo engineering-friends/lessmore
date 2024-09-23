@@ -7,6 +7,11 @@ by {author}
 {body}
 [→ обсудить в дискорде]({url}) | #{parent_channel_name} {tags}"""
 
+TEMPLATE_NO_DISCORD_LINKS = """{emoji} **{title}** 
+by {author}
+{body}
+#{parent_channel_name} {tags}"""
+
 
 def format_message(
     parent_channel_name: str,
@@ -18,16 +23,27 @@ def format_message(
     url: str,
     author_url: str = "",
     inner_shortened_url: str = "",  # deprecated
+    disable_discord_links: bool = False,
 ):
-    return TEMPLATE.format(
-        parent_channel_name=parent_channel_name.replace("-", "_"),
-        emoji=emoji,
-        title=title,
-        author=author_name if not author_url else f"[{author_name}]({author_url})",
-        body="\n" + body + "\n" if body else "",
-        tags=" ".join([f"#{tag}" for tag in tags]) + "\n" if tags else "",
-        url=url,
-    )
+    if not disable_discord_links:
+        return TEMPLATE.format(
+            parent_channel_name=parent_channel_name.replace("-", "_"),
+            emoji=emoji,
+            title=title,
+            author=author_name if not author_url else f"[{author_name}]({author_url})",
+            body="\n" + body + "\n" if body else "",
+            tags=" ".join([f"#{tag}" for tag in tags]) + "\n" if tags else "",
+            url=url,
+        )
+    else:
+        return TEMPLATE_NO_DISCORD_LINKS.format(
+            parent_channel_name=parent_channel_name.replace("-", "_"),
+            emoji=emoji,
+            title=title,
+            author=author_name if not author_url else f"[{author_name}]({author_url})",
+            body="\n" + body + "\n" if body else "",
+            tags=" ".join([f"#{tag}" for tag in tags]) + "\n" if tags else "",
+        )
 
 
 def test():
