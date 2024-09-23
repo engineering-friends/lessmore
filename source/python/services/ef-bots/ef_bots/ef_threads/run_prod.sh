@@ -20,7 +20,7 @@ MONOREPO_PATH=$(echo $SERVICE_PATH | sed -E 's/(.*)\/source\/.*/\1/') # Crop /a/
 
 # - Decrypt secrets
 
-$MONOREPO_PATH/git_secret/decrypt_secrets.sh
+bash $MONOREPO_PATH/git_secret/decrypt_secrets.sh
 
 # - Set PYTHONPATH
 
