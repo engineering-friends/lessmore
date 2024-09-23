@@ -169,7 +169,8 @@ async def send_discord_post_to_telegram(
 
     try:
         notion_properties = await get_notion_user_properties(
-            name=author_name, deps=deps
+            name=author_name,
+            deps=deps,
         )  # {'AI стиль постов': 'style of secret of kells, old paper, celtic art', 'Name': 'Mark Lidenberg', 'TG_username': 'marklidenberg', 'url': 'https://www.notion.so/Mark-Lidenberg-d5ae5f192b4c402ba014268e63aed47c', 'Заполнена': True}
     except:
         logger.error("Failed to get user notion properties")
@@ -436,8 +437,7 @@ async def test():
 if __name__ == "__main__":
     # asyncio.run(
     #     test_send_real_message_from_discord(
-    #         forum_name="❔│requests",
-    #         title_contains="Челленджи",
+    #         forum_name="❔│requests",x
     #     )
     # )
 
