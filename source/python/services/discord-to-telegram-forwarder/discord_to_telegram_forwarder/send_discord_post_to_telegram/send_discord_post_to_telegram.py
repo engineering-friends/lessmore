@@ -52,6 +52,7 @@ async def send_discord_post_to_telegram(
     ],  # Telegram chat to filter function (if filter function returns True, message will be sent to this chat)
     filter_forum_post_messages: bool = True,  # only send messages that are from forum channel and are starter message
     emoji: Optional[str] = None,  # if not provided, will be requested from openai
+    disable_discord_links: bool = False,
 ) -> None:
     """Sends a discord message to telegram.
 
@@ -263,6 +264,7 @@ async def send_discord_post_to_telegram(
                     body=body,
                     url=url,
                     author_url=notion_author_url,
+                    disable_discord_links=disable_discord_links,
                 )
             )
             - body_size
@@ -284,6 +286,7 @@ async def send_discord_post_to_telegram(
         body=body,
         url=url,
         author_url=notion_author_url,
+        disable_discord_links=disable_discord_links,
     )
 
     # - If the message is too long, split it into two messages: one with just image caption and another with the text
@@ -318,13 +321,13 @@ async def send_discord_post_to_telegram(
                 if random.uniform(0, 1) < 0.3:
                     emojis = request_reaction_emojis_from_openai(
                         f"{title} {body}",
-                        limit=random.choice([1, 2, 3]),
+                        limit=1,
                     )
 
                     logger.debug("Emojis from openai", emojis=emojis)
 
                     try:
-                        await deps.telegram_user_client(
+                        await deps.telegram_bot_client(
                             functions.messages.SendReactionRequest(
                                 peer=message.peer_id,
                                 msg_id=message.id,

@@ -22,10 +22,21 @@ class Deps:
     telegram_user_client: TelegramClient
 
     @staticmethod
-    def load(env: Literal["test", "prod"] = "test", log_level="DEBUG") -> "Deps":
+    def load(
+        env: Literal["test", "prod"] = "test",
+        log_level="DEBUG",
+        config_dict: dict = {},
+    ) -> "Deps":
         # - Init config
 
-        config = Config(**read_config(str(Path(__file__).parent / f"config/config.{env}.yaml")))
+        config = Config(
+            **read_config(
+                [
+                    str(Path(__file__).parent / f"config/config.{env}.yaml"),
+                    config_dict,
+                ]
+            )
+        )
 
         # - Configure openai
 
