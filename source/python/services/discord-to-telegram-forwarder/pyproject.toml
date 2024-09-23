@@ -16,7 +16,7 @@ dependencies = [
     "path == 16.4.0",
     "tqdm == 4.64.0",
     "sortedcontainers == 2.4.0",
-    { name = "python-telegram-bot", version = "20.0a4", allow-prereleases = true },
+    "python-telegram-bot >=20.0a4,<21",
     "Telethon == 1.35.0",
     "fire == 0.4.0",
     "anyconfig == 0.13.0",
