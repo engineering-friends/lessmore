@@ -1,5 +1,5 @@
 [project]
-name = "discord-telegram-forwarder"
+name = "discord-to-telegram-forwarder"
 version = "0.1.1"
 description = ""
 readme = "README.md"
