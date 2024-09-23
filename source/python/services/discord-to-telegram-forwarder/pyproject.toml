@@ -1,6 +1,7 @@
 [project]
 name = "discord-to-telegram-forwarder"
 version = "0.1.0"
+readme = "README.md"
 description = ""
 requires-python = ">=3.9"
 authors = [
