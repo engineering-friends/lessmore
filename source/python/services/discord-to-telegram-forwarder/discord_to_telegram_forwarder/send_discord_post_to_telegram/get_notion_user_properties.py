@@ -25,7 +25,7 @@ async def get_notion_user_properties(
 ) -> dict:
     # - Init notion client
 
-    client = EnrichedNotionAsyncClient(notion_token=deps.config.notion_token)
+    client = EnrichedNotionAsyncClient(auth=deps.config.notion_token)
 
     # - Get pages from the whois page
 
