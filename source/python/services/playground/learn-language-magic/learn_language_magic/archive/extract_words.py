@@ -14,6 +14,7 @@ async def extract_words(text: str):
     Input: `Jobs are just a piece of cake`
     Output: {{"words": ["job", "be", "just", "a", "piece of cake"]}}
     
+    
     [Text]
     {text}"""
 
