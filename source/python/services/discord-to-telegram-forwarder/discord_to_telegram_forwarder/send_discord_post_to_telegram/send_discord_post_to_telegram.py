@@ -35,7 +35,7 @@ from loguru import logger
 from PIL import Image
 from pymaybe import maybe
 from retry import retry
-from telethon import TelegramClient, functions, types
+from telethon import functions, types
 
 
 MENTION_PLACEHOLDER = "ç"
@@ -45,15 +45,13 @@ MESSAGE_LIMIT = 4096
 
 
 async def send_discord_post_to_telegram(
+    deps: Deps,
     message: discord.Message,
-    telegram_user_client: TelegramClient,
     telegram_chat_to_filter: dict[
         Union[str, int], Callable[[discord.Message], bool]
     ],  # Telegram chat to filter function (if filter function returns True, message will be sent to this chat)
-    filter_public_channels: bool = True,  # only send messages that are from public channels
     filter_forum_post_messages: bool = True,  # only send messages that are from forum channel and are starter message
     emoji: Optional[str] = None,  # if not provided, will be requested from openai
-    telegram_username_to_discord_aliases_json: str = "{}",
 ) -> None:
     """Sends a discord message to telegram.
 
@@ -79,7 +77,7 @@ async def send_discord_post_to_telegram(
 
     # -- Do not send if message is in a private channel and `filter_public_channels` is True
 
-    if filter_public_channels:
+    if deps.config.filter_public_channels:
         for channel_candidate in [
             message.channel,
             getattr(message.channel, "parent", None),
@@ -126,7 +124,7 @@ async def send_discord_post_to_telegram(
 
         # - Load `telegram_username_to_discord_aliases`
 
-        telegram_username_to_discord_aliases = json.loads(telegram_username_to_discord_aliases_json)
+        telegram_username_to_discord_aliases = json.loads(deps.config.telegram_username_to_discord_aliases_json)
 
         discord_alias_to_telegram_username = {}
         for telegram_username, discord_aliases in telegram_username_to_discord_aliases.items():
@@ -168,8 +166,7 @@ async def send_discord_post_to_telegram(
 
     try:
         notion_properties = await get_notion_user_properties(
-            name=author_name,
-            deps=deps,
+            name=author_name, deps=deps
         )  # {'AI стиль постов': 'style of secret of kells, old paper, celtic art', 'Name': 'Mark Lidenberg', 'TG_username': 'marklidenberg', 'url': 'https://www.notion.so/Mark-Lidenberg-d5ae5f192b4c402ba014268e63aed47c', 'Заполнена': True}
     except:
         logger.error("Failed to get user notion properties")
@@ -185,7 +182,9 @@ async def send_discord_post_to_telegram(
         try:
             # - Generate article cover
 
-            image_contents = retry(tries=5, delay=1)(generate_article_cover)(
+            image_contents = cache_on_disk(f"{deps.local_files_dir}/generate_image")(
+                retry(tries=5, delay=1)(generate_article_cover)
+            )(
                 title=title,
                 body=body,
                 style=notion_ai_style or "Continuous lines very easy, clean and minimalist, black and white",
@@ -304,7 +303,7 @@ async def send_discord_post_to_telegram(
             for _message_text, _files in message_text_and_files:
                 # - Send the message
 
-                message = await telegram_user_client.send_message(
+                message = await deps.telegram_bot_client.send_message(
                     entity=telegram_chat,
                     file=(
                         _files[0] if len(_files) == 1 else _files or None
@@ -325,7 +324,7 @@ async def send_discord_post_to_telegram(
                     logger.debug("Emojis from openai", emojis=emojis)
 
                     try:
-                        await telegram_user_client(
+                        await deps.telegram_user_client(
                             functions.messages.SendReactionRequest(
                                 peer=message.peer_id,
                                 msg_id=message.id,
@@ -385,7 +384,6 @@ async def test_send_real_message_from_discord(forum_name: str, title_contains: s
                     deps=deps,
                     message=message,
                     telegram_chat_to_filter={deps.config.telegram_ef_channel: lambda message: True},
-                    filter_public_channels=deps.config.filter_public_channels,
                     filter_forum_post_messages=False,
                 )
             except Exception:
@@ -413,12 +411,13 @@ async def test():
     # - Send message
 
     await send_discord_post_to_telegram(
+        deps=deps,
         message=Box(  # note: test won't work with user_id, as it is not a discord.Message
             {
                 "channel": {
                     "name": "Мета-исследование об эффекте кофе на организм",
                     "parent": {"name": "parent_channel_name"},
-                    "applied_tags": [Box({"name": "tag1"}), Box({"name": "tag2"})],
+                    # 'applied_tags': [Box({'name': 'tag1'}), Box({'name': 'tag2'})],
                 },
                 "content": """Я устроился на новую работу!""",
                 "author": {"display_name": "Mark Lidenberg"},
@@ -426,17 +425,16 @@ async def test():
                 "attachments": [],
             }
         ),
-        filter_public_channels=True,
         telegram_chat_to_filter={deps.config.telegram_ef_channel: lambda message: True},
         filter_forum_post_messages=False,
-        telegram_user_client=deps.telegram_user_client,
     )
 
 
 if __name__ == "__main__":
     # asyncio.run(
     #     test_send_real_message_from_discord(
-    #         forum_name="❔│requests",x
+    #         forum_name="❔│requests",
+    #         title_contains="Челленджи",
     #     )
     # )
 

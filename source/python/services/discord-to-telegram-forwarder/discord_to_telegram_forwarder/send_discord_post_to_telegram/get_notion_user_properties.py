@@ -20,12 +20,12 @@ PROPERTY_NAMES = ["Name", "TG_username", "AI стиль постов", "Запо
 
 async def get_notion_user_properties(
     name: str,
-    notion_token: str,
+    deps: Deps,
     whois_database_id: str = "641eaea7c7ad4881bbed5ea096a4421a",  # ef whois in notion
 ) -> dict:
     # - Init notion client
 
-    client = EnrichedNotionAsyncClient(notion_token)
+    client = EnrichedNotionAsyncClient(notion_token=deps.config.notion_token)
 
     # - Get pages from the whois page
 
