@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="discord-to-telegram-forwarder",
-    version="0.1.1",
+    version="0.1.2",
     description="",  # You can provide a description here
     author="marklidenberg",
     author_email="marklidenberg@gmail.com",
