@@ -14,6 +14,7 @@ class BlockMessage:
     text: str = ""
     reply_keyboard_markup: Optional[ReplyKeyboardMarkup] = None
     inline_keyboard_markup: Optional[InlineKeyboardMarkup] = None
+    is_inline_keyboard_visible: bool = True
     files: list[str] = field(default_factory=list)
 
     # - State

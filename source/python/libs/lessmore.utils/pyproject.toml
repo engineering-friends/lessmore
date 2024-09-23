@@ -1,37 +1,31 @@
-[tool.poetry]
+[project]
 name = "lessmore.utils"
 version = "0.1.0"
 description = ""
-authors = ["marklidenberg <marklidenberg@gmail.com>"]
-packages = [
-    { include = "lessmore" },
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    {name = "marklidenberg", email = "marklidenberg@gmail.com"}
 ]
-
-[tool.poetry.dependencies]
-python = "^3.9"
-tqdm = "^4.64.0"
-loguru = "^0.7.0"
-numpy = "^1.26.1"
-pandas = "^1.0"
-protobuf = "^3.0"
-python-box = {extras = ["ruamel.yaml", "toml", "msgpack"], version = "^6.0.2"}
-fire = "^0.4.0"
-sortedcontainers = "^2.4.0"
-ujson = "^5.5.0"
-pendulum = "^3.0.0"
-PyYAML = "^6.0"
-argon2-cffi = "^21.3.0"
-bcrypt = "^4.0.1"
-pydantic = {extras = ["dotenv"], version = "^2.0.0"}
-notion-client = "^2.0.0"
-more-itertools = "^9.1.0"
-requests = "^2.28.2"
-anyconfig = "^0.14.0"
-typer = "^0.12.3"
-python-dotenv = "^1.0.1"
-
-[tool.poetry.dev-dependencies]
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+dependencies = [
+    "tqdm >=4.64.0,<5",
+    "loguru >=0.7.0,<1",
+    "numpy >=1.26.1,<2",
+    "pandas >=1.0,<2",
+    "protobuf >=3.0,<4",
+    "python-box >=6.0.2,<7",
+    "fire >=0.4.0,<1",
+    "sortedcontainers >=2.4.0,<3",
+    "ujson >=5.5.0,<6",
+    "pendulum >=3.0.0,<4",
+    "PyYAML >=6.0,<7",
+    "argon2-cffi >=21.3.0,<22",
+    "bcrypt >=4.0.1,<5",
+    "pydantic >=2.0.0,<3",
+    "notion-client >=2.0.0,<3",
+    "more-itertools >=9.1.0,<10",
+    "requests >=2.28.2,<3",
+    "anyconfig >=0.14.0,<1",
+    "typer >=0.12.3,<1",
+    "python-dotenv >=1.0.1,<2"
+]

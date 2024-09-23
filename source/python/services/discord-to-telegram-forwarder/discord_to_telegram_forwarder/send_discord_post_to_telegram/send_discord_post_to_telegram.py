@@ -417,7 +417,7 @@ async def test():
                 "channel": {
                     "name": "Мета-исследование об эффекте кофе на организм",
                     "parent": {"name": "parent_channel_name"},
-                    # 'applied_tags': [Box({'name': 'tag1'}), Box({'name': 'tag2'})],
+                    "applied_tags": [Box({"name": "tag1"}), Box({"name": "tag2"})],
                 },
                 "content": """Я устроился на новую работу!""",
                 "author": {"display_name": "Mark Lidenberg"},

@@ -58,9 +58,6 @@ class Talk:
 
         self.input_channel = asyncio.Queue()  # a queue of input `Response` objects
 
-    # buttons -> almost always suppress
-    # but sometimes do not supress
-
     async def ask(
         self,
         prompt: str | Block | Page | Response = "",
@@ -108,6 +105,31 @@ class Talk:
         # - Wait for the `Response` in the `self.input_channel`
 
         response = await self.input_channel.get()
+
+        # - Remove inline keyboard if `one_time_keyboard` is True
+
+        if one_time_keyboard:
+            # - Keep old values
+
+            old_values = [block.is_inline_keyboard_visible for block in page.blocks]
+
+            # - Set values to True
+
+            for block in page.blocks:
+                block.is_inline_keyboard_visible = False
+
+            # - Update active page again
+
+            await self.update_active_page(
+                page=page,
+                mode="inplace",
+                default_chat_id=default_chat_id,
+            )
+
+            # - Restore old values
+
+            for block, old_value in zip(page.blocks, old_values):
+                block.is_inline_keyboard_visible = old_value
 
         # - Enrich response with all extra data
 
@@ -237,7 +259,11 @@ class Talk:
         else:
             raise Exception("Unknown response type")
 
-    async def upsert_message(self, block_message: Optional[BlockMessage] = None, old_message: Optional[Message] = None):
+    async def upsert_message(
+        self,
+        block_message: Optional[BlockMessage] = None,
+        old_message: Optional[Message] = None,
+    ):
         # - Edit or send message
 
         if old_message:
@@ -248,7 +274,9 @@ class Talk:
                         chat_id=block_message.chat_id,
                         message_id=old_message.message_id,
                         text=block_message.text,
-                        reply_markup=block_message.inline_keyboard_markup,
+                        reply_markup=block_message.inline_keyboard_markup
+                        if block_message.is_inline_keyboard_visible
+                        else None,
                         parse_mode="Markdown",
                         link_preview_options=LinkPreviewOptions(is_disabled=False),
                     )
@@ -256,7 +284,9 @@ class Talk:
                         chat_id=block_message.chat_id,
                         message_id=old_message.message_id,
                         text=block_message.text,
-                        reply_markup=block_message.inline_keyboard_markup,
+                        reply_markup=block_message.inline_keyboard_markup
+                        if block_message.is_inline_keyboard_visible
+                        else None,
                         parse_mode="Markdown",
                         link_preview_options=LinkPreviewOptions(is_disabled=False),
                     )
@@ -267,18 +297,24 @@ class Talk:
                             chat_id=block_message.chat_id,
                             message_id=old_message.message_id,
                         )
-                        return
+                        message = old_message  # just set the message to the old one, as they are the same
                     else:
                         raise
                 except Exception as e:
                     logger.exception("Failed to edit message", error=e)
                     raise
             else:
+                # no block message, just delete the old message
+
                 message = await self.app.bot.delete_message(
-                    chat_id=old_message.chat.id, message_id=old_message.message_id
+                    chat_id=old_message.chat.id,
+                    message_id=old_message.message_id,
                 )
                 self.history = [message for message in self.history if message.message_id != old_message.message_id]
+                return
         else:
+            # no old message, create a new one
+
             message = await self.app.bot.send_message(
                 chat_id=block_message.chat_id,
                 text=block_message.text,
@@ -291,7 +327,10 @@ class Talk:
 
         if isinstance(message, Message):
             block_message.messages = list(
-                skip_duplicates([message] + block_message.messages, key=lambda message: message.message_id),
+                skip_duplicates(
+                    [message] + block_message.messages,
+                    key=lambda message: message.message_id,
+                ),
             )
 
             self.history = list(

@@ -3,14 +3,20 @@
 
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
+# - Screen
+
+brew install screen wget pipx pyenv hstr
+
+# - Pipx
+
+pipx install poetry pre-commit
+pipx install terminal-copilot --pip-args='openai==0.28'
+
 # - Z
 
 wget -O $HOME/z.sh https://raw.githubusercontent.com/rupa/z/master/z.sh
 printf "\n\n#initialize Z (https://github.com/rupa/z) \n. ~/z.sh \n\n" >> ~/.zshrc
 source $HOME/.zshrc
-
-# - Screen
-homebrew install screen
 
 # - Apps
 
@@ -37,3 +43,4 @@ brew install --cask whatsapp
 brew install --cask vlc
 brew install --cask zoom
 brew install --cask karabiner-elements
+

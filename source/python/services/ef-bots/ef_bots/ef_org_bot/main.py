@@ -1,4 +1,5 @@
 import asyncio
+import textwrap
 
 from aiogram.types import BotCommand
 from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
@@ -13,21 +14,39 @@ from teletalk.models.response import Response
 from telethon.tl.types import User
 
 
+"""
+Ideas: 
+- Send reminders for the user to check if the member has filled the form
+- Send messages to the member? 
+- Send messages to Matvey?
+
+Make a convenient state? How? Get response chat_id. If there is a scheduled message - send it. 
+Need a convenient scheduler with the state. State should run a function 
+
+Make a more convenient init state access
+
+"""
+
+
 def build_main_menu(deps: Deps):
     async def start_onboarding(response: Response):
         # - 1. Notion access
 
         await response.ask(
-            "1. Для начала тебе нужно пошарить участнику доступ в Notion: [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
+            "1. Для начала тебе нужно узнать email от Notion участника и пошарить ему доступ на [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
             inline_keyboard=[["✅ Доступ есть"]],
         )
 
         # - 2. Add to all telegram ecosystem: ef channel, ef random coffee,
 
+        # -- Ask for telegram username
+
         while True:
             # - Ask for telegram username
 
-            answer = await response.ask("2. Введи телеграм участника, чтобы я добавил его в чаты и каналы:")
+            answer = await response.ask(
+                "2. Введи телеграм участника, чтобы я добавил его в чаты и каналы (в любом формате)"
+            )
 
             telegram_username = answer.replace("@", "").replace("https://t.me/", "").replace("t.me/", "")
 
@@ -37,6 +56,8 @@ def build_main_menu(deps: Deps):
                 entity = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
             except:
                 entity = None
+
+            # - If user if found and it's correct, break the loop
 
             if isinstance(entity, User):
                 answer = await response.ask(
@@ -49,10 +70,15 @@ def build_main_menu(deps: Deps):
             else:
                 await response.tell("Не нашел такого пользователя")
 
+        # -- Get user
+
         user = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
 
+        # -- Add user to chats
+
         answer = await response.ask(
-            "Добавить пользователя в наши чаты и каналы?", inline_keyboard=[["✅ Да", "❌ Нет"]]
+            "Добавить пользователя в наши чаты и каналы?",
+            inline_keyboard=[["✅ Да", "❌ Нет"]],
         )
 
         if answer == "✅ Да":
@@ -83,7 +109,7 @@ def build_main_menu(deps: Deps):
 
         # -- Prompt
 
-        await response.tell("4. Перешли страницу онбординга участнику:")
+        await response.tell("4. Перешли участнику:")
 
         # -- Create page
 
@@ -91,7 +117,7 @@ def build_main_menu(deps: Deps):
             database={
                 "id": "106b738eed9a80cf8669e76dc12144b7",  # pragma: allowlist secret
             },
-            pages=[{"properties": {"Name": {"title": [{"text": {"content": full_name}}]}}}],
+            pages=[{"properties": {"Name": {"title": [{"text": {"content": f"🏄‍♂️ Онбординг в EF для {full_name}"}}]}}}],
             page_unique_id_func=lambda page: page["properties"]["Name"]["title"][0]["text"]["content"],
         )
 
@@ -99,14 +125,31 @@ def build_main_menu(deps: Deps):
 
         await asyncio.sleep(0.5)
 
-        await response.tell(f"[🏄‍♂️ Онбординг в EF для {full_name}]({new_pages[0]['url']})")
+        await response.tell(
+            textwrap.dedent(f"""
+⚙️ Добро пожаловать в EF! 
+
+На данный момент мы тебя добавили:
+- В [Notion](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4) 
+- В канал EF Channel. Там у нас все посты и запросы - в том числе твои будут
+- В чатик EF Random Coffee - там основные знакомства, участвуй! :)
+
+Для онбординга нужно заполнить страничку в Notion: [🏄‍♂️ Онбординг в EF для {full_name}]({new_pages[0]['url']})
+""")
+        )
 
         await asyncio.sleep(0.5)
 
         # - 5. Write a final message
 
+        # -- Send a reminder in 3 days  to check if the user has filled the form
+
+        # todo later:  [@marklidenberg]
+
+        # -- Send the final message for the user
+
         await response.ask(
-            "5. Теперь твоя задача - убедиться, чтобы он все заполнил! Как сделает, Матвею придет уведомление, после чего он напишет о нем пост, а такжепоможет ему сделать его первый запрос. На этом онбординг будет завершен, мерси боку! ",
+            "5. Последний шаг - убедиться, чтобы участник все заполнил! Как сделает, Матвею придет уведомление, после чего он напишет о нем пост и поможет ему сделать его первый запрос. На этом онбординг будет завершен, мерси боку! ",
             inline_keyboard=[["✅ Завершить"]],
         )
 
