@@ -19,7 +19,9 @@ async def starter(response: Response):
     # - Test reply keyboard
 
     button_clicked = await response.ask(
-        "Click any button:", keyboard=[["A", "B"], ["C", "D", "E"]], one_time_keyboard=False
+        "Click any button:",
+        keyboard=[["A", "B"], ["C", "D", "E"]],
+        one_time_keyboard=False,
     )
 
     await response.tell(f"You clicked {button_clicked}")

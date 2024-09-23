@@ -10,7 +10,11 @@ from teletalk.models.block_message import BlockMessage
 class Block:
     """A collection of messages grouped together in telegram (like album)"""
 
-    def __init__(self, message_callback: Optional[Callable] = None, external_callback: Optional[Callable] = None):
+    def __init__(
+        self,
+        message_callback: Optional[Callable] = None,
+        external_callback: Optional[Callable] = None,
+    ):
         # - State
 
         self.message_callback: Optional[Callable] = asyncify(message_callback) if message_callback else None
@@ -22,6 +26,10 @@ class Block:
         self.id = str(uuid.uuid4())
         self.previous_id = None  # in case of refresh
         self.has_refreshed_id = None
+
+        # - Visibility
+
+        self.is_inline_keyboard_visible: Optional[bool] = None
 
         # - Output
 
@@ -77,6 +85,11 @@ class Block:
         # - Reset `is_refreshed`
 
         self.has_refreshed_id = None
+
+        # - Set is_inline_keyboard_visible to the output if not set
+
+        if self.is_inline_keyboard_visible is not None:
+            output.is_inline_keyboard_visible = self.is_inline_keyboard_visible
 
         # - Return output
 
