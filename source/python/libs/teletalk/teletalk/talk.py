@@ -106,7 +106,7 @@ class Talk:
 
         response = await self.input_channel.get()
 
-        # - Remove inline keyboard if `one_time_keyboard` is True
+        # - Remove inline keyboard if `one_time_keyboard` is True (beta)
 
         if one_time_keyboard:
             # - Keep old values
