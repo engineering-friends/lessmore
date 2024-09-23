@@ -318,13 +318,13 @@ async def send_discord_post_to_telegram(
                 if random.uniform(0, 1) < 0.3:
                     emojis = request_reaction_emojis_from_openai(
                         f"{title} {body}",
-                        limit=random.choice([1, 2, 3]),
+                        limit=1,
                     )
 
                     logger.debug("Emojis from openai", emojis=emojis)
 
                     try:
-                        await deps.telegram_user_client(
+                        await deps.telegram_bot_client(
                             functions.messages.SendReactionRequest(
                                 peer=message.peer_id,
                                 msg_id=message.id,
