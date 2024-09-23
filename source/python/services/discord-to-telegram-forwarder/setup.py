@@ -31,7 +31,7 @@ setup(
         "pymaybe >=0.1.6,<1",
         "better-exceptions >=0.3.3,<1",
         "emoji >=2.8,<3",
-        "python-box >=7.1,<8",
+        "python-box >=6.0.2,<8",
         "pendulum >=3.0,<4",
         "jupyter >=1.0,<2",
         "pydantic >=2.6,<3",
