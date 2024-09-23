@@ -3,7 +3,7 @@ name = "discord-telegram-forwarder"
 version = "0.1.1"
 description = ""
 readme = "README.md"
-requires-python = "==3.12.4"
+requires-python = ">=3.12"
 authors = [
     {name = "marklidenberg", email = "marklidenberg@gmail.com"}
 ]
