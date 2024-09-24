@@ -183,7 +183,6 @@ def build_main_menu(deps: Deps):
             [("Стратегия и задачи", "https://www.notion.so/f3f7637c9a1d4733a4d90b33796cf78e?pvs=4")],
             [("Тексты кандидатам", "https://www.notion.so/EF-f1c2d3aeceb04272a61beb6c08c92b47?pvs=4")],
         ],
-        message_callback=lambda response: response.ask(mode="inplace"),
     )
 
 
