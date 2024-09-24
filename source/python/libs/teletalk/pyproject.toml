@@ -49,4 +49,5 @@ dependencies = [
     "python-telegram-bot>=21.5",
     "pymaybe>=0.1.6",
     "better-exceptions>=0.3.3",
+    "rocksdict>=0.3.23",
 ]
