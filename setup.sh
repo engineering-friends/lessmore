@@ -12,7 +12,17 @@ else
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-# - Install and configure poetry
+# - Install uv
+
+if [[ $(uv --version) == *"uv"* ]]; then
+  echo "uv already installed"
+else
+  echo "Installing uv..."
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  source $HOME/.cargo/env
+fi
+
+# - Install and configure poetry (deprecated and soon will be removed)
 
 if [[ $(poetry --version) == *"Poetry"* ]]; then
   echo "Poetry already installed"
@@ -29,19 +39,19 @@ fi
 brew list git-lfs || brew install git-lfs
 git lfs pull # pull git lfs files
 
-# - Install and configure pre-commit
+# - Install and configure pre-commit as a tool
 
-pip install pre-commit
+uv tool install pre-commit
 pre-commit install
 
-# - Install detect-secrets
+# - Install detect-secrets as a tool
 
-pip install detect-secrets
+uv tool install detect-secrets
 
 # - Configure git secret
 
 brew list gpg || brew install gpg
 brew list git-secret || brew install git-secret
 
-./git_secret/gpg_keys_import.sh
-./git_secret/decrypt_secrets.sh
+bash ./git_secret/gpg_keys_import.sh
+bash ./git_secret/decrypt_secrets.sh
