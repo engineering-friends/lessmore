@@ -11,7 +11,7 @@ from loguru import logger
 from more_itertools import last
 from pymaybe import maybe
 from telegram.helpers import escape_markdown
-from teletalk.blocks.simple_block import SimpleBlock, build_default_message_callback
+from teletalk.blocks.simple_block import SimpleBlock, build_default_message_callback, default_on_response
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.page import Page
@@ -69,6 +69,7 @@ class Talk:
         mode: Literal["inplace", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
         parent_response: Optional[Response] = None,
+        on_response: Optional[Callable] = default_on_response,
     ) -> Any:
         # - Build the `Page` from the prompt data
 
@@ -82,6 +83,7 @@ class Talk:
                         one_time_keyboard=one_time_keyboard,
                         inline_keyboard=inline_keyboard,
                         message_callback=message_callback,
+                        on_response=on_response,
                     )
                 ]
             )
@@ -105,31 +107,6 @@ class Talk:
         # - Wait for the `Response` in the `self.input_channel`
 
         response = await self.input_channel.get()
-
-        # - Remove inline keyboard if `one_time_keyboard` is True (beta)
-
-        if one_time_keyboard:
-            # - Keep old values
-
-            old_values = [block.is_inline_keyboard_visible for block in page.blocks]
-
-            # - Set values to True
-
-            for block in page.blocks:
-                block.is_inline_keyboard_visible = False
-
-            # - Update active page again
-
-            await self.update_active_page(
-                page=page,
-                mode="inplace",
-                default_chat_id=default_chat_id,
-            )
-
-            # - Restore old values
-
-            for block, old_value in zip(page.blocks, old_values):
-                block.is_inline_keyboard_visible = old_value
 
         # - Enrich response with all extra data
 
@@ -210,6 +187,11 @@ class Talk:
                 logger.error("No callback for query")
                 return response
 
+            # - Run on_response
+
+            if response.prompt_block.on_response:
+                await response.prompt_block.on_response(response)
+
             # - Run the callback
 
             return await gather_nested(await response.prompt_sub_block.query_callbacks[response.callback_id](response))
@@ -233,6 +215,11 @@ class Talk:
                 logger.warning("No message callback found")
                 return await response.ask(mode="inplace")
 
+            # - Run on_response
+
+            if response.prompt_block.on_response:
+                await response.prompt_block.on_response(response)
+
             # - Run the message callback
 
             return await gather_nested(await response.prompt_sub_block.message_callback(response))
@@ -252,6 +239,11 @@ class Talk:
             if not response.prompt_block.external_callback:
                 logger.warning("No external callback found")
                 return await response.ask(mode="inplace")
+
+            # - Run on_response
+
+            if response.prompt_block.on_response:
+                await response.prompt_block.on_response(response)
 
             # - Run the external callback
 

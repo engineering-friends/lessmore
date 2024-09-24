@@ -14,12 +14,16 @@ class Block:
         self,
         message_callback: Optional[Callable] = None,
         external_callback: Optional[Callable] = None,
+        on_response: Optional[Callable] = None,
     ):
         # - State
 
         self.message_callback: Optional[Callable] = asyncify(message_callback) if message_callback else None
         self.external_callback: Optional[Callable] = asyncify(external_callback) if external_callback else None
         self.query_callbacks: dict[str, Callable] = {}
+        self.on_response: Optional[Callable] = (
+            asyncify(on_response) if on_response else None
+        )  # called after the response has been received
 
         # - Id
 

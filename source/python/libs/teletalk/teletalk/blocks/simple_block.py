@@ -30,6 +30,33 @@ def build_default_message_callback(supress_messages: bool = False):
     return _callback
 
 
+async def default_on_response(response: Response):
+    # - Remove inline keyboard buttons
+
+    # -- Return if no inline keyboard buttons
+
+    if not any(block.current_output.inline_keyboard_markup for block in response.prompt_page.blocks):
+        return
+
+    # -- Keep old values
+
+    old_values = [block.is_inline_keyboard_visible for block in response.prompt_page.blocks]
+
+    # -- Set values to True
+
+    for block in response.prompt_page.blocks:
+        block.is_inline_keyboard_visible = False
+
+    # -- Update active page again
+
+    await response.tell(response, mode="inplace")
+
+    # -- Restore old values
+
+    for block, old_value in zip(response.prompt_page.blocks, old_values):
+        block.is_inline_keyboard_visible = old_value
+
+
 go_back = lambda response: response.ask(response.previous if response.previous else response, mode="inplace")
 go_forward = lambda response: response.ask(response.next if response.next else response, mode="inplace")
 go_to_root = lambda response: response.ask(response.root, mode="inplace")
@@ -44,6 +71,7 @@ class SimpleBlock(Block):
         inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
         files: list[str] = [],
         message_callback: Optional[Callable | str] = "default",
+        on_response: Optional[Callable] = default_on_response,
     ):
         # - Define message callback:
 
@@ -62,7 +90,7 @@ class SimpleBlock(Block):
 
         # - Init parent response
 
-        super().__init__(message_callback=message_callback)
+        super().__init__(message_callback=message_callback, on_response=on_response)
 
     def update(
         self,
@@ -128,6 +156,7 @@ class SimpleBlock(Block):
             return _button_callback
 
         # - Return
+
         return BlockMessage(
             text=self.text,
             files=self.files,
