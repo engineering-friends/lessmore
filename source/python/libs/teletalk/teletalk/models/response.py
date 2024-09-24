@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Callable, Optional
 from lessmore.utils.functional.dict.drop import drop
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
+from teletalk.models.callback_info import CallbackInfo
 from teletalk.models.page import Page
 
 
@@ -17,6 +18,7 @@ class Response:
 
     chat_id: int = 0
     callback_id: str = ""
+    callback_info: Optional[CallbackInfo] = None
     block_messages: list[BlockMessage] = field(default_factory=list)
     external_payload: dict = field(default_factory=dict)
     starter: Optional[Callable] = None

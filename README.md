@@ -14,4 +14,4 @@ Trunk-based development. `master` - единственная перманент�
 
 См. `https://github.com/engineering-friends/lessmore/blob/master/.pre-commit-config.yaml`. 
 
-Установка: `pip install pre-commit && pre-commit install`.
+Установка: `uv tool install pre-commit && pre-commit install`.

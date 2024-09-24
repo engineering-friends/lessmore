@@ -9,6 +9,7 @@ from more_itertools import last
 from pymaybe import maybe
 from rocksdict import Rdict
 from teletalk.app import App
+from teletalk.blocks.mark_text_with_inline_response import mark_text_with_inline_response
 from teletalk.blocks.simple_block import CancelError, SimpleBlock, build_default_message_callback
 from teletalk.models.response import Response
 from telethon.tl.types import User
@@ -19,13 +20,18 @@ Ideas:
 - Send reminders for the user to check if the member has filled the form
 - Send messages to the member? 
 - Send messages to Matvey?
-
-Make a convenient state? How? Get response chat_id. If there is a scheduled message - send it. 
-Need a convenient scheduler with the state. State should run a function 
-
-Make a more convenient init state access
-
+- Make a convenient state? How? Get response chat_id. If there is a scheduled message - send it. 
+- Need a convenient scheduler with the state. State should run a function 
+- Make a more convenient init state access
+- Do not update message inline keyboard if there hasn't been any changes
+- Think about on_response pipeline. Should it delete the supressed messages? 
+- Default ask kwargs bot-wise? 
+- Make buttons work with main menu (including start and cancel buttons)
 """
+
+default_ask_kwargs = {
+    "on_response": mark_text_with_inline_response,
+}
 
 
 def build_main_menu(deps: Deps):
@@ -35,6 +41,7 @@ def build_main_menu(deps: Deps):
         await response.ask(
             "1. Для начала тебе нужно узнать email от Notion участника и пошарить ему доступ на [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
             inline_keyboard=[["✅ Доступ есть"]],
+            **default_ask_kwargs,
         )
 
         # - 2. Add to all telegram ecosystem: ef channel, ef random coffee,
@@ -45,7 +52,8 @@ def build_main_menu(deps: Deps):
             # - Ask for telegram username
 
             answer = await response.ask(
-                "2. Введи телеграм участника, чтобы я добавил его в чаты и каналы (в любом формате)"
+                "2. Введи телеграм участника, чтобы я добавил его в чаты и каналы (в любом формате)",
+                **default_ask_kwargs,
             )
 
             telegram_username = answer.replace("@", "").replace("https://t.me/", "").replace("t.me/", "")
@@ -63,6 +71,7 @@ def build_main_menu(deps: Deps):
                 answer = await response.ask(
                     f"t.me/{telegram_username}",
                     inline_keyboard=[["✅ Все верно", "❌ Я ошибся"]],
+                    **default_ask_kwargs,
                 )
 
                 if answer == "✅ Все верно":
@@ -79,6 +88,7 @@ def build_main_menu(deps: Deps):
         answer = await response.ask(
             "Добавить пользователя в наши чаты и каналы?",
             inline_keyboard=[["✅ Да", "❌ Нет"]],
+            **default_ask_kwargs,
         )
 
         if answer == "✅ Да":
@@ -101,6 +111,7 @@ def build_main_menu(deps: Deps):
             "3. Введи полное имя участника на любом языке",
             inline_keyboard=[[f"✏️ Взять из телеги: {telegram_full_name}"]],
             message_callback=build_default_message_callback(supress_messages=False),
+            **default_ask_kwargs,
         )
 
         full_name = telegram_full_name if "✏️" in answer else answer
@@ -122,8 +133,6 @@ def build_main_menu(deps: Deps):
         )
 
         # -- Fill the template
-
-        await asyncio.sleep(0.5)
 
         await response.tell(
             textwrap.dedent(f"""
@@ -150,7 +159,8 @@ def build_main_menu(deps: Deps):
 
         await response.ask(
             "5. Последний шаг - убедиться, чтобы участник все заполнил! Как сделает, Матвею придет уведомление, после чего он напишет о нем пост и поможет ему сделать его первый запрос. На этом онбординг будет завершен, мерси боку! ",
-            inline_keyboard=[["✅ Завершить"]],
+            inline_keyboard=[["✅ Готово!"]],
+            **default_ask_kwargs,
         )
 
         return await response.ask()
@@ -173,7 +183,6 @@ def build_main_menu(deps: Deps):
             [("Стратегия и задачи", "https://www.notion.so/f3f7637c9a1d4733a4d90b33796cf78e?pvs=4")],
             [("Тексты кандидатам", "https://www.notion.so/EF-f1c2d3aeceb04272a61beb6c08c92b47?pvs=4")],
         ],
-        message_callback=lambda response: response.ask(mode="inplace"),
     )
 
 
