@@ -185,7 +185,8 @@ class SimpleBlock(Block):
                             callback_data=self.register_callback(
                                 build_button_callback(text=button.text)
                                 if button.callback_data is None
-                                else button.callback_data
+                                else button.callback_data,
+                                callback_text=button.text,
                             ),
                             url=button.url,
                         )

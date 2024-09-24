@@ -1,3 +1,4 @@
+from telegram.helpers import escape_markdown
 from teletalk.models.response import Response
 
 
@@ -21,7 +22,7 @@ async def mark_text_with_inline_response(response: Response):
     # -- If the inline button was pressed - mark text with inline response
 
     if response.callback_id:
-        response.prompt_block.text = f"{response.prompt_block.text} {response.callback_info.callback_text}"
+        response.prompt_block.text = f"{response.prompt_block.text}\n\n_{response.callback_info.callback_text}_"
 
     # -- Update active page again
 
