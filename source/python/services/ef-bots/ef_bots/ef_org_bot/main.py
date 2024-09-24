@@ -133,8 +133,6 @@ def build_main_menu(deps: Deps):
 
         # -- Fill the template
 
-        await asyncio.sleep(0.5)
-
         await response.tell(
             textwrap.dedent(f"""
 ⚙️ Добро пожаловать в EF! 
