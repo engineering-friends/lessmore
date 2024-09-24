@@ -2,6 +2,7 @@ from telegram.helpers import escape_markdown
 from teletalk.models.response import Response
 
 
+# beta
 async def mark_text_with_inline_response(response: Response):
     # - Remove inline keyboard buttons + mark text with inline response
 

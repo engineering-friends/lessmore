@@ -25,7 +25,8 @@ Ideas:
 - Make a more convenient init state access
 - Do not update message inline keyboard if there hasn't been any changes
 - Think about on_response pipeline. Should it delete the supressed messages? 
-
+- Default ask kwargs bot-wise? 
+- Make buttons work with main menu (including start and cancel buttons)
 """
 
 default_ask_kwargs = {
