@@ -20,11 +20,11 @@ Ideas:
 - Send reminders for the user to check if the member has filled the form
 - Send messages to the member? 
 - Send messages to Matvey?
-
-Make a convenient state? How? Get response chat_id. If there is a scheduled message - send it. 
-Need a convenient scheduler with the state. State should run a function 
-
-Make a more convenient init state access
+- Make a convenient state? How? Get response chat_id. If there is a scheduled message - send it. 
+- Need a convenient scheduler with the state. State should run a function 
+- Make a more convenient init state access
+- Do not update message inline keyboard if there hasn't been any changes
+- Think about on_response pipeline. Should it delete the supressed messages? 
 
 """
 

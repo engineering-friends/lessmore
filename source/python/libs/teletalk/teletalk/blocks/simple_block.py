@@ -23,6 +23,18 @@ def build_default_message_callback(supress_messages: bool = False):
             raise CancelError("Cancelled")
         elif response.block_messages[-1].text:
             if supress_messages:
+                # - Remove response messages # todo later: put into on_response?
+
+                for block_message in response.block_messages:
+                    for message in block_message.messages:
+                        await response.talk.app.bot.delete_messages(
+                            chat_id=response.chat_id,
+                            message_ids=[message.message_id],
+                        )
+                        block_message.messages.remove(message)
+
+                # - Ask again
+
                 return await response.ask(mode="inplace")
             else:
                 return "".join([message.text for message in response.block_messages])
