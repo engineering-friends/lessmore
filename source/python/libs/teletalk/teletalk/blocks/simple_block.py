@@ -167,7 +167,7 @@ class SimpleBlock(Block):
                     [
                         KeyboardButton(
                             text=button.text,
-                            callback_data=self.register_callback(build_button_callback(text=button.text)),
+                            callback_data=build_button_callback(text=button.text),
                         )
                         for button in row
                     ]

@@ -174,7 +174,7 @@ class Talk:
 
             for block in self.active_page.blocks:
                 for node, parent in block.iter_nodes():
-                    if response.callback_id in node.query_callbacks:
+                    if response.callback_id in node.query_callback_infos:
                         response.prompt_sub_block = node
                         response.prompt_block = parent
                         break
@@ -187,6 +187,10 @@ class Talk:
                 logger.error("No callback for query")
                 return response
 
+            # - Set the callback info
+
+            response.callback_info = response.prompt_sub_block.query_callback_infos[response.callback_id]
+
             # - Run on_response
 
             if response.prompt_block.on_response:
@@ -194,7 +198,9 @@ class Talk:
 
             # - Run the callback
 
-            return await gather_nested(await response.prompt_sub_block.query_callbacks[response.callback_id](response))
+            return await gather_nested(
+                await response.prompt_sub_block.query_callback_infos[response.callback_id].callback(response)
+            )
 
         elif response.block_messages:
             # - Enrich response with the corresponding prompt

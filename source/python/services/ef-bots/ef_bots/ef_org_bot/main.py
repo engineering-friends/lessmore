@@ -9,6 +9,7 @@ from more_itertools import last
 from pymaybe import maybe
 from rocksdict import Rdict
 from teletalk.app import App
+from teletalk.blocks.mark_text_with_inline_response import mark_text_with_inline_response
 from teletalk.blocks.simple_block import CancelError, SimpleBlock, build_default_message_callback
 from teletalk.models.response import Response
 from telethon.tl.types import User
@@ -35,6 +36,7 @@ def build_main_menu(deps: Deps):
         await response.ask(
             "1. Для начала тебе нужно узнать email от Notion участника и пошарить ему доступ на [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
             inline_keyboard=[["✅ Доступ есть"]],
+            on_response=mark_text_with_inline_response,
         )
 
         # - 2. Add to all telegram ecosystem: ef channel, ef random coffee,

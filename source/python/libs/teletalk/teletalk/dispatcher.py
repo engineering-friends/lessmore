@@ -50,8 +50,8 @@ class Dispatcher:
 
                 for block in _talk.active_page.blocks:
                     for node, parent in block.iter_nodes():
-                        if node.query_callbacks:
-                            for callback_id, callback in node.query_callbacks.items():
+                        if node.query_callback_infos:
+                            for callback_id, callback in node.query_callback_infos.items():
                                 if callback_id == response.callback_id:
                                     talk = _talk
                                     break

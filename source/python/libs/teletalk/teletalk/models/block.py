@@ -5,6 +5,7 @@ from typing import Any, Callable, List, Optional, Tuple
 
 from lessmore.utils.asynchronous.asyncify import asyncify
 from teletalk.models.block_message import BlockMessage
+from teletalk.models.callback_info import CallbackInfo
 
 
 class Block:
@@ -20,7 +21,7 @@ class Block:
 
         self.message_callback: Optional[Callable] = asyncify(message_callback) if message_callback else None
         self.external_callback: Optional[Callable] = asyncify(external_callback) if external_callback else None
-        self.query_callbacks: dict[str, Callable] = {}
+        self.query_callback_infos: dict[str, CallbackInfo] = {}
         self.on_response: Optional[Callable] = (
             asyncify(on_response) if on_response else None
         )  # called after the response has been received
@@ -45,9 +46,13 @@ class Block:
         self.parent: Optional["Block"] = None
         self.children: list["Block"] = []
 
-    def register_callback(self, callback: Callable) -> str:
+    def register_callback(self, callback: Callable, callback_text: str = "") -> str:
         _id = str(uuid.uuid4())
-        self.query_callbacks[_id] = asyncify(callback)
+        self.query_callback_infos[_id] = CallbackInfo(
+            callback=asyncify(callback),
+            callback_id=_id,
+            callback_text=callback_text,
+        )
         return _id
 
     @property
