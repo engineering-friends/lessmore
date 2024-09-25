@@ -9,6 +9,7 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
+from loguru import logger
 from teletalk.app import App
 from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
@@ -35,7 +36,7 @@ async def custom_messages(response: Response):
         message_callback=lambda response: response.message,
     )
 
-    print(message.contact)
+    logger.debug("Message", contact=message.contact, location=message.location, text=message.text)
 
 
 def test():

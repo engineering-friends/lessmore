@@ -9,35 +9,52 @@ from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 
 
-def gen_level(name: str, sub_level: Optional[SimpleBlock] = None):
-    # - Build grid
-
-    grid = []
-
-    if sub_level:
-        grid.append([(sub_level.text, lambda response: response.ask(sub_level, mode="inplace"))])
-
-    grid += [
-        [
-            ("Main menu", go_to_root),
-            ("Back", go_back),
-            ("Forward", go_forward),
-            ("Cancel", lambda response: response.tell("Cancelled")),
-        ]
-    ]
-
-    # - Return menu
-
-    return SimpleBlock(text=name, inline_keyboard=grid)
+def level_3(response: Response):
+    return response.ask(
+        "Level 3",
+        inline_keyboard=[
+            [
+                ("Main menu", go_to_root),
+                ("Back", go_back),
+                ("Forward", go_forward),
+                ("Cancel", lambda response: response.tell("Cancelled")),
+            ]
+        ],
+    )
 
 
-level_3 = gen_level("Level 3")
-level_2 = gen_level("Level 2", level_3)
-level_1 = gen_level("Level 1", level_2)
+def level_2(response: Response):
+    return response.ask(
+        "Level 2",
+        inline_keyboard=[
+            [
+                ("Level 3", level_3),
+            ],
+            [
+                ("Main menu", go_to_root),
+                ("Back", go_back),
+                ("Forward", go_forward),
+                ("Cancel", lambda response: response.tell("Cancelled")),
+            ],
+        ],
+    )
 
 
-async def starter(response: Response):
-    return await response.ask(level_1)
+def level_1(response: Response):
+    return response.ask(
+        "Level 1",
+        inline_keyboard=[
+            [
+                ("Level 2", level_2),
+            ],
+            [
+                ("Main menu", go_to_root),
+                ("Back", go_back),
+                ("Forward", go_forward),
+                ("Cancel", lambda response: response.tell("Cancelled")),
+            ],
+        ],
+    )
 
 
 def test():
@@ -45,8 +62,8 @@ def test():
     asyncio.run(
         App().start_polling(
             bot=deps.config.telegram_bot_token,
-            initial_starters={deps.config.telegram_test_chat_id: starter},
-            message_starter=starter,
+            initial_starters={deps.config.telegram_test_chat_id: level_1},
+            message_starter=level_1,
         )
     )
 
