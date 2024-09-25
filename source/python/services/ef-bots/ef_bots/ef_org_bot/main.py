@@ -5,12 +5,9 @@ from aiogram.types import BotCommand
 from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
 from ef_bots.ef_org_bot.deps.deps import Deps
 from loguru import logger
-from more_itertools import last
 from pymaybe import maybe
-from rocksdict import Rdict
 from teletalk.app import App
 from teletalk.blocks.build_default_message_callback import CancelError
-from teletalk.blocks.mark_text_with_inline_response import mark_text_with_inline_response
 from teletalk.blocks.simple_block import SimpleBlock, build_default_message_callback
 from teletalk.models.response import Response
 from telethon.tl.types import User
@@ -32,8 +29,6 @@ Ideas:
 - Think about windows: current open pages, where we have an active page. We should be able to switch between them 
 """
 
-default_ask_kwargs = dict(on_response=mark_text_with_inline_response)
-
 
 def build_main_menu(deps: Deps):
     async def start_onboarding(response: Response):
@@ -42,7 +37,6 @@ def build_main_menu(deps: Deps):
         await response.ask(
             "1. Для начала тебе нужно узнать email от Notion участника и пошарить ему доступ на [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
             inline_keyboard=[["✅ Доступ есть"]],
-            **default_ask_kwargs,
         )
 
         # - 2. Add to all telegram ecosystem: ef channel, ef random coffee,
@@ -53,8 +47,7 @@ def build_main_menu(deps: Deps):
             # - Ask for telegram username
 
             answer = await response.ask(
-                "2. Введи телеграм участника, чтобы я добавил его в чаты и каналы (в любом формате)",
-                **default_ask_kwargs,
+                "2. Введи телеграм участника, чтобы я добавил его в чаты и каналы (в любом формате)"
             )
 
             telegram_username = answer.replace("@", "").replace("https://t.me/", "").replace("t.me/", "")
@@ -70,9 +63,7 @@ def build_main_menu(deps: Deps):
 
             if isinstance(entity, User):
                 answer = await response.ask(
-                    f"t.me/{telegram_username}",
-                    inline_keyboard=[["✅ Все верно", "❌ Я ошибся"]],
-                    **default_ask_kwargs,
+                    f"t.me/{telegram_username}", inline_keyboard=[["✅ Все верно", "❌ Я ошибся"]]
                 )
 
                 if answer == "✅ Все верно":
@@ -87,9 +78,7 @@ def build_main_menu(deps: Deps):
         # -- Add user to chats
 
         answer = await response.ask(
-            "Добавить пользователя в наши чаты и каналы?",
-            inline_keyboard=[["✅ Да", "❌ Нет"]],
-            **default_ask_kwargs,
+            "Добавить пользователя в наши чаты и каналы?", inline_keyboard=[["✅ Да", "❌ Нет"]]
         )
 
         if answer == "✅ Да":
@@ -112,7 +101,6 @@ def build_main_menu(deps: Deps):
             "3. Введи полное имя участника на любом языке",
             inline_keyboard=[[f"✏️ Взять из телеги: {telegram_full_name}"]],
             message_callback=build_default_message_callback(supress_messages=False),
-            **default_ask_kwargs,
         )
 
         full_name = telegram_full_name if "✏️" in answer else answer
@@ -161,7 +149,6 @@ def build_main_menu(deps: Deps):
         await response.ask(
             "5. Последний шаг - убедиться, чтобы участник все заполнил! Как сделает, Матвею придет уведомление, после чего он напишет о нем пост и поможет ему сделать его первый запрос. На этом онбординг будет завершен, мерси боку! ",
             inline_keyboard=[["✅ Готово!"]],
-            **default_ask_kwargs,
         )
 
         return await response.ask()
