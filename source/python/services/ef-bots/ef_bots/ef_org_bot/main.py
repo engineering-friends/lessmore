@@ -26,7 +26,8 @@ Ideas:
 - Async state
 - Make compatible with other aiogram bots, make separate start_polling function, like register_dispatcher. Where to start initial_starters? 
 - Think better about the inplace mode. What are use cases? 
-- Think about windows: current open pages, where we have an active page. We should be able to switch between them 
+- Think about windows: current open pages, where we have an active page. We should be able to switch between them
+- clean_up function to run before new asks 
 """
 
 
