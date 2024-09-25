@@ -7,7 +7,6 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from telegram.helpers import escape_markdown
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.response import Response

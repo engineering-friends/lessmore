@@ -1,5 +1,6 @@
 import asyncio
 
+from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from loguru import logger
 from telethon import TelegramClient
 from telethon_playground.deps.deps import Deps
@@ -24,4 +25,7 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    # test()
+
+    setup_json_loguru(level="INFO")
+    logger.info("Started cleaning saved messages", env="test")

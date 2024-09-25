@@ -10,7 +10,6 @@ from lessmore.utils.functional.skip_duplicates import skip_duplicates
 from loguru import logger
 from more_itertools import last
 from pymaybe import maybe
-from telegram.helpers import escape_markdown
 from teletalk.blocks.simple_block import SimpleBlock, build_default_message_callback, default_on_response
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
