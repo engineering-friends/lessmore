@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from typing import Callable, Literal, Optional
 
 from aiogram.types import (
     InlineKeyboardButton,
@@ -28,13 +28,15 @@ class SimpleBlock(Block):
         one_time_keyboard: bool = True,
         inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
         files: list[str] = [],
-        message_callback: Optional[Callable | str] = "default",
+        message_callback: Optional[Callable | Literal["default", "raw"]] = "default",
         on_response: Optional[Callable] = default_on_response,
     ):
         # - Define message callback:
 
         if message_callback == "default":
             message_callback = build_default_message_callback(supress_messages=bool(inline_keyboard))
+        elif message_callback == "raw":
+            message_callback = lambda response: response.message
 
         # - Update block
 
