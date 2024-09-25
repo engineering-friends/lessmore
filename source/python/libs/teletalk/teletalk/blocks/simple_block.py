@@ -135,9 +135,19 @@ class SimpleBlock(Block):
 
         # - Register simple callbacks for each button
 
-        for row in maybe(self.inline_keyboard_markup).keyboard.or_else([]):
+        for row in maybe(self.inline_keyboard_markup).inline_keyboard.or_else([]):
             for button in row:
-                button.callback_data = button.callback_data or build_button_callback(button.text)
+                button.callback_data = (
+                    button.callback_data
+                    if isinstance(button.callback_data, str)
+                    else (
+                        self.register_callback(
+                            button.callback_data
+                            if isinstance(button.callback_data, Callable)
+                            else build_button_callback(button.text)
+                        )
+                    )
+                )
 
         # - Return
 
@@ -145,7 +155,5 @@ class SimpleBlock(Block):
             text=self.text,
             files=self.files,
             reply_keyboard_markup=self.reply_keyboard_markup,
-            inline_keyboard_markup=InlineKeyboardMarkup(inline_keyboard=self.inline_keyboard_markup.inline_keyboard)
-            if self.inline_keyboard_markup
-            else None,
+            inline_keyboard_markup=self.inline_keyboard_markup,
         )
