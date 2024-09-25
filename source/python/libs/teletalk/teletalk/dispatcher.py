@@ -122,8 +122,8 @@ class Dispatcher:
 
             # - Process command
 
-            if (buffer[0].text or "").startswith("/"):
-                command = (buffer[0].text or "").split()[0]
+            if buffer[0].text.startswith("/"):
+                command = buffer[0].text.split()[0]
                 if command in self.command_starters:
                     logger.info("Found command", command=command)
                     await self.app.start_new_talk(

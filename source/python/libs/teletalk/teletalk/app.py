@@ -238,7 +238,6 @@ class App:
         old_send_message = self.bot.send_message
 
         async def _hooked_send_message(*args, **kwargs):
-            print(args, kwargs)
             message = await old_send_message(*args, **kwargs)
             await self.on_bot_message(message)
             return message

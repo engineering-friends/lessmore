@@ -25,7 +25,4 @@ def test():
 
 
 if __name__ == "__main__":
-    # test()
-
-    setup_json_loguru(level="INFO")
-    logger.info("Started cleaning saved messages", env="test")
+    test()
