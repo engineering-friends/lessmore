@@ -6,6 +6,7 @@ if TYPE_CHECKING:
 
 
 async def default_on_response(response: "Response"):
+    return
     # - Remove inline keyboard buttons
 
     # -- Return if no inline keyboard buttons

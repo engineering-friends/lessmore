@@ -36,6 +36,10 @@ async def starter(response: Response):
     await response.tell(sample_block.update(text="Message 6"))
     sample_block.refresh_id()
     await response.tell(sample_block.update(text="Message 7 - should be updated"), mode="inplace")
+    await response.tell(sample_block.update(text="Message 7 - should be updated 2"), mode="inplace")
+
+    await response.tell("Message 8", transient=True)
+
     await response.tell(sample_block.update(text="Message 7"), mode="inplace")
 
     # - Test inplace by id with 2 messages
@@ -44,15 +48,15 @@ async def starter(response: Response):
 
     page = Page(
         blocks=[
-            SimpleBlock(text="Message 8"),
-            SimpleBlock(text="Message 9 - should be updated"),
+            SimpleBlock(text="Message 10"),
+            SimpleBlock(text="Message 10 - should be updated"),
         ]
     )
 
     await response.tell(page)
-    page.blocks[0].text = "Message 10"
+    page.blocks[0].text = "Message 11"
     page.blocks[0].refresh_id()
-    page.blocks[1].text = "Message 9"
+    page.blocks[1].text = "Message 10"
     await response.tell(page, mode="inplace")
 
 

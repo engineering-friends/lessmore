@@ -56,6 +56,7 @@ class Response:
         default_chat_id: int = 0,  # usually passed from the response
         parent_response: Optional["Response"] = None,
         on_response: Optional[Callable] = default_on_response,
+        transient: bool = False,
     ):
         return await self.talk.ask(
             prompt=prompt or self,
@@ -68,6 +69,7 @@ class Response:
             default_chat_id=default_chat_id or self.chat_id,
             parent_response=parent_response or self,
             on_response=on_response,
+            transient=transient,
         )
 
     async def tell(
@@ -77,6 +79,7 @@ class Response:
         keyboard: Optional[ReplyKeyboardMarkup | ReplyKeyboardRemove | list[list[str]]] = None,
         mode: Literal["inplace", "inplace_latest", "create_new"] = "create_new",
         default_chat_id: int = 0,
+        transient: bool = False,
     ):
         return await self.talk.tell(
             prompt=prompt,
@@ -84,6 +87,7 @@ class Response:
             keyboard=keyboard,
             mode=mode,
             default_chat_id=default_chat_id or self.chat_id,
+            transient=transient,
         )
 
     async def purge_talk(self):
@@ -115,9 +119,9 @@ class Response:
         return only(self.messages, default=None)
 
     async def get_chat_state(self):
-        # todo later: make async state
+        # todo later: make async state [@marklidenberg]
         return self.talk.app.state.get(f"chat_{self.chat_id}", {})
 
     async def set_chat_state(self, state: dict):
-        # todo later: make async state
+        # todo later: make async state [@marklidenberg]
         self.talk.app.state[f"chat_{self.chat_id}"] = state

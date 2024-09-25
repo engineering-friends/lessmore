@@ -75,6 +75,7 @@ class Talk:
         default_chat_id: int = 0,  # usually passed from the response
         parent_response: Optional[Response] = None,
         on_response: Optional[Callable] = default_on_response,
+        transient: bool = False,
     ) -> Any:
         # - Build the `Page` from the prompt data
 
@@ -107,6 +108,7 @@ class Talk:
             page=page,
             mode=mode,
             default_chat_id=default_chat_id,
+            transient=transient,
         )
 
         # - Wait for the `Response` in the `self.input_channel`
@@ -348,6 +350,7 @@ class Talk:
         page: Page,
         mode: Literal["inplace", "inplace_latest", "create_new"] = "create_new",
         default_chat_id: int = 0,
+        transient: bool = False,
     ):
         # - Mark blocks for easier usage
 
@@ -458,7 +461,8 @@ class Talk:
 
         # - Set active page attribute
 
-        self.active_page = page
+        if not transient:
+            self.active_page = page
 
         logger.trace("Updated active page", page_id=page.id)
 
@@ -477,6 +481,7 @@ class Talk:
         keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
         mode: Literal["inplace", "inplace_latest", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
+        transient: bool = False,
     ) -> None:
         # - The interface to send custom messages without awaiting any response
 
@@ -505,6 +510,7 @@ class Talk:
             page=page,
             mode=mode,
             default_chat_id=default_chat_id,
+            transient=transient,
         )
 
     async def start_new_talk(
