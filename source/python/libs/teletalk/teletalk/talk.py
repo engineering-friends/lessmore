@@ -16,6 +16,7 @@ from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.page import Page
 from teletalk.models.response import Response
+from teletalk.utils.generate_id import generate_id
 
 
 if TYPE_CHECKING:
@@ -60,7 +61,7 @@ class Talk:
 
         # - Id for logs
 
-        self.id = str(uuid.uuid4())
+        self.id = generate_id()
 
     async def ask(
         self,

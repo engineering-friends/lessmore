@@ -1,10 +1,9 @@
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Callable, Literal, Optional, Union
 
-from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup
+from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from lessmore.utils.functional.dict.drop import drop
 from more_itertools import only
-from telegram import ReplyKeyboardRemove
 from teletalk.blocks.default_on_response import default_on_response
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
