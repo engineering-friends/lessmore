@@ -16,8 +16,8 @@ from teletalk.test_deps.test_deps import TestDeps
 
 async def custom_messages(response: Response):
     # - Test text messages
-    #
-    age = await response.ask(
+
+    message = await response.ask(
         "Send me your location",
         keyboard=ReplyKeyboardMarkup(
             keyboard=[
@@ -33,6 +33,8 @@ async def custom_messages(response: Response):
         one_time_keyboard=False,
         message_callback=lambda response: response.message,
     )
+
+    print(message.contact)
 
 
 def test():
