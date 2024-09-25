@@ -144,7 +144,8 @@ class SimpleBlock(Block):
                         self.register_callback(
                             button.callback_data
                             if isinstance(button.callback_data, Callable)
-                            else build_button_callback(button.text)
+                            else build_button_callback(button.text),
+                            callback_text=button.text,
                         )
                     )
                 )
