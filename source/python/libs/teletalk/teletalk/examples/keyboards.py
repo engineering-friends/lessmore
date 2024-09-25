@@ -41,11 +41,11 @@ async def custom_messages(response: Response):
 def test():
     deps = TestDeps.load()
     asyncio.run(
-        App(
+        App().start_polling(
             bot=deps.config.telegram_bot_token,
             initial_starters={deps.config.telegram_test_chat_id: custom_messages},
             message_starter=custom_messages,
-        ).start_polling()
+        )
     )
 
 

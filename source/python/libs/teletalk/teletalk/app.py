@@ -61,10 +61,12 @@ class App:
     # - Context managers
 
     async def __aenter__(self):
-        async with self.state_client():
-            return self
+        self._state_context = self.state_client()
+        self.state = await self._state_context.__aenter__()
+        return self
 
     async def __aexit__(self, exc_type, exc_value, traceback):
+        await self._state_context.__aexit__(exc_type, exc_value, traceback)
         return False  # Returning False means exceptions will not be suppressed
 
     @asynccontextmanager
@@ -76,7 +78,7 @@ class App:
         if self.state_backend == "rocksdict":
             # - Delete state if reset_state is True
 
-            persistant_state_path = str(self.state_config.get("persistant_state_path", ""))
+            persistant_state_path = str(self.state_config.get("path", ""))
 
             assert persistant_state_path, "`persistant_state_path` is required in `state_config`"
 

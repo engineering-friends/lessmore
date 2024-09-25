@@ -43,14 +43,14 @@ async def main():
 
     # - Run app
 
-    await App(
+    await App().start_polling(
         bot=deps.config.telegram_bot_token,
         command_starters={"/start": main_menu},
         commands=[
             BotCommand(command="start", description="Start the bot"),
             BotCommand(command="cancel", description="Cancel the current operation"),
         ],
-    ).start_polling()
+    )
 
 
 if __name__ == "__main__":
