@@ -28,6 +28,7 @@ Ideas:
 - Think about on_response pipeline. Should it delete the supressed messages? 
 - Default ask kwargs bot-wise? 
 - Make buttons work with main menu (including start and cancel buttons)
+- Make compatible with other aiogram bots, make separate start_polling function, like register_dispatcher. Where to start initial_starters? 
 """
 
 default_ask_kwargs = {
