@@ -1,10 +1,13 @@
 import time
 
 from dataclasses import dataclass
-from typing import Callable, Literal, Optional
+from typing import TYPE_CHECKING, Callable, Literal, Optional
 
-import pandas as pd
 import pytest
+
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 
 @dataclass
@@ -89,7 +92,12 @@ class StopWatch:
 
         return self
 
-    def stats(self) -> pd.DataFrame:
+    def stats(self) -> "pd.DataFrame":
+        try:
+            import pandas as pd
+        except ImportError:
+            raise ImportError("stats requires pandas")
+
         # - Stop all
 
         self.stop(key=None)

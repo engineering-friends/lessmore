@@ -1,5 +1,6 @@
 import asyncio
 
+from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from loguru import logger
 from telethon import TelegramClient
 from telethon_playground.deps.deps import Deps

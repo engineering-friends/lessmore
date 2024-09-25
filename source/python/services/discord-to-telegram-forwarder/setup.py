@@ -1,50 +1,18 @@
-from setuptools import setup
+from setuptools import find_packages, setup
 
+
+# Read the content of the README.md file
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
 
 setup(
     name="discord-to-telegram-forwarder",
     version="0.1.2",
-    description="",  # You can provide a description here
     author="marklidenberg",
     author_email="marklidenberg@gmail.com",
-    python_requires=">=3.12",
-    install_requires=[
-        "aiohttp >=3.9,<4",
-        "cachetools >=5.2,<6",
-        "loguru >=0.6,<1",
-        "environs >=9.5,<10",
-        "python-dateutil >=2.8,<3",
-        "path >=16.4,<17",
-        "tqdm >=4.64,<5",
-        "sortedcontainers >=2.4,<3",
-        "python-telegram-bot >=20.0a4,<21",
-        "Telethon >=1.35,<2",
-        "fire >=0.4,<1",
-        "anyconfig >=0.13,<1",
-        "requests >=2.28,<3",
-        "retry >=0.9,<1",
-        "pyperclip >=1.8,<2",
-        "more-itertools >=9.0,<10",
-        "discord.py >=2.3,<3",
-        "pytest >=7.4,<8",
-        "pyyaml >=6.0,<7",
-        "pymaybe >=0.1.6,<1",
-        "better-exceptions >=0.3.3,<1",
-        "emoji >=2.8,<3",
-        "python-box >=6.0.2,<8",
-        "pendulum >=3.0,<4",
-        "jupyter >=1.0,<2",
-        "pydantic >=2.6,<3",
-        "pydantic-settings >=2.2.1,<3",
-        "opencv-python >=4.9.0.80,<5",
-        "pillow >=10.3.0,<11",
-        "matplotlib >=3.8.4,<4",
-        "pandas >=2.2.2,<3",
-        "diskcache >=5.6.3,<6",
-        "openai >=1.28.2,<2",
-        "keyring >=25.2.1,<26",
-        "notion-client >=2.2.1,<3",
-        "inline-snapshot ==0.8.0",
-    ],
-    packages=["discord_to_telegram_forwarder"],  # Replace with your actual package/directory name
+    description="A Discord to Telegram forwarder.",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    packages=find_packages(),
+    python_requires=">=3.9",
 )

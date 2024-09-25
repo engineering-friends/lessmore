@@ -6,11 +6,12 @@ from typing import Literal
 
 import openai
 
-from discord_to_telegram_forwarder.config.config import Config
 from lessmore.utils.file_primitives.ensure_path import ensure_path
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.read_config.read_config import read_config
 from telethon import TelegramClient
+
+from discord_to_telegram_forwarder.config.config import Config
 
 
 @dataclass
@@ -31,10 +32,12 @@ class Deps:
 
         config = Config(
             **read_config(
-                [
-                    str(Path(__file__).parent / f"config/config.{env}.yaml"),
-                    config_dict,
-                ]
+                (
+                    [str(Path(__file__).parent / f"config/config.{env}.yaml")]
+                    if os.path.exists(str(Path(__file__).parent / f"config/config.{env}.yaml"))
+                    else []
+                )
+                + [config_dict]
             )
         )
 

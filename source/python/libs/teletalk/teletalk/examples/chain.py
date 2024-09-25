@@ -1,7 +1,5 @@
 import asyncio
 
-from functools import partial
-
 from aiogram.types import ReplyKeyboardRemove
 from teletalk.app import App
 from teletalk.models.response import Response
