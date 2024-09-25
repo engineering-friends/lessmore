@@ -31,9 +31,7 @@ Ideas:
 - Make compatible with other aiogram bots, make separate start_polling function, like register_dispatcher. Where to start initial_starters? 
 """
 
-default_ask_kwargs = {
-    "on_response": mark_text_with_inline_response,
-}
+default_ask_kwargs = dict(on_response=mark_text_with_inline_response)
 
 
 def build_main_menu(deps: Deps):
@@ -202,7 +200,7 @@ def main(env="test"):
 
         async with App(
             state_backend="rocksdict",
-            state_config={"persistant_state_path": str(deps.local_files_dir / "app_state")},
+            state_config={"path": str(deps.local_files_dir / "app_state")},
         ) as app:
             # - Load chat_ids to run at startup - the ones which have last message from the bot (usually the menu message). Needed for user not to press /start if bot has been restarted, and just used the menu of the last message (beta)
 

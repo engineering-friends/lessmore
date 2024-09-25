@@ -52,4 +52,6 @@ dependencies = [
     "better-exceptions>=0.3.3",
     "python-box>=7.2.0",
     "rocksdict>=0.3.23",
+    "shortuuid>=1.0.13",
+    "coolname>=2.2.0",
 ]
