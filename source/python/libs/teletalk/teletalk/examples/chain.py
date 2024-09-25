@@ -24,13 +24,14 @@ async def starter(response: Response):
 
     await response.tell(f"You clicked {button_clicked}")
 
-    button_clicked = await response.ask("Click any button:")  # note: the keyboard is still present
+    button_clicked = await response.ask("Click any button, with keyboard still present")
 
     await response.tell(f"You clicked {button_clicked}")
 
     await response.tell(
-        "Remove keyboard", keyboard=ReplyKeyboardRemove()
-    )  # have to remove the keyboard with a separate message, can't be inline message, as only one markup is allowed
+        "Remove keyboard, have to remove the keyboard with a separate message, can't be inline message, as only one markup is allowed",
+        keyboard=ReplyKeyboardRemove(),
+    )
 
     # - Test inline keyboard
 
@@ -42,11 +43,11 @@ async def starter(response: Response):
 def test():
     deps = TestDeps.load()
     asyncio.run(
-        App(
+        App().start_polling(
             bot=deps.config.telegram_bot_token,
             initial_starters={deps.config.telegram_test_chat_id: starter},
             message_starter=starter,
-        ).start_polling()
+        )
     )
 
 

@@ -1,11 +1,11 @@
 import uuid
 
-from functools import wraps
 from typing import Any, Callable, List, Optional, Tuple
 
 from lessmore.utils.asynchronous.asyncify import asyncify
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.callback_info import CallbackInfo
+from teletalk.utils.generate_id import generate_id
 
 
 class Block:
@@ -28,7 +28,7 @@ class Block:
 
         # - Id
 
-        self.id = str(uuid.uuid4())
+        self.id = generate_id()
         self.previous_id = None  # in case of refresh
         self.has_refreshed_id = None
 
@@ -47,7 +47,7 @@ class Block:
         self.children: list["Block"] = []
 
     def register_callback(self, callback: Callable, callback_text: str = "") -> str:
-        _id = str(uuid.uuid4())
+        _id = generate_id()
         self.query_callback_infos[_id] = CallbackInfo(
             callback=asyncify(callback),
             callback_id=_id,
@@ -71,7 +71,7 @@ class Block:
         # - Update ids
 
         self.previous_id = self.id
-        self.id = str(uuid.uuid4())
+        self.id = generate_id()
 
         # - Update `is_refreshed`
 

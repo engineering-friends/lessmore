@@ -19,7 +19,7 @@ async def how_old_are_you(response: Response):
     return response.ask()  # go to main menu
 
 
-async def main_menu(response: Response):
+async def menu(response: Response):
     await response.ask(
         "⚙️ *Выбери действие*",
         inline_keyboard=[
@@ -43,14 +43,15 @@ async def main():
 
     # - Run app
 
-    await App(
+    await App().start_polling(
         bot=deps.config.telegram_bot_token,
-        command_starters={"/start": main_menu},
+        initial_starters={deps.config.telegram_test_chat_id: menu},  # for tests
+        command_starters={"/start": menu},
         commands=[
             BotCommand(command="start", description="Start the bot"),
             BotCommand(command="cancel", description="Cancel the current operation"),
         ],
-    ).start_polling()
+    )
 
 
 if __name__ == "__main__":

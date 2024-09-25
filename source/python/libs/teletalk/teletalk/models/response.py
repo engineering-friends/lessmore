@@ -1,7 +1,10 @@
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Callable, Literal, Optional, Union
 
+from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from lessmore.utils.functional.dict.drop import drop
+from more_itertools import only
+from teletalk.blocks.default_on_response import default_on_response
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.callback_info import CallbackInfo
@@ -41,29 +44,47 @@ class Response:
 
     # - Syntax sugar
 
-    async def ask(self, *args, **kwargs):
-        # - Set default args as the response itself
+    async def ask(
+        self,
+        prompt: Union[str, Block, Page, "Response"] = "",
+        files: Optional[list[str]] = None,
+        keyboard: Optional[ReplyKeyboardMarkup | ReplyKeyboardRemove | list[list[str]]] = None,
+        one_time_keyboard: bool = True,
+        inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
+        message_callback: Optional[Callable | str] = "default",
+        mode: Literal["inplace", "inplace_latest", "create_new"] = "create_new",
+        default_chat_id: int = 0,  # usually passed from the response
+        parent_response: Optional["Response"] = None,
+        on_response: Optional[Callable] = default_on_response,
+    ):
+        return await self.talk.ask(
+            prompt=prompt or self,
+            files=files,
+            keyboard=keyboard,
+            one_time_keyboard=one_time_keyboard,
+            inline_keyboard=inline_keyboard,
+            message_callback=message_callback,
+            mode=mode,
+            default_chat_id=default_chat_id or self.chat_id,
+            parent_response=parent_response or self,
+            on_response=on_response,
+        )
 
-        if not args and not drop(kwargs, keys=["mode", "message_callback"]):
-            args = (self,)  # <=> response.ask(response)
-
-        # - Set default chat id from the response chat
-
-        kwargs["default_chat_id"] = kwargs.pop("default_chat_id", self.chat_id)
-        kwargs["parent_response"] = self
-
-        # - Ask
-
-        return await self.talk.ask(*args, **kwargs)
-
-    async def tell(self, *args, **kwargs):
-        # - Set default chat id from the response chat
-
-        kwargs["default_chat_id"] = kwargs.pop("default_chat_id", self.chat_id)
-
-        # - Tell the talk
-
-        return await self.talk.tell(*args, **kwargs)
+    async def tell(
+        self,
+        prompt: Union[str, Block, Page, "Response"] = "",
+        files: Optional[list[str]] = None,
+        keyboard: Optional[ReplyKeyboardMarkup | ReplyKeyboardRemove | list[list[str]]] = None,
+        mode: Literal["inplace", "inplace_latest", "create_new"] = "create_new",
+        default_chat_id: int = 0,
+    ):
+        return await self.talk.tell(
+            prompt=prompt,
+            files=files,
+            keyboard=keyboard,
+            mode=mode,
+            default_chat_id=default_chat_id or self.chat_id,
+        )
 
     async def purge_talk(self):
         return await self.talk.purge()
@@ -84,3 +105,11 @@ class Response:
 
     async def start_new_talk(self, *args, **kwargs):
         return await self.talk.start_new_talk(*args, **kwargs)
+
+    @property
+    def messages(self):
+        return sum([block_message.messages for block_message in self.block_messages], [])
+
+    @property
+    def message(self):
+        return only(self.messages, default=None)

@@ -1,4 +1,5 @@
 import asyncio
+import uuid
 
 from asyncio import iscoroutinefunction
 from typing import TYPE_CHECKING, Any, Callable, Coroutine, List, Literal, Optional
@@ -15,6 +16,7 @@ from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.page import Page
 from teletalk.models.response import Response
+from teletalk.utils.generate_id import generate_id
 
 
 if TYPE_CHECKING:
@@ -57,6 +59,10 @@ class Talk:
 
         self.input_channel = asyncio.Queue()  # a queue of input `Response` objects
 
+        # - Id for logs
+
+        self.id = generate_id()
+
     async def ask(
         self,
         prompt: str | Block | Page | Response = "",
@@ -64,8 +70,8 @@ class Talk:
         keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
         one_time_keyboard: bool = True,
         inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
-        message_callback: Optional[Callable | str] = "default",
-        mode: Literal["inplace", "create_new"] = "create_new",
+        message_callback: Optional[Callable | Literal["default", "raw"]] = "default",
+        mode: Literal["inplace", "inplace_latest", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
         parent_response: Optional[Response] = None,
         on_response: Optional[Callable] = default_on_response,
@@ -454,7 +460,7 @@ class Talk:
 
         self.active_page = page
 
-        logger.debug("Updated active page")
+        logger.trace("Updated active page", page_id=page.id)
 
     async def receive_response(
         self,
