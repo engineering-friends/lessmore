@@ -37,6 +37,12 @@ class SimpleBlock(Block):
 
         # - Update block
 
+        self.text = ""
+        self.reply_keyboard_markup = None
+        self.inline_keyboard_markup = None
+        self.one_time_keyboard = False
+        self.files = []
+
         self.update(
             text=text,
             keyboard=keyboard,
@@ -51,54 +57,66 @@ class SimpleBlock(Block):
 
     def update(
         self,
-        text: str,
-        keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
-        one_time_keyboard: bool = False,
-        inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
-        files: list[str] = [],
+        text: str = ...,
+        keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = ...,
+        one_time_keyboard: bool = ...,
+        inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = ...,
+        files: list[str] = ...,
     ):
-        self.text = text
+        self.text = text if text is not ... else self.text
 
-        if isinstance(keyboard, list):
-            self.reply_keyboard_markup = ReplyKeyboardMarkup(
-                keyboard=[[KeyboardButton(text=text) for text in row] for row in keyboard],
-                one_time_keyboard=True,
-            )
-        else:
-            self.reply_keyboard_markup = keyboard
+        if keyboard is not ...:
+            if isinstance(keyboard, list):
+                # simple list of strings to keyboard
 
-        self.one_time_keyboard = one_time_keyboard
-
-        def _unfold(value):
-            if isinstance(value, str):
-                return value, None
-            elif isinstance(value, (list, tuple)):
-                return value[0], value[1]
+                self.reply_keyboard_markup = ReplyKeyboardMarkup(
+                    keyboard=[[KeyboardButton(text=text) for text in row] for row in keyboard],
+                    one_time_keyboard=one_time_keyboard,
+                )
             else:
-                raise Exception(f"Unknown value type: {type(value)}")
+                # pass as is
 
-        if isinstance(inline_keyboard, list):
-            self.inline_keyboard_markup = InlineKeyboardMarkup(
-                inline_keyboard=[
-                    [
-                        InlineKeyboardButton.model_construct(  # pydantic, but without validation
-                            text=_unfold(value)[0],
-                            callback_data=_unfold(value)[1]
-                            if isinstance(_unfold(value)[1], Callable)
-                            else None,  # put callback right in the callback_data
-                            url=_unfold(value)[1]
-                            if isinstance(_unfold(value)[1], str)
-                            else None,  # put callback right in the callback_data
-                        )
-                        for value in row
+                self.reply_keyboard_markup = keyboard
+
+        if inline_keyboard is not ...:
+
+            def _pairify(value):
+                if isinstance(value, str):
+                    return value, None
+                elif isinstance(value, (list, tuple)):
+                    return value[0], value[1]
+                else:
+                    raise Exception(f"Unknown value type: {type(value)}")
+
+            if isinstance(inline_keyboard, list):
+                # simple list of strings to inline keyboard
+
+                self.inline_keyboard_markup = InlineKeyboardMarkup(
+                    inline_keyboard=[
+                        [
+                            InlineKeyboardButton.model_construct(  # pydantic, but without validation
+                                text=_pairify(value)[0],
+                                callback_data=_pairify(value)[1]
+                                if isinstance(_pairify(value)[1], Callable)
+                                else None,  # put callback right in the callback_data
+                                url=_pairify(value)[1]
+                                if isinstance(_pairify(value)[1], str)
+                                else None,  # put callback right in the callback_data
+                            )
+                            for value in row
+                        ]
+                        for row in inline_keyboard
                     ]
-                    for row in inline_keyboard
-                ]
-            )
-        else:
-            self.inline_keyboard_markup = inline_keyboard
+                )
+            else:
+                # pass as is
+                self.inline_keyboard_markup = inline_keyboard
 
-        self.files = files
+        if one_time_keyboard is not ...:
+            self.one_time_keyboard = one_time_keyboard
+
+        if files is not ...:
+            self.files = files
 
         return self
 
@@ -112,46 +130,19 @@ class SimpleBlock(Block):
 
             return _button_callback
 
+        # - Register simple callbacks for each button
+
+        for row in self.reply_keyboard_markup.keyboard:
+            for button in row:
+                button.callback_data = button.callback_data or build_button_callback(button.text)
+
         # - Return
 
         return BlockMessage(
             text=self.text,
             files=self.files,
-            reply_keyboard_markup=ReplyKeyboardRemove()
-            if isinstance(self.reply_keyboard_markup, ReplyKeyboardRemove)
-            else ReplyKeyboardMarkup(
-                keyboard=[
-                    [
-                        KeyboardButton(
-                            text=button.text,
-                            callback_data=build_button_callback(text=button.text),
-                        )
-                        for button in row
-                    ]
-                    for row in self.reply_keyboard_markup.keyboard
-                ],
-                one_time_keyboard=self.one_time_keyboard,
-            )
-            if self.reply_keyboard_markup
-            else None,
-            inline_keyboard_markup=InlineKeyboardMarkup(
-                inline_keyboard=[
-                    [
-                        InlineKeyboardButton(
-                            text=button.text,
-                            callback_data=self.register_callback(
-                                build_button_callback(text=button.text)
-                                if button.callback_data is None
-                                else button.callback_data,
-                                callback_text=button.text,
-                            ),
-                            url=button.url,
-                        )
-                        for button in row
-                    ]
-                    for row in self.inline_keyboard_markup.inline_keyboard
-                ]
-            )
+            reply_keyboard_markup=self.reply_keyboard_markup,
+            inline_keyboard_markup=InlineKeyboardMarkup(inline_keyboard=self.inline_keyboard_markup.inline_keyboard)
             if self.inline_keyboard_markup
             else None,
         )
