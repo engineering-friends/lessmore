@@ -368,7 +368,9 @@ class Talk:
 
         # - Render new block messages, will fill `current_output` for blocks with refreshed ids
 
-        block_messages = [block.render() for block in new_blocks]  # will affect common_blocks, reset `is_refreshed`
+        block_messages = [
+            block.render(transient=transient) for block in new_blocks
+        ]  # will affect common_blocks, reset `is_refreshed`
 
         for block_message in block_messages:
             if not block_message.chat_id:
@@ -430,10 +432,15 @@ class Talk:
             if not latest_message or not latest_message.from_user.is_bot:
                 # just send a new one
                 logger.debug("Sending new message in inplace_latest mode")
-                await self.upsert_message(block_message=block_message)
+                await self.upsert_message(
+                    block_message=block_message,
+                )
             else:
                 logger.debug("Updating message in inplace_latest mode")
-                await self.upsert_message(block_message=block_message, old_message=latest_message)
+                await self.upsert_message(
+                    block_message=block_message,
+                    old_message=latest_message,
+                )
 
         # -- Inplace by id
 
@@ -442,7 +449,10 @@ class Talk:
 
             for block in old_only_blocks:
                 for message in [message for message in block.current_output.messages if message.message_id]:
-                    await self.upsert_message(block_message=None, old_message=message)
+                    await self.upsert_message(
+                        block_message=None,
+                        old_message=message,
+                    )
 
             # - Upsert new messages
 
@@ -452,7 +462,10 @@ class Talk:
                 else:
                     _first_old_message = block.previous_output.messages[0]
 
-                await self.upsert_message(block_message=block.current_output, old_message=_first_old_message)
+                await self.upsert_message(
+                    block_message=block.current_output,
+                    old_message=_first_old_message,
+                )
 
         # -- Not implemented
 
@@ -537,5 +550,8 @@ class Talk:
 
     async def purge(self):
         for message in self.history:
-            await self.app.bot.delete_message(chat_id=message.chat.id, message_id=message.message_id)
+            await self.app.bot.delete_message(
+                chat_id=message.chat.id,
+                message_id=message.message_id,
+            )
         self.history = []

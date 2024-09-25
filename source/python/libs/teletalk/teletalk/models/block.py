@@ -77,19 +77,17 @@ class Block:
 
         self.has_refreshed_id = True
 
-    def render(
-        self,
-        inherit_messages: bool = False,
-    ) -> BlockMessage:
+    def render(self, inherit_messages: bool = False, transient: bool = False) -> BlockMessage:
         # - Update output
 
         output = self.output()
         if inherit_messages and self.current_output:
             output.messages = self.current_output.messages
 
-        if self.current_output:
-            self.previous_output = self.current_output
-        self.current_output = output
+        if not transient:
+            if self.current_output:
+                self.previous_output = self.current_output
+            self.current_output = output
 
         # - Reset `is_refreshed`
 

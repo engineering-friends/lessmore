@@ -28,6 +28,7 @@ Ideas:
 - Make buttons work with main menu (including start and cancel buttons)
 - Async state
 - Make compatible with other aiogram bots, make separate start_polling function, like register_dispatcher. Where to start initial_starters? 
+- Think better about the inplace mode. What are use cases? 
 """
 
 default_ask_kwargs = dict(on_response=mark_text_with_inline_response)
