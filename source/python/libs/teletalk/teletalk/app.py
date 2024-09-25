@@ -50,6 +50,7 @@ class App:
         # - Beta
         persistant_state_path: str = "",
         reset_state: bool = False,
+        aiogram_dispatcher: Optional[Dispatcher] = Dispatcher(),
     ):
         # - Args
 
@@ -71,7 +72,9 @@ class App:
 
         self.default_bot_properties = default_bot_properties
         self.commands = commands
-        self.persistent_state = persistant_state_path
+        self.aiogram_dispatcher = aiogram_dispatcher
+
+        self.persistent_state_path = persistant_state_path
 
         # - Init state (beta)
 
@@ -222,14 +225,10 @@ class App:
         )
 
     async def start_polling(self) -> None:
-        # - Init aiogram dispatcher
-
-        aiogram_dispatcher = Dispatcher()
-
         # - Register `on_callback_query`, `on_message` and `on_delete_message` handlers in aiogram
 
-        aiogram_dispatcher.callback_query.register(self.on_callback_query)
-        aiogram_dispatcher.message.register(self.on_message)
+        self.aiogram_dispatcher.callback_query.register(self.on_callback_query)
+        self.aiogram_dispatcher.message.register(self.on_message)
 
         # - Hook send message method in the bot, to process it with a handler
 
@@ -278,4 +277,4 @@ class App:
 
         # - Start polling
 
-        await aiogram_dispatcher.start_polling(self.bot)
+        await self.aiogram_dispatcher.start_polling(self.bot)
