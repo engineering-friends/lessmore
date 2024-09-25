@@ -5,12 +5,9 @@ from aiogram.types import BotCommand
 from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
 from ef_bots.ef_org_bot.deps.deps import Deps
 from loguru import logger
-from more_itertools import last
 from pymaybe import maybe
-from rocksdict import Rdict
 from teletalk.app import App
 from teletalk.blocks.build_default_message_callback import CancelError
-from teletalk.blocks.mark_text_with_inline_response import mark_text_with_inline_response
 from teletalk.blocks.simple_block import SimpleBlock, build_default_message_callback
 from teletalk.models.response import Response
 from telethon.tl.types import User
@@ -21,18 +18,17 @@ Ideas:
 - Send reminders for the user to check if the member has filled the form
 - Send messages to the member? 
 - Send messages to Matvey?
-- Make a convenient state? How? Get response chat_id. If there is a scheduled message - send it. 
 - Need a convenient scheduler with the state. State should run a function 
-- Make a more convenient init state access
 - Do not update message inline keyboard if there hasn't been any changes
 - Think about on_response pipeline. Should it delete the supressed messages? 
 - Default ask kwargs bot-wise? 
 - Make buttons work with main menu (including start and cancel buttons)
+- Async state
+- Make compatible with other aiogram bots, make separate start_polling function, like register_dispatcher. Where to start initial_starters? 
+- Think better about the inplace mode. What are use cases? 
+- Think about windows: current open pages, where we have an active page. We should be able to switch between them
+- clean_up function to run before new asks 
 """
-
-default_ask_kwargs = {
-    "on_response": mark_text_with_inline_response,
-}
 
 
 def build_main_menu(deps: Deps):
@@ -42,7 +38,6 @@ def build_main_menu(deps: Deps):
         await response.ask(
             "1. Для начала тебе нужно узнать email от Notion участника и пошарить ему доступ на [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
             inline_keyboard=[["✅ Доступ есть"]],
-            **default_ask_kwargs,
         )
 
         # - 2. Add to all telegram ecosystem: ef channel, ef random coffee,
@@ -53,8 +48,7 @@ def build_main_menu(deps: Deps):
             # - Ask for telegram username
 
             answer = await response.ask(
-                "2. Введи телеграм участника, чтобы я добавил его в чаты и каналы (в любом формате)",
-                **default_ask_kwargs,
+                "2. Введи телеграм участника, чтобы я добавил его в чаты и каналы (в любом формате)"
             )
 
             telegram_username = answer.replace("@", "").replace("https://t.me/", "").replace("t.me/", "")
@@ -70,9 +64,7 @@ def build_main_menu(deps: Deps):
 
             if isinstance(entity, User):
                 answer = await response.ask(
-                    f"t.me/{telegram_username}",
-                    inline_keyboard=[["✅ Все верно", "❌ Я ошибся"]],
-                    **default_ask_kwargs,
+                    f"t.me/{telegram_username}", inline_keyboard=[["✅ Все верно", "❌ Я ошибся"]]
                 )
 
                 if answer == "✅ Все верно":
@@ -87,9 +79,7 @@ def build_main_menu(deps: Deps):
         # -- Add user to chats
 
         answer = await response.ask(
-            "Добавить пользователя в наши чаты и каналы?",
-            inline_keyboard=[["✅ Да", "❌ Нет"]],
-            **default_ask_kwargs,
+            "Добавить пользователя в наши чаты и каналы?", inline_keyboard=[["✅ Да", "❌ Нет"]]
         )
 
         if answer == "✅ Да":
@@ -112,7 +102,6 @@ def build_main_menu(deps: Deps):
             "3. Введи полное имя участника на любом языке",
             inline_keyboard=[[f"✏️ Взять из телеги: {telegram_full_name}"]],
             message_callback=build_default_message_callback(supress_messages=False),
-            **default_ask_kwargs,
         )
 
         full_name = telegram_full_name if "✏️" in answer else answer
@@ -144,7 +133,7 @@ def build_main_menu(deps: Deps):
 - В канал EF Channel. Там у нас все посты и запросы - в том числе твои будут
 - В чатик EF Random Coffee - там основные знакомства, участвуй! :)
 
-Для онбординга нужно заполнить страничку в Notion: [🏄‍♂️ Онбординг в EF для {full_name}]({new_pages[0]['url']})
+Для онбординга нужно заполнить страничку в Notion, выбрав шаблон "▶️ Начать онбординг": [🏄‍♂️ Онбординг в EF для {full_name}]({new_pages[0]['url']})
 """)
         )
 
@@ -161,7 +150,6 @@ def build_main_menu(deps: Deps):
         await response.ask(
             "5. Последний шаг - убедиться, чтобы участник все заполнил! Как сделает, Матвею придет уведомление, после чего он напишет о нем пост и поможет ему сделать его первый запрос. На этом онбординг будет завершен, мерси боку! ",
             inline_keyboard=[["✅ Готово!"]],
-            **default_ask_kwargs,
         )
 
         return await response.ask()
@@ -201,16 +189,15 @@ def main(env="test"):
 
         async with App(
             state_backend="rocksdict",
-            state_config={"persistant_state_path": str(deps.local_files_dir / "app_state")},
+            state_config={"path": str(deps.local_files_dir / "app_state")},
         ) as app:
             # - Load chat_ids to run at startup - the ones which have last message from the bot (usually the menu message). Needed for user not to press /start if bot has been restarted, and just used the menu of the last message (beta)
 
-            chat_ids_to_run_at_startup = []
-
-            for chat_id, user in app.state.items():
-                if maybe(user)["messages"][-1]["from_user"]["is_bot"].or_else(False):
-                    chat_ids_to_run_at_startup.append(int(chat_id))
-
+            chat_ids_to_run_at_startup = [
+                chat_id
+                for chat_id, chat_private_state in app.iter_chat_states(private=True)
+                if maybe(chat_private_state)["messages"][-1]["from_user"]["is_bot"].or_else(False)
+            ]
             logger.info("Chats to run at startup", chat_ids=chat_ids_to_run_at_startup)
 
             # - Start polling
