@@ -7,6 +7,7 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
+from pymaybe import maybe
 from teletalk.blocks.build_default_message_callback import build_default_message_callback
 from teletalk.blocks.default_on_response import default_on_response
 from teletalk.models.block import Block
@@ -132,7 +133,7 @@ class SimpleBlock(Block):
 
         # - Register simple callbacks for each button
 
-        for row in self.reply_keyboard_markup.keyboard:
+        for row in maybe(self.inline_keyboard_markup).keyboard.or_else([]):
             for button in row:
                 button.callback_data = button.callback_data or build_button_callback(button.text)
 

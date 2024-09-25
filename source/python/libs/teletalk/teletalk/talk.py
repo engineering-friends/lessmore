@@ -1,4 +1,5 @@
 import asyncio
+import uuid
 
 from asyncio import iscoroutinefunction
 from typing import TYPE_CHECKING, Any, Callable, Coroutine, List, Literal, Optional
@@ -56,6 +57,10 @@ class Talk:
         # - Input channel for communication
 
         self.input_channel = asyncio.Queue()  # a queue of input `Response` objects
+
+        # - Id for logs
+
+        self.id = str(uuid.uuid4())
 
     async def ask(
         self,

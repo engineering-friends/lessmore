@@ -122,13 +122,13 @@ class App:
 
             # - Run the starter and wait for the result
 
-            logger.info("Running talk", talk=talk)
+            logger.info("Running talk", talk_id=talk.id)
 
             await talk.coroutine
 
             # - Remove the talk
 
-            logger.info("Removing talk", talk=talk)
+            logger.info("Removing talk", talk_id=talk.id)
 
             if talk.parent:
                 talk.parent.children.remove(talk)
