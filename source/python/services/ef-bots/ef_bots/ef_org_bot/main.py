@@ -9,8 +9,9 @@ from more_itertools import last
 from pymaybe import maybe
 from rocksdict import Rdict
 from teletalk.app import App
+from teletalk.blocks.build_default_message_callback import CancelError
 from teletalk.blocks.mark_text_with_inline_response import mark_text_with_inline_response
-from teletalk.blocks.simple_block import CancelError, SimpleBlock, build_default_message_callback
+from teletalk.blocks.simple_block import SimpleBlock, build_default_message_callback
 from teletalk.models.response import Response
 from telethon.tl.types import User
 
