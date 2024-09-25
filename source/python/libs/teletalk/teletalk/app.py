@@ -80,7 +80,7 @@ class App:
 
             path = str(self.state_config.get("path", ""))
 
-            assert path, "`persistant_state_path` is required in `state_config`"
+            assert path, "`path` is required in `state_config`"
 
             if self.reset_state and os.path.exists(path):
                 Rdict.destroy(str(path))
