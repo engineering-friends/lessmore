@@ -1,7 +1,8 @@
 import asyncio
 import os
 
-from typing import Callable, Optional
+from contextlib import asynccontextmanager
+from typing import Callable, Literal, Mapping, Optional
 
 import aiogram
 
@@ -40,60 +41,71 @@ class App:
 
     def __init__(
         self,
-        bot: Bot | str,
-        initial_starters: list[Callable] | dict[int, Callable] = [],
-        message_starter: Optional[Callable] = None,
-        command_starters: dict[str, Callable] = {},
-        dispatcher: Optional[Callable] = None,  # dispatcher is like a low-level `Talk`
-        default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
-        commands: Optional[list[BotCommand]] = None,
         # - Beta
-        persistant_state_path: str = "",
+        state_backend: Literal["rocksdict", "memory"] = "memory",
+        state_config: dict = {},
         reset_state: bool = False,
-        aiogram_dispatcher: Optional[Dispatcher] = Dispatcher(),
     ):
-        # - Args
+        # - App state
 
-        if isinstance(bot, Bot):
-            self.bot = bot
-        elif isinstance(bot, str):
-            self.bot = Bot(bot, default=default_bot_properties)
-        else:
-            raise Exception("Unknown bot type")
+        self.state_backend = state_backend
+        self.state_config = state_config
+        self.reset_state = reset_state
+        self.state = None
 
-        self.initial_starters = initial_starters
-        self.message_starter = message_starter
-        self.command_starters = command_starters
-        self.dispatcher = dispatcher or TeletalkDispatcher(
-            app=self,
-            message_starter=message_starter,
-            command_starters=command_starters,
-        )
+        # - Local state
 
-        self.default_bot_properties = default_bot_properties
-        self.commands = commands
-        self.aiogram_dispatcher = aiogram_dispatcher
+        self.talks: list[Talk] = []
+        self.messages_by_chat_id: dict[int, list[Message]] = {}
 
-        self.persistent_state_path = persistant_state_path
+    # - Context managers
 
-        # - Init state (beta)
+    async def __aenter__(self):
+        async with self.state_client():
+            return self
 
-        if persistant_state_path:
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        return False  # Returning False means exceptions will not be suppressed
+
+    @asynccontextmanager
+    async def state_client(self) -> Mapping:  # mapping
+        assert not self.state, "State backend already started"
+
+        # - Start state
+
+        if self.state_backend == "rocksdict":
             # - Delete state if reset_state is True
 
-            if reset_state and os.path.exists(persistant_state_path):
+            persistant_state_path = str(self.state_config.get("persistant_state_path", ""))
+
+            assert persistant_state_path, "`persistant_state_path` is required in `state_config`"
+
+            if self.reset_state and os.path.exists(persistant_state_path):
                 Rdict.destroy(str(persistant_state_path))
 
             # - Init state
 
-            self.user_states = Rdict(path=ensure_path(persistant_state_path))
+            self.state = Rdict(path=ensure_path(persistant_state_path))
+
+        elif self.state_backend == "memory":
+            self.state = {}
         else:
-            self.user_states = None
+            raise Exception("Unknown state backend")
 
-        # - State
+        # - Return state
 
-        self.talks: list[Talk] = []
-        self.messages_by_chat_id: dict[int, list[Message]] = {}
+        yield self.state
+
+        # - Stop state
+
+        if self.state_backend == "rocksdict":
+            self.state.close()
+
+        # - Drop state
+
+        self.state = None
+
+    # - Methods
 
     async def start_new_talk(
         self,
@@ -164,8 +176,8 @@ class App:
 
         # - Update state (beta)
 
-        if self.user_states:
-            self.user_states[str(message.chat.id)] = self.user_states.get(str(message.chat.id), {}) | {
+        if self.state:
+            self.state[str(message.chat.id)] = self.state.get(str(message.chat.id), {}) | {
                 "messages": [
                     {
                         "message_id": _message.message_id,
@@ -179,7 +191,7 @@ class App:
                 ]
             }
 
-            self.user_states.flush()
+            self.state.flush()
 
     async def on_message(
         self,
@@ -193,8 +205,8 @@ class App:
 
         # - Update state (beta)
 
-        if self.user_states:
-            self.user_states[str(message.chat.id)] = self.user_states.get(str(message.chat.id), {}) | {
+        if self.state:
+            self.state[str(message.chat.id)] = self.state.get(str(message.chat.id), {}) | {
                 "messages": [
                     {
                         "message_id": _message.message_id,
@@ -207,7 +219,7 @@ class App:
                     for _message in self.messages_by_chat_id.get(message.chat.id, [])
                 ]
             }
-            self.user_states.flush()
+            self.state.flush()
 
         # - Otherwise, build the `Response` with a flattened `BlockMessage` and send it to the `self.dispatcher`
 
@@ -224,7 +236,40 @@ class App:
             ),
         )
 
-    async def start_polling(self, log_bot_url: bool = True) -> None:
+    async def start_polling(
+        self,
+        bot: Bot | str,
+        initial_starters: list[Callable] | dict[int, Callable] = [],
+        message_starter: Optional[Callable] = None,
+        command_starters: dict[str, Callable] = {},
+        dispatcher: Optional[Callable] = None,  # dispatcher is like a low-level `Talk`
+        default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
+        commands: Optional[list[BotCommand]] = None,
+        aiogram_dispatcher: Optional[Dispatcher] = Dispatcher(),
+        log_bot_url: bool = True,
+    ) -> None:
+        # - Args
+
+        if isinstance(bot, Bot):
+            self.bot = bot
+        elif isinstance(bot, str):
+            self.bot = Bot(bot, default=default_bot_properties)
+        else:
+            raise Exception("Unknown bot type")
+
+        self.initial_starters = initial_starters
+        self.message_starter = message_starter
+        self.command_starters = command_starters
+        self.dispatcher = dispatcher or TeletalkDispatcher(
+            app=self,
+            message_starter=message_starter,
+            command_starters=command_starters,
+        )
+
+        self.default_bot_properties = default_bot_properties
+        self.commands = commands
+        self.aiogram_dispatcher = aiogram_dispatcher
+
         # - Log bot url
 
         if log_bot_url:
@@ -255,10 +300,10 @@ class App:
 
         # - Init data from state, if specified (beta)
 
-        if self.user_states:
+        if self.state:
             # - Init data from state, if specified (beta)
 
-            for chat_id, chat_state in self.user_states.items():
+            for chat_id, chat_state in self.state.items():
                 messages = [Box(message) for message in chat_state["messages"]]
 
                 self.messages_by_chat_id[int(chat_id)] = [
