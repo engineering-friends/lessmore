@@ -113,3 +113,11 @@ class Response:
     @property
     def message(self):
         return only(self.messages, default=None)
+
+    async def get_chat_state(self):
+        # todo later: make async state
+        return self.talk.app.state.get(f"chat_{self.chat_id}", {})
+
+    async def set_chat_state(self, state: dict):
+        # todo later: make async state
+        self.talk.app.state[f"chat_{self.chat_id}"] = state

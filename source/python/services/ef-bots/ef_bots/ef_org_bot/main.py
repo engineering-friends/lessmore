@@ -21,13 +21,12 @@ Ideas:
 - Send reminders for the user to check if the member has filled the form
 - Send messages to the member? 
 - Send messages to Matvey?
-- Make a convenient state? How? Get response chat_id. If there is a scheduled message - send it. 
 - Need a convenient scheduler with the state. State should run a function 
-- Make a more convenient init state access
 - Do not update message inline keyboard if there hasn't been any changes
 - Think about on_response pipeline. Should it delete the supressed messages? 
 - Default ask kwargs bot-wise? 
 - Make buttons work with main menu (including start and cancel buttons)
+- Async state
 - Make compatible with other aiogram bots, make separate start_polling function, like register_dispatcher. Where to start initial_starters? 
 """
 
@@ -204,12 +203,11 @@ def main(env="test"):
         ) as app:
             # - Load chat_ids to run at startup - the ones which have last message from the bot (usually the menu message). Needed for user not to press /start if bot has been restarted, and just used the menu of the last message (beta)
 
-            chat_ids_to_run_at_startup = []
-
-            for chat_id, user in app.state.items():
-                if maybe(user)["messages"][-1]["from_user"]["is_bot"].or_else(False):
-                    chat_ids_to_run_at_startup.append(int(chat_id))
-
+            chat_ids_to_run_at_startup = [
+                chat_id
+                for chat_id, chat_private_state in app.iter_chat_states(private=True)
+                if maybe(chat_private_state)["messages"][-1]["from_user"]["is_bot"].or_else(False)
+            ]
             logger.info("Chats to run at startup", chat_ids=chat_ids_to_run_at_startup)
 
             # - Start polling

@@ -78,16 +78,16 @@ class App:
         if self.state_backend == "rocksdict":
             # - Delete state if reset_state is True
 
-            persistant_state_path = str(self.state_config.get("path", ""))
+            path = str(self.state_config.get("path", ""))
 
-            assert persistant_state_path, "`persistant_state_path` is required in `state_config`"
+            assert path, "`persistant_state_path` is required in `state_config`"
 
-            if self.reset_state and os.path.exists(persistant_state_path):
-                Rdict.destroy(str(persistant_state_path))
+            if self.reset_state and os.path.exists(path):
+                Rdict.destroy(str(path))
 
             # - Init state
 
-            self.state = Rdict(path=ensure_path(persistant_state_path))
+            self.state = Rdict(path=ensure_path(path))
 
         elif self.state_backend == "memory":
             self.state = {}
@@ -179,7 +179,7 @@ class App:
         # - Update state (beta)
 
         if self.state:
-            self.state[str(message.chat.id)] = self.state.get(str(message.chat.id), {}) | {
+            self.state[f"_chat_{message.chat.id}"] = self.state.get(str(message.chat.id), {}) | {
                 "messages": [
                     {
                         "message_id": _message.message_id,
@@ -192,8 +192,6 @@ class App:
                     for _message in self.messages_by_chat_id.get(message.chat.id, [])
                 ]
             }
-
-            self.state.flush()
 
     async def on_message(
         self,
@@ -208,7 +206,7 @@ class App:
         # - Update state (beta)
 
         if self.state:
-            self.state[str(message.chat.id)] = self.state.get(str(message.chat.id), {}) | {
+            self.state[f"_chat_{message.chat.id}"] = self.state.get(str(message.chat.id), {}) | {
                 "messages": [
                     {
                         "message_id": _message.message_id,
@@ -221,7 +219,6 @@ class App:
                     for _message in self.messages_by_chat_id.get(message.chat.id, [])
                 ]
             }
-            self.state.flush()
 
         # - Otherwise, build the `Response` with a flattened `BlockMessage` and send it to the `self.dispatcher`
 
@@ -305,10 +302,12 @@ class App:
         if self.state:
             # - Init data from state, if specified (beta)
 
-            for chat_id, chat_state in self.state.items():
+            for chat_key, chat_state in {k: v for k, v in self.state.items() if k.startswith("_chat_")}.items():
+                chat_id = int(chat_key.split("_chat_")[1])
+
                 messages = [Box(message) for message in chat_state["messages"]]
 
-                self.messages_by_chat_id[int(chat_id)] = [
+                self.messages_by_chat_id[chat_id] = [
                     Message.model_construct(
                         message_id=message.message_id,
                         date=message.date,
@@ -330,3 +329,14 @@ class App:
         # - Start polling
 
         await self.aiogram_dispatcher.start_polling(self.bot)
+
+    # - Syntax sugar
+
+    def iter_chat_states(self, private: bool = False):
+        prefix = "_chat_" if private else "chat_"
+
+        for chat_key, chat_state in self.state.items():
+            if not chat_key.startswith(prefix):
+                continue
+
+            yield int(chat_key.split(prefix)[1]), chat_state
