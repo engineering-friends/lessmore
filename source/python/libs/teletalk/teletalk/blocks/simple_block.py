@@ -7,65 +7,11 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
+from teletalk.blocks.build_default_message_callback import build_default_message_callback
+from teletalk.blocks.default_on_response import default_on_response
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.response import Response
-
-
-class CancelError(Exception):
-    pass
-
-
-def build_default_message_callback(supress_messages: bool = False):
-    async def _callback(response: Response):
-        if response.block_messages[-1].text == "/cancel":
-            raise CancelError("Cancelled")
-        elif response.block_messages[-1].text:
-            if supress_messages:
-                # - Remove response messages # todo later: put into on_response?
-
-                for block_message in response.block_messages:
-                    for message in block_message.messages:
-                        await response.talk.app.bot.delete_messages(
-                            chat_id=response.chat_id,
-                            message_ids=[message.message_id],
-                        )
-                        block_message.messages.remove(message)
-
-                # - Ask again
-
-                return await response.ask(mode="inplace")
-            else:
-                return "".join([message.text for message in response.block_messages])
-
-    return _callback
-
-
-async def default_on_response(response: Response):
-    # - Remove inline keyboard buttons
-
-    # -- Return if no inline keyboard buttons
-
-    if not any(block.current_output.inline_keyboard_markup for block in response.prompt_page.blocks):
-        return
-
-    # -- Keep old values
-
-    old_values = [block.is_inline_keyboard_visible for block in response.prompt_page.blocks]
-
-    # -- Set values to True
-
-    for block in response.prompt_page.blocks:
-        block.is_inline_keyboard_visible = False
-
-    # -- Update active page again
-
-    await response.tell(response, mode="inplace")
-
-    # -- Restore old values
-
-    for block, old_value in zip(response.prompt_page.blocks, old_values):
-        block.is_inline_keyboard_visible = old_value
 
 
 go_back = lambda response: response.ask(response.previous if response.previous else response, mode="inplace")

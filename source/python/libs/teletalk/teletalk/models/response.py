@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Callable, Literal, Optional
+from typing import TYPE_CHECKING, Callable, Literal, Optional, Union
 
 from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup
 from lessmore.utils.functional.dict.drop import drop
-from teletalk.blocks.simple_block import default_on_response
+from teletalk.blocks.default_on_response import default_on_response
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.callback_info import CallbackInfo
@@ -45,7 +45,7 @@ class Response:
 
     async def ask(
         self,
-        prompt: str | Block | Page | "Response" = "",
+        prompt: Union[str, Block, Page, "Response"] = "",
         files: Optional[list[str]] = None,
         keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
         one_time_keyboard: bool = True,
@@ -71,7 +71,7 @@ class Response:
 
     async def tell(
         self,
-        prompt: str | Block | Page | "Response" = "",
+        prompt: Union[str, Block, Page, "Response"] = "",
         files: Optional[list[str]] = None,
         keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
         mode: Literal["inplace", "inplace_latest", "create_new"] = "create_new",
