@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
 
 async def default_on_response(response: "Response"):
-    # - Remove inline keyboard buttons
+    # - Remove inline keyboard buttons + mark text with inline response
 
     # -- Return if no inline keyboard buttons
 
@@ -21,6 +21,11 @@ async def default_on_response(response: "Response"):
 
     for block in response.prompt_page.blocks:
         block.is_inline_keyboard_visible = False
+
+    # -- If the inline button was pressed - mark text with inline response
+
+    if response.callback_id:
+        response.prompt_block.text = f"{response.prompt_block.text}\n\n_{response.callback_info.callback_text}_"
 
     # -- Update active page again
 
