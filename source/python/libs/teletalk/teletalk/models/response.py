@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Callable, Literal, Optional, Union
 from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup
 from lessmore.utils.functional.dict.drop import drop
 from more_itertools import only
+from telegram import ReplyKeyboardRemove
 from teletalk.blocks.default_on_response import default_on_response
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
@@ -48,7 +49,7 @@ class Response:
         self,
         prompt: Union[str, Block, Page, "Response"] = "",
         files: Optional[list[str]] = None,
-        keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
+        keyboard: Optional[ReplyKeyboardMarkup | ReplyKeyboardRemove | list[list[str]]] = None,
         one_time_keyboard: bool = True,
         inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
         message_callback: Optional[Callable | str] = "default",
@@ -74,7 +75,7 @@ class Response:
         self,
         prompt: Union[str, Block, Page, "Response"] = "",
         files: Optional[list[str]] = None,
-        keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
+        keyboard: Optional[ReplyKeyboardMarkup | ReplyKeyboardRemove | list[list[str]]] = None,
         mode: Literal["inplace", "inplace_latest", "create_new"] = "create_new",
         default_chat_id: int = 0,
     ):

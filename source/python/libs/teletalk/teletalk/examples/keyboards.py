@@ -21,12 +21,13 @@ async def custom_messages(response: Response):
         "Send me your location",
         keyboard=ReplyKeyboardMarkup(
             keyboard=[
-                # [KeyboardButton(text="Request users", request_users=KeyboardButtonRequestUsers(request_id=0, user_is_premium=True))],
-                # [KeyboardButton(text="Request user", request_user=KeyboardButtonRequestUser(request_id=0, user_is_premium=True))],
-                # [KeyboardButton(text="Send chat", request_chat=KeyboardButtonRequestChat(request_id=0, chat_is_channel=True))],
                 [KeyboardButton(text="Send contact", request_contact=True)],
                 [KeyboardButton(text="Send location", request_location=True)],
                 [KeyboardButton(text="Send poll", request_poll=KeyboardButtonPollType(type="quiz"))],
+                # todo later: add more keyboard buttons [@marklidenberg]
+                # [KeyboardButton(text="Request users", request_users=KeyboardButtonRequestUsers(request_id=0, user_is_premium=True))],
+                # [KeyboardButton(text="Request user", request_user=KeyboardButtonRequestUser(request_id=0, user_is_premium=True))],
+                # [KeyboardButton(text="Send chat", request_chat=KeyboardButtonRequestChat(request_id=0, chat_is_channel=True))],
                 # [KeyboardButton(text="Web app", web_app=None)],
             ]
         ),
