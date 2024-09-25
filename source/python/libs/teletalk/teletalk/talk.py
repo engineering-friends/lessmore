@@ -459,7 +459,7 @@ class Talk:
 
         self.active_page = page
 
-        logger.debug("Updated active page")
+        logger.trace("Updated active page", page_id=page.id)
 
     async def receive_response(
         self,

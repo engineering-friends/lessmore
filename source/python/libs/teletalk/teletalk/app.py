@@ -224,7 +224,12 @@ class App:
             ),
         )
 
-    async def start_polling(self) -> None:
+    async def start_polling(self, log_bot_url: bool = True) -> None:
+        # - Log bot url
+
+        if log_bot_url:
+            logger.info("Bot url", url="https://t.me/" + (await self.bot.get_me()).username)
+
         # - Register `on_callback_query`, `on_message` and `on_delete_message` handlers in aiogram
 
         self.aiogram_dispatcher.callback_query.register(self.on_callback_query)
