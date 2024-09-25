@@ -53,7 +53,7 @@ class Response:
         one_time_keyboard: bool = True,
         inline_keyboard: Optional[InlineKeyboardMarkup | list[list[str | tuple[str, Callable]]]] = None,
         message_callback: Optional[Callable | str] = "default",
-        mode: Literal["inplace", "create_new"] = "create_new",
+        mode: Literal["inplace", "inplace_latest", "create_new"] = "create_new",
         default_chat_id: int = 0,  # usually passed from the response
         parent_response: Optional["Response"] = None,
         on_response: Optional[Callable] = default_on_response,
