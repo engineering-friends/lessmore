@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Callable, Literal, Optional, Union
 
 from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup
 from lessmore.utils.functional.dict.drop import drop
+from more_itertools import only
 from teletalk.blocks.default_on_response import default_on_response
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
@@ -104,3 +105,11 @@ class Response:
 
     async def start_new_talk(self, *args, **kwargs):
         return await self.talk.start_new_talk(*args, **kwargs)
+
+    @property
+    def messages(self):
+        return sum([block_message.messages for block_message in self.block_messages], [])
+
+    @property
+    def message(self):
+        return only(self.messages, default=None)
