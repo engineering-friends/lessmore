@@ -16,3 +16,4 @@ dependencies = [
     "pydantic-settings>=2.5.2",
     "lessmore-utils @ git+https://github.com/engineering-friends/lessmore.git#subdirectory=source/python/libs/lessmore.utils"
 ]
+
