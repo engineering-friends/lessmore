@@ -15,6 +15,6 @@ dependencies = [
     "aiogram>=3",
     "pymaybe>=0.1.6",
     "python-box>=7.2.0",
-    "lessmore-utils @ git+https://github.com/engineering-friends/lessmore.git#subdirectory=source/python/libs/lessmore.utils"
+    "lessmore-utils @ git+https://github.com/engineering-friends/lessmore.git#subdirectory=source/python/libs/lessmore.utils",
     "teletalk @ git+https://github.com/engineering-friends/lessmore.git#subdirectory=source/python/libs/teletalk"
 ]
