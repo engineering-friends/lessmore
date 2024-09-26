@@ -1,6 +1,6 @@
 [project]
 name = "teletalk"
-version = "0.1.0"
+version = "0.1.1"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -8,15 +8,11 @@ dependencies = [
     "loguru >=0.7.2",
     "aiogram>=3",
     "pymaybe>=0.1.6",
-    "better-exceptions>=0.3.3",
     "rocksdict>=0.3.23",
     "coolname>=2.2.0",
     "shortuuid>=1.0.13",
     "python-box>=7.2.0",
     "more-itertools>=10.5.0",
-    "pendulum>=3.0.0",
-    "anyconfig[yaml]>=0.14.0",
-    "requests>=2.32.3",
-    "python-dotenv>=1.0.1",
     "pydantic-settings>=2.5.2",
+    "lessmore-utils @ git+https://github.com/engineering-friends/lessmore.git#subdirectory=source/python/libs/lessmore.utils"
 ]

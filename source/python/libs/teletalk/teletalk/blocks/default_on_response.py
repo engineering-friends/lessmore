@@ -15,7 +15,8 @@ async def default_on_response(response: "Response"):
 
     # -- Keep old values
 
-    old_values = [block.is_inline_keyboard_visible for block in response.prompt_page.blocks]
+    old_is_inline_keyboard_visible_list = [block.is_inline_keyboard_visible for block in response.prompt_page.blocks]
+    old_text = response.prompt_block.text
 
     # -- Set values to True
 
@@ -33,5 +34,7 @@ async def default_on_response(response: "Response"):
 
     # -- Restore old values
 
-    for block, old_value in zip(response.prompt_page.blocks, old_values):
+    for block, old_value in zip(response.prompt_page.blocks, old_is_inline_keyboard_visible_list):
         block.is_inline_keyboard_visible = old_value
+
+    response.prompt_block.text = old_text

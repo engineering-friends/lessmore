@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="discord-to-telegram-forwarder",
-    version="0.1.2",
+    version="0.1.3",
     author="marklidenberg",
     author_email="marklidenberg@gmail.com",
     description="A Discord to Telegram forwarder.",
