@@ -504,8 +504,8 @@ wheels = [
 
 [[package]]
 name = "lessmore-utils"
-version = "0.1.0"
-source = { git = "https://github.com/engineering-friends/lessmore.git?subdirectory=source%2Fpython%2Flibs%2Flessmore.utils#881f6f3ab221c2af7d9e835faad3e122374707a8" }
+version = "0.1.2"
+source = { git = "https://github.com/engineering-friends/lessmore.git?subdirectory=source%2Fpython%2Flibs%2Flessmore.utils#bedce3833060988e8623f6191a56d7ccfee7d680" }
 dependencies = [
     { name = "anyconfig", marker = "python_full_version >= '3.12'" },
     { name = "diskcache", marker = "python_full_version >= '3.12'" },
