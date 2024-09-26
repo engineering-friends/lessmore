@@ -28,6 +28,8 @@ export PYTHONPATH="$SERVICE_PATH:$PYTHONPATH"
 export PYTHONPATH="$MONOREPO_PATH/source/python/libs/lessmore.utils:$PYTHONPATH"
 export PYTHONPATH="$MONOREPO_PATH/source/python/libs/teletalk:$PYTHONPATH"
 
+uv run python
+
 # - Run the service in screen
 
 screen -X -S ef_org_bot quit
