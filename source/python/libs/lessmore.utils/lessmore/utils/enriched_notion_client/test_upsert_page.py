@@ -5,7 +5,7 @@ from lessmore.utils.functional.contains_nested import contains_nested
 
 
 def test_upsert_page():
-    from lessmore.utils.enriched_notion_client.enriched_notion_client import EnrichedNotionAsyncClient
+    from lessmore.utils.enriched_notion_client.enriched_notion_async_client import EnrichedNotionAsyncClient
 
     async def main():
         # - Init client
