@@ -6,7 +6,7 @@ import coolname
 import shortuuid
 
 
-# todo later: make a better id generator [@marklidenberg]
+# todo maybe: make a better id generator [@marklidenberg]
 
 
 def generate_id(seed: Optional[str] = None):

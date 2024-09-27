@@ -1,9 +1,10 @@
-from discord_to_telegram_forwarder.deps import Deps
-from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.ask import ask
 from lessmore.utils.cache_on_disk import cache_on_disk
 from lessmore.utils.enriched_notion_client.enriched_notion_async_client import EnrichedNotionAsyncClient
 from lessmore.utils.functional.dict.pick import pick
 from more_itertools import first
+
+from discord_to_telegram_forwarder.deps import Deps
+from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.ask import ask
 
 
 PROMPT = """Here is a list of pages. If user {name} if present, return the url of the page. Names can differ a bit, that's ok (but not completely). Otherwise, return "None".
@@ -21,7 +22,7 @@ PROPERTY_NAMES = ["Name", "TG_username", "AI стиль постов", "Запо
 async def get_notion_user_properties(
     name: str,
     deps: Deps,
-    whois_database_id: str = "641eaea7c7ad4881bbed5ea096a4421a",  # ef whois in notion
+    whois_database_id: str = "0b1e5db6cdfe4dcea0c818109ce44a26",  # ef whois in notion
 ) -> dict:
     # - Init notion client
 
