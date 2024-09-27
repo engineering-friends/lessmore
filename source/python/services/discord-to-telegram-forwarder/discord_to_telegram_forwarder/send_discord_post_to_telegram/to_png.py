@@ -2,7 +2,7 @@ from PIL import Image
 
 
 def to_png(filename_in: str, filename_out: str = None) -> str:
-    """Convert image to png"""
+    """Convert an image to png"""
     filename_out = filename_out or filename_in + ".png"
 
     with Image.open(filename_in) as image:
