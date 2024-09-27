@@ -1,9 +1,5 @@
-import os
-
 from dataclasses import dataclass
 from pathlib import Path
-
-import openai
 
 from ef_bots.ef_org_bot.deps.config.config import Config
 from lessmore.utils.enriched_notion_client.enriched_notion_async_client import EnrichedNotionAsyncClient
