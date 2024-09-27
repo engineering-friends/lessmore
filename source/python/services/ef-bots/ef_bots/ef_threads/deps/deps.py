@@ -1,9 +1,5 @@
-import os
-
 from dataclasses import dataclass
 from pathlib import Path
-
-import openai
 
 from ef_bots.ef_threads.deps.config.config import Config
 from lessmore.utils.enriched_notion_client.enriched_notion_async_client import EnrichedNotionAsyncClient
@@ -36,7 +32,8 @@ class Deps:
             config=config,
             local_files_dir=str(local_files_dir),
             telegram_bot_client=TelegramClient(
-                session=ensure_path(str(local_files_dir / "telegram_bot.session")),
+                # disabled bot session for now, as it may create conflicts of session file in the deployment
+                # session=ensure_path(str(local_files_dir / "telegram_bot.session")),
                 api_id=int(config.telegram_api_id),
                 api_hash=config.telegram_api_hash,
             ),
