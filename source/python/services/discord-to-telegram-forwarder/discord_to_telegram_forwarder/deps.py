@@ -10,6 +10,7 @@ from lessmore.utils.file_primitives.ensure_path import ensure_path
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.read_config.read_config import read_config
 from telethon import TelegramClient
+from telethon.sessions import StringSession
 
 from discord_to_telegram_forwarder.config.config import Config
 
@@ -27,6 +28,7 @@ class Deps:
         env: Literal["test", "prod"] = "test",
         log_level="DEBUG",
         config_dict: dict = {},
+        init_user_client: bool = True,
     ) -> "Deps":
         # - Init config
 
@@ -62,7 +64,9 @@ class Deps:
             cache={},
             local_files_dir=local_files_dir,
             telegram_bot_client=TelegramClient(
-                session=str(local_files_dir / "telegram_bot.session"),
+                # disable temporatily, as it has bot conflicts in telegram bot
+                # session=str(local_files_dir / "telegram_bot.session"),
+                session=StringSession(),
                 api_id=int(config.telegram_api_id),
                 api_hash=config.telegram_api_hash,
             ),
@@ -70,7 +74,9 @@ class Deps:
                 session=str(local_files_dir / "telegram_user.session"),
                 api_id=int(config.telegram_api_id),
                 api_hash=config.telegram_api_hash,
-            ),
+            )
+            if init_user_client
+            else None,
         )
 
 

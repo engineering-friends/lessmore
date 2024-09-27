@@ -17,7 +17,7 @@ class Deps:
     telegram_user_client: TelegramClient
 
     @staticmethod
-    def load(log_level="DEBUG", env: str = "test", init_user_client: bool = True) -> "Deps":
+    def load(log_level="DEBUG", env: str = "test") -> "Deps":
         # - Setup loguru
 
         setup_json_loguru(level=log_level)
@@ -32,8 +32,7 @@ class Deps:
             config=config,
             local_files_dir=str(local_files_dir),
             telegram_bot_client=TelegramClient(
-                # disabled bot session for now, as it may create conflicts of session file in the deployment
-                # session=ensure_path(str(local_files_dir / "telegram_bot.session")),
+                session=ensure_path(str(local_files_dir / "telegram_bot.session")),
                 api_id=int(config.telegram_api_id),
                 api_hash=config.telegram_api_hash,
             ),
@@ -41,9 +40,7 @@ class Deps:
                 session=ensure_path(local_files_dir / "telegram_user.session"),
                 api_id=int(config.telegram_api_id),
                 api_hash=config.telegram_api_hash,
-            )
-            if init_user_client
-            else None,
+            ),
         )
 
     def notion_client(self) -> EnrichedNotionAsyncClient:

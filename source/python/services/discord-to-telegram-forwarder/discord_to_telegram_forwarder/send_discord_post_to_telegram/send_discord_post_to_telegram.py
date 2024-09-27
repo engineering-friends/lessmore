@@ -12,6 +12,14 @@ import discord
 import emoji as emoji_lib
 
 from box import Box
+from lessmore.utils.cache_on_disk import cache_on_disk
+from lessmore.utils.file_primitives.write_file import write_file
+from loguru import logger
+from PIL import Image
+from pymaybe import maybe
+from retry import retry
+from telethon import functions, types
+
 from discord_to_telegram_forwarder.deps import Deps
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.ai.generate_article_cover import generate_article_cover
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.download_as_temp_file import _download_as_temp_file
@@ -29,13 +37,6 @@ from discord_to_telegram_forwarder.send_discord_post_to_telegram.request_reactio
     request_reaction_emojis_from_openai,
 )
 from discord_to_telegram_forwarder.send_discord_post_to_telegram.to_png import to_png
-from lessmore.utils.cache_on_disk import cache_on_disk
-from lessmore.utils.file_primitives.write_file import write_file
-from loguru import logger
-from PIL import Image
-from pymaybe import maybe
-from retry import retry
-from telethon import functions, types
 
 
 MENTION_PLACEHOLDER = "ç"
@@ -343,12 +344,11 @@ async def send_discord_post_to_telegram(
 async def test_send_real_message_from_discord(forum_name: str, title_contains: str):
     # - Init deps
 
-    deps = Deps.load(env="prod")
+    deps = Deps.load(env="prod", init_user_client=False)
 
     # - Start telegram bots
 
     await deps.telegram_bot_client.start(bot_token=deps.config.telegram_bot_token)
-    await deps.telegram_user_client.start()
 
     # - Custom discord client
 
@@ -404,12 +404,11 @@ async def test_send_real_message_from_discord(forum_name: str, title_contains: s
 async def test():
     # - Init deps
 
-    deps = Deps.load()
+    deps = Deps.load(init_user_client=False, log_level=None)
 
     # - Start telegram bots
 
     await deps.telegram_bot_client.start(bot_token=deps.config.telegram_bot_token)
-    await deps.telegram_user_client.start()
 
     # - Send message
 
