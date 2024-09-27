@@ -13,6 +13,7 @@ from teletalk.models.response import Response
 from telethon.tl.types import User
 
 
+raise Exception("This is a test")
 """
 Ideas: 
 - Send reminders for the user to check if the member has filled the form
