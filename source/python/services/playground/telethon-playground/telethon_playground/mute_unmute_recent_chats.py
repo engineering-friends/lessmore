@@ -1,6 +1,7 @@
 import asyncio
 
 from datetime import datetime, timedelta
+from typing import Any
 
 from lessmore.utils.to_anything.to_datetime import to_datetime
 from loguru import logger
@@ -10,6 +11,15 @@ from telethon.tl.functions.account import UpdateNotifySettingsRequest
 from telethon.tl.functions.messages import GetHistoryRequest
 from telethon.tl.types import InputPeerNotifySettings
 from telethon_playground.deps.deps import Deps
+
+
+def get_entity_name(obj: Any) -> str:
+    return (
+        getattr(obj, "title", "")
+        or getattr(obj, "username", "")
+        or (getattr(obj, "first_name", "") or "" + getattr(obj, "last_name", "") or "")
+        or str(obj.id)
+    )
 
 
 async def mute_unrecent_chats(client: TelegramClient, offset: timedelta = timedelta(hours=4)):
@@ -123,7 +133,7 @@ async def start_muting_unmuting_recent_chats(client: TelegramClient, offset: tim
             )
         )
 
-        logger.info("Chat has been unmuted", chat_title=chat.username or chat.first_name or chat.phone or chat.id)
+        logger.info("Chat has been unmuted", chat_title=get_entity_name(chat))
 
     # - Spawn muting task indefinitely in a loop
 
