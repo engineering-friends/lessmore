@@ -108,7 +108,7 @@ def main(env="test"):
                 # -- Filter only test users
 
                 user_ids = [
-                    user_id for user_id in user_ids if user_id in [160773045, 291560340, 407931344]
+                    user_id for user_id in user_ids if user_id in [160773045, 291560340, 407931344, 1135785888]
                 ]  # marklidenberg, petr lavrov, mikhail vodolagin
 
                 # -- Subscribe users, who sent the message, to the thread
