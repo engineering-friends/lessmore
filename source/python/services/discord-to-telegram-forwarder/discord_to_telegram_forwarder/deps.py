@@ -47,10 +47,11 @@ class Deps:
 
         # - Init logger
 
-        setup_json_loguru(
-            append_non_json_traceback=(env.lower() == "test"),
-            level=log_level,
-        )
+        if log_level:
+            setup_json_loguru(
+                append_non_json_traceback=(env.lower() == "test"),
+                level=log_level,
+            )
 
         # - Get data path
 
