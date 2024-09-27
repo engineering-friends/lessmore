@@ -31,6 +31,6 @@ export PYTHONPATH="$MONOREPO_PATH/source/python/libs/teletalk:$PYTHONPATH"
 # - Run the service in screen
 
 screen -X -S ef_org_bot quit
-uv run python main.py --env prod # `ctrl+a d` to detach
-#screen -S ef_org_bot -L -Logfile logs/prod.log uv run python main.py --env prod # `ctrl+a d` to detach
+#uv run python main.py --env prod # for debugging
+screen -S ef_org_bot -L -Logfile logs/prod.log uv run python main.py --env prod # `ctrl+a d` to detach
 #screen -S ef_org_bot uv run python main.py # macos
