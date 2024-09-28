@@ -11,7 +11,7 @@ from lessmore.utils.functional.skip_duplicates import skip_duplicates
 from loguru import logger
 from more_itertools import last
 from pymaybe import maybe
-from teletalk.blocks.simple_block import BasicBlock, build_default_message_callback, default_on_response
+from teletalk.blocks.basic_block import BasicBlock, build_default_message_callback, default_on_response
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.page import Page

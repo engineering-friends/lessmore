@@ -3,7 +3,7 @@ import asyncio
 from functools import partial
 
 from teletalk.app import App
-from teletalk.blocks.simple_block import BasicBlock
+from teletalk.blocks.basic_block import BasicBlock
 from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 

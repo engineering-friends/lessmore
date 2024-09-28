@@ -6,7 +6,7 @@ from typing import Callable
 
 from aiogram.types import InlineKeyboardMarkup
 from teletalk.app import App
-from teletalk.blocks.simple_block import BasicBlock
+from teletalk.blocks.basic_block import BasicBlock
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.response import Response
