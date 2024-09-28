@@ -34,8 +34,8 @@ class EFOrgBot(Deps):
             ],
         )
 
-    @handle_errors
     @tested([test_start_onboarding] if TYPE_CHECKING else [])
+    @handle_errors
     async def start_onboarding(self, response: Response):
         # - 1. Notion access
 
