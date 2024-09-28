@@ -1,20 +1,17 @@
 import asyncio
 import random
 
-from functools import partial
-from typing import Callable
-
 from aiogram.types import InlineKeyboardMarkup
 from teletalk.app import App
-from teletalk.blocks.basic_block import BasicBlock
-from teletalk.models.block import Block
+from teletalk.blocks.block import Block
+from teletalk.models.base_block import BaseBlock
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 
 
-class TwoButtons(Block):
-    def __init__(self, buttons: list[BasicBlock]):
+class TwoButtons(BaseBlock):
+    def __init__(self, buttons: list[Block]):
         super().__init__()
         self.children = buttons
 
@@ -37,8 +34,8 @@ async def starter(response: Response):
     return await response.ask(
         TwoButtons(
             buttons=[
-                BasicBlock(text="Button1", inline_keyboard=[[("Click me!", on_click)]]),
-                BasicBlock(text="Button2", inline_keyboard=[[("No, click me!", on_click)]]),
+                Block(text="Button1", inline_keyboard=[[("Click me!", on_click)]]),
+                Block(text="Button2", inline_keyboard=[[("No, click me!", on_click)]]),
             ]
         ),
     )

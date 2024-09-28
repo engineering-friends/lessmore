@@ -3,7 +3,7 @@ import asyncio
 from functools import partial
 
 from teletalk.app import App
-from teletalk.blocks.basic_block import BasicBlock
+from teletalk.blocks.block import Block
 from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 
@@ -19,7 +19,7 @@ async def spawn(response: Response):
 
 async def starter(response: Response):
     return await response.ask(
-        BasicBlock(
+        Block(
             "Click to spawn another talk",
             inline_keyboard=[
                 [

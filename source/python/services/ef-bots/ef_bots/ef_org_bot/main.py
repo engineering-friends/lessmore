@@ -7,7 +7,7 @@ from ef_bots.ef_org_bot.deps.deps import Deps
 from loguru import logger
 from pymaybe import maybe
 from teletalk.app import App
-from teletalk.blocks.basic_block import BasicBlock, build_default_message_callback
+from teletalk.blocks.block import Block
 from teletalk.blocks.handle_errors import handle_errors
 from teletalk.models.response import Response
 from telethon.tl.types import User
@@ -16,7 +16,7 @@ from telethon.tl.types import User
 class EFOrgBot(Deps):
     @property
     def menu(self):
-        return BasicBlock(
+        return Block(
             "⚙️ *Выбери действие*",
             inline_keyboard=[
                 [("Заонбордить участника", self.start_onboarding)],

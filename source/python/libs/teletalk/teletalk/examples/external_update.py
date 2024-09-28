@@ -1,7 +1,6 @@
 import asyncio
 
 from teletalk.app import App
-from teletalk.blocks.basic_block import BasicBlock
 from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 
