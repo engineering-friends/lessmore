@@ -4,7 +4,7 @@ from functools import partial
 from typing import Callable, Optional, Tuple
 
 from teletalk.app import App
-from teletalk.blocks.simple_block import SimpleBlock, go_back, go_forward, go_to_root
+from teletalk.blocks.simple_block import BasicBlock, go_back, go_forward, go_to_root
 from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
 

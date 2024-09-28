@@ -8,7 +8,7 @@ from loguru import logger
 from pymaybe import maybe
 from teletalk.app import App
 from teletalk.blocks.handle_errors import handle_errors
-from teletalk.blocks.simple_block import SimpleBlock, build_default_message_callback
+from teletalk.blocks.simple_block import BasicBlock, build_default_message_callback
 from teletalk.models.response import Response
 from telethon.tl.types import User
 
@@ -16,7 +16,7 @@ from telethon.tl.types import User
 class EFOrgBot(Deps):
     @property
     def menu(self):
-        return SimpleBlock(
+        return BasicBlock(
             "⚙️ *Выбери действие*",
             inline_keyboard=[
                 [("Заонбордить участника", self.start_onboarding)],

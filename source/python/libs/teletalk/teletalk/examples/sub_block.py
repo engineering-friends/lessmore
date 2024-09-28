@@ -6,7 +6,7 @@ from typing import Callable
 
 from aiogram.types import InlineKeyboardMarkup
 from teletalk.app import App
-from teletalk.blocks.simple_block import SimpleBlock
+from teletalk.blocks.simple_block import BasicBlock
 from teletalk.models.block import Block
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.response import Response
@@ -14,7 +14,7 @@ from teletalk.test_deps.test_deps import TestDeps
 
 
 class TwoButtons(Block):
-    def __init__(self, buttons: list[SimpleBlock]):
+    def __init__(self, buttons: list[BasicBlock]):
         super().__init__()
         self.children = buttons
 
@@ -37,8 +37,8 @@ async def starter(response: Response):
     return await response.ask(
         TwoButtons(
             buttons=[
-                SimpleBlock(text="Button1", inline_keyboard=[[("Click me!", on_click)]]),
-                SimpleBlock(text="Button2", inline_keyboard=[[("No, click me!", on_click)]]),
+                BasicBlock(text="Button1", inline_keyboard=[[("Click me!", on_click)]]),
+                BasicBlock(text="Button2", inline_keyboard=[[("No, click me!", on_click)]]),
             ]
         ),
     )

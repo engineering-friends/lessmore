@@ -1,7 +1,7 @@
 import asyncio
 
 from teletalk.app import App
-from teletalk.blocks.simple_block import SimpleBlock
+from teletalk.blocks.simple_block import BasicBlock
 from teletalk.models.page import Page
 from teletalk.models.response import Response
 from teletalk.test_deps.test_deps import TestDeps
@@ -23,7 +23,7 @@ async def starter(response: Response):
     # - Test text messages
 
     await response.tell("[Test: Inplace recent mode]")
-    sample_block = SimpleBlock("Message 4 - should be updated")
+    sample_block = BasicBlock("Message 4 - should be updated")
     await response.tell(sample_block)
     name = await response.ask(sample_block.update("Message 4. Say anything"), mode="inplace_latest")
     await response.tell(sample_block.update("Message 5"), mode="inplace_latest")
@@ -32,7 +32,7 @@ async def starter(response: Response):
 
     await response.tell("[Test: Inplace by id mode]")
 
-    sample_block = SimpleBlock()
+    sample_block = BasicBlock()
     await response.tell(sample_block.update(text="Message 6"))
     sample_block.refresh_id()
     await response.tell(sample_block.update(text="Message 7 - should be updated"), mode="inplace")
@@ -48,8 +48,8 @@ async def starter(response: Response):
 
     page = Page(
         blocks=[
-            SimpleBlock(text="Message 10"),
-            SimpleBlock(text="Message 11 - should be updated"),
+            BasicBlock(text="Message 10"),
+            BasicBlock(text="Message 11 - should be updated"),
         ]
     )
 

@@ -20,7 +20,7 @@ go_forward = lambda response: response.ask(response.next if response.next else r
 go_to_root = lambda response: response.ask(response.root, mode="inplace")
 
 
-class SimpleBlock(Block):
+class BasicBlock(Block):
     def __init__(
         self,
         text: str = "",
@@ -128,7 +128,7 @@ class SimpleBlock(Block):
 
         def build_button_callback(text: str):
             async def _button_callback(response: Response):
-                assert isinstance(response.prompt_sub_block, SimpleBlock), "Block is not SimpleBlock"
+                assert isinstance(response.prompt_sub_block, BasicBlock), "Block is not SimpleBlock"
                 return text
 
             return _button_callback
