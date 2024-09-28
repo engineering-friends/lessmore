@@ -1,9 +1,12 @@
 import asyncio
 import textwrap
 
+from typing import TYPE_CHECKING
+
 from aiogram.types import BotCommand
 from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
 from ef_bots.ef_org_bot.deps.deps import Deps
+from lessmore.utils.tested import tested
 from loguru import logger
 from pymaybe import maybe
 from teletalk.app import App
@@ -12,6 +15,10 @@ from teletalk.blocks.build_default_message_callback import build_default_message
 from teletalk.blocks.handle_errors import handle_errors
 from teletalk.models.response import Response
 from telethon.tl.types import User
+
+
+if TYPE_CHECKING:
+    from ef_bots.ef_org_bot.tests.test_start_onboarding import test_start_onboarding
 
 
 class EFOrgBot(Deps):
@@ -28,6 +35,7 @@ class EFOrgBot(Deps):
         )
 
     @handle_errors
+    @tested([test_start_onboarding] if TYPE_CHECKING else [])
     async def start_onboarding(self, response: Response):
         # - 1. Notion access
 
