@@ -7,32 +7,27 @@ from ef_bots.ef_org_bot.deps.deps import Deps
 from loguru import logger
 from pymaybe import maybe
 from teletalk.app import App
-from teletalk.blocks.build_default_message_callback import CancelError
+from teletalk.blocks.handle_errors import handle_errors
 from teletalk.blocks.simple_block import SimpleBlock, build_default_message_callback
 from teletalk.models.response import Response
 from telethon.tl.types import User
 
 
-"""
-Ideas: 
-- Send reminders for the user to check if the member has filled the form
-- Send messages to the member? 
-- Send messages to Matvey?
-- Need a convenient scheduler with the state. State should run a function 
-- Do not update message inline keyboard if there hasn't been any changes
-- Think about on_response pipeline. Should it delete the supressed messages? 
-- Default ask kwargs bot-wise? 
-- Make buttons work with main menu (including start and cancel buttons)
-- Async state
-- Make compatible with other aiogram bots, make separate start_polling function, like register_dispatcher. Where to start initial_starters? 
-- Think better about the inplace mode. What are use cases? 
-- Think about windows: current open pages, where we have an active page. We should be able to switch between them
-- clean_up function to run before new asks 
-"""
+class EFOrgBot(Deps):
+    @property
+    def menu(self):
+        return SimpleBlock(
+            "⚙️ *Выбери действие*",
+            inline_keyboard=[
+                [("Заонбордить участника", self.start_onboarding)],
+                [("Notion EF Org", "https://www.notion.so/Org-48f403a0d3014dc4972f08060031308e?pvs=4")],
+                [("Стратегия и задачи", "https://www.notion.so/f3f7637c9a1d4733a4d90b33796cf78e?pvs=4")],
+                [("Тексты кандидатам", "https://www.notion.so/EF-f1c2d3aeceb04272a61beb6c08c92b47?pvs=4")],
+            ],
+        )
 
-
-def build_main_menu(deps: Deps):
-    async def start_onboarding(response: Response):
+    # @handle_errors # todo later: make it work
+    async def start_onboarding(self, response: Response):
         # - 1. Notion access
 
         await response.ask(
@@ -56,7 +51,7 @@ def build_main_menu(deps: Deps):
             # - Get user entity
 
             try:
-                entity = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
+                entity = await self.telegram_user_client.get_entity(f"@{telegram_username}")
             except:
                 entity = None
 
@@ -74,7 +69,7 @@ def build_main_menu(deps: Deps):
 
         # -- Get user
 
-        user = await deps.telegram_user_client.get_entity(f"@{telegram_username}")
+        user = await self.telegram_user_client.get_entity(f"@{telegram_username}")
 
         # -- Add user to chats
 
@@ -85,11 +80,11 @@ def build_main_menu(deps: Deps):
         if answer == "✅ Да":
             try:
                 await add_user_to_chats(
-                    telegram_client=deps.telegram_user_client,
+                    telegram_client=self.telegram_user_client,
                     username=telegram_username,
-                    chats=list(deps.config.telegram_ef_chats.values()),
+                    chats=list(self.config.telegram_ef_chats.values()),
                 )
-                await response.tell(f"Добавил в чаты и каналы: {', '.join(deps.config.telegram_ef_chats.keys())}")
+                await response.tell(f"Добавил в чаты и каналы: {', '.join(self.config.telegram_ef_chats.keys())}")
             except Exception as e:
                 logger.exception("Failed to add user to chats", error=e)
                 await response.tell(f"Не удалось добавить пользователя в часть чатов и каналов. Ошибка: {str(e)}")
@@ -114,7 +109,7 @@ def build_main_menu(deps: Deps):
 
         # -- Create page
 
-        result, new_pages = await deps.notion_client().upsert_database(
+        result, new_pages = await self.notion_client().upsert_database(
             database={
                 "id": "106b738eed9a80cf8669e76dc12144b7",  # pragma: allowlist secret
             },
@@ -122,28 +117,28 @@ def build_main_menu(deps: Deps):
             page_unique_id_func=lambda page: page["properties"]["Name"]["title"][0]["text"]["content"],
         )
 
-        # -- Fill the template
+        # -- Send the message to forward to the user
 
         await response.tell(
             textwrap.dedent(f"""
-⚙️ Добро пожаловать в EF! 
-
-На данный момент мы тебя добавили:
-- В [Notion](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4) 
-- В канал EF Channel. Там у нас все посты и запросы - в том числе твои будут
-- В чатик EF Random Coffee - там основные знакомства, участвуй! :)
-
-Для онбординга нужно заполнить страничку в Notion, выбрав шаблон "▶️ Начать онбординг": [🏄‍♂️ Онбординг в EF для {full_name}]({new_pages[0]['url']})
-""")
+    ⚙️ Добро пожаловать в EF! 
+    
+    На данный момент мы тебя добавили:
+    - В [Notion](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4) 
+    - В канал EF Channel. Там у нас все посты и запросы - в том числе твои будут
+    - В чатик EF Random Coffee - там основные знакомства, участвуй! :)
+    
+    Для онбординга нужно заполнить страничку в Notion, выбрав шаблон "▶️ Начать онбординг": [🏄‍♂️ Онбординг в EF для {full_name}]({new_pages[0]['url']})
+    """)
         )
 
         await asyncio.sleep(0.5)
 
-        # - 5. Write a final message
+        # - 5. Write the final message
 
         # -- Send a reminder in 3 days  to check if the user has filled the form
 
-        # todo later:  [@marklidenberg]
+        # todo later: implement
 
         # -- Send the final message for the user
 
@@ -152,73 +147,45 @@ def build_main_menu(deps: Deps):
             inline_keyboard=[["✅ Готово!"]],
         )
 
-        return await response.ask()
-
-    async def safe_start_onboarding(response: Response):
-        try:
-            return await start_onboarding(response)
-        except CancelError:
-            return await response.ask()
-        except Exception as e:
-            logger.exception("Failed to start onboarding", error=e)
-            await response.tell(f"Ошибка во время процесса онбординга: {str(e)}")
-            return await response.ask()
-
-    return SimpleBlock(
-        "⚙️ *Выбери действие*",
-        inline_keyboard=[
-            [("Заонбордить участника", safe_start_onboarding)],
-            [("Notion EF Org", "https://www.notion.so/Org-48f403a0d3014dc4972f08060031308e?pvs=4")],
-            [("Стратегия и задачи", "https://www.notion.so/f3f7637c9a1d4733a4d90b33796cf78e?pvs=4")],
-            [("Тексты кандидатам", "https://www.notion.so/EF-f1c2d3aeceb04272a61beb6c08c92b47?pvs=4")],
-        ],
-    )
+        return await response.ask()  # go back to the original response prompt, e.g. the menu
 
 
 def main(env="test"):
     async def _main():
-        # - Init deps
+        async with EFOrgBot(env=env) as bot:
+            async with App(
+                state_backend="rocksdict",
+                state_config={"path": str(bot.local_files_dir / "app_state")},
+            ) as app:
+                # - Load chat_ids to run at startup - the ones which have last message from the bot (usually the menu message). Needed for user not to press /start if bot has been restarted, and just used the menu of the last message (beta)
 
-        deps = Deps.load(env=env)
+                chat_ids_to_run_at_startup = [
+                    chat_id
+                    for chat_id, chat_private_state in app.iter_chat_states(private=True)
+                    if maybe(chat_private_state)["messages"][-1]["from_user"]["is_bot"].or_else(False)
+                ]
 
-        # - Start user
+                logger.info("Chats to run at startup", chat_ids=chat_ids_to_run_at_startup)
 
-        await deps.telegram_user_client.start()
+                # - Start polling
 
-        # - Run app
-
-        async with App(
-            state_backend="rocksdict",
-            state_config={"path": str(deps.local_files_dir / "app_state")},
-        ) as app:
-            # - Load chat_ids to run at startup - the ones which have last message from the bot (usually the menu message). Needed for user not to press /start if bot has been restarted, and just used the menu of the last message (beta)
-
-            chat_ids_to_run_at_startup = [
-                chat_id
-                for chat_id, chat_private_state in app.iter_chat_states(private=True)
-                if maybe(chat_private_state)["messages"][-1]["from_user"]["is_bot"].or_else(False)
-            ]
-            logger.info("Chats to run at startup", chat_ids=chat_ids_to_run_at_startup)
-
-            # - Start polling
-
-            await app.start_polling(
-                bot=deps.config.telegram_bot_token,
-                initial_starters={
-                    chat_id: lambda response: response.ask(build_main_menu(deps), mode="inplace_latest")
-                    for chat_id in chat_ids_to_run_at_startup
-                },  # in case of restart, we will start from the last bot message
-                command_starters={"/start": lambda response: response.ask(build_main_menu(deps))},
-                commands=[
-                    BotCommand(command="start", description="Start the bot"),
-                    BotCommand(command="cancel", description="Cancel the current operation"),
-                ],
-            )
+                await app.start_polling(
+                    bot=bot.config.telegram_bot_token,
+                    initial_starters={
+                        chat_id: lambda response: response.ask(bot.menu, mode="inplace_latest")
+                        for chat_id in chat_ids_to_run_at_startup
+                    },  # in case of restart, we will start from the last bot message
+                    command_starters={"/start": lambda response: response.ask(bot.menu)},
+                    commands=[
+                        BotCommand(command="start", description="Start the bot"),
+                        BotCommand(command="cancel", description="Cancel the current operation"),
+                    ],
+                )
 
     asyncio.run(_main())
 
 
 if __name__ == "__main__":
-    import fire
+    import typer
 
-    fire.Fire(main)
+    typer.run(main)

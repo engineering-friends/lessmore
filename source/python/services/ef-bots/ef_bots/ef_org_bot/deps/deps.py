@@ -9,15 +9,8 @@ from lessmore.utils.read_config.read_config import read_config
 from telethon import TelegramClient
 
 
-@dataclass
 class Deps:
-    config: Config
-    local_files_dir: Path
-    telegram_bot_client: TelegramClient
-    telegram_user_client: TelegramClient
-
-    @staticmethod
-    def load(log_level="DEBUG", env: str = "test") -> "Deps":
+    def __init__(self, env: str = "test", log_level="DEBUG"):
         # - Setup loguru
 
         setup_json_loguru(level=log_level)
@@ -30,27 +23,33 @@ class Deps:
 
         # - Build deps
 
-        return Deps(
-            config=config,
-            local_files_dir=local_files_dir,
-            telegram_bot_client=TelegramClient(
-                session=ensure_path(str(local_files_dir / "telegram_bot.session")),
-                api_id=int(config.telegram_api_id),
-                api_hash=config.telegram_api_hash,
-            ),
-            telegram_user_client=TelegramClient(
-                session=ensure_path(local_files_dir / "telegram_user.session"),
-                api_id=int(config.telegram_api_id),
-                api_hash=config.telegram_api_hash,
-            ),
+        self.config = config
+        self.local_files_dir = local_files_dir
+
+        # no need to this one yet
+        # self.telegram_bot_client = TelegramClient(
+        #     session=ensure_path(str(local_files_dir / "telegram_bot.session")),
+        #     api_id=int(config.telegram_api_id),
+        #     api_hash=config.telegram_api_hash,
+        # )
+        self.telegram_user_client = TelegramClient(
+            session=ensure_path(local_files_dir / "telegram_user.session"),
+            api_id=int(config.telegram_api_id),
+            api_hash=config.telegram_api_hash,
         )
 
     def notion_client(self) -> EnrichedNotionAsyncClient:
         return EnrichedNotionAsyncClient(auth=self.config.notion_token)
 
+    async def __aenter__(self):
+        await self.telegram_user_client.start()
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        pass
+
 
 def test():
-    print(Deps.load().config)
+    print(Deps(env="test").config)
 
 
 if __name__ == "__main__":
