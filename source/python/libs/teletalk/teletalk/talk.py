@@ -103,6 +103,11 @@ class Talk:
         else:
             raise Exception(f"Unknown prompt type: {type(prompt)}")
 
+        # - Return if no blocks are present
+
+        if not page or not page.blocks:
+            return
+
         # - Run `self.update_active_page`
 
         await self.update_active_page(

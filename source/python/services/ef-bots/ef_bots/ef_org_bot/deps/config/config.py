@@ -11,6 +11,7 @@ class Config(BaseSettings):
     telegram_bot_name: str
     telegram_bot_token: str
     telegram_ef_chats: dict[str, Union[int, str]]
+    telegram_test_chat_id: int
 
     # - Notion
 
