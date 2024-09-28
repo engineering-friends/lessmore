@@ -13,7 +13,7 @@ async def starter(response: Response):
 
 def test():
     asyncio.run(
-        App().start_polling(
+        App().run(
             bot=TestDeps.load().config.telegram_bot_token,
             message_starter=starter,
         )

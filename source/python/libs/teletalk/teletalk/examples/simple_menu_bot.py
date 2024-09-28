@@ -43,9 +43,9 @@ async def main():
 
     # - Run app
 
-    await App().start_polling(
+    await App().run(
         bot=deps.config.telegram_bot_token,
-        initial_starters={deps.config.telegram_test_chat_id: menu},  # for tests
+        starters={deps.config.telegram_test_chat_id: menu},  # for tests
         command_starters={"/start": menu},
         commands=[
             BotCommand(command="start", description="Start the bot"),

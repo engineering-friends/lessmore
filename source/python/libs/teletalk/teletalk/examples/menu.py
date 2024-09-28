@@ -57,9 +57,9 @@ def level_1(response: Response):
 def test():
     deps = TestDeps.load()
     asyncio.run(
-        App().start_polling(
+        App().run(
             bot=deps.config.telegram_bot_token,
-            initial_starters={deps.config.telegram_test_chat_id: level_1},
+            starters={deps.config.telegram_test_chat_id: level_1},
             message_starter=level_1,
         )
     )

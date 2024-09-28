@@ -41,11 +41,23 @@ class App:
 
     def __init__(
         self,
+        # - Bot
+        bot: Bot | str,
+        default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
         # - Beta
         state_backend: Literal["rocksdict", "memory"] = "memory",
         state_config: dict = {},
         reset_state: bool = False,
     ):
+        # - Bot
+
+        if isinstance(bot, Bot):
+            self.bot = bot
+        elif isinstance(bot, str):
+            self.bot = Bot(bot, default=default_bot_properties)
+        else:
+            raise Exception("Unknown bot type")
+
         # - App state
 
         self.state_backend = state_backend
@@ -235,28 +247,17 @@ class App:
             ),
         )
 
-    async def start_polling(
+    async def run(
         self,
-        bot: Bot | str,
-        initial_starters: list[Callable] | dict[int, Callable] = [],
+        starters: list[Callable] | dict[int, Callable] = [],
         message_starter: Optional[Callable] = None,
         command_starters: dict[str, Callable] = {},
         dispatcher: Optional[Callable] = None,  # dispatcher is like a low-level `Talk`
-        default_bot_properties: DefaultBotProperties = DefaultBotProperties(parse_mode=ParseMode.HTML),
         commands: Optional[list[BotCommand]] = None,
         aiogram_dispatcher: Optional[Dispatcher] = Dispatcher(),
         log_bot_url: bool = True,
     ) -> None:
-        # - Args
-
-        if isinstance(bot, Bot):
-            self.bot = bot
-        elif isinstance(bot, str):
-            self.bot = Bot(bot, default=default_bot_properties)
-        else:
-            raise Exception("Unknown bot type")
-
-        self.initial_starters = initial_starters
+        self.starters = starters
         self.message_starter = message_starter
         self.command_starters = command_starters
         self.dispatcher = dispatcher or TeletalkDispatcher(
@@ -265,7 +266,6 @@ class App:
             command_starters=command_starters,
         )
 
-        self.default_bot_properties = default_bot_properties
         self.commands = commands
         self.aiogram_dispatcher = aiogram_dispatcher
 
@@ -319,11 +319,11 @@ class App:
 
         # - Run initial starters
 
-        if isinstance(self.initial_starters, list):
-            for starter in self.initial_starters:
+        if isinstance(self.starters, list):
+            for starter in self.starters:
                 await self.dispatcher(Response(starter=starter))
-        elif isinstance(self.initial_starters, dict):
-            for chat_id, starter in self.initial_starters.items():
+        elif isinstance(self.starters, dict):
+            for chat_id, starter in self.starters.items():
                 await self.dispatcher(Response(chat_id=chat_id, starter=starter))
 
         # - Start polling

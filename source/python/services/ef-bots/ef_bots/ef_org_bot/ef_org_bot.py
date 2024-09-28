@@ -8,7 +8,7 @@ from ef_bots.ef_org_bot.deps.deps import Deps
 from lessmore.utils.tested import tested
 from loguru import logger
 from teletalk.blocks.block import Block
-from teletalk.blocks.build_default_message_callback import build_default_message_callback
+from teletalk.blocks.build_default_message_callback import default_message_callback_no_supress
 from teletalk.blocks.handle_errors import handle_errors
 from teletalk.models.response import Response
 from telethon.tl.types import User
@@ -43,7 +43,7 @@ class EFOrgBot(Deps):
 
         # - 2. Add to all telegram ecosystem: ef channel, ef random coffee,
 
-        # -- Ask for telegram username
+        # -- Ask for telegram username, until it's valid
 
         while True:
             # - Ask for telegram username
@@ -61,7 +61,7 @@ class EFOrgBot(Deps):
             except:
                 entity = None
 
-            # - If user if found and it's correct, break the loop
+            # - If user if found and it's valid, break the loop
 
             if isinstance(entity, User):
                 answer = await response.ask(
@@ -71,9 +71,10 @@ class EFOrgBot(Deps):
                 if answer == "✅ Все верно":
                     break
             else:
+                # failed to find user, will try again
                 await response.tell("Не нашел такого пользователя")
 
-        # -- Get user
+        # -- Get user entity
 
         user = await self.telegram_user_client.get_entity(f"@{telegram_username}")
 
@@ -92,7 +93,7 @@ class EFOrgBot(Deps):
                 )
                 await response.tell(f"Добавил в чаты и каналы: {', '.join(self.config.telegram_ef_chats.keys())}")
             except Exception as e:
-                logger.exception("Failed to add user to chats", error=e)
+                logger.exception("Failed to add user to chats")
                 await response.tell(f"Не удалось добавить пользователя в часть чатов и каналов. Ошибка: {str(e)}")
 
         # - 3. Get full name
@@ -102,7 +103,7 @@ class EFOrgBot(Deps):
         answer = await response.ask(
             "3. Введи полное имя участника на любом языке",
             inline_keyboard=[[f"✏️ Взять из телеги: {telegram_full_name}"]],
-            message_callback=build_default_message_callback(supress_messages=False),
+            message_callback=default_message_callback_no_supress,
         )
 
         full_name = telegram_full_name if "✏️" in answer else answer

@@ -52,6 +52,7 @@ class Deps:
             yield (
                 self,
                 await App(
+                    bot=self.config.telegram_bot_token,
                     state_backend="rocksdict",
                     state_config={"path": str(self.local_files_dir / "app_state")},
                 ).__aenter__(),

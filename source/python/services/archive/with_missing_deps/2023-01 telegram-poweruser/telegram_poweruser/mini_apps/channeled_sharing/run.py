@@ -31,7 +31,7 @@ async def main():
         await bot_application.start()
         logger.info("Started bot application")
 
-        await bot_application.updater.start_polling()
+        await bot_application.updater.run()
         logger.info("Started polling")
 
         await telegram_client.run_until_disconnected()

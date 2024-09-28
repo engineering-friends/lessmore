@@ -28,3 +28,7 @@ def build_default_message_callback(supress_messages: bool = False):
                 return "".join([message.text for message in response.block_messages])
 
     return _callback
+
+
+default_message_callback = build_default_message_callback(supress_messages=True)
+default_message_callback_no_supress = build_default_message_callback(supress_messages=False)
