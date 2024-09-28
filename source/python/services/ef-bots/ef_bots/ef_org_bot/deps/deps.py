@@ -43,6 +43,7 @@ class Deps:
 
     async def __aenter__(self):
         await self.telegram_user_client.start()
+        return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         pass

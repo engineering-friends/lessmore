@@ -26,7 +26,7 @@ class EFOrgBot(Deps):
             ],
         )
 
-    # @handle_errors # todo later: make it work
+    @handle_errors
     async def start_onboarding(self, response: Response):
         # - 1. Notion access
 
