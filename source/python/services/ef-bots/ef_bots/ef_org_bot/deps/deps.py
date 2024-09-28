@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -6,6 +7,8 @@ from lessmore.utils.enriched_notion_client.enriched_notion_async_client import E
 from lessmore.utils.file_primitives.ensure_path import ensure_path
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.read_config.read_config import read_config
+from loguru import logger
+from teletalk.app import App
 from telethon import TelegramClient
 
 
@@ -41,12 +44,21 @@ class Deps:
     def notion_client(self) -> EnrichedNotionAsyncClient:
         return EnrichedNotionAsyncClient(auth=self.config.notion_token)
 
-    async def __aenter__(self):
+    @asynccontextmanager
+    async def stack(self):
         await self.telegram_user_client.start()
-        return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        pass
+        try:
+            yield (
+                self,
+                await App(
+                    state_backend="rocksdict",
+                    state_config={"path": str(self.local_files_dir / "app_state")},
+                ).__aenter__(),
+            )
+        except:
+            logger.exception("Unhandled exception")
+            raise
 
 
 def test():

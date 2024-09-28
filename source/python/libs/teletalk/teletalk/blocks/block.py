@@ -8,6 +8,7 @@ from aiogram.types import (
     ReplyKeyboardRemove,
 )
 from pymaybe import maybe
+from teletalk.blocks.build_default_message_callback import build_default_message_callback
 from teletalk.blocks.default_on_response import default_on_response
 from teletalk.models.base_block import BaseBlock
 from teletalk.models.block_message import BlockMessage
