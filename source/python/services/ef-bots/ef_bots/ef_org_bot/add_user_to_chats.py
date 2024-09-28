@@ -17,21 +17,14 @@ async def add_user_to_chats(telegram_client, chats: list[str | int], username: s
 
 def test():
     async def main():
-        # - Init deps
+        from ef_bots.ef_org_bot.ef_org_bot import EFOrgBot
 
-        deps = Deps.load()
-
-        # - Start user
-
-        await deps.telegram_user_client.start()
-
-        # - Add to all telegram ecosystem: ef channel, ef random coffee
-
-        await add_user_to_chats(
-            telegram_client=deps.telegram_user_client,
-            chats=deps.config.telegram_ef_chats.values(),
-            username="@lidenberg",
-        )
+        async with EFOrgBot().stack() as (ef_bot, app):
+            await add_user_to_chats(
+                telegram_client=ef_bot.telegram_user_client,
+                chats=ef_bot.config.telegram_ef_chats.values(),
+                username="@lidenberg",
+            )
 
     asyncio.run(main())
 

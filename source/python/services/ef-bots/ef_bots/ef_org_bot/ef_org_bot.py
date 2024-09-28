@@ -3,13 +3,10 @@ import textwrap
 
 from typing import TYPE_CHECKING
 
-from aiogram.types import BotCommand
 from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
 from ef_bots.ef_org_bot.deps.deps import Deps
 from lessmore.utils.tested import tested
 from loguru import logger
-from pymaybe import maybe
-from teletalk.app import App
 from teletalk.blocks.block import Block
 from teletalk.blocks.build_default_message_callback import build_default_message_callback
 from teletalk.blocks.handle_errors import handle_errors
