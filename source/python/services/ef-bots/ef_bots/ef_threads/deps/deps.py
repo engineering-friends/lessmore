@@ -36,8 +36,6 @@ class Deps:
         )
         self.notion_client = EnrichedNotionAsyncClient(auth=self.config.notion_token)
 
-        return self
-
     @asynccontextmanager
     async def stack(self):
         await self.telegram_user_client.start()
