@@ -26,6 +26,8 @@ class EfOrgBot:
     def __init__(self, deps: Deps):
         self.deps = deps
 
+    # - Context manager
+
     @staticmethod
     @asynccontextmanager
     async def stack(env: str):
@@ -38,6 +40,8 @@ class EfOrgBot:
                     state_config={"path": str(deps.local_files_dir / "app_state")},
                 ).__aenter__(),
             )
+
+    # - Building blocks
 
     @property
     def menu(self) -> Block:
