@@ -145,7 +145,7 @@ class EFOrgBot(Deps):
 
         # - 5. Write the final message
 
-        # -- Send a reminder in 3 days  to check if the user has filled the form
+        # -- (todo) Send a reminder in 3 days  to check if the user has filled the form
 
         # todo later: implement
 
