@@ -121,12 +121,7 @@ class EfThreads(Deps):
 
                 telegram_usernames = []
 
-                telegram_username = await self.parse_telegram_username_by_whois_url(
-                    text=new_message.text,
-                    notion_client=self.notion_client,
-                    telegram_usernames_by_notion_whois_url=self.telegram_usernames_by_notion_whois_url,
-                    last_checked_telegram_username_at_by_notion_whois_url=self.last_checked_telegram_username_at_by_notion_whois_url,
-                )
+                telegram_username = await self.parse_telegram_username_by_whois_url(text=new_message.text)
 
                 if telegram_username:
                     telegram_usernames.append(telegram_username)
@@ -242,6 +237,8 @@ class EfThreads(Deps):
                     self.dump_state()
 
         # - Run client
+
+        logger.info("Starting polling...")
 
         await self.telegram_user_client.run_until_disconnected()
 

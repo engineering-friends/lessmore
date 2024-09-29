@@ -34,9 +34,9 @@ async def main(env: str):
 
 
 if __name__ == "__main__":
-    import typer
+    import fire
 
     def sync_main(env: str = "test"):
         asyncio.run(main(env=env))
 
-    typer.run(sync_main)
+    fire.Fire(sync_main)
