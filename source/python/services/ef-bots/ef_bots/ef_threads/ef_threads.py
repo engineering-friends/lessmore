@@ -69,6 +69,56 @@ class EfThreads(Deps):
 
         self.rdict.flush()
 
+    @tested([test_parse_telegram_username_by_whois_url] if TYPE_CHECKING else [])
+    async def parse_telegram_username_by_whois_url(
+        self,
+        text: str,
+    ) -> str:
+        # - Parse notion url
+
+        try:
+            notion_url = re.findall(r"\[(.*?)\]\((https://www.notion.so/(.*?))\)", text.split("\n")[1])[0][1]
+        except:
+            return
+
+        notion_url = notion_url.replace("?pvs=4", "")
+
+        if notion_url in self.telegram_usernames_by_notion_whois_url:
+            return self.telegram_usernames_by_notion_whois_url[notion_url]
+
+        # - Try to get telegram username from notion
+
+        # -- Return if too soon
+
+        if self.last_checked_telegram_username_at_by_notion_whois_url.get(notion_url, 0) + 3600 > time.time():
+            logger.debug("Too soon, try to find telegram username every hour", notion_url=notion_url)
+
+            return
+
+        # - Get pages and update cache
+
+        pages = list(
+            await self.notion_client.get_paginated_request(
+                method=self.notion_client.databases.query,
+                method_kwargs=dict(
+                    database_id="0b1e5db6cdfe4dcea0c818109ce44a26",  # whois_database_id
+                ),
+            )
+        )
+
+        for page in pages:
+            self.telegram_usernames_by_notion_whois_url[page["url"]] = "".join(
+                [value["plain_text"] for value in page["properties"]["TG_username"]["rich_text"]]
+            )
+
+        # - Update time
+
+        self.last_checked_telegram_username_at_by_notion_whois_url[notion_url] = time.time()
+
+        # - Check if user is in the database
+
+        return self.telegram_usernames_by_notion_whois_url.get(notion_url)
+
     @tested([main] if TYPE_CHECKING else [])
     async def run(self):
         # - Load state
@@ -241,53 +291,3 @@ class EfThreads(Deps):
         logger.info("Starting polling...")
 
         await self.telegram_user_client.run_until_disconnected()
-
-    @tested([test_parse_telegram_username_by_whois_url] if TYPE_CHECKING else [])
-    async def parse_telegram_username_by_whois_url(
-        self,
-        text: str,
-    ) -> str:
-        # - Parse notion url
-
-        try:
-            notion_url = re.findall(r"\[(.*?)\]\((https://www.notion.so/(.*?))\)", text.split("\n")[1])[0][1]
-        except:
-            return
-
-        notion_url = notion_url.replace("?pvs=4", "")
-
-        if notion_url in self.telegram_usernames_by_notion_whois_url:
-            return self.telegram_usernames_by_notion_whois_url[notion_url]
-
-        # - Try to get telegram username from notion
-
-        # -- Return if too soon
-
-        if self.last_checked_telegram_username_at_by_notion_whois_url.get(notion_url, 0) + 3600 > time.time():
-            logger.debug("Too soon, try to find telegram username every hour", notion_url=notion_url)
-
-            return
-
-        # - Get pages and update cache
-
-        pages = list(
-            await self.notion_client.get_paginated_request(
-                method=self.notion_client.databases.query,
-                method_kwargs=dict(
-                    database_id="0b1e5db6cdfe4dcea0c818109ce44a26",  # whois_database_id
-                ),
-            )
-        )
-
-        for page in pages:
-            self.telegram_usernames_by_notion_whois_url[page["url"]] = "".join(
-                [value["plain_text"] for value in page["properties"]["TG_username"]["rich_text"]]
-            )
-
-        # - Update time
-
-        self.last_checked_telegram_username_at_by_notion_whois_url[notion_url] = time.time()
-
-        # - Check if user is in the database
-
-        return self.telegram_usernames_by_notion_whois_url.get(notion_url)
