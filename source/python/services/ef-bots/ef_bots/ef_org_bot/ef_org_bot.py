@@ -89,8 +89,7 @@ class EFOrgBot(Deps):
 
         if answer == "✅ Да":
             try:
-                await add_user_to_chats(
-                    telegram_client=self.telegram_user_client,
+                await self._add_user_to_chats(
                     username=telegram_username,
                     chats=list(self.config.telegram_ef_chats.values()),
                 )
@@ -162,8 +161,8 @@ class EFOrgBot(Deps):
     @tested([test_add_user_to_chats] if TYPE_CHECKING else [])
     async def _add_user_to_chats(
         self,
-        chats: list[str | int],
         username: str,
+        chats: list[str | int],
     ):
         # Get the channel and user objects
         user = await self.telegram_user_client.get_entity(f"@{username.replace('@', '')}")
