@@ -47,6 +47,12 @@ class EfThreads:
         self.last_checked_telegram_username_at_by_notion_whois_url: dict[str, float] = {}
         self.rdict = Rdict(path=str(Path(__file__).parent / "state"))
 
+    @asynccontextmanager
+    @staticmethod
+    async def stack(env: str):
+        async with Deps(env=env) as deps:
+            yield EfThreads(deps=deps)
+
     def load_state(self):
         self.users = dacite.from_dict(data_class=AppState, data=dict(self.rdict)).users
 
@@ -230,9 +236,3 @@ class EfThreads:
         logger.info("Starting polling...")
 
         await self.deps.telegram_user_client.run_until_disconnected()
-
-    @asynccontextmanager
-    @staticmethod
-    async def stack(env: str):
-        async with Deps(env=env) as deps:
-            yield EfThreads(deps=deps)

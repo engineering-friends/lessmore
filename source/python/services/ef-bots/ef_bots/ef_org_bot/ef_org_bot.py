@@ -26,6 +26,19 @@ class EfOrgBot:
     def __init__(self, deps: Deps):
         self.deps = deps
 
+    @asynccontextmanager
+    @staticmethod
+    async def stack(env: str):
+        async with Deps(env=env) as deps:
+            yield (
+                EfOrgBot(deps=deps),
+                await App(
+                    bot=deps.config.telegram_bot_token,
+                    state_backend="rocksdict",
+                    state_config={"path": str(deps.local_files_dir / "app_state")},
+                ).__aenter__(),
+            )
+
     @property
     def menu(self) -> Block:
         return Block(
@@ -162,16 +175,3 @@ class EfOrgBot:
         )
 
         return await response.ask()  # go back to the original response prompt, e.g. the menu
-
-    @asynccontextmanager
-    @staticmethod
-    async def stack(env: str):
-        async with Deps(env=env) as deps:
-            yield (
-                EfOrgBot(deps=deps),
-                await App(
-                    bot=deps.config.telegram_bot_token,
-                    state_backend="rocksdict",
-                    state_config={"path": str(deps.local_files_dir / "app_state")},
-                ).__aenter__(),
-            )
