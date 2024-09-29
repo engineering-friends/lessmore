@@ -8,7 +8,7 @@ from teletalk.models.callback_info import CallbackInfo
 from teletalk.utils.generate_id import generate_id
 
 
-class Block:
+class BaseBlock:
     """A collection of messages grouped together in telegram (like album)"""
 
     def __init__(
@@ -43,8 +43,8 @@ class Block:
 
         # - Tree
 
-        self.parent: Optional["Block"] = None
-        self.children: list["Block"] = []
+        self.parent: Optional["BaseBlock"] = None
+        self.children: list["BaseBlock"] = []
 
     def register_callback(self, callback: Callable, callback_text: str = "") -> str:
         _id = generate_id()

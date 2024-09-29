@@ -319,7 +319,9 @@ class WiseCommentsFormatter:
             # text = self._format_sections(text, single_comment=single_comment)
             text = self._format_single_line_comments(text, single_comment=single_comment)
             text = self._format_squeezed_new_lines(text, single_comment=single_comment)
-            text = self._format_todos(text, single_comment=single_comment)
+
+            # todo later: reimplement to not use for common projects + add date
+            # text = self._format_todos(text, single_comment=single_comment)
 
         # todo later: there are many bugs with multi comments. Need fixing later [@marklidenberg]
         # for multi_comment in self.multi_comments:

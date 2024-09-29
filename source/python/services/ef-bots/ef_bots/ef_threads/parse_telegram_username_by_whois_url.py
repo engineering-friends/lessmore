@@ -2,9 +2,7 @@ import asyncio
 import re
 import time
 
-from ef_bots.ef_threads.deps.deps import Deps
 from lessmore.utils.enriched_notion_client.enriched_notion_async_client import EnrichedNotionAsyncClient
-from loguru import logger
 
 
 async def parse_telegram_username_by_whois_url(
@@ -12,7 +10,8 @@ async def parse_telegram_username_by_whois_url(
     notion_client: EnrichedNotionAsyncClient,
     telegram_usernames_by_notion_whois_url: dict = {},  # mutated
     last_checked_telegram_username_at_by_notion_whois_url: dict = {},  # mutated
-) -> dict:
+    logger=None,
+) -> str | None:
     # - Parse notion url
 
     try:
@@ -31,6 +30,7 @@ async def parse_telegram_username_by_whois_url(
 
     if last_checked_telegram_username_at_by_notion_whois_url.get(notion_url, 0) + 3600 > time.time():
         logger.debug("Too soon, try to find telegram username every hour", notion_url=notion_url)
+
         return
 
     # - Get pages and update cache
@@ -58,17 +58,18 @@ async def parse_telegram_username_by_whois_url(
     return telegram_usernames_by_notion_whois_url.get(notion_url)
 
 
-def test():
-    async def main():
-        # - Init deps
+async def test():
+    from ef_bots.ef_threads.deps import Deps
 
-        deps = Deps.load()
-
-        text = """🔄 **asdf**'\nby [Mark Lidenberg](https://www.notion.so/Mark-Lidenberg-a09b5c4f599442e1bc7c2201f17214c0)\n\nShould be forwarder\n\n[→ обсудить в дискорде (0)](https://discord.com/channels/1143155301198073956/1247188224862847097/1247188224862847097) | #_test_forum #ai_tools"""
-        print(await parse_telegram_username_by_whois_url(text, notion_client=deps.notion_client()))
-
-    asyncio.run(main())
+    async with Deps() as deps:
+        assert (
+            await parse_telegram_username_by_whois_url(
+                text="""🔄 **asdf**'\nby [Mark Lidenberg](https://www.notion.so/Mark-Lidenberg-a09b5c4f599442e1bc7c2201f17214c0)\n\nShould be forwarder\n\n[→ обсудить в дискорде (0)](https://discord.com/channels/1143155301198073956/1247188224862847097/1247188224862847097) | #_test_forum #ai_tools""",
+                notion_client=deps.notion_client,
+            )
+            == "marklidenberg"
+        )
 
 
 if __name__ == "__main__":
-    test()
+    asyncio.run(test())

@@ -5,7 +5,7 @@ from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboa
 from lessmore.utils.functional.dict.drop import drop
 from more_itertools import only
 from teletalk.blocks.default_on_response import default_on_response
-from teletalk.models.block import Block
+from teletalk.models.base_block import BaseBlock
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.callback_info import CallbackInfo
 from teletalk.models.page import Page
@@ -33,8 +33,8 @@ class Response:
     # - Pages and Blocks
 
     prompt_page: Optional[Page] = None
-    prompt_block: Optional[Block] = None
-    prompt_sub_block: Optional[Block] = None
+    prompt_block: Optional[BaseBlock] = None
+    prompt_sub_block: Optional[BaseBlock] = None
 
     # - Navigation: a call stack of responses for back and forth navigation
 
@@ -46,7 +46,7 @@ class Response:
 
     async def ask(
         self,
-        prompt: Union[str, Block, Page, "Response"] = "",
+        prompt: Union[str, BaseBlock, Page, "Response"] = "",
         files: Optional[list[str]] = None,
         keyboard: Optional[ReplyKeyboardMarkup | ReplyKeyboardRemove | list[list[str]]] = None,
         one_time_keyboard: bool = True,
@@ -74,7 +74,7 @@ class Response:
 
     async def tell(
         self,
-        prompt: Union[str, Block, Page, "Response"] = "",
+        prompt: Union[str, BaseBlock, Page, "Response"] = "",
         files: Optional[list[str]] = None,
         keyboard: Optional[ReplyKeyboardMarkup | ReplyKeyboardRemove | list[list[str]]] = None,
         mode: Literal["inplace", "inplace_latest", "create_new"] = "create_new",

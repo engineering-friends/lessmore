@@ -1,21 +1,16 @@
 import asyncio
 
-from ef_bots.ef_threads.deps.deps import Deps
 from telethon import TelegramClient
 
 
 def test():
     async def main():
-        deps = Deps.load(env="test")
+        from ef_bots.ef_threads.deps import Deps
 
-        # - Start client
-
-        client: TelegramClient = deps.telegram_user_client
-        await client.start()
-
-        # - Get telegram username
-
-        input_entity = await deps.telegram_user_client.get_input_entity("marklidenberg")
+        async with Deps(env="test") as deps:
+            await deps.telegram_user_client.start()
+            input_entity = await deps.telegram_user_client.get_input_entity("marklidenberg")
+            print(input_entity)
 
     asyncio.run(main())
 

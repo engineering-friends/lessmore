@@ -28,9 +28,9 @@ async def main():
     async with App(state_backend="rocksdict", state_config={"path": "/tmp/teletalk__state.py"}) as app:
         # need to use context manager to start the state backend
 
-        await app.start_polling(
+        await app.run(
             bot=TestDeps.load().config.telegram_bot_token,
-            initial_starters={deps.config.telegram_test_chat_id: increment},
+            starters={deps.config.telegram_test_chat_id: increment},
             message_starter=increment,
         )
 

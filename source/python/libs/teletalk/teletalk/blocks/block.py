@@ -10,7 +10,7 @@ from aiogram.types import (
 from pymaybe import maybe
 from teletalk.blocks.build_default_message_callback import build_default_message_callback
 from teletalk.blocks.default_on_response import default_on_response
-from teletalk.models.block import Block
+from teletalk.models.base_block import BaseBlock
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.response import Response
 
@@ -20,7 +20,7 @@ go_forward = lambda response: response.ask(response.next if response.next else r
 go_to_root = lambda response: response.ask(response.root, mode="inplace")
 
 
-class SimpleBlock(Block):
+class Block(BaseBlock):
     def __init__(
         self,
         text: str = "",
@@ -128,7 +128,7 @@ class SimpleBlock(Block):
 
         def build_button_callback(text: str):
             async def _button_callback(response: Response):
-                assert isinstance(response.prompt_sub_block, SimpleBlock), "Block is not SimpleBlock"
+                assert isinstance(response.prompt_sub_block, Block), "Block is not SimpleBlock"
                 return text
 
             return _button_callback

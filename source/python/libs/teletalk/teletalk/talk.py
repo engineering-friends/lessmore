@@ -11,8 +11,9 @@ from lessmore.utils.functional.skip_duplicates import skip_duplicates
 from loguru import logger
 from more_itertools import last
 from pymaybe import maybe
-from teletalk.blocks.simple_block import SimpleBlock, build_default_message_callback, default_on_response
-from teletalk.models.block import Block
+from teletalk.blocks.block import Block
+from teletalk.blocks.default_on_response import default_on_response
+from teletalk.models.base_block import BaseBlock
 from teletalk.models.block_message import BlockMessage
 from teletalk.models.page import Page
 from teletalk.models.response import Response
@@ -65,7 +66,7 @@ class Talk:
 
     async def ask(
         self,
-        prompt: str | Block | Page | Response = "",
+        prompt: str | BaseBlock | Page | Response = "",
         files: Optional[list[str]] = None,
         keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
         one_time_keyboard: bool = True,
@@ -82,7 +83,7 @@ class Talk:
         if isinstance(prompt, str):
             page = Page(
                 blocks=[
-                    SimpleBlock(
+                    Block(
                         text=prompt,
                         files=files,
                         keyboard=keyboard,
@@ -93,7 +94,7 @@ class Talk:
                     )
                 ]
             )
-        elif isinstance(prompt, Block):
+        elif isinstance(prompt, BaseBlock):
             page = Page(blocks=[prompt])
         elif isinstance(prompt, Page):
             page = prompt
@@ -101,6 +102,11 @@ class Talk:
             page = prompt.prompt_page
         else:
             raise Exception(f"Unknown prompt type: {type(prompt)}")
+
+        # - Return if no blocks are present
+
+        if not page or not page.blocks:
+            return
 
         # - Run `self.update_active_page`
 
@@ -489,7 +495,7 @@ class Talk:
 
     async def tell(
         self,
-        prompt: str | Block | Page | Response = "",
+        prompt: str | BaseBlock | Page | Response = "",
         files: Optional[list[str]] = None,
         keyboard: Optional[ReplyKeyboardMarkup | list[list[str]]] = None,
         mode: Literal["inplace", "inplace_latest", "create_new"] = "create_new",
@@ -503,14 +509,14 @@ class Talk:
         if isinstance(prompt, str):
             page = Page(
                 blocks=[
-                    SimpleBlock(
+                    Block(
                         text=prompt,
                         files=files,
                         keyboard=keyboard,
                     )
                 ]
             )
-        elif isinstance(prompt, Block):
+        elif isinstance(prompt, BaseBlock):
             page = Page(blocks=[prompt])
         elif isinstance(prompt, Page):
             page = prompt

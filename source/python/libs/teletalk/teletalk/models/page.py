@@ -4,14 +4,14 @@ import uuid
 from typing import Callable
 
 from aiogram.types import Message
-from teletalk.models.block import Block
+from teletalk.models.base_block import BaseBlock
 from teletalk.models.block_message import BlockMessage
 from teletalk.utils.generate_id import generate_id
 
 
 class Page:
-    def __init__(self, blocks: list[Block] = []):
-        self.blocks: list[Block] = blocks
+    def __init__(self, blocks: list[BaseBlock] = []):
+        self.blocks: list[BaseBlock] = blocks
 
         # todo later: may create conflicts easily, when rebuilding the page with the same blocks. Is this bad? [@marklidenberg]
         if blocks:

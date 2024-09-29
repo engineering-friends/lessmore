@@ -45,4 +45,4 @@ def test_imports(path):
 if __name__ == "__main__":
     setup_json_loguru()
     logger.info("Start testing imports")
-    test_imports("utils/")
+    test_imports("teletalk/")
