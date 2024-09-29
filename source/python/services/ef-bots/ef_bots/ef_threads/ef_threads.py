@@ -38,11 +38,14 @@ class AppState:
 
 class EfThreads(Deps):
     def __init__(self, *args, **kwargs):
+        # - State
+
         self.users: dict[int, User] = {}
         self.telegram_usernames_by_notion_whois_url: dict[str, str] = {}
         self.last_checked_telegram_username_at_by_notion_whois_url: dict[str, int] = {}
-
         self.rdict = Rdict(path=str(Path(__file__).parent / "state"))
+
+        # - Deps
 
         super().__init__(*args, **kwargs)
 

@@ -11,7 +11,7 @@ from telethon import TelegramClient
 
 
 class Deps:
-    def load(self, log_level="DEBUG", env: str = "test"):
+    def __init__(self, log_level="DEBUG", env: str = "test"):
         # - Setup loguru
 
         setup_json_loguru(level=log_level)
@@ -45,7 +45,7 @@ class Deps:
 
 
 def test():
-    print(Deps().load().config)
+    print(Deps().config)
 
 
 if __name__ == "__main__":
