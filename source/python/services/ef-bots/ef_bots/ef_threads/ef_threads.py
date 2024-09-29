@@ -47,8 +47,8 @@ class EfThreads:
         self.last_checked_telegram_username_at_by_notion_whois_url: dict[str, float] = {}
         self.rdict = Rdict(path=str(Path(__file__).parent / "state"))
 
-    @asynccontextmanager
     @staticmethod
+    @asynccontextmanager
     async def stack(env: str):
         async with Deps(env=env) as deps:
             yield EfThreads(deps=deps)

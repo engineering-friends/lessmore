@@ -26,8 +26,8 @@ class EfOrgBot:
     def __init__(self, deps: Deps):
         self.deps = deps
 
-    @asynccontextmanager
     @staticmethod
+    @asynccontextmanager
     async def stack(env: str):
         async with Deps(env=env) as deps:
             yield (
