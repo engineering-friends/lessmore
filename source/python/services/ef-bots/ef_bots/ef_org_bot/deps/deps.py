@@ -48,18 +48,14 @@ class Deps:
     async def stack(self):
         await self.telegram_user_client.start()
 
-        try:
-            yield (
-                self,
-                await App(
-                    bot=self.config.telegram_bot_token,
-                    state_backend="rocksdict",
-                    state_config={"path": str(self.local_files_dir / "app_state")},
-                ).__aenter__(),
-            )
-        except:
-            logger.exception("Unhandled exception")
-            raise
+        yield (
+            self,
+            await App(
+                bot=self.config.telegram_bot_token,
+                state_backend="rocksdict",
+                state_config={"path": str(self.local_files_dir / "app_state")},
+            ).__aenter__(),
+        )
 
 
 def test():

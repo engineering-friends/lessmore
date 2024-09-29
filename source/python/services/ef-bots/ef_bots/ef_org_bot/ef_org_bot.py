@@ -169,6 +169,7 @@ class EFOrgBot(Deps):
 
         for chat in chats:
             logger.info("Inviting user to chat", chat=chat, user=user)
+
             await self.telegram_user_client(
                 InviteToChannelRequest(
                     channel=await self.telegram_user_client.get_entity(chat),
