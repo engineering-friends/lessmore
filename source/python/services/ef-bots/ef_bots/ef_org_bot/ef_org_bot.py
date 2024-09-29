@@ -10,7 +10,7 @@ from lessmore.utils.tested import tested
 from loguru import logger
 from teletalk.app import App
 from teletalk.blocks.block import Block
-from teletalk.blocks.build_default_message_callback import default_message_callback_no_supress
+from teletalk.blocks.build_default_message_callback import handle_cancel_callback
 from teletalk.blocks.handle_errors import handle_errors
 from teletalk.models.response import Response
 from telethon.tl.types import User
@@ -127,7 +127,7 @@ class EfOrgBot:
         answer = await response.ask(
             "3. Введи полное имя участника на любом языке",
             inline_keyboard=[[f"✏️ Взять из телеги: {telegram_full_name}"]],
-            message_callback=default_message_callback_no_supress,
+            message_callback=handle_cancel_callback,
         )
 
         full_name = telegram_full_name if "✏️" in answer else answer
