@@ -4,6 +4,7 @@ import textwrap
 from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING
 
+from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
 from ef_bots.ef_org_bot.deps.deps import Deps
 from lessmore.utils.tested import tested
 from loguru import logger
@@ -12,13 +13,11 @@ from teletalk.blocks.block import Block
 from teletalk.blocks.build_default_message_callback import default_message_callback_no_supress
 from teletalk.blocks.handle_errors import handle_errors
 from teletalk.models.response import Response
-from telethon.tl.functions.channels import InviteToChannelRequest
 from telethon.tl.types import User
 
 
 if TYPE_CHECKING:
     from ef_bots.ef_org_bot import main
-    from ef_bots.ef_org_bot.tests.test_add_users_to_chats import test_add_user_to_chats
     from ef_bots.ef_org_bot.tests.test_start_onboarding import test_start_onboarding
 
 
@@ -94,7 +93,8 @@ class EfOrgBot:
 
         if answer == "✅ Да":
             try:
-                await self._add_user_to_chats(
+                await add_user_to_chats(
+                    telegram_client=self.deps.telegram_user_client,
                     username=telegram_username,
                     chats=list(self.deps.config.telegram_ef_chats.values()),
                 )
@@ -162,25 +162,6 @@ class EfOrgBot:
         )
 
         return await response.ask()  # go back to the original response prompt, e.g. the menu
-
-    @tested([test_add_user_to_chats] if TYPE_CHECKING else [])
-    async def _add_user_to_chats(
-        self,
-        username: str,
-        chats: list[str | int],
-    ):
-        # Get the channel and user objects
-        user = await self.deps.telegram_user_client.get_entity(f"@{username.replace('@', '')}")
-
-        for chat in chats:
-            logger.info("Inviting user to chat", chat=chat, user=user)
-
-            await self.deps.telegram_user_client(
-                InviteToChannelRequest(
-                    channel=await self.deps.telegram_user_client.get_entity(chat),
-                    users=[user],
-                )
-            )
 
     @asynccontextmanager
     @staticmethod
