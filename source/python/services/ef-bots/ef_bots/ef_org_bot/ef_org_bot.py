@@ -15,9 +15,11 @@ from telethon.tl.types import User
 
 
 if TYPE_CHECKING:
+    from ef_bots.ef_org_bot import main
     from ef_bots.ef_org_bot.tests.test_start_onboarding import test_start_onboarding
 
 
+@tested([main] if TYPE_CHECKING else [])
 class EFOrgBot(Deps):
     @property
     def menu(self) -> Block:
