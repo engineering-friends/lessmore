@@ -1,5 +1,3 @@
-from contextlib import asynccontextmanager
-from dataclasses import dataclass
 from pathlib import Path
 
 from ef_bots.ef_org_bot.config.config import Config
@@ -7,8 +5,6 @@ from lessmore.utils.enriched_notion_client.enriched_notion_async_client import E
 from lessmore.utils.file_primitives.ensure_path import ensure_path
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.read_config.read_config import read_config
-from loguru import logger
-from teletalk.app import App
 from telethon import TelegramClient
 
 

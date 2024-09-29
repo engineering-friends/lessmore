@@ -2,8 +2,6 @@ import asyncio
 import re
 import time
 
-from ef_bots.ef_threads.deps.deps import Deps
-from ef_bots.ef_threads.ef_threads import EfThreads
 from lessmore.utils.enriched_notion_client.enriched_notion_async_client import EnrichedNotionAsyncClient
 
 
@@ -61,6 +59,8 @@ async def parse_telegram_username_by_whois_url(
 
 
 async def test():
+    from ef_bots.ef_threads.deps import Deps
+
     async with Deps() as deps:
         assert (
             await parse_telegram_username_by_whois_url(
