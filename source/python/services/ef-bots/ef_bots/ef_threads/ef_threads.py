@@ -2,6 +2,7 @@ import asyncio
 import re
 import time
 
+from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -17,9 +18,6 @@ from telethon import events, types
 
 if TYPE_CHECKING:
     from ef_bots.ef_threads.main import main
-    from ef_bots.ef_threads.tests.test_parse_telegram_username_by_whois_url import (
-        test_parse_telegram_username_by_whois_url,
-    )
 
 
 @dataclass
@@ -36,88 +34,29 @@ class AppState:
     users: dict[int, User] = field(default_factory=dict)
 
 
-class EfThreads(Deps):
-    def __init__(self, *args, **kwargs):
+class EfThreads:
+    def __init__(self, deps: Deps):
+        # - Deps
+
+        self.deps = deps
+
         # - State
 
         self.users: dict[int, User] = {}
         self.telegram_usernames_by_notion_whois_url: dict[str, str] = {}
-        self.last_checked_telegram_username_at_by_notion_whois_url: dict[str, int] = {}
+        self.last_checked_telegram_username_at_by_notion_whois_url: dict[str, float] = {}
         self.rdict = Rdict(path=str(Path(__file__).parent / "state"))
-
-        # - Deps
-
-        super().__init__(*args, **kwargs)
 
     def load_state(self):
         self.users = dacite.from_dict(data_class=AppState, data=dict(self.rdict)).users
 
     def dump_state(self):
-        # # - DEPRECATED: Clean up thread_id_by_message_id of the users, as they are large
-        #
-        # for user in self.users:
-        #     last_message_id = max(user.thread_id_by_message_id.keys())
-        #     last_thread_id = max(user.thread_id_by_message_id.values())
-        #     user.thread_id_by_message_id = {
-        #         k: v for k, v in user.thread_id_by_message_id.items() if k >= last_thread_id - 10_000
-        #     }
-
         # - Dump state
 
         for user in self.users.values():
             self.rdict[user.id] = user
 
         self.rdict.flush()
-
-    @tested([test_parse_telegram_username_by_whois_url] if TYPE_CHECKING else [])
-    async def parse_telegram_username_by_whois_url(
-        self,
-        text: str,
-    ) -> str:
-        # - Parse notion url
-
-        try:
-            notion_url = re.findall(r"\[(.*?)\]\((https://www.notion.so/(.*?))\)", text.split("\n")[1])[0][1]
-        except:
-            return
-
-        notion_url = notion_url.replace("?pvs=4", "")
-
-        if notion_url in self.telegram_usernames_by_notion_whois_url:
-            return self.telegram_usernames_by_notion_whois_url[notion_url]
-
-        # - Try to get telegram username from notion
-
-        # -- Return if too soon
-
-        if self.last_checked_telegram_username_at_by_notion_whois_url.get(notion_url, 0) + 3600 > time.time():
-            logger.debug("Too soon, try to find telegram username every hour", notion_url=notion_url)
-
-            return
-
-        # - Get pages and update cache
-
-        pages = list(
-            await self.notion_client.get_paginated_request(
-                method=self.notion_client.databases.query,
-                method_kwargs=dict(
-                    database_id="0b1e5db6cdfe4dcea0c818109ce44a26",  # whois_database_id
-                ),
-            )
-        )
-
-        for page in pages:
-            self.telegram_usernames_by_notion_whois_url[page["url"]] = "".join(
-                [value["plain_text"] for value in page["properties"]["TG_username"]["rich_text"]]
-            )
-
-        # - Update time
-
-        self.last_checked_telegram_username_at_by_notion_whois_url[notion_url] = time.time()
-
-        # - Check if user is in the database
-
-        return self.telegram_usernames_by_notion_whois_url.get(notion_url)
 
     @tested([main] if TYPE_CHECKING else [])
     async def run(self):
@@ -131,7 +70,7 @@ class EfThreads(Deps):
 
         # - Define handler
 
-        @self.telegram_user_client.on(events.NewMessage(chats=self.config.telegram_discussion_group))
+        @self.deps.telegram_user_client.on(events.NewMessage(chats=self.deps.config.telegram_discussion_group))
         async def on_message(event):
             async with locks_by_user_id.get(event.message.input_sender.user_id, asyncio.Lock()):
                 # - Unfold messages
@@ -145,8 +84,8 @@ class EfThreads(Deps):
 
                 # - Get original message with thread id (original message id)
 
-                original_message = await self.telegram_user_client.get_messages(
-                    self.config.telegram_discussion_group, ids=new_message.reply_to_msg_id
+                original_message = await self.deps.telegram_user_client.get_messages(
+                    self.deps.config.telegram_discussion_group, ids=new_message.reply_to_msg_id
                 )
 
                 thread_id = original_message.id
@@ -185,7 +124,7 @@ class EfThreads(Deps):
 
                 for telegram_username in telegram_usernames:
                     try:
-                        input_entity = await self.telegram_user_client.get_input_entity(telegram_username)
+                        input_entity = await self.deps.telegram_user_client.get_input_entity(telegram_username)
                         user_ids.append(input_entity.user_id)
                     except:
                         logger.error("Failed to get input entity", telegram_username=telegram_username)
@@ -212,9 +151,9 @@ class EfThreads(Deps):
                 for user in self.users.values():
                     if thread_id in user.thread_ids:
                         if user.current_thread_id != thread_id:
-                            message = await self.telegram_user_client.send_message(
+                            message = await self.deps.telegram_user_client.send_message(
                                 entity=user.id,
-                                message=f"[{title}](https://t.me/c/{str(self.config.telegram_discussion_group)[4:]}/{new_message.id}?thread={thread_id})",
+                                message=f"[{title}](https://t.me/c/{str(self.deps.config.telegram_discussion_group)[4:]}/{new_message.id}?thread={thread_id})",
                             )
                             user.thread_id_by_message_id[message.id] = thread_id
                             user.current_thread_id_message_id = message.id
@@ -228,10 +167,10 @@ class EfThreads(Deps):
                         #             entity=user.id,
                         #             text=f"[{title}](https://t.me/c/{str(deps.config.telegram_discussion_group)[4:]}/{new_message.id}?thread={thread_id})",
                         #         )
-                        message = await self.telegram_user_client.forward_messages(
+                        message = await self.deps.telegram_user_client.forward_messages(
                             entity=user.id,
                             messages=new_message.id,
-                            from_peer=self.config.telegram_discussion_group,
+                            from_peer=self.deps.config.telegram_discussion_group,
                         )
                         user.thread_id_by_message_id[message.id] = thread_id
 
@@ -241,7 +180,7 @@ class EfThreads(Deps):
 
         # - Subscribe to emoji reactions
 
-        @self.telegram_user_client.on(events.Raw)
+        @self.deps.telegram_user_client.on(events.Raw)
         async def handler(event):
             if isinstance(event, types.UpdateEditMessage):
                 async with locks_by_user_id.get(event.message.chat_id, asyncio.Lock()):
@@ -280,7 +219,7 @@ class EfThreads(Deps):
 
                     for message_id_to_remove in message_ids_to_remove:
                         user.thread_id_by_message_id.pop(message_id_to_remove)
-                        await self.telegram_user_client.delete_messages(chat_id, message_id_to_remove)
+                        await self.deps.telegram_user_client.delete_messages(chat_id, message_id_to_remove)
 
                     # - Dump state
 
@@ -290,4 +229,10 @@ class EfThreads(Deps):
 
         logger.info("Starting polling...")
 
-        await self.telegram_user_client.run_until_disconnected()
+        await self.deps.telegram_user_client.run_until_disconnected()
+
+    @asynccontextmanager
+    @staticmethod
+    async def stack():
+        async with Deps() as deps:
+            yield EfThreads(deps=deps)
