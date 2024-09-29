@@ -25,7 +25,7 @@ class Deps:
 
         config = Config(**read_config([f"{str(Path(__file__).parent)}/config/config.{env}.yaml"]))
 
-        local_files_dir = Path(__file__).parent / f"../data/dynamic/{env}"
+        local_files_dir = Path(__file__).parent / f"data/dynamic/{env}"
 
         self.config = config
         self.local_files_dir = str(local_files_dir)

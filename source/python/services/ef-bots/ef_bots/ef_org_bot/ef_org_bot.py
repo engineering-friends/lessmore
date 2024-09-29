@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING
 
 from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
-from ef_bots.ef_org_bot.deps.deps import Deps
+from ef_bots.ef_org_bot.deps import Deps
 from lessmore.utils.tested import tested
 from loguru import logger
 from teletalk.app import App

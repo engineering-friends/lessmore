@@ -1,6 +1,6 @@
 import asyncio
 
-from ef_bots.ef_org_bot.deps.deps import Deps
+from ef_bots.ef_org_bot.deps import Deps
 from loguru import logger
 from telethon import TelegramClient
 from telethon.tl.functions.channels import InviteToChannelRequest

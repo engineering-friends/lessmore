@@ -7,7 +7,7 @@ from pymaybe import maybe
 
 
 async def main(env: str):
-    async with EfOrgBot(env=env).stack() as (ef_org_bot, app):
+    async with EfOrgBot.stack(env=env) as (ef_org_bot, app):
         # - Load chat_ids to run at startup - the ones which have last message from the bot (usually the menu message). Needed for user not to press /start if bot has been restarted, and just used the menu of the last message (beta)
 
         chat_ids_to_run_at_startup = [
