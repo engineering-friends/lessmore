@@ -4,7 +4,7 @@ from ef_bots.ef_threads.ef_threads import EfThreads
 
 
 async def main(env: str):
-    async with EfThreads(env=env).stack() as ef_threads:
+    async with EfThreads.stack(env=env) as ef_threads:
         await ef_threads.run()
 
 

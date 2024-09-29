@@ -233,6 +233,6 @@ class EfThreads:
 
     @asynccontextmanager
     @staticmethod
-    async def stack():
-        async with Deps() as deps:
+    async def stack(env: str):
+        async with Deps(env=env) as deps:
             yield EfThreads(deps=deps)
