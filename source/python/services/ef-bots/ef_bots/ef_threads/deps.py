@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from ef_bots.ef_threads.deps.config.config import Config
+from ef_bots.ef_threads.config.config import Config
 from lessmore.utils.enriched_notion_client.enriched_notion_async_client import EnrichedNotionAsyncClient
 from lessmore.utils.file_primitives.ensure_path import ensure_path
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru

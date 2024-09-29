@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 
 import dacite
 
-from ef_bots.ef_threads.deps.deps import Deps
+from ef_bots.ef_threads.deps import Deps
 from lessmore.utils.tested import tested
 from loguru import logger
 from rocksdict import Rdict
