@@ -13,6 +13,11 @@ from telethon import TelegramClient
 
 
 class Deps:
+    config: Config
+    local_files_dir: Path | str
+    telegram_user_client: TelegramClient
+    notion_client: EnrichedNotionAsyncClient
+
     def __init__(self, env: str = "test", log_level="DEBUG"):
         # - Setup loguru
 
@@ -29,33 +34,13 @@ class Deps:
         self.config = config
         self.local_files_dir = local_files_dir
 
-        # no need to this one yet
-        # self.telegram_bot_client = TelegramClient(
-        #     session=ensure_path(str(local_files_dir / "telegram_bot.session")),
-        #     api_id=int(config.telegram_api_id),
-        #     api_hash=config.telegram_api_hash,
-        # )
         self.telegram_user_client = TelegramClient(
             session=ensure_path(local_files_dir / "telegram_user.session"),
             api_id=int(config.telegram_api_id),
             api_hash=config.telegram_api_hash,
         )
 
-    def notion_client(self) -> EnrichedNotionAsyncClient:
-        return EnrichedNotionAsyncClient(auth=self.config.notion_token)
-
-    @asynccontextmanager
-    async def stack(self):
-        await self.telegram_user_client.start()
-
-        yield (
-            self,
-            await App(
-                bot=self.config.telegram_bot_token,
-                state_backend="rocksdict",
-                state_config={"path": str(self.local_files_dir / "app_state")},
-            ).__aenter__(),
-        )
+        self.notion_client = EnrichedNotionAsyncClient(auth=self.config.notion_token)
 
 
 def test():

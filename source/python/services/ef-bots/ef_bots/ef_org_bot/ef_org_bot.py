@@ -1,11 +1,13 @@
 import asyncio
 import textwrap
 
+from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING
 
 from ef_bots.ef_org_bot.deps.deps import Deps
 from lessmore.utils.tested import tested
 from loguru import logger
+from teletalk.app import App
 from teletalk.blocks.block import Block
 from teletalk.blocks.build_default_message_callback import default_message_callback_no_supress
 from teletalk.blocks.handle_errors import handle_errors
@@ -21,7 +23,10 @@ if TYPE_CHECKING:
 
 
 @tested([main] if TYPE_CHECKING else [])
-class EFOrgBot(Deps):
+class EfOrgBot:
+    def __init__(self, deps: Deps):
+        self.deps = deps
+
     @property
     def menu(self) -> Block:
         return Block(
@@ -60,7 +65,7 @@ class EFOrgBot(Deps):
             # - Get user entity
 
             try:
-                entity = await self.telegram_user_client.get_entity(f"@{telegram_username}")
+                entity = await self.deps.telegram_user_client.get_entity(f"@{telegram_username}")
             except:
                 entity = None
 
@@ -79,7 +84,7 @@ class EFOrgBot(Deps):
 
         # -- Get user entity
 
-        user = await self.telegram_user_client.get_entity(f"@{telegram_username}")
+        user = await self.deps.telegram_user_client.get_entity(f"@{telegram_username}")
 
         # -- Add user to chats
 
@@ -91,9 +96,9 @@ class EFOrgBot(Deps):
             try:
                 await self._add_user_to_chats(
                     username=telegram_username,
-                    chats=list(self.config.telegram_ef_chats.values()),
+                    chats=list(self.deps.config.telegram_ef_chats.values()),
                 )
-                await response.tell(f"Добавил в чаты и каналы: {', '.join(self.config.telegram_ef_chats.keys())}")
+                await response.tell(f"Добавил в чаты и каналы: {', '.join(self.deps.config.telegram_ef_chats.keys())}")
             except Exception as e:
                 logger.exception("Failed to add user to chats")
                 await response.tell(f"Не удалось добавить пользователя в часть чатов и каналов. Ошибка: {str(e)}")
@@ -118,7 +123,7 @@ class EFOrgBot(Deps):
 
         # -- Create page
 
-        result, new_pages = await self.notion_client().upsert_database(
+        result, new_pages = await self.deps.notion_client.upsert_database(
             database={
                 "id": "106b738eed9a80cf8669e76dc12144b7",  # pragma: allowlist secret
             },
@@ -165,14 +170,27 @@ class EFOrgBot(Deps):
         chats: list[str | int],
     ):
         # Get the channel and user objects
-        user = await self.telegram_user_client.get_entity(f"@{username.replace('@', '')}")
+        user = await self.deps.telegram_user_client.get_entity(f"@{username.replace('@', '')}")
 
         for chat in chats:
             logger.info("Inviting user to chat", chat=chat, user=user)
 
-            await self.telegram_user_client(
+            await self.deps.telegram_user_client(
                 InviteToChannelRequest(
-                    channel=await self.telegram_user_client.get_entity(chat),
+                    channel=await self.deps.telegram_user_client.get_entity(chat),
                     users=[user],
                 )
+            )
+
+    @asynccontextmanager
+    @staticmethod
+    async def stack(env: str):
+        async with Deps(env=env) as deps:
+            yield (
+                EfOrgBot(deps=deps),
+                await App(
+                    bot=deps.config.telegram_bot_token,
+                    state_backend="rocksdict",
+                    state_config={"path": str(deps.local_files_dir / "app_state")},
+                ).__aenter__(),
             )

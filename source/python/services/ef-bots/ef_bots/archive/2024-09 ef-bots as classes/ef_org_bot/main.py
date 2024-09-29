@@ -1,13 +1,13 @@
 import asyncio
 
 from aiogram.types import BotCommand
-from ef_bots.ef_org_bot.ef_org_bot import EFOrgBot
+from ef_bots.ef_org_bot.ef_org_bot import EfOrgBot
 from loguru import logger
 from pymaybe import maybe
 
 
 async def main(env: str):
-    async with EFOrgBot(env=env).stack() as (ef_org_bot, app):
+    async with EfOrgBot(env=env).stack() as (ef_org_bot, app):
         # - Load chat_ids to run at startup - the ones which have last message from the bot (usually the menu message). Needed for user not to press /start if bot has been restarted, and just used the menu of the last message (beta)
 
         chat_ids_to_run_at_startup = [
