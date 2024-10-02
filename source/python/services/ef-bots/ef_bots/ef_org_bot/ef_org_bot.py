@@ -48,7 +48,7 @@ class EfOrgBot:
         return Block(
             "⚙️ *Выбери действие*",
             inline_keyboard=[
-                [("Начать онбординг (повторно можно, просто потыкать тоже)", self.start_onboarding)],
+                [("Начать онбординг (можно повторять/протыкать для теста)", self.start_onboarding)],
                 [("Notion EF Org", "https://www.notion.so/Org-48f403a0d3014dc4972f08060031308e?pvs=4")],
                 [("Стратегия и задачи", "https://www.notion.so/f3f7637c9a1d4733a4d90b33796cf78e?pvs=4")],
                 [("Тексты кандидатам", "https://www.notion.so/EF-f1c2d3aeceb04272a61beb6c08c92b47?pvs=4")],
