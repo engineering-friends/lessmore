@@ -253,6 +253,15 @@ wheels = [
 ]
 
 [[package]]
+name = "emoji"
+version = "2.13.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/93/4d/75bc53689fcbcbe1796d88e6ecf3202d9347cdcc8d917e1445d17c1f65f6/emoji-2.13.2.tar.gz", hash = "sha256:f95d10d96c5f21299ed2c4b32511611ba890b8c07f5f2bf5b04d5d3eee91fd19", size = 563005 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/eb/ba/656d551141750dc944c7f33180d5ecff4dbdad425f7f002016aaaf2274e8/emoji-2.13.2-py3-none-any.whl", hash = "sha256:ef6f2ee63b245e934c763b1a9a0637713955aa3d9e322432e036bb60559de4d6", size = 553211 },
+]
+
+[[package]]
 name = "executing"
 version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -547,6 +556,7 @@ dependencies = [
     { name = "aiogram" },
     { name = "dacite" },
     { name = "diskcache" },
+    { name = "emoji" },
     { name = "fire" },
     { name = "inline-snapshot" },
     { name = "lessmore-utils" },
@@ -564,6 +574,7 @@ requires-dist = [
     { name = "aiogram", specifier = ">=3" },
     { name = "dacite", specifier = ">=1.8.1" },
     { name = "diskcache", specifier = ">=5.6.3,<6" },
+    { name = "emoji", specifier = ">=2.13.2" },
     { name = "fire", specifier = ">=0.6.0,<0.7" },
     { name = "inline-snapshot", specifier = "==0.8.0" },
     { name = "lessmore-utils", git = "https://github.com/engineering-friends/lessmore.git?subdirectory=source%2Fpython%2Flibs%2Flessmore.utils" },

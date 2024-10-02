@@ -18,4 +18,5 @@ dependencies = [
     "lessmore-utils @ git+https://github.com/engineering-friends/lessmore.git#subdirectory=source/python/libs/lessmore.utils",
     "teletalk @ git+https://github.com/engineering-friends/lessmore.git#subdirectory=source/python/libs/teletalk",
     "dacite>=1.8.1",
+    "emoji>=2.13.2",
 ]
