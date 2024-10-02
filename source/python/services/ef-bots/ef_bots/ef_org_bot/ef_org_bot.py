@@ -61,7 +61,7 @@ class EfOrgBot:
         # - 1. Notion access
 
         await response.ask(
-            "1. Для начала тебе нужно узнать email от Notion участника и пошарить ему доступ на [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
+            "1. Узнай email от Notion участника и пошарь ему доступ на страницу [Home](https://www.notion.so/Home-23bdeeca8c8e4cd99a90f67ea497c5c0?pvs=4)",
             inline_keyboard=[["✅ Доступ есть"]],
         )
 
