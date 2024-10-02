@@ -89,7 +89,8 @@ class EfOrgBot:
 
             if isinstance(entity, User):
                 answer = await response.ask(
-                    f"t.me/{telegram_username}", inline_keyboard=[["✅ Все верно", "❌ Я ошибся"]]
+                    f"t.me/{telegram_username}",
+                    inline_keyboard=[["✅ Все верно", "❌ Я ошибся"]],
                 )
 
                 if answer == "✅ Все верно":
@@ -105,7 +106,8 @@ class EfOrgBot:
         # -- Add user to chats
 
         answer = await response.ask(
-            "Добавить пользователя в наши чаты и каналы?", inline_keyboard=[["✅ Да", "❌ Нет"]]
+            "Добавить пользователя в наши чаты и каналы?",
+            inline_keyboard=[["✅ Да", "❌ Нет"]],
         )
 
         if answer == "✅ Да":
