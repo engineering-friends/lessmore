@@ -33,12 +33,12 @@ class EfOrgBot:
     async def stack(env: str):
         async with Deps(env=env) as deps:
             yield (
-                EfOrgBot(deps=deps),
+                EfOrgBot(deps=deps),  # this class
                 await App(
                     bot=deps.config.telegram_bot_token,
                     state_backend="rocksdict",
                     state_config={"path": str(deps.local_files_dir / "app_state")},
-                ).__aenter__(),
+                ).__aenter__(),  # teletalk app
             )
 
     # - Building blocks
