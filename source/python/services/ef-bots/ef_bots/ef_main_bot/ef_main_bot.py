@@ -22,12 +22,14 @@ from teletalk.app import App
 from teletalk.blocks.block import Block
 from teletalk.blocks.build_default_message_callback import handle_cancel_callback
 from teletalk.blocks.handle_errors import handle_errors
+from teletalk.blocks.simple_block import go_back
 from teletalk.models.response import Response
 from telethon.tl.types import User
 
 
 if TYPE_CHECKING:
     from ef_bots.ef_main_bot import main
+    from ef_bots.ef_main_bot.tests import test_create_request
     from ef_bots.ef_main_bot.tests.test_write_post import test_write_post
 
 
@@ -73,9 +75,36 @@ class EfMainBot:
             "⚙️ *Выбери действие*",
             inline_keyboard=[
                 [("Написать пост", self.write_post)],
-                # [("Создать запрос", self.create_request)],
-                # [("Random Coffee", self.random_coffee)],
-                # [("Узнать", self.learn_more)],
+                [("Создать запрос", self.create_request)],
+                [
+                    (
+                        "Random Coffee",
+                        lambda response: response.ask(
+                            "⚙️ *Выбери действие*",
+                            inline_keyboard=[
+                                [("Сгенери темы", lambda response: response.tell("Random Coffee"))],
+                                [("Хочу внеочередной", lambda response: response.tell("Random Coffee"))],
+                                [("Назад", go_back)],
+                            ],
+                            mode="inplace_latest",
+                        ),
+                    )
+                ],
+                [
+                    (
+                        "Узнать",
+                        lambda response: response.ask(
+                            "⚙️ *Выбери действие*",
+                            inline_keyboard=[
+                                [("Посмотреть актуальные запросы", lambda response: response.tell("Random Coffee"))],
+                                [("Узнать людей", lambda response: response.tell("Random Coffee"))],
+                                [("Почитать записи сессий", lambda response: response.tell("Random Coffee"))],
+                                [("Назад", go_back)],
+                            ],
+                            mode="inplace_latest",
+                        ),
+                    )
+                ],
             ],
         )
 
@@ -202,3 +231,16 @@ class EfMainBot:
         )
 
         await response.tell("Готово!")
+
+        return body_response
+
+    @tested([test_create_request] if TYPE_CHECKING else [])
+    @handle_errors
+    async def create_request(self, response: Response):
+        # - Create a post
+
+        body_response = await self.write_post(response)
+
+        # - Create a page in a notion database with a request
+
+        ...
