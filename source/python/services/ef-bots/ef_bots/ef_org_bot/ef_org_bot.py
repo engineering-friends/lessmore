@@ -74,15 +74,14 @@ class EfOrgBot:
 
             answer = await response.ask(
                 "2. Введи телеграм участника, чтобы я добавил его в чаты и каналы (в любом формате)",
-                inline_keyboard=[["✏️ Взять тестового: lidenberg"]],
+                inline_keyboard=[["✏️ Взять тестовый: lidenberg"]],
                 message_callback=handle_cancel_callback,
             )
 
-            if answer == "✏️ Взять тестового: lidenberg":
+            if answer == "✏️ Взять тестовый: lidenberg":
                 telegram_username = "lidenberg"
-                break
-
-            telegram_username = answer.replace("@", "").replace("https://t.me/", "").replace("t.me/", "")
+            else:
+                telegram_username = answer.replace("@", "").replace("https://t.me/", "").replace("t.me/", "")
 
             # - Get user entity
 
