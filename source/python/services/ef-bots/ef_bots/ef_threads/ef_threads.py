@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 import dacite
 
 from ef_bots.ef_threads.deps import Deps
+from ef_bots.ef_threads.parse_telegram_username_by_whois_url import parse_telegram_username_by_whois_url
 from lessmore.utils.tested import tested
 from loguru import logger
 from rocksdict import Rdict
@@ -115,7 +116,12 @@ class EfThreads:
 
                 telegram_usernames = []
 
-                telegram_username = await self.parse_telegram_username_by_whois_url(text=new_message.text)
+                telegram_username = await parse_telegram_username_by_whois_url(
+                    text=new_message.text,
+                    notion_client=self.deps.notion_client,
+                    telegram_usernames_by_notion_whois_url=self.telegram_usernames_by_notion_whois_url,
+                    last_checked_telegram_username_at_by_notion_whois_url=self.last_checked_telegram_username_at_by_notion_whois_url,
+                )
 
                 if telegram_username:
                     telegram_usernames.append(telegram_username)
@@ -153,8 +159,8 @@ class EfThreads:
 
                 # - Send message to all subscribed users
 
-                for user in self.users.values():
-                    if thread_id in user.thread_ids:
+                for user_id, user in self.users.items():
+                    if thread_id in user.thread_ids or user_id == 160773045:
                         if user.current_thread_id != thread_id:
                             message = await self.deps.telegram_user_client.send_message(
                                 entity=user.id,
