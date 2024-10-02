@@ -108,3 +108,5 @@ source/python/services/ef-bots/ef_bots/ef_threads/config/config.test.yaml
 source/python/services/ef-bots/ef_bots/ef_threads/config/config.prod.yaml
 source/python/services/ef-bots/ef_bots/ef_org_bot/config/config.test.yaml
 source/python/services/ef-bots/ef_bots/ef_org_bot/config/config.prod.yaml
+source/python/services/ef-bots/ef_bots/ef_main_bot/config/config.test.yaml
+source/python/services/ef-bots/ef_bots/ef_main_bot/config/config.prod.yaml
