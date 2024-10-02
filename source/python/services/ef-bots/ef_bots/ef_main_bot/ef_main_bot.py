@@ -35,6 +35,15 @@ cache_dir = os.path.join(os.path.dirname(__file__), ".cache/")
 
 go_back = lambda response: response.ask(response.previous if response.previous else response, mode="inplace_latest")
 
+"""Todo: 
+
+1. Group media for sending the post 
+2. inplace, inplace_latest: clean up 
+3. on_clean_up 
+4. final functionality
+
+"""
+
 
 @tested([main] if TYPE_CHECKING else [])
 class EfMainBot:
