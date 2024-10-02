@@ -84,32 +84,18 @@ class EfMainBot:
     async def write_post(self, response: Response):
         # - 1. Write post
 
-        face_message = await response.ask(
-            "1. Введи текст поста",
+        body_response = await response.ask(
+            "Напиши содержание поста + приложи картинки, если нужно. Пока без заголовка",
             message_callback="raw",
         )
-
-        # - Get notion user properties
-
-        try:
-            notion_properties = await get_notion_user_properties(
-                name=face_message.from_user.full_name,
-                notion_token=self.deps.config.notion_token,
-            )  # {'AI стиль постов': 'style of secret of kells, old paper, celtic art', 'Name': 'Mark Lidenberg', 'TG_username': 'marklidenberg', 'url': 'https://www.notion.so/Mark-Lidenberg-d5ae5f192b4c402ba014268e63aed47c', 'Заполнена': True}
-        except:
-            logger.error("Failed to get user notion properties")
-
-            notion_properties = {}
-
-        notion_ai_style = notion_properties.get("AI стиль постов")
-        notion_author_url = notion_properties.get("url", "")
+        face_message = body_response.messages[0]
 
         # - Get file ids from the face message
 
         file_ids = [
             file_id
             for _, get_media in media_types
-            for message in [face_message]
+            for message in body_response.messages
             if (file_id := getattr(get_media(message), "file_id", ""))
         ]
 
@@ -125,72 +111,30 @@ class EfMainBot:
             message_callback=handle_cancel_callback,
         )
 
-        # - 3. Generate an image cover if no images are attached, form `files`
-
-        if not file_ids:
-            try:
-                # - Generate article cover
-
-                image_contents = await cache_on_disk(ensure_path(f"{cache_dir}/generate_image"))(
-                    async_retry(tries=5, delay=1)(generate_article_cover)
-                )(
-                    title=title,
-                    body=face_message.html_text,
-                    style=notion_ai_style or "Continuous lines very easy, clean and minimalist, black and white",
-                )
-
-                # - Resize image to 1280x731 (telegram max size)
-
-                image = Image.open(io.BytesIO(image_contents))
-                image_resized = image.resize((1280, 731), Image.LANCZOS)
-                image_contents = io.BytesIO()
-                image_resized.save(image_contents, format="PNG")
-                image_contents = image_contents.getvalue()
-
-                # - Save to tmp file and add to files
-
-                cover_filename = f"/tmp/{uuid.uuid4()}.png"
-                write_file(
-                    data=image_contents,
-                    filename=cover_filename,
-                    as_bytes=True,
-                )
-            except Exception as e:
-                logger.error("Failed to generate image", e=e)
-
-                cover_filename = ""
-        else:
-            cover_filename = ""
-
-        files = file_ids
-        if cover_filename:
-            files.append(FSInputFile(path=cover_filename))
-
         # - 4. Validate the post
 
-        should_generate_new_cover = True  # start fresh
+        should_generate_new_cover = not file_ids
 
         while True:
             # - Send the post to the bot first, to validate it
+
+            await response.tell("Подготавливаем пост...")
 
             await send_ef_post(
                 title=title,
                 author_name=face_message.from_user.full_name,
                 body=face_message.html_text,
-                file_ids=[
-                    file_id
-                    for _, get_media in media_types
-                    for message in [face_message]
-                    if (file_id := getattr(get_media(message), "file_id", ""))
-                ],  # note: only photos are supported for now
+                file_ids=file_ids,  # note: only photos are supported for now
                 chat_id=response.chat_id,
                 bot=response.talk.app.bot,
                 notion_token=self.deps.config.notion_token,
+                reset_image_cache=should_generate_new_cover,
                 tags=[],
             )
 
-            if should_generate_new_cover:
-                should_generate_new_cover = False
+            # - Disable generating new cover after one has been generated
+
+            should_generate_new_cover = False
 
             # - Ask if the post is valid
 
@@ -205,6 +149,7 @@ class EfMainBot:
             )
 
             if answer == "✅ Все ок!":
+                # go forward
                 break
             elif answer == "✏️ Поменять название":
                 title = await response.ask(
@@ -217,20 +162,21 @@ class EfMainBot:
             elif answer == "🖼️ Другую картинку":
                 should_generate_new_cover = True
 
+        # - Notify user that the post was sent
+
+        await response.tell("Отправляю пост в канал...")
+
         # - 5. Send the post to the channel
 
-        await send_ef_post(
+        message = await send_ef_post(
             title=title,
             author_name=face_message.from_user.full_name,
             body=face_message.html_text,
-            file_ids=[
-                file_id
-                for _, get_media in media_types
-                for message in [face_message]
-                if (file_id := getattr(get_media(message), "file_id", ""))
-            ],  # note: only photos are supported for now
+            file_ids=file_ids,  # note: only photos are supported for now
             chat_id=160773045,  # mark lidenberg
             bot=response.talk.app.bot,
             notion_token=self.deps.config.notion_token,
             tags=[],
         )
+
+        await response.tell("Готово!")
