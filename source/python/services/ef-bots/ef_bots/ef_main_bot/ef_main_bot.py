@@ -1,30 +1,17 @@
-import asyncio
-import io
 import os
-import textwrap
-import uuid
 
 from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING
 
 from ef_bots.ef_main_bot.deps import Deps
-from ef_matchmaking_bot.handlers_proper.send_ef_post.ai.generate_article_cover import generate_article_cover
-from ef_matchmaking_bot.handlers_proper.send_ef_post.get_notion_user_properties import get_notion_user_properties
 from ef_matchmaking_bot.handlers_proper.send_ef_post.send_ef_post import send_ef_post
-from lessmore.utils.asynchronous.async_retry import async_retry
-from lessmore.utils.cache_on_disk import cache_on_disk
-from lessmore.utils.file_primitives.ensure_path import ensure_path
-from lessmore.utils.file_primitives.write_file import write_file
 from lessmore.utils.tested import tested
-from loguru import logger
-from PIL.Image import Image
 from teletalk.app import App
 from teletalk.blocks.block import Block
 from teletalk.blocks.build_default_message_callback import handle_cancel_callback
 from teletalk.blocks.handle_errors import handle_errors
 from teletalk.blocks.simple_block import go_back
 from teletalk.models.response import Response
-from telethon.tl.types import User
 
 
 if TYPE_CHECKING:
@@ -45,6 +32,8 @@ media_types = [
 ]
 
 cache_dir = os.path.join(os.path.dirname(__file__), ".cache/")
+
+go_back = lambda response: response.ask(response.previous if response.previous else response, mode="inplace_latest")
 
 
 @tested([main] if TYPE_CHECKING else [])
@@ -82,8 +71,8 @@ class EfMainBot:
                         lambda response: response.ask(
                             "⚙️ *Выбери действие*",
                             inline_keyboard=[
-                                [("Сгенери темы", lambda response: response.tell("Random Coffee"))],
-                                [("Хочу внеочередной", lambda response: response.tell("Random Coffee"))],
+                                [("Сгенери темы", lambda response: response.ask())],
+                                [("Хочу внеочередной", lambda response: response.ask())],
                                 [("Назад", go_back)],
                             ],
                             mode="inplace_latest",
@@ -96,9 +85,9 @@ class EfMainBot:
                         lambda response: response.ask(
                             "⚙️ *Выбери действие*",
                             inline_keyboard=[
-                                [("Посмотреть актуальные запросы", lambda response: response.tell("Random Coffee"))],
-                                [("Узнать людей", lambda response: response.tell("Random Coffee"))],
-                                [("Почитать записи сессий", lambda response: response.tell("Random Coffee"))],
+                                [("Посмотреть актуальные запросы", lambda response: response.ask())],
+                                [("Узнать людей", lambda response: response.ask())],
+                                [("Почитать записи сессий", lambda response: response.ask())],
                                 [("Назад", go_back)],
                             ],
                             mode="inplace_latest",
@@ -150,8 +139,6 @@ class EfMainBot:
         # - 4. Validate the post
 
         should_generate_new_cover = not file_ids
-        default_style = "Continuous lines very easy, clean and minimalist, black and white"
-        style = "Continuous lines very easy, clean and minimalist, black and white"
 
         while True:
             # - Send the post to the bot first, to validate it
@@ -169,7 +156,6 @@ class EfMainBot:
                 reset_image_cache=should_generate_new_cover,
                 tags=[],
                 reaction_probability=0,
-                style=style,
             )
 
             # - Disable generating new cover after one has been generated
@@ -227,7 +213,6 @@ class EfMainBot:
             bot=response.talk.app.bot,
             notion_token=self.deps.config.notion_token,
             tags=[],
-            style=style,
         )
 
         await response.tell("Готово!")

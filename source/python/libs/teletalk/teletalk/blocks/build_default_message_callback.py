@@ -1,3 +1,5 @@
+from typing import Callable, Optional
+
 from teletalk.models.response import Response
 
 
@@ -5,7 +7,12 @@ class CancelError(Exception):
     pass
 
 
-def build_default_message_callback(supress_messages: bool = False):
+def build_default_message_callback(
+    supress_messages: bool = False,
+    response_formatter: Optional[Callable] = lambda response: "".join(
+        [message.text for message in response.block_messages]
+    ),
+):
     async def _callback(response: Response):
         if response.block_messages[-1].text == "/cancel":
             raise CancelError("Cancelled")
@@ -25,7 +32,7 @@ def build_default_message_callback(supress_messages: bool = False):
 
                 return await response.ask(mode="inplace")
             else:
-                return "".join([message.text for message in response.block_messages])
+                return response_formatter(response)
 
     return _callback
 

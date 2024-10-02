@@ -36,7 +36,9 @@ class Block(BaseBlock):
         if message_callback == "default":
             message_callback = build_default_message_callback(supress_messages=bool(inline_keyboard))
         elif message_callback == "raw":
-            message_callback = lambda response: response
+            message_callback = build_default_message_callback(
+                supress_messages=bool(inline_keyboard), response_formatter=lambda response: response
+            )
 
         # - Update block
 
