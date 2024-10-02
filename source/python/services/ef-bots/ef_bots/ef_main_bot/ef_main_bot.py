@@ -4,8 +4,8 @@ import textwrap
 from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING
 
-from ef_bots.ef_org_bot.add_user_to_chats import add_user_to_chats
-from ef_bots.ef_org_bot.deps import Deps
+from ef_bots.ef_main_bot.add_user_to_chats import add_user_to_chats
+from ef_bots.ef_main_bot.deps import Deps
 from lessmore.utils.tested import tested
 from loguru import logger
 from teletalk.app import App
@@ -17,11 +17,11 @@ from telethon.tl.types import User
 
 
 if TYPE_CHECKING:
-    from ef_bots.ef_org_bot import main
+    from ef_bots.ef_main_bot import main
 
 
 @tested([main] if TYPE_CHECKING else [])
-class EfOrgBot:
+class EfMainBot:
     def __init__(self, deps: Deps):
         self.deps = deps
 
@@ -54,7 +54,7 @@ class EfOrgBot:
             ],
         )
 
-    @tested([] if TYPE_CHECKING else [])
+    @tested([test_write_post] if TYPE_CHECKING else [])
     @handle_errors
     async def write_post(self, response: Response):
         # - 1. Write post

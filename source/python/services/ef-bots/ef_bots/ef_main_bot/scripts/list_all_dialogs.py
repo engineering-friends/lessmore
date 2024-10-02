@@ -6,7 +6,7 @@ from lessmore.utils.run_snapshot_tests.run_shapshot_tests import run_snapshot_te
 
 def test_list_all_dialogs():
     async def main():
-        from ef_bots.ef_org_bot.deps import Deps
+        from ef_bots.ef_main_bot.deps import Deps
 
         async with Deps() as deps:
             assert [[dialog.title, dialog.id] async for dialog in deps.telegram_user_client.iter_dialogs()] == snapshot(

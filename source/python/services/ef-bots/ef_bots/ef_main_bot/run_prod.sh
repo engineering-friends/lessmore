@@ -30,5 +30,5 @@ export PYTHONPATH="$MONOREPO_PATH/source/python/libs/teletalk:$PYTHONPATH"
 
 # - Run the service in screen
 
-screen -X -S ef_org_bot quit
-screen -S ef_org_bot -L -Logfile logs/prod.log bash -c "uv run python main.py --env prod || (echo \"Python script failed. Press any key to continue...\" && read -n 1)"   # `ctrl+a d` to detach
+screen -X -S ef_main_bot quit
+screen -S ef_main_bot -L -Logfile logs/prod.log bash -c "uv run python main.py --env prod || (echo \"Python script failed. Press any key to continue...\" && read -n 1)"   # `ctrl+a d` to detach

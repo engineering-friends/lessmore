@@ -1,13 +1,13 @@
 import asyncio
 
 from aiogram.types import BotCommand
-from ef_bots.ef_org_bot.ef_org_bot import EfOrgBot
+from ef_bots.ef_main_bot.ef_main_bot import EfOrgBot
 from loguru import logger
 from pymaybe import maybe
 
 
 async def main(env: str):
-    async with EfOrgBot.stack(env=env) as (ef_org_bot, app):
+    async with EfOrgBot.stack(env=env) as (ef_main_bot, app):
         # - Load chat_ids to run at startup - the ones which have last message from the bot (usually the menu message). Needed for user not to press /start if bot has been restarted, and just used the menu of the last message (beta)
 
         chat_ids_to_run_at_startup = [
@@ -22,10 +22,10 @@ async def main(env: str):
 
         await app.run(
             starters={
-                chat_id: lambda response: response.ask(ef_org_bot.menu, mode="inplace_latest")
+                chat_id: lambda response: response.ask(ef_main_bot.menu, mode="inplace_latest")
                 for chat_id in chat_ids_to_run_at_startup
             },  # in case of restart, we will start from the last bot message
-            command_starters={"/start": lambda response: response.ask(ef_org_bot.menu)},
+            command_starters={"/start": lambda response: response.ask(ef_main_bot.menu)},
             commands=[
                 BotCommand(command="start", description="Start the bot"),
                 BotCommand(command="cancel", description="Cancel the current operation"),
