@@ -121,6 +121,8 @@ class EfMainBot:
         # - 4. Validate the post
 
         should_generate_new_cover = not file_ids
+        default_style = "Continuous lines very easy, clean and minimalist, black and white"
+        style = "Continuous lines very easy, clean and minimalist, black and white"
 
         while True:
             # - Send the post to the bot first, to validate it
@@ -138,6 +140,7 @@ class EfMainBot:
                 reset_image_cache=should_generate_new_cover,
                 tags=[],
                 reaction_probability=0,
+                style=style,
             )
 
             # - Disable generating new cover after one has been generated
@@ -153,7 +156,14 @@ class EfMainBot:
                     ["✏️ Поменять название"],
                     ["✏️ Поменять текст"],
                 ]
-                + ([["🖼️ Другую картинку"]] if not file_ids else []),
+                + (
+                    [
+                        ["🖼️ Другую картинку"],
+                        ["🎨 Выбрать свой стиль"],
+                    ]
+                    if not file_ids
+                    else []
+                ),
             )
 
             if answer == "✅ Все ок!":
@@ -173,6 +183,24 @@ class EfMainBot:
                 title_ai = "diddle doo-2"
             elif answer == "🖼️ Другую картинку":
                 should_generate_new_cover = True
+            elif answer == "🎨 Выбрать свой стиль":
+                style = await response.ask(
+                    textwrap.dedent("""Введи свой стиль \n\n*Примеры стилей*
+                Дефолтный стиль: `Continuous lines very easy, clean and minimalist, black and white`
+                Стиль Пети: Pale glass mosaic, thick black outlines, soft rays of light, dust particles, dark atmosphere 4k, photorealistic, simulation, ultrasharp, Close up view
+""")
+                )
+                should_generate_new_cover = True
+
+        # - Make new style as default
+
+        if style != default_style:
+            should_make_default = await response.ask(
+                "Это этот стиль по умолчанию для ваших постов?",
+                inline_keyboard=[["✅ Да"], ["❌ Нет"]],
+            )
+            if should_make_default == "✅ Да":
+                ...
 
         # - Notify user that the post was sent
 
@@ -189,6 +217,7 @@ class EfMainBot:
             bot=response.talk.app.bot,
             notion_token=self.deps.config.notion_token,
             tags=[],
+            style=style,
         )
 
         await response.tell("Готово!")
