@@ -83,7 +83,7 @@ class EfMainBot:
     @handle_errors
     async def write_post(self, response: Response):
         await response.tell(
-            "Я соберу с тебя информацию для поста, потом ты провалидируешь, что все ок и я отправлю его в канал EF Channel"
+            "Я соберу у тебя всю необходимую информацию для поста, дам на проверку, и затем отправлю его в EF Channel"
         )
 
         # - 1. Write post
@@ -125,7 +125,7 @@ class EfMainBot:
         while True:
             # - Send the post to the bot first, to validate it
 
-            await response.tell("Подготавливаем пост...")
+            await response.tell("Подготавливаю пост...")
 
             await send_ef_post(
                 title=title,
@@ -137,6 +137,7 @@ class EfMainBot:
                 notion_token=self.deps.config.notion_token,
                 reset_image_cache=should_generate_new_cover,
                 tags=[],
+                reaction_probability=0,
             )
 
             # - Disable generating new cover after one has been generated
@@ -151,8 +152,8 @@ class EfMainBot:
                     ["✅ Все ок!"],
                     ["✏️ Поменять название"],
                     ["✏️ Поменять текст"],
-                    ["🖼️ Другую картинку"],
-                ],
+                ]
+                + ([["🖼️ Другую картинку"]] if not file_ids else []),
             )
 
             if answer == "✅ Все ок!":
