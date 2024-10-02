@@ -82,16 +82,20 @@ class EfMainBot:
     @tested([test_write_post] if TYPE_CHECKING else [])
     @handle_errors
     async def write_post(self, response: Response):
+        await response.tell(
+            "Я соберу с тебя информацию для поста, потом ты провалидируешь, что все ок и я отправлю его в канал EF Channel"
+        )
+
         # - 1. Write post
 
         body_response = await response.ask(
-            "Напиши содержание поста + приложи картинки, если нужно. Пока без заголовка",
+            "1. Напиши содержание поста + приложи картинки, если нужно. Пока без заголовка",
             message_callback="raw",
         )
+
+        # - Unpack data from the response
+
         face_message = body_response.messages[0]
-
-        # - Get file ids from the face message
-
         file_ids = [
             file_id
             for _, get_media in media_types
@@ -110,6 +114,9 @@ class EfMainBot:
             inline_keyboard=[[f"🤖 Взять наш вариант: {title_ai}"]],
             message_callback=handle_cancel_callback,
         )
+
+        if "🤖" in title:
+            title = title_ai
 
         # - 4. Validate the post
 
@@ -155,7 +162,11 @@ class EfMainBot:
                 title = await response.ask(
                     "Введи новый заголовок поста",
                     inline_keyboard=[[f"🤖 Взять наш вариант: {title_ai}"]],
+                    message_callback=handle_cancel_callback,
                 )
+                if "🤖" in title:
+                    title = title_ai
+
             elif answer == "✏️ Поменять текст":
                 body = await response.ask("Введи новый текст поста")
                 title_ai = "diddle doo-2"
