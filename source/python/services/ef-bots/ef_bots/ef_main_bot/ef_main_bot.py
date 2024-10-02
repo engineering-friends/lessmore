@@ -38,9 +38,9 @@ go_back = lambda response: response.ask(response.previous if response.previous e
 """Todo: 
 
 1. Group media for sending the post 
-2. inplace, inplace_latest: clean up 
+2. inplace, inplace_latest 
 3. on_clean_up 
-4. final functionality
+4. final functionality (quick stuff)
 
 """
 
