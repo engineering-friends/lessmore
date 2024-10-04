@@ -61,6 +61,10 @@
 
 !**/data/static/**/*
 
+# - UV
+
+!**/.python-version
+
 # - Git LFS
 
 !test_git_lfs.txt
