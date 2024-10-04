@@ -61,7 +61,7 @@ class EfThreads:
 
             # - Return ef_threads
             try:
-                yield EfThreads(deps=deps)
+                yield ef_threads
             finally:
                 # - Dump state
 
@@ -175,7 +175,7 @@ class EfThreads:
                         if user.current_thread_id != thread_id:
                             message = await self.deps.telegram_user_client.send_message(
                                 entity=user.id,
-                                message=f"*{title}*\nby {author}\n\nhttps://t.me/c/{str(self.deps.config.telegram_discussion_group)[4:]}/{new_message.id}?thread={thread_id}",
+                                message=f"**{title}**\nby {author}\n\nhttps://t.me/c/{str(self.deps.config.telegram_discussion_group)[4:]}/{new_message.id}?thread={thread_id}",
                             )
                             user.thread_id_by_message_id[message.id] = thread_id
                             user.current_thread_id_message_id = message.id
