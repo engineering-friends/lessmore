@@ -27,3 +27,4 @@ Set test/prod configs in `deps/config/config.test.yaml` and `deps/config/config.
 - Think better about the inplace mode. What are use cases?
 - Think about windows: current open pages, where we have an active page. We should be able to switch between them
 - clean_up function to run before new asks
+- Add default bot commands to poll? 

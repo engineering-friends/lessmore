@@ -8,11 +8,15 @@ from typing import TYPE_CHECKING
 
 import dacite
 
+from aiogram.types import BotCommand
 from ef_bots.ef_threads.deps import Deps
+from ef_bots.ef_threads.ef_threads_bot import EfThreadsBot
 from ef_bots.ef_threads.parse_telegram_username_by_whois_url import parse_telegram_username_by_whois_url
 from lessmore.utils.tested import tested
 from loguru import logger
+from pymaybe import maybe
 from rocksdict import Rdict
+from teletalk.app import App
 from telethon import events, types
 
 
@@ -35,7 +39,7 @@ class AppState:
 
 
 class EfThreads:
-    def __init__(self, deps: Deps):
+    def __init__(self, deps: Deps, bot: EfThreadsBot, teletalk_app: App):
         # - Deps
 
         self.deps = deps
@@ -47,25 +51,37 @@ class EfThreads:
         self.last_checked_telegram_username_at_by_notion_whois_url: dict[str, float] = {}
         self.rdict = Rdict(path=str(Path(__file__).parent / "state"))
 
+        # - Teletalk app
+
+        self.bot = bot
+        self.teletalk_app = teletalk_app
+
     @staticmethod
     @asynccontextmanager
     async def stack(env: str):
         async with Deps(env=env) as deps:
-            # - Init ef_threads
+            async with EfThreadsBot.stack(env=env) as (ef_threads_bot, teletalk_app):
+                # - Init ef_threads
 
-            ef_threads = EfThreads(deps=deps)
+                ef_threads = EfThreads(
+                    deps=deps,
+                    bot=ef_threads_bot,
+                    teletalk_app=teletalk_app,
+                )
 
-            # - Load state
+                # - Load state
 
-            ef_threads.load_state()
+                ef_threads.load_state()
 
-            # - Return ef_threads
-            try:
-                yield ef_threads
-            finally:
-                # - Dump state
+                # - Return ef_threads
 
-                ef_threads.dump_state()
+                try:
+                    yield ef_threads
+
+                finally:
+                    # - Dump state
+
+                    ef_threads.dump_state()
 
     def load_state(self):
         self.users = dacite.from_dict(data_class=AppState, data=dict(self.rdict)).users
@@ -247,8 +263,14 @@ class EfThreads:
 
                     self.dump_state()
 
-        # - Run client
+        # - Run teletalk app
 
-        logger.info("Starting polling...")
+        asyncio.create_task(
+            self.teletalk_app.start_polling(
+                command_starters={"/start": self.bot.start},
+            )
+        )
+
+        # - Run telethon client
 
         await self.deps.telegram_user_client.run_until_disconnected()
