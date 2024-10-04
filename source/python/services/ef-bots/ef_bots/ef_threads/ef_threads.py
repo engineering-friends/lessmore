@@ -51,7 +51,21 @@ class EfThreads:
     @asynccontextmanager
     async def stack(env: str):
         async with Deps(env=env) as deps:
-            yield EfThreads(deps=deps)
+            # - Init ef_threads
+
+            ef_threads = EfThreads(deps=deps)
+
+            # - Load state
+
+            ef_threads.load_state()
+
+            # - Return ef_threads
+            try:
+                yield EfThreads(deps=deps)
+            finally:
+                # - Dump state
+
+                ef_threads.dump_state()
 
     def load_state(self):
         self.users = dacite.from_dict(data_class=AppState, data=dict(self.rdict)).users
@@ -66,10 +80,6 @@ class EfThreads:
 
     @tested([main] if TYPE_CHECKING else [])
     async def run(self):
-        # - Load state
-
-        self.load_state()
-
         # - Define lock
 
         locks_by_user_id: dict[int, asyncio.Lock] = dict()
