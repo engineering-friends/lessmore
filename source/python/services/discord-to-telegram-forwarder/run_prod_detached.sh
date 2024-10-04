@@ -2,12 +2,20 @@
 
 cd ${0%/*}
 git pull
-poetry install --no-root
+
+# - Install uv if not installed
+
+uv --version || curl -LsSf https://astral.sh/uv/install.sh | sh
+source $HOME/.cargo/env
+
+# - Sync uv
+
+uv sync
 
 # Get directories
 
 SERVICE_PATH=$(pwd)
-MONOREPO_PATH=$SERVICE_PATH/../../../..
+MONOREPO_PATH=$(echo $SERVICE_PATH | sed -E 's/(.*)\/source\/.*/\1/') # Crop /a/b/c/.../lessmore/source/... -> /a/b/c/.../lessmore
 
 # - Decrypt secrets
 
