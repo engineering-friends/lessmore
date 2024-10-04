@@ -17,6 +17,7 @@ from loguru import logger
 from pymaybe import maybe
 from rocksdict import Rdict
 from teletalk.app import App
+from teletalk.models.response import Response
 from telethon import events, types
 
 
@@ -31,6 +32,7 @@ class User:
     current_thread_id_message_id: int = 0
     thread_ids: list[int] = field(default_factory=list)
     thread_id_by_message_id: dict[int, int] = field(default_factory=dict)
+    enabled: bool = False
 
 
 @dataclass
@@ -177,6 +179,10 @@ class EfThreads:
                 # - Send message to all subscribed users
 
                 for user_id, user in self.users.items():
+                    if not user.enabled:
+                        # skip disabled users
+                        continue
+
                     if thread_id in user.thread_ids or user_id == 160773045:
                         if user.current_thread_id != thread_id:
                             message = await self.deps.telegram_user_client.send_message(
@@ -255,19 +261,38 @@ class EfThreads:
 
         # - Run simple teletalk app
 
-        asyncio.create_task(
-            App(bot=self.deps.config.telegram_bot_token).run(
-                command_starters={
-                    "/start": lambda response: response.tell(
-                        textwrap.dedent("""Привет!
+        async def starter(response: Response):
+            # - Add or get user
+
+            user_id = response.message.from_user.id
+
+            if user_id not in self.users:
+                self.users[user_id] = User(id=user_id)
+            user = self.users[user_id]
+
+            # - Enable user
+
+            user.enabled = True
+
+            # - Send welcome message
+
+            await response.tell(
+                textwrap.dedent("""Привет!
 
 Я буду пересылать комментарии на твои посты в канале EF Channel, а также на посты, в которых ты принимаешь участие.
         
 Чтобы отписаться от поста, просто поставь **любую** реакцию на **любое** пересланное сообщение в **этом** чате 💥
         
 Попробуй оставить комментарий, чтобы посмотреть как это работает: https://t.me/c/2219948749/187?thread=185""")
-                    )
-                },
+            )
+
+            # - Dump state
+
+            self.dump_state()
+
+        asyncio.create_task(
+            App(bot=self.deps.config.telegram_bot_token).run(
+                command_starters={"/start": starter},
             )
         )
 
