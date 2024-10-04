@@ -29,10 +29,8 @@ if TYPE_CHECKING:
 class User:
     id: int
     current_thread_id: int = 0
-    current_thread_id_message_id: int = 0
     thread_ids: list[int] = field(default_factory=list)
     thread_id_by_message_id: dict[int, int] = field(default_factory=dict)
-    enabled: bool = False
 
 
 @dataclass
@@ -179,10 +177,6 @@ class EfThreads:
                 # - Send message to all subscribed users
 
                 for user_id, user in self.users.items():
-                    if not user.enabled:
-                        # skip disabled users
-                        continue
-
                     if thread_id in user.thread_ids or user_id == 160773045:
                         if user.current_thread_id != thread_id:
                             message = await self.deps.telegram_user_client.send_message(
@@ -190,17 +184,8 @@ class EfThreads:
                                 message=f"**{title}**\nby {author}\n\nhttps://t.me/c/{str(self.deps.config.telegram_discussion_group)[4:]}/{new_message.id}?thread={thread_id}",
                             )
                             user.thread_id_by_message_id[message.id] = thread_id
-                            user.current_thread_id_message_id = message.id
                             user.current_thread_id = thread_id
 
-                        # todo maybe: update message text to reference LAST message in the thread [@marklidenberg]
-                        # else:
-                        #     if user.current_thread_id_message_id:
-                        #         await client.edit_message(
-                        #             message=user.current_thread_id_message_id,
-                        #             entity=user.id,
-                        #             text=f"[{title}](https://t.me/c/{str(deps.config.telegram_discussion_group)[4:]}/{new_message.id}?thread={thread_id})",
-                        #         )
                         message = await self.deps.telegram_user_client.forward_messages(
                             entity=user.id,
                             messages=new_message.id,
@@ -258,39 +243,6 @@ class EfThreads:
                     # - Dump state
 
                     self.dump_state()
-
-        # - Run simple teletalk app
-
-        async def starter(response: Response):
-            # - Add or get user
-
-            user_id = response.message.from_user.id
-
-            if user_id not in self.users:
-                self.users[user_id] = User(id=user_id)
-            user = self.users[user_id]
-
-            # - Enable user
-
-            user.enabled = True
-
-            # - Send welcome message
-
-            await response.tell(
-                textwrap.dedent(
-                    """Привет! Я пересылаю комментарии к постам, в которых ты участвуешь. Чтобы отписаться от поста, поставь любую реакцию на пересланное мной сообщение. """
-                )
-            )
-
-            # - Dump state
-
-            self.dump_state()
-
-        asyncio.create_task(
-            App(bot=self.deps.config.telegram_bot_token).run(
-                command_starters={"/start": starter},
-            )
-        )
 
         # - Run telethon client
 

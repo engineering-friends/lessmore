@@ -72,7 +72,7 @@ async def get_notion_user_properties(
 def test():
     async def main():
         deps = Deps.load()
-        print(await get_notion_user_properties("Misha Vodolagin", deps=deps))
+        print(await get_notion_user_properties("OblakoVShtanakh", deps=deps))
         print(await get_notion_user_properties("Mark Vodolagin", deps=deps))
 
     import asyncio
