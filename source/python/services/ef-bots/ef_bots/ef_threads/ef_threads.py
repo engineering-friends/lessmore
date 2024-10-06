@@ -36,6 +36,7 @@ class User:
     current_thread_id: int = 0
     subscribed_thread_ids: list[int] = field(default_factory=list)
     messages: list[Message] = field(default_factory=list)
+    is_subscribed_to_all: bool = False
 
 
 @dataclass
@@ -82,7 +83,7 @@ class EfThreads:
         @self.deps.telegram_user_client.on(events.NewMessage(chats=self.deps.config.telegram_discussion_group))
         async def on_message(event):
             async with locks_by_user_id.get(event.message.input_sender.user_id, asyncio.Lock()):
-                # - Unfold messages
+                # - Unfold message
 
                 new_message = event.message
 
@@ -91,18 +92,21 @@ class EfThreads:
                 if not new_message.reply_to_msg_id:
                     logger.debug("This message is not a reply to any post.", message_id=new_message.id)
 
-                # - Get original message with thread id (original message id)
+                    # todo later: process properly
 
-                original_message = await self.deps.telegram_user_client.get_messages(
-                    self.deps.config.telegram_discussion_group, ids=new_message.reply_to_msg_id
+                # - Get post message id (== thread_id)
+
+                post_message = await self.deps.telegram_user_client.get_messages(
+                    self.deps.config.telegram_discussion_group,
+                    ids=new_message.reply_to_msg_id,
                 )
 
-                thread_id = original_message.id
+                thread_id = post_message.id
 
-                # - Get the message title
+                # - Get the message title and author
 
-                title = original_message.text.split("\n")[0].replace("**", "").strip()
-                author = original_message.text.split("\n")[1].replace("**", "").replace("by", "").strip()
+                title = post_message.text.split("\n")[0].replace("**", "").strip()
+                author = post_message.text.split("\n")[1].replace("**", "").replace("by", "").strip()
 
                 # - Subscribe users to the thread
 
@@ -150,7 +154,7 @@ class EfThreads:
                     user_id for user_id in user_ids if user_id in [160773045, 291560340, 407931344, 1135785888]
                 ]  # marklidenberg, petr lavrov, mikhail vodolagin, matvey mayakovskiy
 
-                # -- Subscribe users, who sent the message, to the thread
+                # -- Subscribe users
 
                 for user_id in user_ids:
                     if user_id not in self.users:
@@ -188,7 +192,7 @@ class EfThreads:
         async def handler(event):
             if isinstance(event, types.UpdateEditMessage):
                 async with locks_by_user_id.get(event.message.chat_id, asyncio.Lock()):
-                    # - Get chat id
+                    # - Get chat_id
 
                     chat_id = event.message.chat_id
                     message_id = event.message.id
@@ -198,7 +202,7 @@ class EfThreads:
                     if not user:
                         return
 
-                    # - Get thread id
+                    # - Get thread_id
 
                     thread_id = user.thread_id_by_message_id.get(message_id)
                     if not thread_id:
@@ -224,10 +228,6 @@ class EfThreads:
                     for message_id_to_remove in message_ids_to_remove:
                         user.thread_id_by_message_id.pop(message_id_to_remove)
                         await self.deps.telegram_user_client.delete_messages(chat_id, message_id_to_remove)
-
-                    # - Dump state
-
-                    self.dump_state()
 
         # - Run telethon client
 
