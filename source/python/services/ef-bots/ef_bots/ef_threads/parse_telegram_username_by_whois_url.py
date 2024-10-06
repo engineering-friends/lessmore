@@ -8,9 +8,10 @@ from lessmore.utils.enriched_notion_client.enriched_notion_async_client import E
 async def parse_telegram_username_by_whois_url(
     text: str,
     notion_client: EnrichedNotionAsyncClient,
-    telegram_usernames_by_notion_whois_url: dict = {},  # mutated
-    last_checked_telegram_username_at_by_notion_whois_url: dict = {},  # mutated
     logger=None,
+    # - Local function state
+    telegram_usernames_by_notion_whois_url: dict = {},
+    last_checked_telegram_username_at_by_notion_whois_url: dict = {},
 ) -> str | None:
     # - Parse notion url
 

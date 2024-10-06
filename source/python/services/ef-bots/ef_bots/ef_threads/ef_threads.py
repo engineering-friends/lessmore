@@ -1,6 +1,5 @@
 import asyncio
 import re
-import textwrap
 
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
@@ -9,15 +8,11 @@ from typing import TYPE_CHECKING
 
 import dacite
 
-from aiogram.types import BotCommand
 from ef_bots.ef_threads.deps import Deps
 from ef_bots.ef_threads.parse_telegram_username_by_whois_url import parse_telegram_username_by_whois_url
 from lessmore.utils.tested import tested
 from loguru import logger
-from pymaybe import maybe
 from rocksdict import Rdict
-from teletalk.app import App
-from teletalk.models.response import Response
 from telethon import events, types
 
 
@@ -26,11 +21,21 @@ if TYPE_CHECKING:
 
 
 @dataclass
+class Message:
+    id: int
+    thread_id: int
+    author_name: str
+    is_simple: bool  # simple message is just a message, without images and stuff. Complex messages are forwarded
+    message: str
+    is_thread_message: bool
+
+
+@dataclass
 class User:
     id: int
     current_thread_id: int = 0
-    thread_ids: list[int] = field(default_factory=list)
-    thread_id_by_message_id: dict[int, int] = field(default_factory=dict)
+    subscribed_thread_ids: list[int] = field(default_factory=list)
+    messages: list[Message] = field(default_factory=list)
 
 
 @dataclass
@@ -46,10 +51,7 @@ class EfThreads:
 
         # - State
 
-        self.users: dict[int, User] = {}
-        self.telegram_usernames_by_notion_whois_url: dict[str, str] = {}
-        self.last_checked_telegram_username_at_by_notion_whois_url: dict[str, float] = {}
-        self.rdict = Rdict(path=str(Path(__file__).parent / "state"))
+        self.users_rdict = Rdict(path=str(Path(__file__).parent / "state"))  # {int: User}
 
     @staticmethod
     @asynccontextmanager
@@ -59,30 +61,15 @@ class EfThreads:
 
             ef_threads = EfThreads(deps=deps)
 
-            # - Load state
-
-            ef_threads.load_state()
-
             # - Return ef_threads
 
             try:
                 yield ef_threads
 
             finally:
-                # - Dump state
+                # - Flush state
 
-                ef_threads.dump_state()
-
-    def load_state(self):
-        self.users = dacite.from_dict(data_class=AppState, data=dict(self.rdict)).users
-
-    def dump_state(self):
-        # - Dump state
-
-        for user in self.users.values():
-            self.rdict[user.id] = user
-
-        self.rdict.flush()
+                ef_threads.users_rdict.flush()
 
     @tested([main] if TYPE_CHECKING else [])
     async def run(self):
@@ -136,8 +123,6 @@ class EfThreads:
                 telegram_username = await parse_telegram_username_by_whois_url(
                     text=new_message.text,
                     notion_client=self.deps.notion_client,
-                    telegram_usernames_by_notion_whois_url=self.telegram_usernames_by_notion_whois_url,
-                    last_checked_telegram_username_at_by_notion_whois_url=self.last_checked_telegram_username_at_by_notion_whois_url,
                 )
 
                 if telegram_username:
@@ -172,12 +157,12 @@ class EfThreads:
                         self.users[user_id] = User(id=user_id)
 
                     user = self.users[user_id]
-                    user.thread_ids = list(set(user.thread_ids + [thread_id]))
+                    user.subscribed_thread_ids = list(set(user.subscribed_thread_ids + [thread_id]))
 
                 # - Send message to all subscribed users
 
                 for user_id, user in self.users.items():
-                    if thread_id in user.thread_ids or user_id == 160773045:
+                    if thread_id in user.subscribed_thread_ids or user_id == 160773045:
                         if user.current_thread_id != thread_id:
                             message = await self.deps.telegram_user_client.send_message(
                                 entity=user.id,
@@ -221,8 +206,8 @@ class EfThreads:
 
                     # - Remove thread id from user
 
-                    if thread_id in user.thread_ids:
-                        user.thread_ids.remove(thread_id)
+                    if thread_id in user.subscribed_thread_ids:
+                        user.subscribed_thread_ids.remove(thread_id)
 
                     # - Remove message ids from that thread
 
