@@ -3,7 +3,7 @@ import asyncio
 from typing import Callable
 
 
-def enable_arguments(func: Callable):
+def optional_arguments_decorator(func: Callable):
     """Enables the use of arguments in the decorator, without the need to wrap the function in a lambda
     Works for both sync and async functions. See test below for an example
     """
@@ -23,7 +23,7 @@ def enable_arguments(func: Callable):
 
 
 def test():
-    @enable_arguments
+    @optional_arguments_decorator
     def add_prefix(
         func: Callable,
         prefix: str = "Hello, ",
