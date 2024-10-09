@@ -8,7 +8,7 @@ def read_file(
     filename: Union[str, Path],
     as_bytes: bool = False,
     reader: Callable = lambda file: file.read(),
-    default: Any = None,  # if file does not exist
+    default: Any = ...,  # if file does not exist
     open_kwargs: dict = {},  # extra kwargs for open
 ) -> Any:
     """A simple file reader helper, as it should have been in the first place. Useful for one-liners and nested function calls."""
@@ -19,7 +19,7 @@ def read_file(
 
     # - Check if file exists
 
-    if not os.path.exists(filename):
+    if not os.path.exists(filename) and default is not Ellipsis:
         return default
 
     # - Read file
