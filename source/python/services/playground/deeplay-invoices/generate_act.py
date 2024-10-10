@@ -1,0 +1,60 @@
+from datetime import datetime
+
+from docx import Document
+from lessmore.utils.system.open_in_os import open_in_os
+
+
+def generate_act(
+    template_filename: str = "generate_act_template.docx",
+    replacements: dict = {},
+    output_path: str = "output.docx",
+):
+    # - Load the DOCX template
+
+    doc = Document(template_filename)
+
+    # - Replace placeholders with actual values
+
+    # - Paragraphs
+
+    for paragraph in doc.paragraphs:
+        for run in paragraph.runs:
+            run.text = run.text.format(**replacements)
+
+    # - Tables
+
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.paragraphs:
+                    for run in paragraph.runs:
+                        run.text = run.text.format(**replacements)
+
+    # - Save the document
+
+    doc.save(output_path)
+
+
+if __name__ == "__main__":
+    output_path = "2024-09 act.docx"
+    now = datetime.now()
+    generate_act(
+        output_path=output_path,
+        replacements={
+            # - Unchanged
+            "FULL_NAME": "Arsenii Kadaner",
+            "ID": "105550154",
+            "AGREEMENT": "Service Agreement No. 2024-001",
+            # - Auto
+            "TODAY_MM": now.strftime("%m"),
+            "TODAY_YY": now.strftime("%y"),
+            "TODAY_YYYY-MM-DD": now.strftime("%Y-%m-%d"),
+            # - Changed
+            "N": 23,
+            "HOURS": 1,
+            "AMOUNT": 100,
+            "AMOUNT_WORDS": "one hundred",
+            "PAID_MONTH_YYYY-MM": "2024-09",
+        },
+    )
+    open_in_os(output_path)
