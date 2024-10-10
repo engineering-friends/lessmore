@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from dateutil.relativedelta import relativedelta
 from deeplay_invoices.generate_act import generate_docx_and_pdf
 from deeplay_invoices.generate_invoice import generate_invoice
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
@@ -20,6 +21,7 @@ def main(
     # - Get replacements
 
     now = datetime.now()
+
     replacements = {
         # - Unchanged
         "ID": "105550154",
@@ -30,14 +32,14 @@ def main(
         # - Changed
         "N": n,
         "HOURS": int(amount / 50),
-        "INT_AMOUNT": amount_words,
+        "INT_AMOUNT": amount,
         "AMOUNT_WORDS": amount_words,
         "PAID_MONTH_YYYY_MM": paid_month_at.strftime("%Y-%m"),
     }
 
     # - Generate act
 
-    output_act_docx = f"../data/{now.strftime('%Y-%m')} act.docx"
+    output_act_docx = f"data/{paid_month_at.strftime('%Y-%m')} act.docx"
 
     generate_docx_and_pdf(
         template_docx="generate_act_template.docx",
@@ -47,7 +49,7 @@ def main(
 
     # - Generate invoice
 
-    output_invoice_xlsx = f"../data/{now.strftime('%Y-%m')} invoice.xlsx"
+    output_invoice_xlsx = f"data/{paid_month_at.strftime('%Y-%m')} invoice.xlsx"
 
     generate_invoice(
         template_xlsx="generate_invoice_template.xlsx",
