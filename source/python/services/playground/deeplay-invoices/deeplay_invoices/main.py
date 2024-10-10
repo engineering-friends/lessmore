@@ -2,26 +2,31 @@ from datetime import datetime
 
 from deeplay_invoices.generate_act import generate_docx_and_pdf
 from deeplay_invoices.generate_invoice import generate_invoice
+from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.system.open_in_os import open_in_os
 
 
 if __name__ == "__main__":
+    # - Setup logger
+
+    setup_json_loguru()
+
     # - Get replacements
 
     now = datetime.now()
     replacements = {
         # - Unchanged
+        "ID": "105550154",
         "SERVICE_AGREEMENT": "Service Agreement No1-09/24 from 02.09.2024",
         # - Auto
-        "TODAY_MM": now.strftime("%m"),
-        "TODAY_MM/YY": now.strftime("%m/%y"),
-        "TODAY_YYYY-MM-DD": now.strftime("%Y-%m-%d"),
+        "TODAY_MM_YY": now.strftime("%m/%y"),
+        "TODAY_YYYY_MM_DD": now.strftime("%Y-%m-%d"),
         # - Changed
         "N": 20,
         "HOURS": int(7500 / 50),
-        "AMOUNT": 7500,
+        "INT_AMOUNT": 7500,
         "AMOUNT_WORDS": "seven hundred and fifty",
-        "PAID_MONTH_YYYY-MM": "2024-09",
+        "PAID_MONTH_YYYY_MM": "2024-09",
     }
 
     # - Generate act
@@ -29,15 +34,17 @@ if __name__ == "__main__":
     output_act_docx = f"../data/{now.strftime('%Y-%m')} act.docx"
 
     generate_docx_and_pdf(
-        output_docx=output_act_docx,
+        template_docx="generate_act_template.docx",
         replacements=replacements,
+        output_docx=output_act_docx,
     )
 
     # - Generate invoice
 
     output_invoice_xlsx = f"../data/{now.strftime('%Y-%m')} invoice.xlsx"
+
     generate_invoice(
-        template_filename="generate_invoice_template.xlsx",
+        template_xlsx="generate_invoice_template.xlsx",
         replacements=replacements,
         output_xlsx=output_invoice_xlsx,
     )
@@ -45,4 +52,4 @@ if __name__ == "__main__":
     # - Open files one by one
 
     open_in_os(output_act_docx.replace(".docx", ".pdf"))
-    # open_in_os(output_invoice_xlsx)
+    open_in_os(output_invoice_xlsx)

@@ -1,18 +1,27 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from lessmore.utils.file_primitives.ensure_path import ensure_path
 from lessmore.utils.system.open_in_os import open_in_os
+from loguru import logger
 from openpyxl import load_workbook
 
+from deeplay.utils.tested import tested
 
+
+if TYPE_CHECKING:
+    from deeplay_invoices import main
+
+
+@tested(tests=[main] if TYPE_CHECKING else [])
 def generate_invoice(
-    template_filename: str = "template.xlsx",
-    replacements: dict = {},
-    output_xlsx: str = "generated_file.xlsx",
+    template_xlsx: str,
+    replacements: dict,
+    output_xlsx: str = "output.xlsx",
 ):
     # - Load the Excel template
 
-    workbook = load_workbook(template_filename)
+    workbook = load_workbook(template_xlsx)
     sheet = workbook.active  # Assuming you're working with the first sheet
 
     # - Replace placeholders in the Excel sheet
@@ -20,38 +29,32 @@ def generate_invoice(
     for row in sheet.iter_rows():
         for cell in row:
             if cell.value and isinstance(cell.value, str):
-                for key, value in replacements.items():
-                    if "{" + key + "}" not in str(cell.value):
-                        continue
-                    cell.value = cell.value.replace("{" + key + "}", str(value))
+                try:
+                    for key, value in replacements.items():
+                        # - Get placeholder
 
-                    if key.startswith("INT_"):
-                        cell.value = int(cell.value)
+                        placeholder = "{" + key + "}"
 
-                if "{" in str(cell.value):
-                    print(cell.value)
-                    raise Exception("Failed to replace all placeholders")
+                        # - Check if placeholder is present
+
+                        if placeholder not in str(cell.value):
+                            continue
+
+                        # - Replace placeholder with actual value
+
+                        cell.value = cell.value.replace(placeholder, str(value))
+
+                        # - Convert int placeholders
+
+                        if key.startswith("INT_"):
+                            cell.value = int(cell.value)
+
+                    if "{" in str(cell.value) or "}" in str(cell.value):
+                        raise Exception("Failed to replace all placeholders")
+                except:
+                    logger.exception("Failed to replace placeholders", text=cell.value)
+                    raise
 
     # - Save the modified Excel document
 
     workbook.save(ensure_path(output_xlsx))
-
-
-if __name__ == "__main__":
-    now = datetime.now()
-    output_xlsx = "generated_file.xlsx"
-    generate_invoice(
-        template_filename="generate_invoice_template.xlsx",
-        replacements={
-            "N": 23,
-            "TODAY_MM/YY": now.strftime("%m/%y"),
-            "TODAY_YYYY-MM-DD": now.strftime("%Y-%m-%d"),
-            "SERVICE_AGREEMENT": "Service Agreement No. 2024-001",
-            "PAID_MONTH_YYYY-MM": "2024-09",
-            "HOURS": 120,
-            "INT_AMOUNT": 5000,
-            "AMOUNT_WORDS": "Five Thousand",
-        },
-        output_xlsx=output_xlsx,
-    )
-    open_in_os(output_xlsx)
