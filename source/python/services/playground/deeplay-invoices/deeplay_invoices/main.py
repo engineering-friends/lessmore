@@ -1,12 +1,18 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from deeplay_invoices.generate_act import generate_docx_and_pdf
 from deeplay_invoices.generate_invoice import generate_invoice
 from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.system.open_in_os import open_in_os
+from lessmore.utils.to_anything.to_datetime import to_datetime
 
 
-if __name__ == "__main__":
+def main(
+    n: int,
+    amount: int,
+    amount_words: str,
+    paid_month_at: datetime,
+):
     # - Setup logger
 
     setup_json_loguru()
@@ -22,11 +28,11 @@ if __name__ == "__main__":
         "TODAY_MM_YY": now.strftime("%m/%y"),
         "TODAY_YYYY_MM_DD": now.strftime("%Y-%m-%d"),
         # - Changed
-        "N": 20,
-        "HOURS": int(7500 / 50),
-        "INT_AMOUNT": 7500,
-        "AMOUNT_WORDS": "seven thousand five hundred",
-        "PAID_MONTH_YYYY_MM": "2024-09",
+        "N": n,
+        "HOURS": int(amount / 50),
+        "INT_AMOUNT": amount_words,
+        "AMOUNT_WORDS": amount_words,
+        "PAID_MONTH_YYYY_MM": paid_month_at.strftime("%Y-%m"),
     }
 
     # - Generate act
@@ -53,3 +59,16 @@ if __name__ == "__main__":
 
     open_in_os(output_act_docx.replace(".docx", ".pdf"))
     open_in_os(output_invoice_xlsx)
+
+
+def test():
+    main(
+        n=20,
+        amount=7500,
+        amount_words="seven thousand five hundred",
+        paid_month_at=to_datetime("2024.09.01"),
+    )
+
+
+if __name__ == "__main__":
+    test()
