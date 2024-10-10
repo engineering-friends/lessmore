@@ -38,22 +38,23 @@ def generate_act(
 if __name__ == "__main__":
     output_path = "2024-09 act.docx"
     now = datetime.now()
+
     generate_act(
         output_path=output_path,
         replacements={
             # - Unchanged
             "FULL_NAME": "Arsenii Kadaner",
             "ID": "105550154",
-            "AGREEMENT": "Service Agreement No. 2024-001",
+            "AGREEMENT": "Service Agreement No1-09/24 from 02.09.2024",
             # - Auto
             "TODAY_MM": now.strftime("%m"),
             "TODAY_YY": now.strftime("%y"),
             "TODAY_YYYY-MM-DD": now.strftime("%Y-%m-%d"),
             # - Changed
-            "N": 23,
-            "HOURS": 1,
-            "AMOUNT": 100,
-            "AMOUNT_WORDS": "one hundred",
+            "N": 20,
+            "HOURS": int(7500 / 50),
+            "AMOUNT": 7500,
+            "AMOUNT_WORDS": "seven hundred and fifty",
             "PAID_MONTH_YYYY-MM": "2024-09",
         },
     )
