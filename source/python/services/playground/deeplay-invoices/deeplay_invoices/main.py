@@ -25,7 +25,7 @@ if __name__ == "__main__":
         "N": 20,
         "HOURS": int(7500 / 50),
         "INT_AMOUNT": 7500,
-        "AMOUNT_WORDS": "seven hundred and fifty",
+        "AMOUNT_WORDS": "seven thousand five hundred",
         "PAID_MONTH_YYYY_MM": "2024-09",
     }
 
