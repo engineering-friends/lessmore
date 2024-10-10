@@ -24,7 +24,6 @@ def main(
 
     replacements = {
         # - Unchanged
-        "ID": "105550154",
         "SERVICE_AGREEMENT": "Service Agreement No1-09/24 from 02.09.2024",
         # - Auto
         "TODAY_MM_YY": now.strftime("%m/%y"),
