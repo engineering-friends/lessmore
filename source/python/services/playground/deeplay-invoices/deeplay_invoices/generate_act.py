@@ -1,13 +1,14 @@
 from datetime import datetime
 
 from docx import Document
+from docx2pdf import convert
 from lessmore.utils.system.open_in_os import open_in_os
 
 
 def generate_act(
     template_filename: str = "generate_act_template.docx",
     replacements: dict = {},
-    output_path: str = "output.docx",
+    output_docx: str = "output.docx",
 ):
     # - Load the DOCX template
 
@@ -32,15 +33,19 @@ def generate_act(
 
     # - Save the document
 
-    doc.save(output_path)
+    doc.save(output_docx)
+
+    # - Convert to pdf
+
+    convert(output_docx, output_docx.replace(".docx", ".pdf"))
 
 
 if __name__ == "__main__":
-    output_path = "2024-09 act.docx"
+    output_path = "../data/2024-09 act.docx"
     now = datetime.now()
 
     generate_act(
-        output_path=output_path,
+        output_docx=output_path,
         replacements={
             # - Unchanged
             "FULL_NAME": "Arsenii Kadaner",
@@ -58,4 +63,4 @@ if __name__ == "__main__":
             "PAID_MONTH_YYYY-MM": "2024-09",
         },
     )
-    open_in_os(output_path)
+    open_in_os(output_path.replace(".docx", ".pdf"))

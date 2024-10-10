@@ -208,6 +208,19 @@ wheels = [
 ]
 
 [[package]]
+name = "appscript"
+version = "1.2.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "lxml" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/99/2f/4238aaae5dd43d57e065e86e788c5bede853d36d91dabac5cfdf65dcd321/appscript-1.2.5.tar.gz", hash = "sha256:54b77b0fa5b40482b32413f3634b7a5125a21495d19c7867174fb293cbb50d0d", size = 295160 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8f/68/fb0f0a49b98abd4f844b062675632d29a02e1e507861202af7102fe062cf/appscript-1.2.5-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:9c361553eaf02f7c063b60b07f4933d35264437ca30c2724265feb61bb633eec", size = 99756 },
+    { url = "https://files.pythonhosted.org/packages/6b/49/6483bd4d5d567062e8db1fda3b03a291ef92230d830cb9fc7fc3205bdda5/appscript-1.2.5-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:00e1625c4a45c30023e502700bc84973dc986f36ab9be1e4f17a9a6a7ad6638c", size = 85381 },
+]
+
+[[package]]
 name = "asgi-lifespan"
 version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -592,6 +605,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/91/9b/4a2ea29aeba62471211598dac5d96825bb49348fa07e906ea930394a83ce/docker-7.1.0.tar.gz", hash = "sha256:ad8c70e6e3f8926cb8a92619b832b4ea5299e2831c14284663184e200546fa6c", size = 117834 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e3/26/57c6fb270950d476074c087527a558ccb6f4436657314bfb6cdf484114c4/docker-7.1.0-py3-none-any.whl", hash = "sha256:c96b93b7f0a746f9e77d325bcfb87422a3d8bd4f03136ae8a85b37f1898d5fc0", size = 147774 },
+]
+
+[[package]]
+name = "docx2pdf"
+version = "0.1.8"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "appscript", marker = "sys_platform == 'darwin'" },
+    { name = "pywin32", marker = "sys_platform == 'win32'" },
+    { name = "tqdm" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ab/5d/112531fff53cf60513e14fa1707755c874d47880ec4de7b2235302ad19a0/docx2pdf-0.1.8.tar.gz", hash = "sha256:6d2c20f9ad36eec75f4da017dc7a97622946954a6124ca0b11772875fa86fbed", size = 6483 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/53/4f/1155781308281e67f80b829738a29e5354e03664c62311f753056afc873b/docx2pdf-0.1.8-py3-none-any.whl", hash = "sha256:00be1401fd486640314e993423a0a1cbdbc21142186f68549d962d505b2e8a12", size = 6741 },
 ]
 
 [[package]]
@@ -1941,6 +1968,7 @@ dependencies = [
     { name = "beautifulsoup4" },
     { name = "code2flow" },
     { name = "diskcache" },
+    { name = "docx2pdf" },
     { name = "faiss-cpu" },
     { name = "fire" },
     { name = "google-api-python-client" },
@@ -1959,6 +1987,7 @@ dependencies = [
     { name = "notion-client" },
     { name = "openai" },
     { name = "openai-whisper" },
+    { name = "openpyxl" },
     { name = "pandas" },
     { name = "pendulum" },
     { name = "pillow" },
@@ -1979,6 +2008,7 @@ dependencies = [
     { name = "spacy" },
     { name = "telethon" },
     { name = "toml" },
+    { name = "xlsx2pdf" },
     { name = "yadisk" },
 ]
 
@@ -1991,6 +2021,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.12.3,<5" },
     { name = "code2flow", specifier = ">=2.5.1,<3" },
     { name = "diskcache", specifier = ">=5.6.3,<6" },
+    { name = "docx2pdf", specifier = ">=0.1.8" },
     { name = "faiss-cpu", specifier = ">=1.8.0,<2" },
     { name = "fire", specifier = ">=0.6.0,<0.7" },
     { name = "google-api-python-client", specifier = ">=2.136.0,<3" },
@@ -2009,6 +2040,7 @@ requires-dist = [
     { name = "notion-client", specifier = ">=2.2.1,<3" },
     { name = "openai", specifier = ">=1.30.1,<2" },
     { name = "openai-whisper", git = "https://github.com/openai/whisper.git" },
+    { name = "openpyxl", specifier = ">=3.1.5" },
     { name = "pandas", specifier = ">=2.2.2,<3" },
     { name = "pendulum", specifier = ">=3.0.0,<4" },
     { name = "pillow", specifier = ">=10.4.0,<11" },
@@ -2029,6 +2061,7 @@ requires-dist = [
     { name = "spacy", specifier = ">=3.7.5,<4" },
     { name = "telethon", specifier = ">=1.36.0,<2" },
     { name = "toml", specifier = ">=0.10.2,<0.11" },
+    { name = "xlsx2pdf", specifier = ">=1.0.4" },
     { name = "yadisk", specifier = ">=2.1.0,<3" },
 ]
 
@@ -4998,6 +5031,15 @@ wheels = [
 ]
 
 [[package]]
+name = "reportlab"
+version = "3.6.13"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pillow" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/65/82/45b443db5acaf7edb471be57335a22d9f3bb6e4e9c9133ffa926f8ecdf2a/reportlab-3.6.13.tar.gz", hash = "sha256:6f75d33f7a3720cf47371ab63ced0f0ebd1aeb6db19386ae92f8977a09be9611", size = 4035524 }
+
+[[package]]
 name = "requests"
 version = "2.32.3"
 source = { registry = "https://pypi.org/simple" }
@@ -5753,6 +5795,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/a6/b3/19a2540d21dea5f908304375bd43f5ed7a4c28a370dc9122c565423e6b44/xlrd-2.0.1.tar.gz", hash = "sha256:f72f148f54442c6b056bf931dbc34f986fd0c3b0b6b5a58d013c9aef274d0c88", size = 100259 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a6/0c/c2a72d51fe56e08a08acc85d13013558a2d793028ae7385448a6ccdfae64/xlrd-2.0.1-py2.py3-none-any.whl", hash = "sha256:6a33ee89877bd9abc1158129f6e94be74e2679636b8a205b43b85206c3f0bbdd", size = 96531 },
+]
+
+[[package]]
+name = "xlsx2pdf"
+version = "1.0.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "openpyxl" },
+    { name = "reportlab" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e1/fb/ea5300673ba5e809dd4bb2694c96dbda16426deb1aae08375207ea83ed1b/xlsx2pdf-1.0.4.tar.gz", hash = "sha256:7864d0d108380eb1b33ad4c421e2867dee7ea09c4332f6899457cd06d3829f8a", size = 2545 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f5/00/48abf84741dc8353e624b51134056324aca694a8aa6bca68329421809d20/xlsx2pdf-1.0.4-py3-none-any.whl", hash = "sha256:d617a2e3a412523ec46c4950c7da25d6b1c56ffe44da1ded972736e980fd484b", size = 3999 },
 ]
 
 [[package]]
