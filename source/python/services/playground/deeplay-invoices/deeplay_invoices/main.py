@@ -15,7 +15,6 @@ if __name__ == "__main__":
         # - Auto
         "TODAY_MM": now.strftime("%m"),
         "TODAY_MM/YY": now.strftime("%m/%y"),
-        "TODAY_DD.MM.YYYY": now.strftime("%d.%m.%Y"),
         "TODAY_YYYY-MM-DD": now.strftime("%Y-%m-%d"),
         # - Changed
         "N": 20,
@@ -29,7 +28,10 @@ if __name__ == "__main__":
 
     output_act_docx = f"../data/{now.strftime('%Y-%m')} act.docx"
 
-    generate_act(output_docx=output_act_docx)
+    generate_act(
+        output_docx=output_act_docx,
+        replacements=replacements,
+    )
 
     # - Generate invoice
 
@@ -43,4 +45,4 @@ if __name__ == "__main__":
     # - Open files one by one
 
     open_in_os(output_act_docx.replace(".docx", ".pdf"))
-    open_in_os(output_invoice_xlsx)
+    # open_in_os(output_invoice_xlsx)

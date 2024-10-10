@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from lessmore.utils.file_primitives.ensure_path import ensure_path
 from lessmore.utils.system.open_in_os import open_in_os
 from openpyxl import load_workbook
 
@@ -33,7 +34,7 @@ def generate_invoice(
 
     # - Save the modified Excel document
 
-    workbook.save(output_xlsx)
+    workbook.save(ensure_path(output_xlsx))
 
 
 if __name__ == "__main__":
@@ -44,7 +45,6 @@ if __name__ == "__main__":
         replacements={
             "N": 23,
             "TODAY_MM/YY": now.strftime("%m/%y"),
-            "TODAY_DD.MM.YYYY": now.strftime("%d.%m.%Y"),
             "TODAY_YYYY-MM-DD": now.strftime("%Y-%m-%d"),
             "SERVICE_AGREEMENT": "Service Agreement No. 2024-001",
             "PAID_MONTH_YYYY-MM": "2024-09",

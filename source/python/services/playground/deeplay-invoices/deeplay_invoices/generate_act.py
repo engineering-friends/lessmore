@@ -2,6 +2,7 @@ from datetime import datetime
 
 from docx import Document
 from docx2pdf import convert
+from lessmore.utils.file_primitives.ensure_path import ensure_path
 from lessmore.utils.system.open_in_os import open_in_os
 
 
@@ -20,6 +21,7 @@ def generate_act(
 
     for paragraph in doc.paragraphs:
         for run in paragraph.runs:
+            print(run.text)
             run.text = run.text.format(**replacements)
 
     # - Tables
@@ -33,7 +35,7 @@ def generate_act(
 
     # - Save the document
 
-    doc.save(output_docx)
+    doc.save(ensure_path(output_docx))
 
     # - Convert to pdf
 
