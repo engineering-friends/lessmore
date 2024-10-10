@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from deeplay_invoices.generate_act import generate_act
+from deeplay_invoices.generate_act import generate_docx_and_pdf
 from deeplay_invoices.generate_invoice import generate_invoice
 from lessmore.utils.system.open_in_os import open_in_os
 
@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     output_act_docx = f"../data/{now.strftime('%Y-%m')} act.docx"
 
-    generate_act(
+    generate_docx_and_pdf(
         output_docx=output_act_docx,
         replacements=replacements,
     )

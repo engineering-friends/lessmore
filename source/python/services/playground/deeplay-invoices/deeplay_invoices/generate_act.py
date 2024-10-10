@@ -1,14 +1,19 @@
+import os.path
+
 from datetime import datetime
 
 from docx import Document
 from docx2pdf import convert
 from lessmore.utils.file_primitives.ensure_path import ensure_path
+from lessmore.utils.loguru_utils.setup_json_loguru import setup_json_loguru
 from lessmore.utils.system.open_in_os import open_in_os
+from loguru import logger
+from markdown_it.rules_block import paragraph
 
 
-def generate_act(
-    template_filename: str = "generate_act_template.docx",
-    replacements: dict = {},
+def generate_docx_and_pdf(
+    template_filename: str,
+    replacements: dict,
     output_docx: str = "output.docx",
 ):
     # - Load the DOCX template
@@ -17,21 +22,30 @@ def generate_act(
 
     # - Replace placeholders with actual values
 
-    # - Paragraphs
+    # -- Collect runs from paragraphs and tables
 
-    for paragraph in doc.paragraphs:
-        for run in paragraph.runs:
-            print(run.text)
+    runs = []
+
+    runs += sum([paragraph.runs for paragraph in doc.paragraphs], [])
+    runs += sum(
+        [
+            paragraph.runs
+            for table in doc.tables
+            for row in table.rows
+            for cell in row.cells
+            for paragraph in cell.paragraphs
+        ],
+        [],
+    )
+
+    # -- Fix placeholders
+
+    for run in runs:
+        try:
             run.text = run.text.format(**replacements)
-
-    # - Tables
-
-    for table in doc.tables:
-        for row in table.rows:
-            for cell in row.cells:
-                for paragraph in cell.paragraphs:
-                    for run in paragraph.runs:
-                        run.text = run.text.format(**replacements)
+        except:
+            logger.exception("Failed to replace placeholders", text=run.text)
+            raise
 
     # - Save the document
 
@@ -43,26 +57,39 @@ def generate_act(
 
 
 if __name__ == "__main__":
-    output_path = "../data/2024-09 act.docx"
+    # - Setup loguru
+
+    setup_json_loguru()
+
+    # - Init output path
+
+    output_path = "data/2024-09 act.docx"
+
+    # - Set current date
+
     now = datetime.now()
 
-    generate_act(
+    # - Generate docx and pdf
+
+    generate_docx_and_pdf(
+        template_filename=os.path.abspath("generate_act_template.docx"),
         output_docx=output_path,
         replacements={
             # - Unchanged
-            "FULL_NAME": "Arsenii Kadaner",
             "ID": "105550154",
-            "AGREEMENT": "Service Agreement No1-09/24 from 02.09.2024",
+            "SERVICE_AGREEMENT": "Service Agreement No1-09/24 from 02.09.2024",
             # - Auto
-            "TODAY_MM": now.strftime("%m"),
-            "TODAY_YY": now.strftime("%y"),
-            "TODAY_YYYY-MM-DD": now.strftime("%Y-%m-%d"),
+            "TODAY_MM_YY": now.strftime("%m/%y"),
+            "TODAY_YYYY_MM_DD": now.strftime("%Y-%m-%d"),
             # - Changed
             "N": 20,
             "HOURS": int(7500 / 50),
             "AMOUNT": 7500,
             "AMOUNT_WORDS": "seven hundred and fifty",
-            "PAID_MONTH_YYYY-MM": "2024-09",
+            "PAID_MONTH_YYYY_MM": "2024-09",
         },
     )
+
+    # - Open pdf
+
     open_in_os(output_path.replace(".docx", ".pdf"))
