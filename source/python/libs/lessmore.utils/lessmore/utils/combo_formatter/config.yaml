@@ -4,7 +4,7 @@ py:
     - name: wise_comments
       command: 'uv run python lessmore/utils/wise_comments "{filename}"'
     - name: ruff
-      command: 'ruff format "{filename}" --line-length 120'
+      command: 'ruff format "{filename}" --line-length 320'
 bash:
   file_types:
     [
