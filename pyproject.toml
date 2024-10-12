@@ -1,5 +1,5 @@
 [tool.ruff]
-line-length = 320
+line-length = 120
 fix = true
 extend-include = ["*.py", "*.pyi", "*.ipynb"]
 exclude = [
