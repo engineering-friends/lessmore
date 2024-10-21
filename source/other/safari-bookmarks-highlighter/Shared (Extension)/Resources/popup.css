@@ -3,44 +3,13 @@
 }
 
 body {
-    width: 300px;
-    padding: 15px;
-    font-family: system-ui;
-}
+    width: 100px;
+    padding: 10px;
 
-h1 {
-    font-size: 18px;
-    margin-bottom: 10px;
+    font-family: system-ui;
     text-align: center;
 }
 
-#bookmarkList {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-#bookmarkList li {
-    margin-bottom: 8px;
-}
-
-#bookmarkList a {
-    color: #0066cc;
-    text-decoration: none;
-    font-size: 14px;
-}
-
-#bookmarkList a:hover {
-    text-decoration: underline;
-}
-
 @media (prefers-color-scheme: dark) {
-    body {
-        background-color: #333;
-        color: #fff;
-    }
-
-    #bookmarkList a {
-        color: #66b3ff;
-    }
+    /* Dark Mode styles go here. */
 }
