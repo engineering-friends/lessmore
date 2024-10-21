@@ -32,6 +32,7 @@
         "default_icon": "images/toolbar-icon.svg"
     },
     "permissions": [
-        "activeTab"
+        "activeTab",
+        "bookmarks"
     ]
 }
