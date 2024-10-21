@@ -1,14 +1,22 @@
 browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log("Received request: ", request);
 
-    if (request.greeting === "hello")
-        return Promise.resolve({ farewell: "goodbye" });
+    if (request.greeting === "hello") {
+        sendResponse({ farewell: "goodbye" });
+        return true;
+    }
 
     if (request.action === "getBookmarks") {
-        return browser.bookmarks.getTree().then((bookmarkTreeNodes) => {
+        browser.bookmarks.getTree().then((bookmarkTreeNodes) => {
             const bookmarks = flattenBookmarks(bookmarkTreeNodes);
-            return { bookmarks: bookmarks.slice(0, 5) };
+            const response = { bookmarks: bookmarks.slice(0, 5) };
+            console.log("Sending bookmarks:", response);
+            sendResponse(response);
+        }).catch((error) => {
+            console.error("Error fetching bookmarks:", error);
+            sendResponse({ error: error.toString() });
         });
+        return true; // Indicates that we will send a response asynchronously
     }
 });
 
@@ -22,5 +30,6 @@ function flattenBookmarks(bookmarkTreeNodes) {
             bookmarks = bookmarks.concat(flattenBookmarks(node.children));
         }
     }
+    console.log("Flattened bookmarks:", bookmarks);
     return bookmarks;
 }
