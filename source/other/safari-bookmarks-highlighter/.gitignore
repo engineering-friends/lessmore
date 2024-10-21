@@ -1,0 +1,7 @@
+!**/*.plist
+!**/*.swift
+!**/*.entitlements
+!**/*.storyboard
+!**/*.xcuserstate
+!**/*.pbxproj
+!**/*.html

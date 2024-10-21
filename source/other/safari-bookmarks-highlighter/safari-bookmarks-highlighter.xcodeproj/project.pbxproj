@@ -1,0 +1,895 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D86CE0F62CC68C810056E79B /* safari-bookmarks-highlighter Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D86CE0F52CC68C810056E79B /* safari-bookmarks-highlighter Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D86CE1002CC68C810056E79B /* safari-bookmarks-highlighter Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D86CE0FF2CC68C810056E79B /* safari-bookmarks-highlighter Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D86CE0F72CC68C810056E79B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D86CE0BB2CC68C800056E79B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D86CE0F42CC68C810056E79B;
+			remoteInfo = "safari-bookmarks-highlighter Extension (iOS)";
+		};
+		D86CE1012CC68C810056E79B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D86CE0BB2CC68C800056E79B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D86CE0FE2CC68C810056E79B;
+			remoteInfo = "safari-bookmarks-highlighter Extension (macOS)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D86CE1292CC68C810056E79B /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				D86CE0F62CC68C810056E79B /* safari-bookmarks-highlighter Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D86CE1332CC68C810056E79B /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				D86CE1002CC68C810056E79B /* safari-bookmarks-highlighter Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		D86CE0D72CC68C810056E79B /* safari-bookmarks-highlighter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "safari-bookmarks-highlighter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D86CE0E92CC68C810056E79B /* safari-bookmarks-highlighter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "safari-bookmarks-highlighter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D86CE0F52CC68C810056E79B /* safari-bookmarks-highlighter Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "safari-bookmarks-highlighter Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D86CE0FF2CC68C810056E79B /* safari-bookmarks-highlighter Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "safari-bookmarks-highlighter Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D86CE1242CC68C810056E79B /* Exceptions for "Shared (App)" folder in "safari-bookmarks-highlighter (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"/Localized: Resources/Main.html",
+				Assets.xcassets,
+				Resources/Icon.png,
+				Resources/Script.js,
+				Resources/Style.css,
+				ViewController.swift,
+			);
+			target = D86CE0D62CC68C810056E79B /* safari-bookmarks-highlighter (iOS) */;
+		};
+		D86CE1282CC68C810056E79B /* Exceptions for "iOS (Extension)" folder in "safari-bookmarks-highlighter Extension (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D86CE0F42CC68C810056E79B /* safari-bookmarks-highlighter Extension (iOS) */;
+		};
+		D86CE12D2CC68C810056E79B /* Exceptions for "iOS (App)" folder in "safari-bookmarks-highlighter (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D86CE0D62CC68C810056E79B /* safari-bookmarks-highlighter (iOS) */;
+		};
+		D86CE12E2CC68C810056E79B /* Exceptions for "Shared (App)" folder in "safari-bookmarks-highlighter (macOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"/Localized: Resources/Main.html",
+				Assets.xcassets,
+				Resources/Icon.png,
+				Resources/Script.js,
+				Resources/Style.css,
+				ViewController.swift,
+			);
+			target = D86CE0E82CC68C810056E79B /* safari-bookmarks-highlighter (macOS) */;
+		};
+		D86CE1322CC68C810056E79B /* Exceptions for "macOS (Extension)" folder in "safari-bookmarks-highlighter Extension (macOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D86CE0FE2CC68C810056E79B /* safari-bookmarks-highlighter Extension (macOS) */;
+		};
+		D86CE1372CC68C810056E79B /* Exceptions for "Shared (Extension)" folder in "safari-bookmarks-highlighter Extension (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/_locales,
+				Resources/background.js,
+				Resources/content.js,
+				Resources/images,
+				Resources/manifest.json,
+				Resources/popup.css,
+				Resources/popup.html,
+				Resources/popup.js,
+				SafariWebExtensionHandler.swift,
+			);
+			target = D86CE0F42CC68C810056E79B /* safari-bookmarks-highlighter Extension (iOS) */;
+		};
+		D86CE1382CC68C810056E79B /* Exceptions for "Shared (Extension)" folder in "safari-bookmarks-highlighter Extension (macOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/_locales,
+				Resources/background.js,
+				Resources/content.js,
+				Resources/images,
+				Resources/manifest.json,
+				Resources/popup.css,
+				Resources/popup.html,
+				Resources/popup.js,
+				SafariWebExtensionHandler.swift,
+			);
+			target = D86CE0FE2CC68C810056E79B /* safari-bookmarks-highlighter Extension (macOS) */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		D86CE0BF2CC68C800056E79B /* Shared (App) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D86CE1242CC68C810056E79B /* Exceptions for "Shared (App)" folder in "safari-bookmarks-highlighter (iOS)" target */,
+				D86CE12E2CC68C810056E79B /* Exceptions for "Shared (App)" folder in "safari-bookmarks-highlighter (macOS)" target */,
+			);
+			path = "Shared (App)";
+			sourceTree = "<group>";
+		};
+		D86CE0C82CC68C810056E79B /* Shared (Extension) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D86CE1372CC68C810056E79B /* Exceptions for "Shared (Extension)" folder in "safari-bookmarks-highlighter Extension (iOS)" target */,
+				D86CE1382CC68C810056E79B /* Exceptions for "Shared (Extension)" folder in "safari-bookmarks-highlighter Extension (macOS)" target */,
+			);
+			explicitFolders = (
+				Resources/_locales,
+				Resources/images,
+			);
+			path = "Shared (Extension)";
+			sourceTree = "<group>";
+		};
+		D86CE0D92CC68C810056E79B /* iOS (App) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D86CE12D2CC68C810056E79B /* Exceptions for "iOS (App)" folder in "safari-bookmarks-highlighter (iOS)" target */,
+			);
+			path = "iOS (App)";
+			sourceTree = "<group>";
+		};
+		D86CE0EA2CC68C810056E79B /* macOS (App) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "macOS (App)";
+			sourceTree = "<group>";
+		};
+		D86CE0F92CC68C810056E79B /* iOS (Extension) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D86CE1282CC68C810056E79B /* Exceptions for "iOS (Extension)" folder in "safari-bookmarks-highlighter Extension (iOS)" target */,
+			);
+			path = "iOS (Extension)";
+			sourceTree = "<group>";
+		};
+		D86CE1032CC68C810056E79B /* macOS (Extension) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D86CE1322CC68C810056E79B /* Exceptions for "macOS (Extension)" folder in "safari-bookmarks-highlighter Extension (macOS)" target */,
+			);
+			path = "macOS (Extension)";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D86CE0D42CC68C810056E79B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D86CE0E62CC68C810056E79B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D86CE0F22CC68C810056E79B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D86CE0FC2CC68C810056E79B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D86CE0BA2CC68C800056E79B = {
+			isa = PBXGroup;
+			children = (
+				D86CE0BF2CC68C800056E79B /* Shared (App) */,
+				D86CE0C82CC68C810056E79B /* Shared (Extension) */,
+				D86CE0D92CC68C810056E79B /* iOS (App) */,
+				D86CE0EA2CC68C810056E79B /* macOS (App) */,
+				D86CE0F92CC68C810056E79B /* iOS (Extension) */,
+				D86CE1032CC68C810056E79B /* macOS (Extension) */,
+				D86CE0D82CC68C810056E79B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D86CE0D82CC68C810056E79B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D86CE0D72CC68C810056E79B /* safari-bookmarks-highlighter.app */,
+				D86CE0E92CC68C810056E79B /* safari-bookmarks-highlighter.app */,
+				D86CE0F52CC68C810056E79B /* safari-bookmarks-highlighter Extension.appex */,
+				D86CE0FF2CC68C810056E79B /* safari-bookmarks-highlighter Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D86CE0D62CC68C810056E79B /* safari-bookmarks-highlighter (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D86CE12A2CC68C810056E79B /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter (iOS)" */;
+			buildPhases = (
+				D86CE0D32CC68C810056E79B /* Sources */,
+				D86CE0D42CC68C810056E79B /* Frameworks */,
+				D86CE0D52CC68C810056E79B /* Resources */,
+				D86CE1292CC68C810056E79B /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D86CE0F82CC68C810056E79B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D86CE0D92CC68C810056E79B /* iOS (App) */,
+			);
+			name = "safari-bookmarks-highlighter (iOS)";
+			packageProductDependencies = (
+			);
+			productName = "safari-bookmarks-highlighter (iOS)";
+			productReference = D86CE0D72CC68C810056E79B /* safari-bookmarks-highlighter.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D86CE0E82CC68C810056E79B /* safari-bookmarks-highlighter (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D86CE1342CC68C810056E79B /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter (macOS)" */;
+			buildPhases = (
+				D86CE0E52CC68C810056E79B /* Sources */,
+				D86CE0E62CC68C810056E79B /* Frameworks */,
+				D86CE0E72CC68C810056E79B /* Resources */,
+				D86CE1332CC68C810056E79B /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D86CE1022CC68C810056E79B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D86CE0EA2CC68C810056E79B /* macOS (App) */,
+			);
+			name = "safari-bookmarks-highlighter (macOS)";
+			packageProductDependencies = (
+			);
+			productName = "safari-bookmarks-highlighter (macOS)";
+			productReference = D86CE0E92CC68C810056E79B /* safari-bookmarks-highlighter.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D86CE0F42CC68C810056E79B /* safari-bookmarks-highlighter Extension (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D86CE1252CC68C810056E79B /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter Extension (iOS)" */;
+			buildPhases = (
+				D86CE0F12CC68C810056E79B /* Sources */,
+				D86CE0F22CC68C810056E79B /* Frameworks */,
+				D86CE0F32CC68C810056E79B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				D86CE0F92CC68C810056E79B /* iOS (Extension) */,
+			);
+			name = "safari-bookmarks-highlighter Extension (iOS)";
+			packageProductDependencies = (
+			);
+			productName = "safari-bookmarks-highlighter Extension (iOS)";
+			productReference = D86CE0F52CC68C810056E79B /* safari-bookmarks-highlighter Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		D86CE0FE2CC68C810056E79B /* safari-bookmarks-highlighter Extension (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D86CE12F2CC68C810056E79B /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter Extension (macOS)" */;
+			buildPhases = (
+				D86CE0FB2CC68C810056E79B /* Sources */,
+				D86CE0FC2CC68C810056E79B /* Frameworks */,
+				D86CE0FD2CC68C810056E79B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				D86CE1032CC68C810056E79B /* macOS (Extension) */,
+			);
+			name = "safari-bookmarks-highlighter Extension (macOS)";
+			packageProductDependencies = (
+			);
+			productName = "safari-bookmarks-highlighter Extension (macOS)";
+			productReference = D86CE0FF2CC68C810056E79B /* safari-bookmarks-highlighter Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D86CE0BB2CC68C800056E79B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					D86CE0D62CC68C810056E79B = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					D86CE0E82CC68C810056E79B = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					D86CE0F42CC68C810056E79B = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					D86CE0FE2CC68C810056E79B = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = D86CE0BE2CC68C800056E79B /* Build configuration list for PBXProject "safari-bookmarks-highlighter" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D86CE0BA2CC68C800056E79B;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = D86CE0D82CC68C810056E79B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D86CE0D62CC68C810056E79B /* safari-bookmarks-highlighter (iOS) */,
+				D86CE0E82CC68C810056E79B /* safari-bookmarks-highlighter (macOS) */,
+				D86CE0F42CC68C810056E79B /* safari-bookmarks-highlighter Extension (iOS) */,
+				D86CE0FE2CC68C810056E79B /* safari-bookmarks-highlighter Extension (macOS) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D86CE0D52CC68C810056E79B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D86CE0E72CC68C810056E79B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D86CE0F32CC68C810056E79B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D86CE0FD2CC68C810056E79B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D86CE0D32CC68C810056E79B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D86CE0E52CC68C810056E79B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D86CE0F12CC68C810056E79B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D86CE0FB2CC68C810056E79B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D86CE0F82CC68C810056E79B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D86CE0F42CC68C810056E79B /* safari-bookmarks-highlighter Extension (iOS) */;
+			targetProxy = D86CE0F72CC68C810056E79B /* PBXContainerItemProxy */;
+		};
+		D86CE1022CC68C810056E79B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D86CE0FE2CC68C810056E79B /* safari-bookmarks-highlighter Extension (macOS) */;
+			targetProxy = D86CE1012CC68C810056E79B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		D86CE1262CC68C810056E79B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "safari-bookmarks-highlighter Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "lessmore.safari-bookmarks-highlighter.Extension";
+				PRODUCT_NAME = "safari-bookmarks-highlighter Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D86CE1272CC68C810056E79B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "safari-bookmarks-highlighter Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "lessmore.safari-bookmarks-highlighter.Extension";
+				PRODUCT_NAME = "safari-bookmarks-highlighter Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D86CE12B2CC68C810056E79B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "safari-bookmarks-highlighter";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "lessmore.safari-bookmarks-highlighter";
+				PRODUCT_NAME = "safari-bookmarks-highlighter";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D86CE12C2CC68C810056E79B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "safari-bookmarks-highlighter";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "lessmore.safari-bookmarks-highlighter";
+				PRODUCT_NAME = "safari-bookmarks-highlighter";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D86CE1302CC68C810056E79B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "macOS (Extension)/safari-bookmarks-highlighter.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "safari-bookmarks-highlighter Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "lessmore.safari-bookmarks-highlighter.Extension";
+				PRODUCT_NAME = "safari-bookmarks-highlighter Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		D86CE1312CC68C810056E79B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "macOS (Extension)/safari-bookmarks-highlighter.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "safari-bookmarks-highlighter Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "lessmore.safari-bookmarks-highlighter.Extension";
+				PRODUCT_NAME = "safari-bookmarks-highlighter Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		D86CE1352CC68C810056E79B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "macOS (App)/safari-bookmarks-highlighter.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "safari-bookmarks-highlighter";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "lessmore.safari-bookmarks-highlighter";
+				PRODUCT_NAME = "safari-bookmarks-highlighter";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		D86CE1362CC68C810056E79B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "macOS (App)/safari-bookmarks-highlighter.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "safari-bookmarks-highlighter";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "lessmore.safari-bookmarks-highlighter";
+				PRODUCT_NAME = "safari-bookmarks-highlighter";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		D86CE1392CC68C810056E79B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		D86CE13A2CC68C810056E79B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D86CE0BE2CC68C800056E79B /* Build configuration list for PBXProject "safari-bookmarks-highlighter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D86CE1392CC68C810056E79B /* Debug */,
+				D86CE13A2CC68C810056E79B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D86CE1252CC68C810056E79B /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter Extension (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D86CE1262CC68C810056E79B /* Debug */,
+				D86CE1272CC68C810056E79B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D86CE12A2CC68C810056E79B /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D86CE12B2CC68C810056E79B /* Debug */,
+				D86CE12C2CC68C810056E79B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D86CE12F2CC68C810056E79B /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter Extension (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D86CE1302CC68C810056E79B /* Debug */,
+				D86CE1312CC68C810056E79B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D86CE1342CC68C810056E79B /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D86CE1352CC68C810056E79B /* Debug */,
+				D86CE1362CC68C810056E79B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D86CE0BB2CC68C800056E79B /* Project object */;
+}
