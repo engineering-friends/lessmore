@@ -9,7 +9,5 @@
 		<key>NSExtensionPrincipalClass</key>
 		<string>$(PRODUCT_MODULE_NAME).SafariWebExtensionHandler</string>
 	</dict>
-	<key>SFSafariWebExtensionConverterVersion</key>
-	<string>13.1</string>
 </dict>
 </plist>
