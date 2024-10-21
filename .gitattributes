@@ -9,6 +9,7 @@ test_git_lfs.txt filter=lfs diff=lfs merge=lfs -text
 test-git-lfs/**/* filter=lfs diff=lfs merge=lfs -text
 
 source/python/services/discord-to-telegram-forwarder/discord_to_telegram_forwarder/send_discord_post_to_telegram/to_png_images/**/*  filter=lfs diff=lfs merge=lfs -text
+source/other/safari-bookmarks-highlighter/Shared (Extension)/Resources/images/icon-48-2.png filter=lfs diff=lfs merge=lfs -text
 
 # - Exclude from git-lfs
 
