@@ -1,0 +1,17 @@
+tqdm>=4.64.0
+loguru>=0.7.0
+sortedcontainers>=2.4.0
+pendulum>=3.0.0
+PyYAML>=6.0
+pydantic>=2.0.0
+notion-client>=2.0.0
+more-itertools>=9.1.0
+requests>=2.28.2
+anyconfig>=0.14.0
+typer>=0.12.3
+python-dotenv>=1.0.1
+pytest>=8.3.3
+diskcache>=5.6.3
+executing>=2.1.0
+inline-snapshot==0.8.0
+retry>=0.9.2

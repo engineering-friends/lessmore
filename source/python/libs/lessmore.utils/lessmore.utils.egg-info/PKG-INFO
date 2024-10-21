@@ -1,0 +1,23 @@
+Metadata-Version: 2.1
+Name: lessmore.utils
+Version: 0.1.2
+Author-email: marklidenberg <marklidenberg@gmail.com>
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: tqdm>=4.64.0
+Requires-Dist: loguru>=0.7.0
+Requires-Dist: sortedcontainers>=2.4.0
+Requires-Dist: pendulum>=3.0.0
+Requires-Dist: PyYAML>=6.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: notion-client>=2.0.0
+Requires-Dist: more-itertools>=9.1.0
+Requires-Dist: requests>=2.28.2
+Requires-Dist: anyconfig>=0.14.0
+Requires-Dist: typer>=0.12.3
+Requires-Dist: python-dotenv>=1.0.1
+Requires-Dist: pytest>=8.3.3
+Requires-Dist: diskcache>=5.6.3
+Requires-Dist: executing>=2.1.0
+Requires-Dist: inline-snapshot==0.8.0
+Requires-Dist: retry>=0.9.2

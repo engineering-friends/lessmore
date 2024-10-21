@@ -7,46 +7,46 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D8E95B5A2CC69AC7007432A0 /* safari-bookmarks-highlighter Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D8E95B592CC69AC7007432A0 /* safari-bookmarks-highlighter Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		D8E95B642CC69AC7007432A0 /* safari-bookmarks-highlighter Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D8E95B632CC69AC7007432A0 /* safari-bookmarks-highlighter Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D88E95ED2CC6A01C003152D7 /* safari-bookmarks-highlighter Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D88E95EC2CC6A01C003152D7 /* safari-bookmarks-highlighter Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D88E95F72CC6A01C003152D7 /* safari-bookmarks-highlighter Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D88E95F62CC6A01C003152D7 /* safari-bookmarks-highlighter Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		D8E95B5B2CC69AC7007432A0 /* PBXContainerItemProxy */ = {
+		D88E95EE2CC6A01C003152D7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = D8E95B1F2CC69AC6007432A0 /* Project object */;
+			containerPortal = D88E95B22CC6A01B003152D7 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D8E95B582CC69AC7007432A0;
+			remoteGlobalIDString = D88E95EB2CC6A01C003152D7;
 			remoteInfo = "safari-bookmarks-highlighter Extension (iOS)";
 		};
-		D8E95B652CC69AC7007432A0 /* PBXContainerItemProxy */ = {
+		D88E95F82CC6A01C003152D7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = D8E95B1F2CC69AC6007432A0 /* Project object */;
+			containerPortal = D88E95B22CC6A01B003152D7 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D8E95B622CC69AC7007432A0;
+			remoteGlobalIDString = D88E95F52CC6A01C003152D7;
 			remoteInfo = "safari-bookmarks-highlighter Extension (macOS)";
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		D8E95B8D2CC69AC7007432A0 /* Embed Foundation Extensions */ = {
+		D88E96202CC6A01C003152D7 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				D8E95B5A2CC69AC7007432A0 /* safari-bookmarks-highlighter Extension.appex in Embed Foundation Extensions */,
+				D88E95ED2CC6A01C003152D7 /* safari-bookmarks-highlighter Extension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D8E95B972CC69AC7007432A0 /* Embed Foundation Extensions */ = {
+		D88E962A2CC6A01C003152D7 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				D8E95B642CC69AC7007432A0 /* safari-bookmarks-highlighter Extension.appex in Embed Foundation Extensions */,
+				D88E95F72CC6A01C003152D7 /* safari-bookmarks-highlighter Extension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -54,14 +54,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		D8E95B3B2CC69AC7007432A0 /* safari-bookmarks-highlighter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "safari-bookmarks-highlighter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8E95B4D2CC69AC7007432A0 /* safari-bookmarks-highlighter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "safari-bookmarks-highlighter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8E95B592CC69AC7007432A0 /* safari-bookmarks-highlighter Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "safari-bookmarks-highlighter Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8E95B632CC69AC7007432A0 /* safari-bookmarks-highlighter Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "safari-bookmarks-highlighter Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D88E95CE2CC6A01C003152D7 /* safari-bookmarks-highlighter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "safari-bookmarks-highlighter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D88E95E02CC6A01C003152D7 /* safari-bookmarks-highlighter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "safari-bookmarks-highlighter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D88E95EC2CC6A01C003152D7 /* safari-bookmarks-highlighter Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "safari-bookmarks-highlighter Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D88E95F62CC6A01C003152D7 /* safari-bookmarks-highlighter Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "safari-bookmarks-highlighter Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		D8E95B882CC69AC7007432A0 /* Exceptions for "Shared (App)" folder in "safari-bookmarks-highlighter (iOS)" target */ = {
+		D88E961B2CC6A01C003152D7 /* Exceptions for "Shared (App)" folder in "safari-bookmarks-highlighter (iOS)" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"/Localized: Resources/Main.html",
@@ -71,23 +71,23 @@
 				Resources/Style.css,
 				ViewController.swift,
 			);
-			target = D8E95B3A2CC69AC7007432A0 /* safari-bookmarks-highlighter (iOS) */;
+			target = D88E95CD2CC6A01C003152D7 /* safari-bookmarks-highlighter (iOS) */;
 		};
-		D8E95B8C2CC69AC7007432A0 /* Exceptions for "iOS (Extension)" folder in "safari-bookmarks-highlighter Extension (iOS)" target */ = {
+		D88E961F2CC6A01C003152D7 /* Exceptions for "iOS (Extension)" folder in "safari-bookmarks-highlighter Extension (iOS)" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = D8E95B582CC69AC7007432A0 /* safari-bookmarks-highlighter Extension (iOS) */;
+			target = D88E95EB2CC6A01C003152D7 /* safari-bookmarks-highlighter Extension (iOS) */;
 		};
-		D8E95B912CC69AC7007432A0 /* Exceptions for "iOS (App)" folder in "safari-bookmarks-highlighter (iOS)" target */ = {
+		D88E96242CC6A01C003152D7 /* Exceptions for "iOS (App)" folder in "safari-bookmarks-highlighter (iOS)" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = D8E95B3A2CC69AC7007432A0 /* safari-bookmarks-highlighter (iOS) */;
+			target = D88E95CD2CC6A01C003152D7 /* safari-bookmarks-highlighter (iOS) */;
 		};
-		D8E95B922CC69AC7007432A0 /* Exceptions for "Shared (App)" folder in "safari-bookmarks-highlighter (macOS)" target */ = {
+		D88E96252CC6A01C003152D7 /* Exceptions for "Shared (App)" folder in "safari-bookmarks-highlighter (macOS)" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"/Localized: Resources/Main.html",
@@ -97,16 +97,16 @@
 				Resources/Style.css,
 				ViewController.swift,
 			);
-			target = D8E95B4C2CC69AC7007432A0 /* safari-bookmarks-highlighter (macOS) */;
+			target = D88E95DF2CC6A01C003152D7 /* safari-bookmarks-highlighter (macOS) */;
 		};
-		D8E95B962CC69AC7007432A0 /* Exceptions for "macOS (Extension)" folder in "safari-bookmarks-highlighter Extension (macOS)" target */ = {
+		D88E96292CC6A01C003152D7 /* Exceptions for "macOS (Extension)" folder in "safari-bookmarks-highlighter Extension (macOS)" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = D8E95B622CC69AC7007432A0 /* safari-bookmarks-highlighter Extension (macOS) */;
+			target = D88E95F52CC6A01C003152D7 /* safari-bookmarks-highlighter Extension (macOS) */;
 		};
-		D8E95B9B2CC69AC7007432A0 /* Exceptions for "Shared (Extension)" folder in "safari-bookmarks-highlighter Extension (iOS)" target */ = {
+		D88E962E2CC6A01C003152D7 /* Exceptions for "Shared (Extension)" folder in "safari-bookmarks-highlighter Extension (iOS)" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Resources/_locales,
@@ -119,9 +119,9 @@
 				Resources/popup.js,
 				SafariWebExtensionHandler.swift,
 			);
-			target = D8E95B582CC69AC7007432A0 /* safari-bookmarks-highlighter Extension (iOS) */;
+			target = D88E95EB2CC6A01C003152D7 /* safari-bookmarks-highlighter Extension (iOS) */;
 		};
-		D8E95B9C2CC69AC7007432A0 /* Exceptions for "Shared (Extension)" folder in "safari-bookmarks-highlighter Extension (macOS)" target */ = {
+		D88E962F2CC6A01C003152D7 /* Exceptions for "Shared (Extension)" folder in "safari-bookmarks-highlighter Extension (macOS)" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Resources/_locales,
@@ -134,25 +134,25 @@
 				Resources/popup.js,
 				SafariWebExtensionHandler.swift,
 			);
-			target = D8E95B622CC69AC7007432A0 /* safari-bookmarks-highlighter Extension (macOS) */;
+			target = D88E95F52CC6A01C003152D7 /* safari-bookmarks-highlighter Extension (macOS) */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		D8E95B232CC69AC6007432A0 /* Shared (App) */ = {
+		D88E95B62CC6A01B003152D7 /* Shared (App) */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				D8E95B882CC69AC7007432A0 /* Exceptions for "Shared (App)" folder in "safari-bookmarks-highlighter (iOS)" target */,
-				D8E95B922CC69AC7007432A0 /* Exceptions for "Shared (App)" folder in "safari-bookmarks-highlighter (macOS)" target */,
+				D88E961B2CC6A01C003152D7 /* Exceptions for "Shared (App)" folder in "safari-bookmarks-highlighter (iOS)" target */,
+				D88E96252CC6A01C003152D7 /* Exceptions for "Shared (App)" folder in "safari-bookmarks-highlighter (macOS)" target */,
 			);
 			path = "Shared (App)";
 			sourceTree = "<group>";
 		};
-		D8E95B2C2CC69AC7007432A0 /* Shared (Extension) */ = {
+		D88E95BF2CC6A01C003152D7 /* Shared (Extension) */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				D8E95B9B2CC69AC7007432A0 /* Exceptions for "Shared (Extension)" folder in "safari-bookmarks-highlighter Extension (iOS)" target */,
-				D8E95B9C2CC69AC7007432A0 /* Exceptions for "Shared (Extension)" folder in "safari-bookmarks-highlighter Extension (macOS)" target */,
+				D88E962E2CC6A01C003152D7 /* Exceptions for "Shared (Extension)" folder in "safari-bookmarks-highlighter Extension (iOS)" target */,
+				D88E962F2CC6A01C003152D7 /* Exceptions for "Shared (Extension)" folder in "safari-bookmarks-highlighter Extension (macOS)" target */,
 			);
 			explicitFolders = (
 				Resources/_locales,
@@ -161,31 +161,31 @@
 			path = "Shared (Extension)";
 			sourceTree = "<group>";
 		};
-		D8E95B3D2CC69AC7007432A0 /* iOS (App) */ = {
+		D88E95D02CC6A01C003152D7 /* iOS (App) */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				D8E95B912CC69AC7007432A0 /* Exceptions for "iOS (App)" folder in "safari-bookmarks-highlighter (iOS)" target */,
+				D88E96242CC6A01C003152D7 /* Exceptions for "iOS (App)" folder in "safari-bookmarks-highlighter (iOS)" target */,
 			);
 			path = "iOS (App)";
 			sourceTree = "<group>";
 		};
-		D8E95B4E2CC69AC7007432A0 /* macOS (App) */ = {
+		D88E95E12CC6A01C003152D7 /* macOS (App) */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "macOS (App)";
 			sourceTree = "<group>";
 		};
-		D8E95B5D2CC69AC7007432A0 /* iOS (Extension) */ = {
+		D88E95F02CC6A01C003152D7 /* iOS (Extension) */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				D8E95B8C2CC69AC7007432A0 /* Exceptions for "iOS (Extension)" folder in "safari-bookmarks-highlighter Extension (iOS)" target */,
+				D88E961F2CC6A01C003152D7 /* Exceptions for "iOS (Extension)" folder in "safari-bookmarks-highlighter Extension (iOS)" target */,
 			);
 			path = "iOS (Extension)";
 			sourceTree = "<group>";
 		};
-		D8E95B672CC69AC7007432A0 /* macOS (Extension) */ = {
+		D88E95FA2CC6A01C003152D7 /* macOS (Extension) */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				D8E95B962CC69AC7007432A0 /* Exceptions for "macOS (Extension)" folder in "safari-bookmarks-highlighter Extension (macOS)" target */,
+				D88E96292CC6A01C003152D7 /* Exceptions for "macOS (Extension)" folder in "safari-bookmarks-highlighter Extension (macOS)" target */,
 			);
 			path = "macOS (Extension)";
 			sourceTree = "<group>";
@@ -193,28 +193,28 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		D8E95B382CC69AC7007432A0 /* Frameworks */ = {
+		D88E95CB2CC6A01C003152D7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D8E95B4A2CC69AC7007432A0 /* Frameworks */ = {
+		D88E95DD2CC6A01C003152D7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D8E95B562CC69AC7007432A0 /* Frameworks */ = {
+		D88E95E92CC6A01C003152D7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D8E95B602CC69AC7007432A0 /* Frameworks */ = {
+		D88E95F32CC6A01C003152D7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -224,26 +224,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D8E95B1E2CC69AC6007432A0 = {
+		D88E95B12CC6A01B003152D7 = {
 			isa = PBXGroup;
 			children = (
-				D8E95B232CC69AC6007432A0 /* Shared (App) */,
-				D8E95B2C2CC69AC7007432A0 /* Shared (Extension) */,
-				D8E95B3D2CC69AC7007432A0 /* iOS (App) */,
-				D8E95B4E2CC69AC7007432A0 /* macOS (App) */,
-				D8E95B5D2CC69AC7007432A0 /* iOS (Extension) */,
-				D8E95B672CC69AC7007432A0 /* macOS (Extension) */,
-				D8E95B3C2CC69AC7007432A0 /* Products */,
+				D88E95B62CC6A01B003152D7 /* Shared (App) */,
+				D88E95BF2CC6A01C003152D7 /* Shared (Extension) */,
+				D88E95D02CC6A01C003152D7 /* iOS (App) */,
+				D88E95E12CC6A01C003152D7 /* macOS (App) */,
+				D88E95F02CC6A01C003152D7 /* iOS (Extension) */,
+				D88E95FA2CC6A01C003152D7 /* macOS (Extension) */,
+				D88E95CF2CC6A01C003152D7 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		D8E95B3C2CC69AC7007432A0 /* Products */ = {
+		D88E95CF2CC6A01C003152D7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D8E95B3B2CC69AC7007432A0 /* safari-bookmarks-highlighter.app */,
-				D8E95B4D2CC69AC7007432A0 /* safari-bookmarks-highlighter.app */,
-				D8E95B592CC69AC7007432A0 /* safari-bookmarks-highlighter Extension.appex */,
-				D8E95B632CC69AC7007432A0 /* safari-bookmarks-highlighter Extension.appex */,
+				D88E95CE2CC6A01C003152D7 /* safari-bookmarks-highlighter.app */,
+				D88E95E02CC6A01C003152D7 /* safari-bookmarks-highlighter.app */,
+				D88E95EC2CC6A01C003152D7 /* safari-bookmarks-highlighter Extension.appex */,
+				D88E95F62CC6A01C003152D7 /* safari-bookmarks-highlighter Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -251,167 +251,167 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		D8E95B3A2CC69AC7007432A0 /* safari-bookmarks-highlighter (iOS) */ = {
+		D88E95CD2CC6A01C003152D7 /* safari-bookmarks-highlighter (iOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D8E95B8E2CC69AC7007432A0 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter (iOS)" */;
+			buildConfigurationList = D88E96212CC6A01C003152D7 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter (iOS)" */;
 			buildPhases = (
-				D8E95B372CC69AC7007432A0 /* Sources */,
-				D8E95B382CC69AC7007432A0 /* Frameworks */,
-				D8E95B392CC69AC7007432A0 /* Resources */,
-				D8E95B8D2CC69AC7007432A0 /* Embed Foundation Extensions */,
+				D88E95CA2CC6A01C003152D7 /* Sources */,
+				D88E95CB2CC6A01C003152D7 /* Frameworks */,
+				D88E95CC2CC6A01C003152D7 /* Resources */,
+				D88E96202CC6A01C003152D7 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				D8E95B5C2CC69AC7007432A0 /* PBXTargetDependency */,
+				D88E95EF2CC6A01C003152D7 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				D8E95B3D2CC69AC7007432A0 /* iOS (App) */,
+				D88E95D02CC6A01C003152D7 /* iOS (App) */,
 			);
 			name = "safari-bookmarks-highlighter (iOS)";
 			packageProductDependencies = (
 			);
 			productName = "safari-bookmarks-highlighter (iOS)";
-			productReference = D8E95B3B2CC69AC7007432A0 /* safari-bookmarks-highlighter.app */;
+			productReference = D88E95CE2CC6A01C003152D7 /* safari-bookmarks-highlighter.app */;
 			productType = "com.apple.product-type.application";
 		};
-		D8E95B4C2CC69AC7007432A0 /* safari-bookmarks-highlighter (macOS) */ = {
+		D88E95DF2CC6A01C003152D7 /* safari-bookmarks-highlighter (macOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D8E95B982CC69AC7007432A0 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter (macOS)" */;
+			buildConfigurationList = D88E962B2CC6A01C003152D7 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter (macOS)" */;
 			buildPhases = (
-				D8E95B492CC69AC7007432A0 /* Sources */,
-				D8E95B4A2CC69AC7007432A0 /* Frameworks */,
-				D8E95B4B2CC69AC7007432A0 /* Resources */,
-				D8E95B972CC69AC7007432A0 /* Embed Foundation Extensions */,
+				D88E95DC2CC6A01C003152D7 /* Sources */,
+				D88E95DD2CC6A01C003152D7 /* Frameworks */,
+				D88E95DE2CC6A01C003152D7 /* Resources */,
+				D88E962A2CC6A01C003152D7 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				D8E95B662CC69AC7007432A0 /* PBXTargetDependency */,
+				D88E95F92CC6A01C003152D7 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				D8E95B4E2CC69AC7007432A0 /* macOS (App) */,
+				D88E95E12CC6A01C003152D7 /* macOS (App) */,
 			);
 			name = "safari-bookmarks-highlighter (macOS)";
 			packageProductDependencies = (
 			);
 			productName = "safari-bookmarks-highlighter (macOS)";
-			productReference = D8E95B4D2CC69AC7007432A0 /* safari-bookmarks-highlighter.app */;
+			productReference = D88E95E02CC6A01C003152D7 /* safari-bookmarks-highlighter.app */;
 			productType = "com.apple.product-type.application";
 		};
-		D8E95B582CC69AC7007432A0 /* safari-bookmarks-highlighter Extension (iOS) */ = {
+		D88E95EB2CC6A01C003152D7 /* safari-bookmarks-highlighter Extension (iOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D8E95B892CC69AC7007432A0 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter Extension (iOS)" */;
+			buildConfigurationList = D88E961C2CC6A01C003152D7 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter Extension (iOS)" */;
 			buildPhases = (
-				D8E95B552CC69AC7007432A0 /* Sources */,
-				D8E95B562CC69AC7007432A0 /* Frameworks */,
-				D8E95B572CC69AC7007432A0 /* Resources */,
+				D88E95E82CC6A01C003152D7 /* Sources */,
+				D88E95E92CC6A01C003152D7 /* Frameworks */,
+				D88E95EA2CC6A01C003152D7 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				D8E95B5D2CC69AC7007432A0 /* iOS (Extension) */,
+				D88E95F02CC6A01C003152D7 /* iOS (Extension) */,
 			);
 			name = "safari-bookmarks-highlighter Extension (iOS)";
 			packageProductDependencies = (
 			);
 			productName = "safari-bookmarks-highlighter Extension (iOS)";
-			productReference = D8E95B592CC69AC7007432A0 /* safari-bookmarks-highlighter Extension.appex */;
+			productReference = D88E95EC2CC6A01C003152D7 /* safari-bookmarks-highlighter Extension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		D8E95B622CC69AC7007432A0 /* safari-bookmarks-highlighter Extension (macOS) */ = {
+		D88E95F52CC6A01C003152D7 /* safari-bookmarks-highlighter Extension (macOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D8E95B932CC69AC7007432A0 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter Extension (macOS)" */;
+			buildConfigurationList = D88E96262CC6A01C003152D7 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter Extension (macOS)" */;
 			buildPhases = (
-				D8E95B5F2CC69AC7007432A0 /* Sources */,
-				D8E95B602CC69AC7007432A0 /* Frameworks */,
-				D8E95B612CC69AC7007432A0 /* Resources */,
+				D88E95F22CC6A01C003152D7 /* Sources */,
+				D88E95F32CC6A01C003152D7 /* Frameworks */,
+				D88E95F42CC6A01C003152D7 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				D8E95B672CC69AC7007432A0 /* macOS (Extension) */,
+				D88E95FA2CC6A01C003152D7 /* macOS (Extension) */,
 			);
 			name = "safari-bookmarks-highlighter Extension (macOS)";
 			packageProductDependencies = (
 			);
 			productName = "safari-bookmarks-highlighter Extension (macOS)";
-			productReference = D8E95B632CC69AC7007432A0 /* safari-bookmarks-highlighter Extension.appex */;
+			productReference = D88E95F62CC6A01C003152D7 /* safari-bookmarks-highlighter Extension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		D8E95B1F2CC69AC6007432A0 /* Project object */ = {
+		D88E95B22CC6A01B003152D7 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
-					D8E95B3A2CC69AC7007432A0 = {
+					D88E95CD2CC6A01C003152D7 = {
 						CreatedOnToolsVersion = 16.0;
 					};
-					D8E95B4C2CC69AC7007432A0 = {
+					D88E95DF2CC6A01C003152D7 = {
 						CreatedOnToolsVersion = 16.0;
 					};
-					D8E95B582CC69AC7007432A0 = {
+					D88E95EB2CC6A01C003152D7 = {
 						CreatedOnToolsVersion = 16.0;
 					};
-					D8E95B622CC69AC7007432A0 = {
+					D88E95F52CC6A01C003152D7 = {
 						CreatedOnToolsVersion = 16.0;
 					};
 				};
 			};
-			buildConfigurationList = D8E95B222CC69AC6007432A0 /* Build configuration list for PBXProject "safari-bookmarks-highlighter" */;
+			buildConfigurationList = D88E95B52CC6A01B003152D7 /* Build configuration list for PBXProject "safari-bookmarks-highlighter" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = D8E95B1E2CC69AC6007432A0;
+			mainGroup = D88E95B12CC6A01B003152D7;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = D8E95B3C2CC69AC7007432A0 /* Products */;
+			productRefGroup = D88E95CF2CC6A01C003152D7 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D8E95B3A2CC69AC7007432A0 /* safari-bookmarks-highlighter (iOS) */,
-				D8E95B4C2CC69AC7007432A0 /* safari-bookmarks-highlighter (macOS) */,
-				D8E95B582CC69AC7007432A0 /* safari-bookmarks-highlighter Extension (iOS) */,
-				D8E95B622CC69AC7007432A0 /* safari-bookmarks-highlighter Extension (macOS) */,
+				D88E95CD2CC6A01C003152D7 /* safari-bookmarks-highlighter (iOS) */,
+				D88E95DF2CC6A01C003152D7 /* safari-bookmarks-highlighter (macOS) */,
+				D88E95EB2CC6A01C003152D7 /* safari-bookmarks-highlighter Extension (iOS) */,
+				D88E95F52CC6A01C003152D7 /* safari-bookmarks-highlighter Extension (macOS) */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		D8E95B392CC69AC7007432A0 /* Resources */ = {
+		D88E95CC2CC6A01C003152D7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D8E95B4B2CC69AC7007432A0 /* Resources */ = {
+		D88E95DE2CC6A01C003152D7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D8E95B572CC69AC7007432A0 /* Resources */ = {
+		D88E95EA2CC6A01C003152D7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D8E95B612CC69AC7007432A0 /* Resources */ = {
+		D88E95F42CC6A01C003152D7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -421,28 +421,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		D8E95B372CC69AC7007432A0 /* Sources */ = {
+		D88E95CA2CC6A01C003152D7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D8E95B492CC69AC7007432A0 /* Sources */ = {
+		D88E95DC2CC6A01C003152D7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D8E95B552CC69AC7007432A0 /* Sources */ = {
+		D88E95E82CC6A01C003152D7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D8E95B5F2CC69AC7007432A0 /* Sources */ = {
+		D88E95F22CC6A01C003152D7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -452,20 +452,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		D8E95B5C2CC69AC7007432A0 /* PBXTargetDependency */ = {
+		D88E95EF2CC6A01C003152D7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D8E95B582CC69AC7007432A0 /* safari-bookmarks-highlighter Extension (iOS) */;
-			targetProxy = D8E95B5B2CC69AC7007432A0 /* PBXContainerItemProxy */;
+			target = D88E95EB2CC6A01C003152D7 /* safari-bookmarks-highlighter Extension (iOS) */;
+			targetProxy = D88E95EE2CC6A01C003152D7 /* PBXContainerItemProxy */;
 		};
-		D8E95B662CC69AC7007432A0 /* PBXTargetDependency */ = {
+		D88E95F92CC6A01C003152D7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D8E95B622CC69AC7007432A0 /* safari-bookmarks-highlighter Extension (macOS) */;
-			targetProxy = D8E95B652CC69AC7007432A0 /* PBXContainerItemProxy */;
+			target = D88E95F52CC6A01C003152D7 /* safari-bookmarks-highlighter Extension (macOS) */;
+			targetProxy = D88E95F82CC6A01C003152D7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		D8E95B8A2CC69AC7007432A0 /* Debug */ = {
+		D88E961D2CC6A01C003152D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -495,7 +495,7 @@
 			};
 			name = Debug;
 		};
-		D8E95B8B2CC69AC7007432A0 /* Release */ = {
+		D88E961E2CC6A01C003152D7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -526,7 +526,7 @@
 			};
 			name = Release;
 		};
-		D8E95B8F2CC69AC7007432A0 /* Debug */ = {
+		D88E96222CC6A01C003152D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -562,7 +562,7 @@
 			};
 			name = Debug;
 		};
-		D8E95B902CC69AC7007432A0 /* Release */ = {
+		D88E96232CC6A01C003152D7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -599,7 +599,7 @@
 			};
 			name = Release;
 		};
-		D8E95B942CC69AC7007432A0 /* Debug */ = {
+		D88E96272CC6A01C003152D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "macOS (Extension)/safari-bookmarks-highlighter.entitlements";
@@ -630,7 +630,7 @@
 			};
 			name = Debug;
 		};
-		D8E95B952CC69AC7007432A0 /* Release */ = {
+		D88E96282CC6A01C003152D7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "macOS (Extension)/safari-bookmarks-highlighter.entitlements";
@@ -661,7 +661,7 @@
 			};
 			name = Release;
 		};
-		D8E95B992CC69AC7007432A0 /* Debug */ = {
+		D88E962C2CC6A01C003152D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -694,7 +694,7 @@
 			};
 			name = Debug;
 		};
-		D8E95B9A2CC69AC7007432A0 /* Release */ = {
+		D88E962D2CC6A01C003152D7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -727,7 +727,7 @@
 			};
 			name = Release;
 		};
-		D8E95B9D2CC69AC7007432A0 /* Debug */ = {
+		D88E96302CC6A01C003152D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -788,7 +788,7 @@
 			};
 			name = Debug;
 		};
-		D8E95B9E2CC69AC7007432A0 /* Release */ = {
+		D88E96312CC6A01C003152D7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -844,52 +844,52 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D8E95B222CC69AC6007432A0 /* Build configuration list for PBXProject "safari-bookmarks-highlighter" */ = {
+		D88E95B52CC6A01B003152D7 /* Build configuration list for PBXProject "safari-bookmarks-highlighter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D8E95B9D2CC69AC7007432A0 /* Debug */,
-				D8E95B9E2CC69AC7007432A0 /* Release */,
+				D88E96302CC6A01C003152D7 /* Debug */,
+				D88E96312CC6A01C003152D7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D8E95B892CC69AC7007432A0 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter Extension (iOS)" */ = {
+		D88E961C2CC6A01C003152D7 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter Extension (iOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D8E95B8A2CC69AC7007432A0 /* Debug */,
-				D8E95B8B2CC69AC7007432A0 /* Release */,
+				D88E961D2CC6A01C003152D7 /* Debug */,
+				D88E961E2CC6A01C003152D7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D8E95B8E2CC69AC7007432A0 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter (iOS)" */ = {
+		D88E96212CC6A01C003152D7 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter (iOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D8E95B8F2CC69AC7007432A0 /* Debug */,
-				D8E95B902CC69AC7007432A0 /* Release */,
+				D88E96222CC6A01C003152D7 /* Debug */,
+				D88E96232CC6A01C003152D7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D8E95B932CC69AC7007432A0 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter Extension (macOS)" */ = {
+		D88E96262CC6A01C003152D7 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter Extension (macOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D8E95B942CC69AC7007432A0 /* Debug */,
-				D8E95B952CC69AC7007432A0 /* Release */,
+				D88E96272CC6A01C003152D7 /* Debug */,
+				D88E96282CC6A01C003152D7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D8E95B982CC69AC7007432A0 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter (macOS)" */ = {
+		D88E962B2CC6A01C003152D7 /* Build configuration list for PBXNativeTarget "safari-bookmarks-highlighter (macOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D8E95B992CC69AC7007432A0 /* Debug */,
-				D8E95B9A2CC69AC7007432A0 /* Release */,
+				D88E962C2CC6A01C003152D7 /* Debug */,
+				D88E962D2CC6A01C003152D7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = D8E95B1F2CC69AC6007432A0 /* Project object */;
+	rootObject = D88E95B22CC6A01B003152D7 /* Project object */;
 }
